@@ -1,2 +1,0 @@
-# Pulsar
-Application PULSAR - Scénarisation
