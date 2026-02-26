@@ -1,0 +1,198 @@
+/* ============================================================
+   PULSAR V15 — Design Tokens
+   80+ CSS variables · Dark par défaut · Toggle persisté
+   ============================================================ */
+
+:root {
+  /* ── Palette fondamentale ── */
+  --p-black:       #0A0A0F;
+  --p-dark-1:      #0E0E16;
+  --p-dark-2:      #13131D;
+  --p-dark-3:      #1A1A28;
+  --p-dark-4:      #222233;
+  --p-dark-5:      #2C2C40;
+  --p-gray-1:      #3A3A50;
+  --p-gray-2:      #4E4E66;
+  --p-gray-3:      #6B6B85;
+  --p-gray-4:      #8E8EA3;
+  --p-gray-5:      #B0B0C0;
+  --p-light-1:     #D0D0DD;
+  --p-light-2:     #E8E8F0;
+  --p-white:       #F4F4FA;
+
+  /* ── Couleurs moteurs ── */
+  --p-vps:         #6C7CFF;
+  --p-vps-dim:     rgba(108, 124, 255, 0.15);
+  --p-vps-glow:    rgba(108, 124, 255, 0.30);
+  --p-tde:         #2FD1C8;
+  --p-tde-dim:     rgba(47, 209, 200, 0.15);
+  --p-tde-glow:    rgba(47, 209, 200, 0.30);
+  --p-pve:         #B96BFF;
+  --p-pve-dim:     rgba(185, 107, 255, 0.15);
+  --p-pve-glow:    rgba(185, 107, 255, 0.30);
+  --p-ewe:         #FF6B8A;
+  --p-ewe-dim:     rgba(255, 107, 138, 0.15);
+  --p-ewe-glow:    rgba(255, 107, 138, 0.30);
+  --p-tpe:         #FFB347;
+  --p-tpe-dim:     rgba(255, 179, 71, 0.15);
+  --p-tpe-glow:    rgba(255, 179, 71, 0.30);
+
+  /* ── Sémantique alertes ── */
+  --p-critical:    #FF4757;
+  --p-critical-bg: rgba(255, 71, 87, 0.12);
+  --p-warning:     #FFA502;
+  --p-warning-bg:  rgba(255, 165, 2, 0.12);
+  --p-success:     #2ED573;
+  --p-success-bg:  rgba(46, 213, 115, 0.12);
+  --p-info:        #3B82F6;
+  --p-info-bg:     rgba(59, 130, 246, 0.12);
+
+  /* ── Typographie ── */
+  --p-font-display: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --p-font-body:    'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --p-font-mono:    'JetBrains Mono', 'Fira Code', monospace;
+  --p-text-xs:     0.75rem;
+  --p-text-sm:     0.875rem;
+  --p-text-base:   1rem;
+  --p-text-lg:     1.125rem;
+  --p-text-xl:     1.25rem;
+  --p-text-2xl:    1.5rem;
+  --p-text-3xl:    1.875rem;
+  --p-text-4xl:    2.25rem;
+  --p-text-5xl:    3rem;
+  --p-leading-tight:   1.25;
+  --p-leading-normal:  1.5;
+  --p-leading-relaxed: 1.75;
+
+  /* ── Espacement ── */
+  --p-space-1:  0.25rem;
+  --p-space-2:  0.5rem;
+  --p-space-3:  0.75rem;
+  --p-space-4:  1rem;
+  --p-space-5:  1.25rem;
+  --p-space-6:  1.5rem;
+  --p-space-8:  2rem;
+  --p-space-10: 2.5rem;
+  --p-space-12: 3rem;
+  --p-space-16: 4rem;
+  --p-space-20: 5rem;
+  --p-space-24: 6rem;
+
+  /* ── Bordures & Rayons ── */
+  --p-radius-sm:  0.375rem;
+  --p-radius-md:  0.5rem;
+  --p-radius-lg:  0.75rem;
+  --p-radius-xl:  1rem;
+  --p-radius-2xl: 1.5rem;
+  --p-radius-full: 9999px;
+  --p-border:     1px solid var(--p-gray-1);
+
+  /* ── Ombres ── */
+  --p-shadow-sm:  0 1px 2px rgba(0,0,0,0.3);
+  --p-shadow-md:  0 4px 12px rgba(0,0,0,0.4);
+  --p-shadow-lg:  0 8px 24px rgba(0,0,0,0.5);
+  --p-shadow-glow-vps: 0 0 20px var(--p-vps-glow);
+  --p-shadow-glow-tde: 0 0 20px var(--p-tde-glow);
+  --p-shadow-glow-pve: 0 0 20px var(--p-pve-glow);
+  --p-shadow-glow-ewe: 0 0 20px var(--p-ewe-glow);
+  --p-shadow-glow-tpe: 0 0 20px var(--p-tpe-glow);
+
+  /* ── Transitions ── */
+  --p-ease:       cubic-bezier(0.4, 0, 0.2, 1);
+  --p-duration-fast:   150ms;
+  --p-duration-normal: 250ms;
+  --p-duration-slow:   400ms;
+
+  /* ── Z-index ── */
+  --p-z-base:    0;
+  --p-z-above:   10;
+  --p-z-modal:   100;
+  --p-z-toast:   200;
+  --p-z-overlay: 300;
+}
+
+/* ── Thème Dark (défaut) ── */
+[data-theme="dark"], :root {
+  --p-bg:          var(--p-dark-1);
+  --p-bg-card:     var(--p-dark-2);
+  --p-bg-elevated: var(--p-dark-3);
+  --p-bg-hover:    var(--p-dark-4);
+  --p-bg-active:   var(--p-dark-5);
+  --p-text:        var(--p-white);
+  --p-text-muted:  var(--p-gray-4);
+  --p-text-dim:    var(--p-gray-3);
+  --p-border-color: var(--p-gray-1);
+  --p-input-bg:    var(--p-dark-3);
+}
+
+/* ── Thème Light ── */
+[data-theme="light"] {
+  --p-bg:          #F8F9FC;
+  --p-bg-card:     #FFFFFF;
+  --p-bg-elevated: #F0F1F5;
+  --p-bg-hover:    #E8E9EE;
+  --p-bg-active:   #DDDEE5;
+  --p-text:        var(--p-dark-1);
+  --p-text-muted:  var(--p-gray-3);
+  --p-text-dim:    var(--p-gray-2);
+  --p-border-color: #D8D9E0;
+  --p-input-bg:    #FFFFFF;
+  --p-shadow-sm:   0 1px 2px rgba(0,0,0,0.06);
+  --p-shadow-md:   0 4px 12px rgba(0,0,0,0.08);
+  --p-shadow-lg:   0 8px 24px rgba(0,0,0,0.12);
+}
+
+/* ── Reset & Base ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-family: var(--p-font-body);
+  font-size: 16px;
+  line-height: var(--p-leading-normal);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background: var(--p-bg);
+  color: var(--p-text);
+  min-height: 100vh;
+}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--p-gray-2); border-radius: var(--p-radius-full); }
+::-webkit-scrollbar-thumb:hover { background: var(--p-gray-3); }
+
+/* ── Focus ── */
+:focus-visible {
+  outline: 2px solid var(--p-vps);
+  outline-offset: 2px;
+}
+
+/* ── Animations ── */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation: fadeIn var(--p-duration-normal) var(--p-ease) both;
+}
+
+.stagger-1 { animation-delay: 100ms; }
+.stagger-2 { animation-delay: 200ms; }
+.stagger-3 { animation-delay: 300ms; }
+.stagger-4 { animation-delay: 400ms; }
+.stagger-5 { animation-delay: 500ms; }
