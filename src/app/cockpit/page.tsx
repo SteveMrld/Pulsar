@@ -3,8 +3,15 @@ import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import dynamic from 'next/dynamic'
+import Silhouette from '@/components/Silhouette'
 
-// ── Level chip color ──
+const RadarChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
+const Radar = dynamic(() => import('recharts').then(m => m.Radar), { ssr: false })
+const PolarGrid = dynamic(() => import('recharts').then(m => m.PolarGrid), { ssr: false })
+const PolarAngleAxis = dynamic(() => import('recharts').then(m => m.PolarAngleAxis), { ssr: false })
+const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
+
 function levelColor(level: string): string {
   const l = level.toUpperCase()
   if (l.includes('CRITIQUE') || l.includes('URGENTE')) return 'var(--p-critical)'
@@ -13,136 +20,67 @@ function levelColor(level: string): string {
   return 'var(--p-success)'
 }
 
-// ── Sparkline mini SVG ──
+// ── Animated Circular Gauge ──
+function CircularGauge({ score, color, size = 80, label }: { score: number; color: string; size?: number; label: string }) {
+  const r = (size - 8) / 2, c = 2 * Math.PI * r
+  const offset = c - (score / 100) * c
+  return (
+    <div style={{ position: 'relative', width: size, height: size }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--p-dark-4)" strokeWidth="4" />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="4"
+          strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round"
+          className="gauge-ring" style={{ '--gauge-circumference': c, '--gauge-target': offset } as React.CSSProperties} />
+      </svg>
+      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <span className="animate-number" style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: `${size * 0.28}px`, color, lineHeight: 1 }}>{score}</span>
+        <span style={{ fontSize: '8px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>{label}</span>
+      </div>
+    </div>
+  )
+}
+
+// ── Mini Sparkline ──
 function Sparkline({ data, color, w = 80, h = 28 }: { data: number[]; color: string; w?: number; h?: number }) {
   if (data.length < 2) return null
   const mn = Math.min(...data), mx = Math.max(...data), rng = mx - mn || 1
   const pts = data.map((v, i) => `${(i / (data.length - 1)) * w},${h - ((v - mn) / rng) * (h - 4) - 2}`).join(' ')
-  return (
-    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`}>
-      <polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
-      <circle cx={(data.length - 1) / (data.length - 1) * w} cy={h - ((data[data.length - 1] - mn) / rng) * (h - 4) - 2} r="3" fill={color} />
-    </svg>
-  )
+  return <svg width={w} height={h}><polyline points={pts} fill="none" stroke={color} strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" /><circle cx={w} cy={h - ((data[data.length - 1] - mn) / rng) * (h - 4) - 2} r="3" fill={color} /></svg>
 }
 
-// ── Score Card (engine) ──
-function EngineCard({ name, fullName, score, level, color, sparkData, alerts }: {
-  name: string; fullName: string; score: number; level: string; color: string; sparkData: number[]; alerts: number
-}) {
-  const lc = levelColor(level)
-  return (
-    <div style={{
-      background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)',
-      padding: 'var(--p-space-5)', position: 'relative', overflow: 'hidden',
-    }}>
-      {/* Glow accent */}
-      <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: color }} />
-
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-        <div>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 700, color, letterSpacing: '1px' }}>{name}</div>
-          <div style={{ fontSize: '11px', color: 'var(--p-text-dim)', marginTop: '1px' }}>{fullName}</div>
-        </div>
-        {alerts > 0 && (
-          <span style={{
-            width: '20px', height: '20px', borderRadius: '50%',
-            background: 'var(--p-critical)', color: '#fff',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '10px', fontWeight: 700,
-          }}>{alerts}</span>
-        )}
-      </div>
-
-      <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', gap: '8px' }}>
-        <div>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: 'var(--p-text-3xl)', fontWeight: 800, color: 'var(--p-text)', lineHeight: 1 }}>{score}</div>
-          <div style={{ fontSize: '11px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>/100</div>
-        </div>
-        <Sparkline data={sparkData} color={color} />
-      </div>
-
-      <div style={{
-        marginTop: '10px', display: 'inline-block',
-        padding: '3px 12px', borderRadius: 'var(--p-radius-full)',
-        background: `${lc}15`, border: `1px solid ${lc}30`,
-        fontSize: '10px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: lc,
-      }}>{level}</div>
-    </div>
-  )
-}
-
-// ── Vital Param Card ──
-function VitalCard({ label, value, unit, icon, isNormal, normalRange }: {
-  label: string; value: number | string; unit: string; icon: string; isNormal: boolean; normalRange: string
-}) {
-  const sc = isNormal ? 'var(--p-success)' : 'var(--p-critical)'
-  return (
-    <div style={{
-      background: 'var(--p-bg-card)', border: `1px solid ${isNormal ? 'var(--p-border-color)' : 'var(--p-critical)'}`,
-      borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-4)',
-      borderLeft: `3px solid ${sc}`,
-    }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
-        <span style={{ fontSize: '1.3rem' }}>{icon}</span>
-        <span style={{
-          padding: '2px 8px', borderRadius: 'var(--p-radius-full)',
-          background: isNormal ? 'var(--p-success-bg)' : 'var(--p-critical-bg)',
-          fontSize: '9px', fontFamily: 'var(--p-font-mono)', fontWeight: 700,
-          color: sc,
-        }}>{isNormal ? 'NORMAL' : 'ANORMAL'}</span>
-      </div>
-      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>
-        {value}<span style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-dim)', marginLeft: '4px' }}>{unit}</span>
-      </div>
-      <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', marginTop: '2px' }}>{label}</div>
-      <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', marginTop: '2px' }}>N: {normalRange}</div>
-    </div>
-  )
-}
-
-// ── Main ──
 export default function CockpitPage() {
   const [mounted, setMounted] = useState(false)
   const [scenario, setScenario] = useState('FIRES')
   useEffect(() => setMounted(true), [])
 
-  const ps = useMemo(() => {
-    const p = new PatientState(DEMO_PATIENTS[scenario].data)
-    runPipeline(p)
-    return p
-  }, [scenario])
-
+  const ps = useMemo(() => { const p = new PatientState(DEMO_PATIENTS[scenario].data); runPipeline(p); return p }, [scenario])
   const nr = ps.getNormalRanges()
-  const age = ps.getAgeGroup()
 
-  // Vital params
-  const vitals = [
-    { label: 'Fréquence cardiaque', value: ps.hemodynamics.heartRate, unit: 'bpm', icon: '❤️', isNormal: ps.hemodynamics.heartRate >= nr.hrLow && ps.hemodynamics.heartRate <= nr.hrHigh, normalRange: `${nr.hrLow}-${nr.hrHigh}` },
-    { label: 'Pression artérielle', value: `${ps.hemodynamics.sbp}/${ps.hemodynamics.dbp}`, unit: 'mmHg', icon: '🩸', isNormal: ps.hemodynamics.sbp >= nr.sbpLow && ps.hemodynamics.sbp <= nr.sbpHigh, normalRange: `${nr.sbpLow}-${nr.sbpHigh}` },
-    { label: 'SpO₂', value: ps.hemodynamics.spo2, unit: '%', icon: '💨', isNormal: ps.hemodynamics.spo2 >= 95, normalRange: '95-100' },
-    { label: 'Température', value: ps.hemodynamics.temp, unit: '°C', icon: '🌡️', isNormal: ps.hemodynamics.temp >= 36.5 && ps.hemodynamics.temp <= 37.5, normalRange: '36.5-37.5' },
-    { label: 'Fréq. respiratoire', value: ps.hemodynamics.respRate, unit: '/min', icon: '🫁', isNormal: ps.hemodynamics.respRate >= 12 && ps.hemodynamics.respRate <= 25, normalRange: '12-25' },
-  ]
-
-  // Engines
   const engines = [
-    { name: 'VPS', full: 'Vital Prognosis Score', color: 'var(--p-vps)', result: ps.vpsResult },
-    { name: 'TDE', full: 'Therapeutic Decision', color: 'var(--p-tde)', result: ps.tdeResult },
-    { name: 'PVE', full: 'Pharmacovigilance', color: 'var(--p-pve)', result: ps.pveResult },
-    { name: 'EWE', full: 'Early Warning', color: 'var(--p-ewe)', result: ps.eweResult },
-    { name: 'TPE', full: 'Therapeutic Prospection', color: 'var(--p-tpe)', result: ps.tpeResult },
+    { name: 'VPS', full: 'Vital Prognosis', color: '#6C7CFF', result: ps.vpsResult },
+    { name: 'TDE', full: 'Therapeutic Decision', color: '#2FD1C8', result: ps.tdeResult },
+    { name: 'PVE', full: 'Pharmacovigilance', color: '#B96BFF', result: ps.pveResult },
+    { name: 'EWE', full: 'Early Warning', color: '#FF6B8A', result: ps.eweResult },
+    { name: 'TPE', full: 'Therapeutic Prosp.', color: '#FFB347', result: ps.tpeResult },
   ]
 
-  // Generate pseudo-sparkline data from history
-  const makeSparkData = (current: number) => {
-    const base = Math.max(0, current - 20)
-    return [base + 5, base + 12, base + 8, base + 15, current]
-  }
+  const radarData = engines.map(e => ({ engine: e.name, score: e.result?.synthesis.score ?? 0, fullMark: 100 }))
+  const makeSparkData = (current: number) => { const b = Math.max(0, current - 20); return [b + 5, b + 12, b + 8, b + 15, current] }
+
+  const vitals = [
+    { l: 'FC', v: ps.hemodynamics.heartRate, u: 'bpm', icon: '❤️', ok: ps.hemodynamics.heartRate >= nr.hrLow && ps.hemodynamics.heartRate <= nr.hrHigh, nr: `${nr.hrLow}-${nr.hrHigh}` },
+    { l: 'TA', v: `${ps.hemodynamics.sbp}/${ps.hemodynamics.dbp}`, u: 'mmHg', icon: '🩸', ok: ps.hemodynamics.sbp >= nr.sbpLow && ps.hemodynamics.sbp <= nr.sbpHigh, nr: `${nr.sbpLow}-${nr.sbpHigh}` },
+    { l: 'SpO₂', v: ps.hemodynamics.spo2, u: '%', icon: '💨', ok: ps.hemodynamics.spo2 >= 95, nr: '95-100' },
+    { l: 'T°', v: ps.hemodynamics.temp, u: '°C', icon: '🌡️', ok: ps.hemodynamics.temp >= 36.5 && ps.hemodynamics.temp <= 37.5, nr: '36.5-37.5' },
+    { l: 'FR', v: ps.hemodynamics.respRate, u: '/min', icon: '🫁', ok: ps.hemodynamics.respRate >= 12 && ps.hemodynamics.respRate <= 25, nr: '12-25' },
+  ]
 
   const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
+  const critAlerts = ps.alerts.filter(a => a.severity === 'critical')
 
-  const activeAlerts = ps.alerts.filter(a => a.severity === 'critical')
+  // VPS field intensities for silhouette
+  const vpsFields = ps.vpsResult?.intention?.fields ?? []
+  const getFieldIntensity = (name: string) => vpsFields.find(f => f.name.toLowerCase().includes(name))?.intensity ?? 0
 
   return (
     <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
@@ -151,192 +89,151 @@ export default function CockpitPage() {
         <span style={{ fontSize: '2rem' }}>📊</span>
         <div>
           <h1 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Cockpit Vital</h1>
-          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Phase 4 — Monitoring continu</span>
+          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Phase 4 — Monitoring continu · 5 moteurs × 4 couches</span>
         </div>
       </div>
 
-      {/* Scenario Tabs */}
+      {/* Scenario */}
       <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-5) 0', flexWrap: 'wrap' }}>
         {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
-          <button key={k} onClick={() => setScenario(k)} style={{
-            padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
-            border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)',
-            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-card)',
-            color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)',
-            fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
-          }}>{v.label}</button>
+          <button key={k} onClick={() => setScenario(k)} className="hover-lift" style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)', background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-card)', color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
         ))}
       </div>
 
-      {/* Patient Context Bar */}
-      <div className={mounted ? 'animate-in' : ''} style={{
-        ...card, marginBottom: 'var(--p-space-5)',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px',
-      }}>
+      {/* Critical Alert Banner */}
+      {critAlerts.length > 0 && (
+        <div className="animate-toast animate-glow-crit" style={{ ...card, marginBottom: 'var(--p-space-4)', background: 'var(--p-critical-bg)', borderColor: 'var(--p-critical)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <span style={{ padding: '3px 14px', borderRadius: 'var(--p-radius-full)', background: 'var(--p-critical)', color: '#fff', fontFamily: 'var(--p-font-mono)', fontWeight: 700, fontSize: '11px' }}>{critAlerts.length} ALERTE{critAlerts.length > 1 ? 'S' : ''}</span>
+            <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--p-critical)' }}>{critAlerts[0]?.title}</span>
+          </div>
+          <span style={{ fontSize: '11px', color: 'var(--p-text-dim)' }}>{critAlerts[0]?.source}</span>
+        </div>
+      )}
+
+      {/* Patient Context */}
+      <div className={mounted ? 'animate-in' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', gap: 'var(--p-space-6)', flexWrap: 'wrap' }}>
           {[
-            { l: 'Âge', v: `${ps.getAgeYears()} ans` },
-            { l: 'Poids', v: `${ps.weightKg} kg` },
-            { l: 'Groupe', v: age },
-            { l: 'Jour hospit.', v: `J${ps.hospDay}` },
-            { l: 'GCS', v: `${ps.neuro.gcs}/15` },
-            { l: 'Médicaments', v: `${ps.drugs.length}` },
+            { l: 'Âge', v: `${ps.getAgeYears()} ans` }, { l: 'Poids', v: `${ps.weightKg} kg` },
+            { l: 'Jour', v: `J${ps.hospDay}` }, { l: 'GCS', v: `${ps.neuro.gcs}/15` },
+            { l: 'Crises', v: `${ps.neuro.seizures24h}/24h` }, { l: 'Drugs', v: `${ps.drugs.length}` },
           ].map((x, i) => (
             <div key={i}>
-              <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', letterSpacing: '0.5px' }}>{x.l}</div>
-              <div style={{ fontWeight: 700, fontSize: 'var(--p-text-sm)', color: 'var(--p-text)' }}>{x.v}</div>
+              <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>{x.l}</div>
+              <div style={{ fontWeight: 700, fontSize: 'var(--p-text-sm)' }}>{x.v}</div>
             </div>
           ))}
         </div>
-        {activeAlerts.length > 0 && (
-          <div style={{
-            padding: '4px 14px', borderRadius: 'var(--p-radius-full)',
-            background: 'var(--p-critical)', color: '#fff',
-            fontSize: '11px', fontFamily: 'var(--p-font-mono)', fontWeight: 700,
-            animation: 'pulse-glow 2s ease-in-out infinite',
-          }}>
-            {activeAlerts.length} ALERTE{activeAlerts.length > 1 ? 'S' : ''} CRITIQUE{activeAlerts.length > 1 ? 'S' : ''}
-          </div>
-        )}
       </div>
 
-      {/* Critical Alerts Banner */}
-      {activeAlerts.length > 0 && (
-        <div className={mounted ? 'animate-in stagger-1' : ''} style={{ marginBottom: 'var(--p-space-5)' }}>
-          {activeAlerts.slice(0, 3).map((a, i) => (
-            <div key={i} style={{
-              ...card, marginBottom: '8px',
-              borderLeft: '4px solid var(--p-critical)', background: 'var(--p-critical-bg)',
-              padding: 'var(--p-space-3) var(--p-space-5)',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-critical)' }}>{a.title}</span>
-                  <span style={{ fontSize: '11px', color: 'var(--p-text-muted)', marginLeft: '10px' }}>{a.body}</span>
-                </div>
-                <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', flexShrink: 0 }}>{a.source}</span>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+      {/* Main Grid: Silhouette + Radar + Engines */}
+      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 'var(--p-space-5)', marginBottom: 'var(--p-space-5)' }}>
 
-      {/* 5 Engine Score Cards */}
-      <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>5 MOTEURS IA</div>
-      <div className={mounted ? 'animate-in stagger-2' : ''} style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(190px, 1fr))', gap: 'var(--p-space-4)',
-        marginBottom: 'var(--p-space-6)',
-      }}>
-        {engines.map(e => (
-          <EngineCard key={e.name}
-            name={e.name} fullName={e.full} color={e.color}
-            score={e.result?.synthesis.score ?? 0}
-            level={e.result?.synthesis.level ?? 'N/A'}
-            sparkData={makeSparkData(e.result?.synthesis.score ?? 0)}
-            alerts={e.result?.synthesis.alerts.filter(a => a.severity === 'critical').length ?? 0}
+        {/* Left: Silhouette */}
+        <div className={mounted ? 'animate-in stagger-1' : ''} style={{ ...card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <Silhouette
+            vpsScore={ps.vpsResult?.synthesis.score ?? 0}
+            neuroIntensity={getFieldIntensity('neuro') || getFieldIntensity('défaillance n')}
+            cardioIntensity={getFieldIntensity('hémo') || getFieldIntensity('défaillance h')}
+            respIntensity={Math.min(100, (ps.hemodynamics.respRate > 25 ? 60 : 20) + (ps.hemodynamics.spo2 < 95 ? 40 : 0))}
+            digestIntensity={getFieldIntensity('inflamm') || getFieldIntensity('orage')}
+            renalIntensity={Math.min(100, ps.biology.crp > 100 ? 50 : 20)}
+            compact
           />
-        ))}
-      </div>
-
-      {/* 5 Vital Parameters */}
-      <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>5 PARAMÈTRES VITAUX</div>
-      <div className={mounted ? 'animate-in stagger-3' : ''} style={{
-        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 'var(--p-space-4)',
-        marginBottom: 'var(--p-space-6)',
-      }}>
-        {vitals.map((v, i) => (
-          <VitalCard key={i} {...v} />
-        ))}
-      </div>
-
-      {/* Engine Details Panels */}
-      <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>DÉTAILS MOTEURS</div>
-      <div className={mounted ? 'animate-in stagger-4' : ''} style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-6)' }}>
-        {/* Semantic Fields (VPS) */}
-        <div style={card}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--p-vps)', marginBottom: '12px' }}>VPS — Champs sémantiques</div>
-          {ps.vpsResult?.intention.fields.map((f, i) => (
-            <div key={i} style={{ marginBottom: '10px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--p-text)' }}>{f.name}</span>
-                <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 700, color: f.color }}>{f.intensity}%</span>
-              </div>
-              <div style={{ height: '6px', borderRadius: '3px', background: 'var(--p-dark-4)' }}>
-                <div style={{
-                  height: '100%', borderRadius: '3px', background: f.color,
-                  width: `${f.intensity}%`, transition: 'width 0.8s var(--p-ease)',
-                }} />
-              </div>
-              <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{f.interpretation}</div>
-            </div>
-          ))}
         </div>
 
-        {/* Context & Rules */}
-        <div style={card}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 700, color: 'var(--p-tde)', marginBottom: '12px' }}>CONTEXTE & RÈGLES</div>
-          {/* Context */}
-          <div style={{ marginBottom: '16px' }}>
-            <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', marginBottom: '8px' }}>CONTEXTE VPS (×{ps.vpsResult?.context.contextModifier.toFixed(2)})</div>
-            {ps.vpsResult?.context.details.map((d, i) => (
-              <div key={i} style={{
-                display: 'flex', alignItems: 'center', gap: '8px',
-                padding: '6px 10px', marginBottom: '4px',
-                borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)',
-              }}>
-                <span style={{ fontSize: '14px' }}>{d.icon}</span>
-                <span style={{ fontSize: '12px', fontWeight: 600 }}>{d.label}</span>
-                <span style={{ fontSize: '11px', color: 'var(--p-text-dim)', marginLeft: 'auto', fontFamily: 'var(--p-font-mono)' }}>{d.detail}</span>
-              </div>
-            ))}
+        {/* Right: Radar + Engine Cards */}
+        <div>
+          {/* Radar Chart */}
+          <div className={mounted ? 'animate-in stagger-2' : ''} style={{ ...card, marginBottom: 'var(--p-space-4)', height: '220px' }}>
+            <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '4px' }}>RADAR 5 MOTEURS</div>
+            {mounted && (
+              <ResponsiveContainer width="100%" height={180}>
+                <RadarChart data={radarData} margin={{ top: 5, right: 30, bottom: 5, left: 30 }}>
+                  <PolarGrid stroke="var(--p-dark-4)" />
+                  <PolarAngleAxis dataKey="engine" tick={{ fill: 'var(--p-text-dim)', fontSize: 11, fontFamily: 'JetBrains Mono' }} />
+                  <Radar name="Score" dataKey="score" stroke="#6C7CFF" fill="#6C7CFF" fillOpacity={0.2} strokeWidth={2} />
+                </RadarChart>
+              </ResponsiveContainer>
+            )}
           </div>
-          {/* Rules fired */}
-          <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', marginBottom: '8px' }}>RÈGLES MÉTIER ACTIVÉES</div>
-          {[...(ps.vpsResult?.rules || []), ...(ps.tdeResult?.rules || [])].filter(r => r.message).slice(0, 6).map((r, i) => (
-            <div key={i} style={{
-              padding: '6px 10px', marginBottom: '4px',
-              borderRadius: 'var(--p-radius-md)',
-              borderLeft: `3px solid ${r.type === 'guard' ? 'var(--p-critical)' : r.type === 'correction' ? 'var(--p-warning)' : 'var(--p-success)'}`,
-              background: 'var(--p-bg-elevated)',
-            }}>
-              <div style={{ fontSize: '11px', fontWeight: 600, color: 'var(--p-text)' }}>{r.name}</div>
-              <div style={{ fontSize: '10px', color: 'var(--p-text-muted)' }}>{r.message}</div>
-              <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', marginTop: '1px' }}>{r.reference}</div>
+
+          {/* Engine Score Cards */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
+            {engines.map((e, i) => {
+              const score = e.result?.synthesis.score ?? 0
+              const level = e.result?.synthesis.level ?? '—'
+              const alerts = e.result?.synthesis.alerts?.length ?? 0
+              return (
+                <div key={e.name} className={`${mounted ? 'animate-in' : ''} hover-lift`} style={{ ...card, padding: '12px', position: 'relative', animationDelay: `${(i + 3) * 80}ms`, cursor: 'default' }}>
+                  <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: e.color, borderRadius: '12px 12px 0 0' }} />
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
+                    <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: e.color, letterSpacing: '1px' }}>{e.name}</span>
+                    {alerts > 0 && <span style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'var(--p-critical)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '9px', fontWeight: 700 }}>{alerts}</span>}
+                  </div>
+                  <CircularGauge score={score} color={e.color} size={60} label={e.name} />
+                  <div style={{ marginTop: '6px', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', background: `${levelColor(level)}15`, fontSize: '8px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: levelColor(level), display: 'inline-block', maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{level}</div>
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+
+      {/* Vitals */}
+      <div className={mounted ? 'animate-in stagger-4' : ''} style={{ marginBottom: 'var(--p-space-5)' }}>
+        <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>PARAMÈTRES VITAUX</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
+          {vitals.map((v, i) => (
+            <div key={i} className="hover-lift" style={{ ...card, padding: '12px', borderLeft: `3px solid ${v.ok ? 'var(--p-success)' : 'var(--p-critical)'}` }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                <span style={{ fontSize: '14px' }}>{v.icon}</span>
+                <span style={{ padding: '1px 6px', borderRadius: 'var(--p-radius-full)', background: v.ok ? 'var(--p-success-bg)' : 'var(--p-critical-bg)', fontSize: '8px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: v.ok ? 'var(--p-success)' : 'var(--p-critical)' }}>{v.ok ? 'OK' : '!'}</span>
+              </div>
+              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: 'var(--p-text-xl)', fontWeight: 800 }}>{v.v}<span style={{ fontSize: '10px', color: 'var(--p-text-dim)', marginLeft: '2px' }}>{v.u}</span></div>
+              <div style={{ fontSize: '10px', color: 'var(--p-text-dim)' }}>{v.l}</div>
+              <div style={{ fontSize: '9px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>N: {v.nr}</div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Patterns Summary */}
-      {ps.vpsResult && ps.vpsResult.intention.patterns.length > 0 && (
+      {/* VPS Semantic Fields */}
+      {ps.vpsResult && (
         <div className={mounted ? 'animate-in stagger-5' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
-          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>PATTERNS DÉTECTÉS</div>
-          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-            {[...(ps.vpsResult?.intention.patterns || []), ...(ps.tdeResult?.intention.patterns || [])].map((p, i) => (
-              <div key={i} style={{
-                padding: '8px 16px', borderRadius: 'var(--p-radius-lg)',
-                background: p.confidence >= 0.8 ? 'var(--p-critical-bg)' : 'var(--p-warning-bg)',
-                border: `1px solid ${p.confidence >= 0.8 ? 'var(--p-critical)' : 'var(--p-warning)'}30`,
-              }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <span style={{
-                    fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700,
-                    padding: '1px 8px', borderRadius: 'var(--p-radius-full)',
-                    background: p.confidence >= 0.8 ? 'var(--p-critical)' : 'var(--p-warning)',
-                    color: '#fff',
-                  }}>{Math.round(p.confidence * 100)}%</span>
-                  <span style={{ fontSize: '12px', fontWeight: 600 }}>{p.name}</span>
+          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>CHAMPS SÉMANTIQUES VPS</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+            {vpsFields.map((f, i) => (
+              <div key={i} style={{ padding: '10px 12px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)', borderLeft: `3px solid ${f.color}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 600 }}>{f.name}</span>
+                  <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 700, fontSize: '12px', color: f.color }}>{f.intensity}%</span>
                 </div>
-                <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', marginTop: '4px' }}>{p.implications}</div>
+                <div style={{ height: '4px', borderRadius: '2px', background: 'var(--p-dark-4)', overflow: 'hidden' }}>
+                  <div className="progress-fill" style={{ height: '100%', borderRadius: '2px', background: f.color, '--target-width': `${f.intensity}%` } as React.CSSProperties} />
+                </div>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      <div style={{ textAlign: 'center', padding: 'var(--p-space-4)', color: 'var(--p-text-dim)', fontSize: '10px', fontFamily: 'var(--p-font-mono)' }}>
-        PULSAR V15 — Outil d'aide à la décision · Ne se substitue pas au jugement clinique
-      </div>
+      {/* Active Alerts */}
+      {ps.alerts.length > 0 && (
+        <div className={mounted ? 'animate-in stagger-6' : ''} style={{ ...card }}>
+          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>ALERTES ({ps.alerts.length})</div>
+          {ps.alerts.slice(0, 8).map((a, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px', marginBottom: '4px', borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${a.severity === 'critical' ? 'var(--p-critical)' : 'var(--p-warning)'}`, background: 'var(--p-bg-elevated)' }}>
+              <span style={{ padding: '1px 6px', borderRadius: 'var(--p-radius-full)', background: a.severity === 'critical' ? 'var(--p-critical)' : 'var(--p-warning)', color: '#fff', fontSize: '8px', fontFamily: 'var(--p-font-mono)', fontWeight: 700 }}>{a.severity === 'critical' ? 'CRIT' : 'WARN'}</span>
+              <span style={{ fontWeight: 600, fontSize: '11px', flex: 1 }}>{a.title}</span>
+              <span style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>{a.source}</span>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={{ textAlign: 'center', padding: 'var(--p-space-6)', color: 'var(--p-text-dim)', fontSize: '10px', fontFamily: 'var(--p-font-mono)' }}>PULSAR V15 — Cockpit Vital · 5 moteurs × 4 couches · Ne se substitue pas au jugement clinique</div>
     </div>
   )
 }

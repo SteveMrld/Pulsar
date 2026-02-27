@@ -41,6 +41,8 @@ const NAV_SECTIONS = [
       { href: '/engines/vps', icon: '💜', label: 'VPS Engine', badge: '' },
       { href: '/engines/tde', icon: '💚', label: 'TDE Engine', badge: '' },
       { href: '/engines/pve', icon: '💟', label: 'PVE Engine', badge: '' },
+      { href: '/engines/ewe', icon: '🔴', label: 'EWE Engine', badge: '' },
+      { href: '/engines/tpe', icon: '🟠', label: 'TPE Engine', badge: '' },
       { href: '/timeline', icon: '📅', label: 'Timeline', badge: '' },
       { href: '/suivi', icon: '📈', label: 'Suivi J+2/5/7', badge: '' },
     ]

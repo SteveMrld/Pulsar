@@ -3,6 +3,13 @@ import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import dynamic from 'next/dynamic'
+
+const RChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
+const RRadar = dynamic(() => import('recharts').then(m => m.Radar), { ssr: false })
+const RPolarGrid = dynamic(() => import('recharts').then(m => m.PolarGrid), { ssr: false })
+const RPolarAngleAxis = dynamic(() => import('recharts').then(m => m.PolarAngleAxis), { ssr: false })
+const RResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
 
 // ── FIRES Criteria (0-13) ──
 const FIRES_CRITERIA = [
@@ -60,7 +67,8 @@ function Gauge({ value, max, label, color, size = 130 }: { value: number; max: n
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={lc} strokeWidth="7" strokeLinecap="round"
           strokeDasharray={circ} strokeDashoffset={off}
           transform={`rotate(-90 ${size / 2} ${size / 2})`}
-          style={{ transition: 'stroke-dashoffset 1s var(--p-ease)' }} />
+          className="gauge-ring"
+          style={{ '--gauge-circumference': circ, '--gauge-target': off } as React.CSSProperties} />
         <text x={size / 2} y={size / 2 - 6} textAnchor="middle" fill="var(--p-text)" fontSize="22" fontWeight="800" fontFamily="var(--p-font-mono)">{value}</text>
         <text x={size / 2} y={size / 2 + 12} textAnchor="middle" fill="var(--p-text-dim)" fontSize="11" fontFamily="var(--p-font-mono)">/ {max}</text>
       </svg>
@@ -71,29 +79,18 @@ function Gauge({ value, max, label, color, size = 130 }: { value: number; max: n
 }
 
 // ── RadarChart ──
-function Radar({ data, labels, colors }: { data: number[]; labels: string[]; colors: string[] }) {
-  const s = 220, cx = s / 2, cy = s / 2, R = 80, n = data.length
-  const pt = (i: number, v: number) => {
-    const a = (2 * Math.PI * i) / n - Math.PI / 2
-    return { x: cx + R * (v / 100) * Math.cos(a), y: cy + R * (v / 100) * Math.sin(a) }
-  }
+function DiagRadar({ data, labels, colors }: { data: number[]; labels: string[]; colors: string[] }) {
+  const chartData = labels.map((l, i) => ({ axis: l, value: data[i], fullMark: 100 }))
   return (
-    <svg width={s} height={s} viewBox={`0 0 ${s} ${s}`}>
-      {[25, 50, 75, 100].map(lv => (
-        <polygon key={lv} points={Array.from({ length: n }, (_, i) => pt(i, lv)).map(p => `${p.x},${p.y}`).join(' ')}
-          fill="none" stroke="var(--p-dark-4)" strokeWidth="1" />
-      ))}
-      {Array.from({ length: n }, (_, i) => (
-        <line key={i} x1={cx} y1={cy} x2={pt(i, 100).x} y2={pt(i, 100).y} stroke="var(--p-dark-4)" strokeWidth="1" />
-      ))}
-      <polygon points={data.map((v, i) => { const p = pt(i, v); return `${p.x},${p.y}` }).join(' ')}
-        fill="rgba(108,124,255,0.12)" stroke="var(--p-vps)" strokeWidth="2" />
-      {data.map((v, i) => <circle key={i} cx={pt(i, v).x} cy={pt(i, v).y} r="4" fill={colors[i]} />)}
-      {labels.map((lb, i) => (
-        <text key={i} x={pt(i, 118).x} y={pt(i, 118).y} textAnchor="middle" dominantBaseline="central"
-          fontSize="10" fontWeight="600" fill={colors[i]}>{lb}</text>
-      ))}
-    </svg>
+    <div style={{ width: 250, height: 220 }}>
+      <RResponsiveContainer width="100%" height="100%">
+        <RChart data={chartData} margin={{ top: 5, right: 30, bottom: 5, left: 30 }}>
+          <RPolarGrid stroke="var(--p-dark-4)" />
+          <RPolarAngleAxis dataKey="axis" tick={{ fill: 'var(--p-text-dim)', fontSize: 10, fontFamily: 'JetBrains Mono' }} />
+          <RRadar name="Score" dataKey="value" stroke="#6C7CFF" fill="#6C7CFF" fillOpacity={0.15} strokeWidth={2} />
+        </RChart>
+      </RResponsiveContainer>
+    </div>
   )
 }
 
@@ -231,7 +228,7 @@ export default function DiagnosticPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)' }}>
         <div className={mounted ? 'animate-in stagger-1' : ''} style={{ ...card, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>RADAR DIAGNOSTIQUE</div>
-          <Radar data={radarD} labels={['FIRES', 'EAIS', 'PIMS', 'VPS', 'TDE']}
+          <DiagRadar data={radarD} labels={['FIRES', 'EAIS', 'PIMS', 'VPS', 'TDE']}
             colors={['var(--p-critical)', 'var(--p-tde)', 'var(--p-warning)', 'var(--p-vps)', 'var(--p-tde)']} />
         </div>
         <div className={mounted ? 'animate-in stagger-2' : ''} style={card}>
