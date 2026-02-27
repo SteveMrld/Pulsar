@@ -1,39 +1,52 @@
 'use client'
+import Picto from '@/components/Picto'
 
 const experts = [
-  { name: 'Dr Elaine C. Wirrell', specialty: 'Épileptologue pédiatrique', affiliation: 'Mayo Clinic, Rochester', color: 'var(--p-vps)', reco: 'Protocole d\'escalade antiépileptique en 3 lignes avec monitoring EEG continu.' },
-  { name: 'Pr Andreas van Baalen', specialty: 'Neuro-immunologie pédiatrique', affiliation: 'Université de Kiel, Allemagne', color: 'var(--p-tde)', reco: 'Immunothérapie précoce dans les 48h pour les encéphalites auto-immunes suspectées.' },
-  { name: 'Pr Sookyong Koh', specialty: 'FIRES / Épilepsie réfractaire', affiliation: 'Emory University, Atlanta', color: 'var(--p-pve)', reco: 'Régime cétogène ratio 3:1 à initier dès J3-J5 en cas de FIRES suspecté.' },
-  { name: 'Dr Kevin J. Staley', specialty: 'Neurophysiologie', affiliation: 'Harvard / MGH, Boston', color: 'var(--p-ewe)', reco: 'EEG continu ≥24h avec classification des patterns pour adapter la sédation.' },
-  { name: 'Rosemarie', specialty: 'Recherche épilepsie', affiliation: 'Epilepsy Research Institute', color: 'var(--p-tpe)', reco: 'Approche translationnelle : biomarqueurs cytokinaires pour le suivi thérapeutique.' },
+  { name: 'Dr Elaine Wirrell', affiliation: 'Mayo Clinic, Rochester (USA)', specialty: 'Épilepsie pédiatrique, FIRES', contribution: 'Classification FIRES, protocoles antiépileptiques 1ère ligne, critères d\'état de mal réfractaire', engines: ['VPS', 'TDE'], color: 'var(--p-vps)', icon: 'brain' },
+  { name: 'Pr Andreas van Baalen', affiliation: 'Universitätsklinikum Schleswig-Holstein, Kiel (DE)', specialty: 'Neuro-inflammation pédiatrique', contribution: 'Cohorte européenne FIRES, protocoles immunothérapie, scoring pronostique', engines: ['TDE', 'PVE'], color: 'var(--p-tde)', icon: 'dna' },
+  { name: 'Pr Soojin Koh', affiliation: 'Emory University / Children\'s Healthcare of Atlanta (USA)', specialty: 'Neuro-immunologie pédiatrique', contribution: 'Biomarqueurs inflammatoires, profils cytokiniques, régime cétogène dans FIRES', engines: ['VPS', 'PVE'], color: 'var(--p-pve)', icon: 'virus' },
+  { name: 'Dr Kevin Staley', affiliation: 'Harvard Medical School / MGH (USA)', specialty: 'Neurophysiologie, EEG', contribution: 'Patterns EEG en neuro-inflammation, extreme delta brush, critères classification', engines: ['EWE'], color: 'var(--p-ewe)', icon: 'eeg' },
+  { name: 'Rosemarie Kobau', affiliation: 'Epilepsy Research Institute (USA)', specialty: 'Épidémiologie, santé publique', contribution: 'Données épidémiologiques FIRES/NORSE, registres nationaux, suivi à long terme', engines: ['VPS', 'TDE'], color: 'var(--p-tpe)', icon: 'chart' },
 ]
+
+const ENGINE_COLORS: Record<string, string> = { VPS: 'var(--p-vps)', TDE: 'var(--p-tde)', PVE: 'var(--p-pve)', EWE: 'var(--p-ewe)', TPE: 'var(--p-tpe)' }
 
 export default function ExpertsPage() {
   return (
-    <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-2)' }}>
-        <div style={{ width: '8px', height: '32px', borderRadius: '4px', background: 'var(--p-pve)' }} />
-        <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)' }}>Consensus Expert</h1>
-        <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', background: 'var(--p-bg-elevated)', color: 'var(--p-text-dim)' }}>5 experts</span>
-      </div>
-      <p style={{ color: 'var(--p-text-dim)', fontSize: 'var(--p-text-sm)', marginBottom: 'var(--p-space-6)' }}>Panel international d&apos;experts référencés dans les règles métier PULSAR</p>
-
-      {experts.map((e, i) => (
-        <div key={i} className="animate-in" style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)', borderLeft: `3px solid ${e.color}`, animationDelay: `${i * 100}ms` }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-            <div>
-              <div style={{ fontSize: 'var(--p-text-base)', fontWeight: 700, color: 'var(--p-text)' }}>{e.name}</div>
-              <div style={{ fontSize: 'var(--p-text-xs)', color: e.color, fontWeight: 600, marginTop: '2px' }}>{e.specialty}</div>
-              <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', marginTop: '2px' }}>{e.affiliation}</div>
-            </div>
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: `${e.color}15`, border: `2px solid ${e.color}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px' }}>🎓</div>
-          </div>
-          <div style={{ marginTop: 'var(--p-space-3)', padding: 'var(--p-space-3)', background: 'var(--p-bg-elevated)', borderRadius: 'var(--p-radius-md)' }}>
-            <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '4px' }}>RECOMMANDATION</div>
-            <div style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 1.6 }}>{e.reco}</div>
-          </div>
+    <div className="page-enter" style={{ maxWidth: '900px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-2)' }}>
+        <Picto name="books" size={36} glow glowColor="rgba(108,124,255,0.5)" />
+        <div>
+          <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)' }}>Consensus Expert</h1>
+          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-vps)', fontFamily: 'var(--p-font-mono)' }}>Panel de {experts.length} experts internationaux</span>
         </div>
-      ))}
+      </div>
+      <p style={{ color: 'var(--p-text-dim)', fontSize: 'var(--p-text-sm)', marginBottom: 'var(--p-space-6)' }}>
+        Les règles métier PULSAR sont calibrées sur les recommandations de ces experts. Chaque moteur référence ses sources.
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--p-space-4)' }}>
+        {experts.map((ex, i) => (
+          <div key={i} className="card-interactive glass-card" style={{ padding: 'var(--p-space-5)', borderLeft: `3px solid ${ex.color}` }}>
+            <div style={{ display: 'flex', gap: 'var(--p-space-4)' }}>
+              <div style={{ width: '56px', height: '56px', borderRadius: '50%', background: `${ex.color}15`, border: `2px solid ${ex.color}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <Picto name={ex.icon} size={28} glow glowColor={ex.color} />
+              </div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 'var(--p-text-base)', fontWeight: 800, color: 'var(--p-text)', marginBottom: '2px' }}>{ex.name}</div>
+                <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)', marginBottom: '2px' }}>{ex.affiliation}</div>
+                <div style={{ fontSize: '11px', fontWeight: 600, color: ex.color, marginBottom: 'var(--p-space-3)' }}>{ex.specialty}</div>
+                <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: 'var(--p-space-3)' }}>{ex.contribution}</div>
+                <div style={{ display: 'flex', gap: '6px' }}>
+                  {ex.engines.map(eng => (
+                    <span key={eng} style={{ fontSize: '9px', padding: '2px 10px', borderRadius: 'var(--p-radius-full)', background: `${ENGINE_COLORS[eng]}15`, color: ENGINE_COLORS[eng], fontWeight: 700, fontFamily: 'var(--p-font-mono)' }}>{eng}</span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }

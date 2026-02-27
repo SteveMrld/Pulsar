@@ -8,6 +8,6 @@ export default function EWEPage() {
     fullName: 'Early Warning Engine',
     subtitle: 'Détection précoce des détériorations · Alertes prédictives — #FF6B8A',
     color: 'var(--p-ewe)',
-    icon: '🔴',
+    icon: 'thermo',
   }} />
 }

@@ -8,6 +8,6 @@ export default function PVEPage() {
     fullName: 'Pharmacovigilance Engine',
     subtitle: '3 champs · Interactions critiques · Patterns cocktail/immunosuppresseur — #B96BFF',
     color: 'var(--p-pve)',
-    icon: '💟',
+    icon: 'blood',
   }} />
 }

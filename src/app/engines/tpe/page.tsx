@@ -8,6 +8,6 @@ export default function TPEPage() {
     fullName: 'Therapeutic Prospection Engine',
     subtitle: 'Prospection thérapeutique · Recommandations à J+7/14 — #FFB347',
     color: 'var(--p-tpe)',
-    icon: '🟠',
+    icon: 'lungs',
   }} />
 }
