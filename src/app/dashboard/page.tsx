@@ -37,9 +37,21 @@ const phases = [
   {
     label: 'PHASE 5 — SYNTHÈSE',
     modules: [
+      { href: '/staff', icon: '👥', title: 'Staff / RCP', desc: 'Réunion pluridisciplinaire', color: 'var(--p-info)', status: 'actif' },
       { href: '/famille', icon: '👨‍👩‍👧', title: 'Espace Famille', desc: 'Langage accessible', color: 'var(--p-tde)', status: 'actif' },
       { href: '/synthese', icon: '📑', title: 'Synthèse', desc: 'Vue consolidée', color: 'var(--p-pve)', status: 'actif' },
       { href: '/export', icon: '📤', title: 'Export PDF', desc: 'Rapport complet', color: 'var(--p-tpe)', status: 'actif' },
+    ]
+  },
+  {
+    label: 'RESSOURCES',
+    modules: [
+      { href: '/demo', icon: '▶️', title: 'Démo Inès', desc: '13 scènes autopilotées', color: 'var(--p-ewe)', status: 'actif' },
+      { href: '/engines/vps', icon: '💜', title: 'VPS Engine', desc: '4 couches BrainCore', color: 'var(--p-vps)', status: 'actif' },
+      { href: '/engines/tde', icon: '💚', title: 'TDE Engine', desc: '4 couches BrainCore', color: 'var(--p-tde)', status: 'actif' },
+      { href: '/engines/pve', icon: '💟', title: 'PVE Engine', desc: '4 couches BrainCore', color: 'var(--p-pve)', status: 'actif' },
+      { href: '/engines/ewe', icon: '🔴', title: 'EWE Engine', desc: '4 couches BrainCore', color: 'var(--p-ewe)', status: 'actif' },
+      { href: '/engines/tpe', icon: '🟠', title: 'TPE Engine', desc: '4 couches BrainCore', color: 'var(--p-tpe)', status: 'actif' },
     ]
   },
 ]
@@ -107,17 +119,15 @@ export default function DashboardPage() {
       {phases.map((phase, pi) => (
         <div key={pi} style={{ marginBottom: 'var(--p-space-5)' }}>
           <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-3)', paddingLeft: '2px' }}>{phase.label}</div>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${phase.modules.length}, 1fr)`, gap: 'var(--p-space-3)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(auto-fill, minmax(180px, 1fr))`, gap: 'var(--p-space-3)' }}>
             {phase.modules.map((m, mi) => (
               <Link key={mi} href={m.href} style={{ textDecoration: 'none' }}>
-                <div className={mounted ? 'animate-in' : ''} style={{
+                <div className={`${mounted ? 'animate-in' : ''} hover-lift`} style={{
                   background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)',
-                  padding: 'var(--p-space-4)', cursor: 'pointer', transition: 'all 200ms',
+                  padding: 'var(--p-space-4)', cursor: 'pointer',
                   borderTop: `3px solid ${m.color}`, animationDelay: `${(pi * 3 + mi) * 60}ms`,
                   opacity: m.status === 'bientôt' ? 0.5 : 1,
-                }}
-                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--p-shadow-md)' }}
-                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}>
+                }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--p-space-3)' }}>
                     <span style={{ fontSize: '1.5rem' }}>{m.icon}</span>
                     {m.status === 'bientôt' && <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', background: 'var(--p-warning-bg)', color: 'var(--p-warning)', fontWeight: 600 }}>Bientôt</span>}

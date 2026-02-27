@@ -3,6 +3,15 @@ import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import dynamic from 'next/dynamic'
+
+const LineChart = dynamic(() => import('recharts').then(m => m.LineChart), { ssr: false })
+const Line = dynamic(() => import('recharts').then(m => m.Line), { ssr: false })
+const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
+const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
+const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
+const RespContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
 
 function simulateDay(baseKey: string, day: number): PatientState {
   const base = JSON.parse(JSON.stringify(DEMO_PATIENTS[baseKey].data))
@@ -114,6 +123,24 @@ export default function SuiviPage() {
           )
         })}
       </div>
+
+      {/* Evolution Chart (Recharts) */}
+      {mounted && (
+        <div className="animate-in stagger-2" style={{ ...card, marginBottom: 'var(--p-space-5)', height: '220px' }}>
+          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>ÉVOLUTION SCORES J0 → J+7</div>
+          <RespContainer width="100%" height={170}>
+            <LineChart data={CHECKPOINTS.map((cp, i) => ({ name: cp.label, VPS: vpsH[i], TDE: tdeH[i], PVE: pveH[i] }))} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke="var(--p-dark-4)" />
+              <XAxis dataKey="name" tick={{ fill: 'var(--p-text-dim)', fontSize: 10, fontFamily: 'JetBrains Mono' }} />
+              <YAxis domain={[0, 100]} tick={{ fill: 'var(--p-text-dim)', fontSize: 10 }} width={30} />
+              <Tooltip contentStyle={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: '8px', fontSize: '11px' }} />
+              <Line type="monotone" dataKey="VPS" stroke="#6C7CFF" strokeWidth={2} dot={{ r: 4, fill: '#6C7CFF' }} />
+              <Line type="monotone" dataKey="TDE" stroke="#2FD1C8" strokeWidth={2} dot={{ r: 4, fill: '#2FD1C8' }} />
+              <Line type="monotone" dataKey="PVE" stroke="#B96BFF" strokeWidth={2} dot={{ r: 4, fill: '#B96BFF' }} />
+            </LineChart>
+          </RespContainer>
+        </div>
+      )}
 
       {/* Clinical Parameters */}
       <div className={mounted ? 'animate-in stagger-2' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>

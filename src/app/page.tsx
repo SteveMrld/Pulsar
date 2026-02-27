@@ -19,6 +19,18 @@ const engines = [
     color: '#B96BFF',
     desc: 'Détecte les interactions critiques en temps réel. Croise traitements, pathologie et terrain pour prévenir les accidents.',
   },
+  {
+    name: 'EWE',
+    full: 'Early Warning Engine',
+    color: '#FF6B8A',
+    desc: 'Détection précoce des détériorations. Analyse les tendances vitales pour alerter avant la décompensation clinique.',
+  },
+  {
+    name: 'TPE',
+    full: 'Therapeutic Prospection Engine',
+    color: '#FFB347',
+    desc: 'Prospection à J+7/J+14. Projette l\'évolution probable et recommande les ajustements thérapeutiques anticipés.',
+  },
 ]
 
 const features = [
@@ -304,6 +316,25 @@ export default function LandingPage() {
           Commencer gratuitement
         </Link>
       </section>
+
+      {/* ── Memorial ── */}
+      <div style={{
+        textAlign: 'center',
+        padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-4)',
+      }}>
+        <p style={{
+          fontSize: 'var(--p-text-sm)',
+          color: 'var(--p-text-dim)',
+          fontStyle: 'italic',
+          maxWidth: '500px', margin: '0 auto',
+          lineHeight: 'var(--p-leading-relaxed)',
+        }}>
+          « Pour Gabriel, et pour tous les enfants que le temps n&apos;a pas attendus. »
+        </p>
+        <p style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', marginTop: 'var(--p-space-2)' }}>
+          In memory of Alejandro R. (2019–2025)
+        </p>
+      </div>
 
       {/* ── Footer ── */}
       <footer style={{
