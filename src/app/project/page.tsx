@@ -1,7 +1,5 @@
 'use client'
 import { useState, useCallback } from 'react'
-import Link from 'next/link'
-import ThemeToggle from '@/components/ThemeToggle'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 
@@ -231,19 +229,8 @@ export default function ProjectPage() {
     const vpsLevel = result.vpsResult!.synthesis.level
 
     return (
-      <div style={{minHeight:'100vh',background:'var(--p-bg)'}}>
-        <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'var(--p-space-4) var(--p-space-6)',borderBottom:'var(--p-border)',background:'var(--p-bg-card)'}}>
-          <div style={{display:'flex',alignItems:'center',gap:'var(--p-space-4)'}}>
-            <Link href="/dashboard" style={{textDecoration:'none'}}><span style={{fontWeight:800,color:'var(--p-vps)',letterSpacing:'0.1em',fontSize:'var(--p-text-lg)'}}>PULSAR</span></Link>
-            <span style={{color:'var(--p-text-dim)'}}>›</span>
-            <span style={{color:'var(--p-text-muted)',fontSize:'var(--p-text-sm)'}}>Résultats</span>
-          </div>
-          <div style={{display:'flex',gap:'var(--p-space-3)',alignItems:'center'}}>
-            <ThemeToggle />
-            <button onClick={()=>{setResult(null);setStep(0)}} style={{padding:'var(--p-space-2) var(--p-space-4)',background:'var(--p-bg-elevated)',border:'var(--p-border)',borderRadius:'var(--p-radius-md)',color:'var(--p-text-muted)',cursor:'pointer',fontSize:'var(--p-text-sm)'}}>← Nouveau CDC</button>
-          </div>
-        </header>
-        <main style={{maxWidth:'1100px',margin:'0 auto',padding:'var(--p-space-8) var(--p-space-6)'}}>
+      <div style={{maxWidth:'1100px',margin:'0 auto'}}>
+        <button onClick={()=>{setResult(null);setStep(0)}} style={{padding:'var(--p-space-2) var(--p-space-4)',background:'var(--p-bg-elevated)',border:'var(--p-border)',borderRadius:'var(--p-radius-md)',color:'var(--p-text-muted)',cursor:'pointer',fontSize:'var(--p-text-sm)',marginBottom:'var(--p-space-4)'}}>← Nouveau CDC</button>
           {/* Risk Banner */}
           <div className="animate-in" style={{background:'var(--p-bg-card)',border:'var(--p-border)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)',marginBottom:'var(--p-space-6)',borderLeft:`4px solid ${vpsScore>70?'var(--p-critical)':vpsScore>40?'var(--p-warning)':'var(--p-success)'}`}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
@@ -312,7 +299,6 @@ export default function ProjectPage() {
           <div style={{marginTop:'var(--p-space-6)',padding:'var(--p-space-4)',background:'var(--p-warning-bg)',borderRadius:'var(--p-radius-md)',fontSize:'var(--p-text-xs)',color:'var(--p-warning)',lineHeight:1.6}}>
             ⚠️ PULSAR V15 est un outil d&apos;aide à la décision. Les résultats ne remplacent pas le jugement clinique. Sources: Kramer 2011, Titulaer 2013, Francoeur 2023 (OR 1.85/2.18), Bilodeau 2024, Shakeshaft EEG AUC 0.72, SPF 932 cas.
           </div>
-        </main>
       </div>
     )
   }
@@ -321,17 +307,7 @@ export default function ProjectPage() {
   // CDC FORM VIEW
   // ══════════════════════════════════════════════════
   return (
-    <div style={{minHeight:'100vh',background:'var(--p-bg)'}}>
-      <header style={{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'var(--p-space-4) var(--p-space-6)',borderBottom:'var(--p-border)',background:'var(--p-bg-card)'}}>
-        <div style={{display:'flex',alignItems:'center',gap:'var(--p-space-4)'}}>
-          <Link href="/dashboard" style={{textDecoration:'none'}}><span style={{fontWeight:800,color:'var(--p-vps)',letterSpacing:'0.1em',fontSize:'var(--p-text-lg)'}}>PULSAR</span></Link>
-          <span style={{color:'var(--p-text-dim)'}}>›</span>
-          <span style={{color:'var(--p-text-muted)',fontSize:'var(--p-text-sm)'}}>Nouveau CDC</span>
-        </div>
-        <ThemeToggle />
-      </header>
-
-      <main style={{maxWidth:'800px',margin:'0 auto',padding:'var(--p-space-8) var(--p-space-6)'}}>
+    <div style={{maxWidth:'800px',margin:'0 auto'}}>
         <h1 style={{fontSize:'var(--p-text-2xl)',fontWeight:800,color:'var(--p-text)',marginBottom:'var(--p-space-2)'}}>Cahier des Charges Clinique</h1>
         <p style={{color:'var(--p-text-muted)',fontSize:'var(--p-text-sm)',marginBottom:'var(--p-space-4)'}}>Renseignez les données patient pour lancer le pipeline VPS → TDE → PVE → EWE → TPE</p>
 
@@ -477,7 +453,6 @@ export default function ProjectPage() {
             </div>
           ))}
         </div>
-      </main>
     </div>
   )
 }

@@ -1,206 +1,156 @@
 'use client'
-import { useEffect, useState } from 'react'
-import { createClient } from '@/lib/supabase/client'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import ThemeToggle from '@/components/ThemeToggle'
+import { useState, useEffect } from 'react'
 
-interface UserMeta {
-  email?: string
-}
-
-const statCards = [
-  { label: 'Patients analysés', value: '0', icon: '👤', color: 'var(--p-vps)' },
-  { label: 'Alertes critiques', value: '0', icon: '🚨', color: 'var(--p-critical)' },
-  { label: 'Moteurs actifs', value: '5/5', icon: '🧠', color: 'var(--p-tde)' },
-  { label: 'Crash tests', value: '7/7', icon: '✅', color: 'var(--p-success)' },
+const phases = [
+  {
+    label: 'PHASE 1 — ARRIVÉE',
+    modules: [
+      { href: '/project', icon: '📋', title: 'Nouveau CDC', desc: 'Saisie patient complète', color: 'var(--p-vps)', status: 'actif' },
+      { href: '/urgence', icon: '🚨', title: 'Mode Urgence 3h', desc: '6 champs essentiels', color: 'var(--p-critical)', status: 'actif' },
+      { href: '/bilan', icon: '🔬', title: 'Bilan diagnostique', desc: '26 examens, 6 catégories', color: 'var(--p-pve)', status: 'actif' },
+    ]
+  },
+  {
+    label: 'PHASE 2 — DIAGNOSTIC',
+    modules: [
+      { href: '/diagnostic', icon: '🧬', title: 'Diagnostic IA', desc: 'Scoring FIRES/EAIS/PIMS', color: 'var(--p-tde)', status: 'actif' },
+      { href: '/interpellation', icon: '⚠️', title: 'Interpellation', desc: 'Drapeaux rouges, seuils', color: 'var(--p-warning)', status: 'bientôt' },
+      { href: '/case-matching', icon: '🔄', title: 'Case-Matching', desc: '4 cas documentés', color: 'var(--p-info)', status: 'bientôt' },
+    ]
+  },
+  {
+    label: 'PHASE 3 — TRAITEMENT',
+    modules: [
+      { href: '/recommandations', icon: '💊', title: 'Recommandations', desc: '4 lignes thérapeutiques', color: 'var(--p-ewe)', status: 'bientôt' },
+      { href: '/pharmacovigilance', icon: '🛡️', title: 'Pharmacovigilance', desc: 'Interactions, PVE Engine', color: 'var(--p-pve)', status: 'bientôt' },
+    ]
+  },
+  {
+    label: 'PHASE 4 — MONITORING',
+    modules: [
+      { href: '/cockpit', icon: '📊', title: 'Cockpit Vital', desc: '5 paramètres + 5 moteurs', color: 'var(--p-vps)', status: 'actif' },
+      { href: '/timeline', icon: '📅', title: 'Timeline', desc: 'Chronologie du séjour', color: 'var(--p-tde)', status: 'actif' },
+      { href: '/suivi', icon: '📈', title: 'Suivi J+2/5/7', desc: 'Points d\'étape', color: 'var(--p-tpe)', status: 'bientôt' },
+    ]
+  },
+  {
+    label: 'PHASE 5 — SYNTHÈSE',
+    modules: [
+      { href: '/famille', icon: '👨‍👩‍👧', title: 'Espace Famille', desc: 'Langage accessible', color: 'var(--p-tde)', status: 'actif' },
+      { href: '/synthese', icon: '📑', title: 'Synthèse', desc: 'Vue consolidée', color: 'var(--p-pve)', status: 'bientôt' },
+      { href: '/export', icon: '📤', title: 'Export PDF', desc: 'Rapport complet', color: 'var(--p-tpe)', status: 'bientôt' },
+    ]
+  },
 ]
 
-const engineStatus = [
-  { name: 'VPS', full: 'Vital Prognosis Score', color: '#6C7CFF', status: 'ready' },
-  { name: 'TDE', full: 'Therapeutic Decision', color: '#2FD1C8', status: 'ready' },
-  { name: 'PVE', full: 'Pharmacovigilance', color: '#B96BFF', status: 'ready' },
-  { name: 'EWE', full: 'Early Warning', color: '#FF6B8A', status: 'ready' },
-  { name: 'TPE', full: 'Therapeutic Prospection', color: '#FFB347', status: 'ready' },
+const stats = [
+  { label: 'Moteurs actifs', value: '5/5', icon: '🧠', color: 'var(--p-vps)' },
+  { label: 'Crash tests', value: '7/7', icon: '✅', color: 'var(--p-success)' },
+  { label: 'Pathologies', value: '5', icon: '🧬', color: 'var(--p-tde)' },
+  { label: 'Publications', value: '17', icon: '📚', color: 'var(--p-tpe)' },
+]
+
+const engines = [
+  { name: 'VPS', full: 'Vital Prognosis Score', color: 'var(--p-vps)' },
+  { name: 'TDE', full: 'Therapeutic Decision', color: 'var(--p-tde)' },
+  { name: 'PVE', full: 'Pharmacovigilance', color: 'var(--p-pve)' },
+  { name: 'EWE', full: 'Early Warning', color: 'var(--p-ewe)' },
+  { name: 'TPE', full: 'Therapeutic Prospection', color: 'var(--p-tpe)' },
 ]
 
 export default function DashboardPage() {
-  const [user, setUser] = useState<UserMeta | null>(null)
-  const [loading, setLoading] = useState(true)
-  const router = useRouter()
-
-  useEffect(() => {
-    const supabase = createClient()
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) {
-        setUser({ email: data.user.email })
-      }
-      setLoading(false)
-    })
-  }, [])
-
-  const handleLogout = async () => {
-    const supabase = createClient()
-    await supabase.auth.signOut()
-    router.push('/')
-  }
-
-  if (loading) {
-    return (
-      <div style={{
-        minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        background: 'var(--p-bg)', color: 'var(--p-vps)', fontSize: 'var(--p-text-lg)',
-      }}>
-        Chargement des moteurs…
-      </div>
-    )
-  }
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>
-      {/* ── Top bar ── */}
-      <header style={{
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: 'var(--p-space-4) var(--p-space-6)',
-        borderBottom: 'var(--p-border)',
-        background: 'var(--p-bg-card)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-4)' }}>
-          <span style={{ fontWeight: 800, color: 'var(--p-vps)', letterSpacing: '0.1em', fontSize: 'var(--p-text-lg)' }}>
-            PULSAR
-          </span>
-          <span style={{ color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', fontFamily: 'var(--p-font-mono)' }}>
-            Dashboard
-          </span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
-          <ThemeToggle />
-          <span style={{ color: 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)' }}>
-            {user?.email}
-          </span>
-          <button onClick={handleLogout} style={{
-            background: 'var(--p-bg-elevated)', border: 'var(--p-border)',
-            borderRadius: 'var(--p-radius-md)',
-            padding: 'var(--p-space-2) var(--p-space-3)',
-            color: 'var(--p-text-muted)', cursor: 'pointer', fontSize: 'var(--p-text-sm)',
+    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+      {/* Stats */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-6)' }}>
+        {stats.map((s, i) => (
+          <div key={i} className={mounted ? 'animate-in' : ''} style={{
+            background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)',
+            padding: 'var(--p-space-4)', animationDelay: `${i * 80}ms`,
           }}>
-            Déconnexion
-          </button>
-        </div>
-      </header>
-
-      <main style={{ maxWidth: '1100px', margin: '0 auto', padding: 'var(--p-space-8) var(--p-space-6)' }}>
-        {/* ── Stats Cards ── */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
-          gap: 'var(--p-space-4)',
-          marginBottom: 'var(--p-space-8)',
-        }}>
-          {statCards.map((s, i) => (
-            <div key={i} style={{
-              background: 'var(--p-bg-card)',
-              border: 'var(--p-border)',
-              borderRadius: 'var(--p-radius-lg)',
-              padding: 'var(--p-space-5)',
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                <div>
-                  <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)', marginBottom: 'var(--p-space-1)' }}>
-                    {s.label}
-                  </div>
-                  <div style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: s.color }}>
-                    {s.value}
-                  </div>
-                </div>
-                <span style={{ fontSize: '1.5rem' }}>{s.icon}</span>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div>
+                <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>{s.label}</div>
+                <div style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: s.color, fontFamily: 'var(--p-font-mono)' }}>{s.value}</div>
               </div>
+              <span style={{ fontSize: '1.3rem' }}>{s.icon}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Engines strip */}
+      <div style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-4)', marginBottom: 'var(--p-space-6)' }}>
+        <div style={{ fontSize: 'var(--p-text-xs)', fontWeight: 700, color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: 'var(--p-space-3)' }}>PIPELINE V15</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-2)' }}>
+          {engines.map((e, i) => (
+            <div key={e.name} style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-2)', flex: 1 }}>
+              <div style={{
+                flex: 1, padding: 'var(--p-space-2) var(--p-space-3)', background: 'var(--p-bg-elevated)',
+                borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${e.color}`,
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              }}>
+                <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: e.color, fontSize: 'var(--p-text-sm)' }}>{e.name}</span>
+                <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-success)', background: 'var(--p-success-bg)', padding: '1px 6px', borderRadius: 'var(--p-radius-full)' }}>● OK</span>
+              </div>
+              {i < 4 && <span style={{ color: 'var(--p-text-dim)', fontSize: '10px', flexShrink: 0 }}>→</span>}
             </div>
           ))}
         </div>
+      </div>
 
-        {/* ── Engine Status ── */}
-        <div style={{
-          background: 'var(--p-bg-card)',
-          border: 'var(--p-border)',
-          borderRadius: 'var(--p-radius-xl)',
-          padding: 'var(--p-space-6)',
-          marginBottom: 'var(--p-space-8)',
-        }}>
-          <h2 style={{
-            fontSize: 'var(--p-text-lg)', fontWeight: 700, color: 'var(--p-text)',
-            marginBottom: 'var(--p-space-5)',
-          }}>
-            Moteurs Cerveau — Pipeline V15
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--p-space-3)' }}>
-            {engineStatus.map((e) => (
-              <div key={e.name} style={{
-                display: 'flex', alignItems: 'center', gap: 'var(--p-space-4)',
-                padding: 'var(--p-space-3) var(--p-space-4)',
-                background: 'var(--p-bg-elevated)',
-                borderRadius: 'var(--p-radius-md)',
-                borderLeft: `3px solid ${e.color}`,
-              }}>
-                <span style={{
-                  fontFamily: 'var(--p-font-mono)', fontWeight: 700,
-                  color: e.color, minWidth: '3rem',
-                }}>
-                  {e.name}
-                </span>
-                <span style={{ color: 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', flex: 1 }}>
-                  {e.full}
-                </span>
-                <span style={{
-                  fontSize: 'var(--p-text-xs)',
-                  fontFamily: 'var(--p-font-mono)',
-                  padding: 'var(--p-space-1) var(--p-space-2)',
-                  borderRadius: 'var(--p-radius-full)',
-                  background: 'var(--p-success-bg)',
-                  color: 'var(--p-success)',
-                }}>
-                  ● READY
-                </span>
-              </div>
+      {/* Module cards by phase */}
+      {phases.map((phase, pi) => (
+        <div key={pi} style={{ marginBottom: 'var(--p-space-5)' }}>
+          <div style={{ fontSize: '10px', fontWeight: 700, color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-3)', paddingLeft: '2px' }}>{phase.label}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${phase.modules.length}, 1fr)`, gap: 'var(--p-space-3)' }}>
+            {phase.modules.map((m, mi) => (
+              <Link key={mi} href={m.href} style={{ textDecoration: 'none' }}>
+                <div className={mounted ? 'animate-in' : ''} style={{
+                  background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)',
+                  padding: 'var(--p-space-4)', cursor: 'pointer', transition: 'all 200ms',
+                  borderTop: `3px solid ${m.color}`, animationDelay: `${(pi * 3 + mi) * 60}ms`,
+                  opacity: m.status === 'bientôt' ? 0.5 : 1,
+                }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(-2px)'; (e.currentTarget as HTMLElement).style.boxShadow = 'var(--p-shadow-md)' }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLElement).style.boxShadow = 'none' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--p-space-3)' }}>
+                    <span style={{ fontSize: '1.5rem' }}>{m.icon}</span>
+                    {m.status === 'bientôt' && <span style={{ fontSize: '9px', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', background: 'var(--p-warning-bg)', color: 'var(--p-warning)', fontWeight: 600 }}>Bientôt</span>}
+                  </div>
+                  <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)', marginBottom: '4px' }}>{m.title}</div>
+                  <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>{m.desc}</div>
+                </div>
+              </Link>
             ))}
           </div>
         </div>
+      ))}
 
-        {/* ── Empty State — New Analysis CTA ── */}
-        <div style={{
-          background: 'var(--p-bg-card)',
-          border: '2px dashed var(--p-gray-1)',
-          borderRadius: 'var(--p-radius-xl)',
-          padding: 'var(--p-space-12)',
-          textAlign: 'center',
-        }}>
-          <div style={{ fontSize: '3rem', marginBottom: 'var(--p-space-4)' }}>🧬</div>
-          <h3 style={{
-            fontSize: 'var(--p-text-xl)', fontWeight: 700, color: 'var(--p-text)',
-            marginBottom: 'var(--p-space-3)',
-          }}>
-            Aucun patient analysé
-          </h3>
-          <p style={{
-            color: 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)',
-            marginBottom: 'var(--p-space-6)', maxWidth: '400px', margin: '0 auto var(--p-space-6)',
-          }}>
-            Créez votre premier cahier des charges clinique pour lancer l&apos;analyse complète via les 5 moteurs cerveau.
-          </p>
-          <Link href="/project" style={{
-            display: 'inline-block',
-            padding: 'var(--p-space-3) var(--p-space-8)',
-            borderRadius: 'var(--p-radius-lg)',
-            background: 'var(--p-vps)',
-            color: '#fff',
-            textDecoration: 'none',
-            fontWeight: 700,
-            boxShadow: 'var(--p-shadow-glow-vps)',
-          }}>
-            Nouveau CDC
-          </Link>
-        </div>
-      </main>
+      {/* Quick actions */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--p-space-3)', marginTop: 'var(--p-space-4)' }}>
+        <Link href="/evidence" style={{ textDecoration: 'none' }}>
+          <div style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-md)', padding: 'var(--p-space-3)', display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', cursor: 'pointer' }}>
+            <span>📚</span><span style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)' }}>Evidence Vault</span>
+            <span style={{ marginLeft: 'auto', fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>17 publis</span>
+          </div>
+        </Link>
+        <Link href="/experts" style={{ textDecoration: 'none' }}>
+          <div style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-md)', padding: 'var(--p-space-3)', display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', cursor: 'pointer' }}>
+            <span>🎓</span><span style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)' }}>Consensus Expert</span>
+            <span style={{ marginLeft: 'auto', fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>5 experts</span>
+          </div>
+        </Link>
+        <Link href="/about" style={{ textDecoration: 'none' }}>
+          <div style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-md)', padding: 'var(--p-space-3)', display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', cursor: 'pointer' }}>
+            <span>💙</span><span style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)' }}>Mémorial</span>
+          </div>
+        </Link>
+      </div>
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import '@/styles/tokens.css'
+import AppShell from '@/components/AppShell'
 
 export const metadata: Metadata = {
   title: 'PULSAR V15 — Pediatric Urgent Lifesaving System',
@@ -23,7 +24,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })()
         `}} />
       </head>
-      <body>{children}</body>
+      <body><AppShell>{children}</AppShell></body>
     </html>
   )
 }

@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const protectedRoutes = ['/dashboard', '/project']
+  const protectedRoutes = ['/dashboard', '/project', '/urgence', '/bilan', '/diagnostic', '/interpellation', '/case-matching', '/recommandations', '/pharmacovigilance', '/cockpit', '/engines', '/timeline', '/suivi', '/synthese', '/famille', '/staff', '/export', '/evidence', '/experts', '/demo', '/about']
   const authRoutes = ['/login', '/signup']
   const path = request.nextUrl.pathname
 
@@ -49,5 +49,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/project/:path*', '/login', '/signup'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|api/).*)'],
 }

@@ -1,0 +1,122 @@
+'use client'
+import { useState, useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
+import { createClient } from '@/lib/supabase/client'
+import Sidebar from './Sidebar'
+
+export default function AppShell({ children }: { children: React.ReactNode }) {
+  const [collapsed, setCollapsed] = useState(false)
+  const [user, setUser] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const router = useRouter()
+  const pathname = usePathname()
+
+  // Pages that don't need sidebar
+  const noShell = ['/', '/login', '/signup']
+  const isPublic = noShell.includes(pathname)
+
+  useEffect(() => {
+    if (isPublic) { setLoading(false); return }
+    const supabase = createClient()
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) { setUser(data.user.email || 'Utilisateur') }
+      else { router.push('/login') }
+      setLoading(false)
+    })
+  }, [isPublic, router])
+
+  if (isPublic) return <>{children}</>
+
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--p-bg)', color: 'var(--p-vps)', fontSize: 'var(--p-text-lg)' }}>
+        Chargement PULSAR…
+      </div>
+    )
+  }
+
+  const handleLogout = async () => {
+    const supabase = createClient()
+    await supabase.auth.signOut()
+    router.push('/')
+  }
+
+  return (
+    <div style={{ display: 'flex', minHeight: '100vh', background: 'var(--p-bg)' }}>
+      <Sidebar collapsed={collapsed} onToggle={() => setCollapsed(!collapsed)} />
+      <div style={{
+        flex: 1,
+        marginLeft: collapsed ? '60px' : '240px',
+        transition: 'margin-left 250ms var(--p-ease)',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+        {/* Top bar */}
+        <header style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          padding: 'var(--p-space-3) var(--p-space-6)',
+          borderBottom: 'var(--p-border)',
+          background: 'var(--p-bg-card)',
+          height: '60px',
+          position: 'sticky',
+          top: 0,
+          zIndex: 50,
+        }}>
+          {/* Breadcrumb */}
+          <Breadcrumb pathname={pathname} />
+          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
+            <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>{user}</span>
+            <button onClick={handleLogout} style={{
+              padding: 'var(--p-space-1) var(--p-space-3)',
+              background: 'var(--p-bg-elevated)', border: 'var(--p-border)',
+              borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)',
+              cursor: 'pointer', fontSize: 'var(--p-text-xs)',
+            }}>Déconnexion</button>
+          </div>
+        </header>
+        {/* Content */}
+        <main style={{ flex: 1, padding: 'var(--p-space-6)' }}>
+          {children}
+        </main>
+      </div>
+    </div>
+  )
+}
+
+function Breadcrumb({ pathname }: { pathname: string }) {
+  const labels: Record<string, string> = {
+    '/dashboard': 'Dashboard',
+    '/project': 'Nouveau CDC',
+    '/urgence': 'Mode Urgence 3h',
+    '/bilan': 'Bilan diagnostique',
+    '/diagnostic': 'Diagnostic IA',
+    '/interpellation': 'Interpellation',
+    '/case-matching': 'Case-Matching',
+    '/recommandations': 'Recommandations',
+    '/pharmacovigilance': 'Pharmacovigilance',
+    '/cockpit': 'Cockpit Vital',
+    '/engines/vps': 'VPS Engine',
+    '/engines/tde': 'TDE Engine',
+    '/engines/pve': 'PVE Engine',
+    '/timeline': 'Timeline',
+    '/suivi': 'Suivi J+2/5/7',
+    '/synthese': 'Synthèse',
+    '/famille': 'Espace Famille',
+    '/staff': 'Staff / RCP',
+    '/export': 'Export PDF',
+    '/evidence': 'Evidence Vault',
+    '/experts': 'Consensus Expert',
+    '/demo': 'Démo Inès',
+    '/about': 'About / Mémorial',
+  }
+  const current = labels[pathname] || ''
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-2)' }}>
+      <span style={{ fontWeight: 800, color: 'var(--p-vps)', fontSize: 'var(--p-text-sm)', letterSpacing: '0.05em' }}>PULSAR</span>
+      {current && <>
+        <span style={{ color: 'var(--p-text-dim)', fontSize: '12px' }}>›</span>
+        <span style={{ color: 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)' }}>{current}</span>
+      </>}
+    </div>
+  )
+}
