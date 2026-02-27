@@ -15,15 +15,15 @@ const phases = [
     label: 'PHASE 2 — DIAGNOSTIC',
     modules: [
       { href: '/diagnostic', icon: '🧬', title: 'Diagnostic IA', desc: 'Scoring FIRES/EAIS/PIMS', color: 'var(--p-tde)', status: 'actif' },
-      { href: '/interpellation', icon: '⚠️', title: 'Interpellation', desc: 'Drapeaux rouges, seuils', color: 'var(--p-warning)', status: 'bientôt' },
-      { href: '/case-matching', icon: '🔄', title: 'Case-Matching', desc: '4 cas documentés', color: 'var(--p-info)', status: 'bientôt' },
+      { href: '/interpellation', icon: '⚠️', title: 'Interpellation', desc: 'Drapeaux rouges, seuils', color: 'var(--p-warning)', status: 'actif' },
+      { href: '/case-matching', icon: '🔄', title: 'Case-Matching', desc: '4 cas documentés', color: 'var(--p-info)', status: 'actif' },
     ]
   },
   {
     label: 'PHASE 3 — TRAITEMENT',
     modules: [
-      { href: '/recommandations', icon: '💊', title: 'Recommandations', desc: '4 lignes thérapeutiques', color: 'var(--p-ewe)', status: 'bientôt' },
-      { href: '/pharmacovigilance', icon: '🛡️', title: 'Pharmacovigilance', desc: 'Interactions, PVE Engine', color: 'var(--p-pve)', status: 'bientôt' },
+      { href: '/recommandations', icon: '💊', title: 'Recommandations', desc: '4 lignes thérapeutiques', color: 'var(--p-ewe)', status: 'actif' },
+      { href: '/pharmacovigilance', icon: '🛡️', title: 'Pharmacovigilance', desc: 'Interactions, PVE Engine', color: 'var(--p-pve)', status: 'actif' },
     ]
   },
   {
