@@ -83,7 +83,7 @@ export default function CockpitPage() {
   const getFieldIntensity = (name: string) => vpsFields.find(f => f.name.toLowerCase().includes(name))?.intensity ?? 0
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
         <span style={{ fontSize: '2rem' }}>📊</span>
@@ -131,7 +131,7 @@ export default function CockpitPage() {
       <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 'var(--p-space-5)', marginBottom: 'var(--p-space-5)' }}>
 
         {/* Left: Silhouette */}
-        <div className={mounted ? 'animate-in stagger-1' : ''} style={{ ...card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <div className={`${mounted ? 'animate-in stagger-1' : ''} glass-card`} style={{ ...card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <Silhouette
             vpsScore={ps.vpsResult?.synthesis.score ?? 0}
             neuroIntensity={getFieldIntensity('neuro') || getFieldIntensity('défaillance n')}
@@ -160,7 +160,7 @@ export default function CockpitPage() {
           </div>
 
           {/* Engine Score Cards */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
+          <div className="grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
             {engines.map((e, i) => {
               const score = e.result?.synthesis.score ?? 0
               const level = e.result?.synthesis.level ?? '—'
@@ -184,7 +184,7 @@ export default function CockpitPage() {
       {/* Vitals */}
       <div className={mounted ? 'animate-in stagger-4' : ''} style={{ marginBottom: 'var(--p-space-5)' }}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>PARAMÈTRES VITAUX</div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
+        <div className="grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
           {vitals.map((v, i) => (
             <div key={i} className="hover-lift" style={{ ...card, padding: '12px', borderLeft: `3px solid ${v.ok ? 'var(--p-success)' : 'var(--p-critical)'}` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>

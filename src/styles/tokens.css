@@ -435,3 +435,151 @@ body {
   animation: progressFill 1s var(--p-ease) both;
 }
 .progress-fill-delayed { animation-delay: 0.2s; }
+
+/* ════════════════════════════════════════════════════════════════
+   GLASS MORPHISM & DEPTH LAYERS
+   ════════════════════════════════════════════════════════════════ */
+.glass {
+  background: rgba(14,14,22,0.6);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  border: 1px solid rgba(108,124,255,0.08);
+}
+[data-theme="light"] .glass {
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.glass-card {
+  background: rgba(19,19,29,0.65);
+  backdrop-filter: blur(16px) saturate(1.5);
+  -webkit-backdrop-filter: blur(16px) saturate(1.5);
+  border: 1px solid rgba(108,124,255,0.1);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.03);
+}
+[data-theme="light"] .glass-card {
+  background: rgba(255,255,255,0.8);
+  border: 1px solid rgba(0,0,0,0.08);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06), inset 0 1px 0 rgba(255,255,255,0.5);
+}
+
+/* Gradient mesh background */
+.bg-mesh {
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 40%, rgba(108,124,255,0.06) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 60%, rgba(185,107,255,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 50% at 50% 20%, rgba(47,209,200,0.03) 0%, transparent 70%);
+}
+
+/* ── Page Enter Transition ── */
+.page-enter {
+  animation: pageEnter 0.45s var(--p-ease) both;
+}
+.page-enter-stagger > * {
+  animation: cardReveal 0.5s var(--p-ease) both;
+}
+.page-enter-stagger > *:nth-child(1) { animation-delay: 50ms; }
+.page-enter-stagger > *:nth-child(2) { animation-delay: 120ms; }
+.page-enter-stagger > *:nth-child(3) { animation-delay: 190ms; }
+.page-enter-stagger > *:nth-child(4) { animation-delay: 260ms; }
+.page-enter-stagger > *:nth-child(5) { animation-delay: 330ms; }
+.page-enter-stagger > *:nth-child(6) { animation-delay: 400ms; }
+.page-enter-stagger > *:nth-child(7) { animation-delay: 470ms; }
+.page-enter-stagger > *:nth-child(8) { animation-delay: 540ms; }
+
+/* ── Enhanced Hover States ── */
+.hover-glow-vps:hover {
+  box-shadow: 0 0 20px var(--p-vps-glow), 0 4px 16px rgba(0,0,0,0.3);
+  border-color: rgba(108,124,255,0.3);
+}
+.hover-glow-tde:hover {
+  box-shadow: 0 0 20px var(--p-tde-glow), 0 4px 16px rgba(0,0,0,0.3);
+  border-color: rgba(47,209,200,0.3);
+}
+.hover-glow-engine:hover {
+  box-shadow: 0 0 18px var(--glow-color, var(--p-vps-glow)), 0 4px 14px rgba(0,0,0,0.2);
+  transform: translateY(-3px) scale(1.01);
+}
+.card-interactive {
+  transition: transform 0.25s var(--p-ease), box-shadow 0.3s var(--p-ease), border-color 0.3s var(--p-ease);
+  cursor: pointer;
+}
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(108,124,255,0.12);
+}
+.card-interactive:active {
+  transform: translateY(0px) scale(0.99);
+}
+
+/* ── Section Header ── */
+.section-label {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: var(--p-font-mono);
+  color: var(--p-text-dim);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+/* ── Gradient Text ── */
+.text-gradient-vps {
+  background: linear-gradient(135deg, var(--p-vps) 0%, #9C6CFF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.text-gradient-brand {
+  background: linear-gradient(135deg, var(--p-vps) 0%, var(--p-tde) 50%, var(--p-pve) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Accent Line ── */
+.accent-line {
+  height: 2px;
+  background: linear-gradient(90deg, var(--p-vps) 0%, var(--p-tde) 50%, transparent 100%);
+  border-radius: 1px;
+}
+
+/* ── Dot Indicator ── */
+.dot-alive {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--p-success);
+  animation: breathe 2s ease-in-out infinite;
+  box-shadow: 0 0 6px var(--p-success);
+}
+.dot-critical {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--p-critical);
+  animation: breathe 1s ease-in-out infinite;
+  box-shadow: 0 0 8px var(--p-critical);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   RESPONSIVE — Mobile First
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 768px) {
+  .grid-5 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-3 { grid-template-columns: 1fr !important; }
+  .grid-2-1 { grid-template-columns: 1fr !important; }
+  .hide-mobile { display: none !important; }
+  .text-mobile-sm { font-size: var(--p-text-sm) !important; }
+  main { padding: var(--p-space-3) !important; }
+}
+@media (max-width: 480px) {
+  .grid-5 { grid-template-columns: 1fr !important; }
+  .grid-4 { grid-template-columns: 1fr !important; }
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

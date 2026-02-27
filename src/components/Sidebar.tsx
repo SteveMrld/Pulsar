@@ -71,11 +71,9 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
   const pathname = usePathname()
 
   return (
-    <aside style={{
+    <aside className="glass-card" style={{
       width: collapsed ? '60px' : '240px',
       minHeight: '100vh',
-      background: 'var(--p-bg-card)',
-      borderRight: 'var(--p-border)',
       display: 'flex',
       flexDirection: 'column',
       transition: 'width 250ms var(--p-ease)',
@@ -84,6 +82,8 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
       top: 0,
       left: 0,
       zIndex: 100,
+      borderRight: '1px solid rgba(108,124,255,0.08)',
+      borderRadius: 0,
     }}>
       {/* Logo */}
       <div style={{

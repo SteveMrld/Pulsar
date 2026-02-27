@@ -3,6 +3,13 @@ import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import dynamic from 'next/dynamic'
+
+const RChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
+const RRadar = dynamic(() => import('recharts').then(m => m.Radar), { ssr: false })
+const RPolarGrid = dynamic(() => import('recharts').then(m => m.PolarGrid), { ssr: false })
+const RPolarAngleAxis = dynamic(() => import('recharts').then(m => m.PolarAngleAxis), { ssr: false })
+const RResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
 
 // ── Reference cases database ──
 interface RefCase {
@@ -86,23 +93,19 @@ function computeSimilarity(ps: PatientState, refCase: RefCase): { total: number;
   return { total: Math.round(weightedSum / totalWeight), details }
 }
 
-// ── Mini Radar ──
-function MiniRadar({ data, color, size = 120 }: { data: number[]; color: string; size?: number }) {
-  const cx = size / 2, cy = size / 2, R = (size - 30) / 2, n = data.length
-  const pt = (i: number, v: number) => {
-    const a = (2 * Math.PI * i) / n - Math.PI / 2
-    return { x: cx + R * (v / 100) * Math.cos(a), y: cy + R * (v / 100) * Math.sin(a) }
-  }
+// ── Mini Radar (Recharts) ──
+function MiniRadar({ data, labels, color, size = 120 }: { data: number[]; labels: string[]; color: string; size?: number }) {
+  const chartData = data.map((v, i) => ({ axis: labels[i]?.slice(0, 6) ?? `C${i}`, value: v, fullMark: 100 }))
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      {[50, 100].map(lv => (
-        <polygon key={lv} points={Array.from({ length: n }, (_, i) => pt(i, lv)).map(p => `${p.x},${p.y}`).join(' ')}
-          fill="none" stroke="var(--p-dark-4)" strokeWidth="1" />
-      ))}
-      <polygon points={data.map((v, i) => { const p = pt(i, v); return `${p.x},${p.y}` }).join(' ')}
-        fill={`${color}18`} stroke={color} strokeWidth="2" />
-      {data.map((v, i) => <circle key={i} cx={pt(i, v).x} cy={pt(i, v).y} r="3" fill={color} />)}
-    </svg>
+    <div style={{ width: size + 30, height: size }}>
+      <RResponsiveContainer width="100%" height="100%">
+        <RChart data={chartData} margin={{ top: 0, right: 15, bottom: 0, left: 15 }}>
+          <RPolarGrid stroke="var(--p-dark-4)" />
+          <RPolarAngleAxis dataKey="axis" tick={{ fill: 'var(--p-text-dim)', fontSize: 8, fontFamily: 'JetBrains Mono' }} />
+          <RRadar dataKey="value" stroke={color} fill={color} fillOpacity={0.15} strokeWidth={2} />
+        </RChart>
+      </RResponsiveContainer>
+    </div>
   )
 }
 
@@ -208,7 +211,7 @@ export default function CaseMatchingPage() {
               <div style={{ fontSize: '11px', color: 'var(--p-text-dim)', marginBottom: '8px', fontStyle: 'italic' }}>{m.outcome}</div>
 
               <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start', flexWrap: 'wrap' }}>
-                <MiniRadar data={m.similarity.details.map(d => d.sim)} color={m.color} />
+                <MiniRadar data={m.similarity.details.map(d => d.sim)} labels={m.similarity.details.map(d => d.label)} color={m.color} />
                 <div style={{ flex: 1, minWidth: '200px' }}>
                   <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>CRITÈRES DE MATCHING</div>
                   {m.similarity.details.map((d, di) => (

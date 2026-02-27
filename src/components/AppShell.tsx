@@ -52,11 +52,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         flexDirection: 'column',
       }}>
         {/* Top bar */}
-        <header style={{
+        <header className="glass" style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           padding: 'var(--p-space-3) var(--p-space-6)',
-          borderBottom: 'var(--p-border)',
-          background: 'var(--p-bg-card)',
+          borderBottom: '1px solid rgba(108,124,255,0.06)',
           height: '60px',
           position: 'sticky',
           top: 0,
@@ -75,8 +74,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </header>
         {/* Content */}
-        <main style={{ flex: 1, padding: 'var(--p-space-6)' }}>
-          {children}
+        <main className="bg-mesh" style={{ flex: 1, padding: 'var(--p-space-6)', position: 'relative' }}>
+          <div key={pathname} className="page-enter">
+            {children}
+          </div>
         </main>
       </div>
     </div>
