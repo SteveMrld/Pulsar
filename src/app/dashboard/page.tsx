@@ -31,15 +31,15 @@ const phases = [
     modules: [
       { href: '/cockpit', icon: '📊', title: 'Cockpit Vital', desc: '5 paramètres + 5 moteurs', color: 'var(--p-vps)', status: 'actif' },
       { href: '/timeline', icon: '📅', title: 'Timeline', desc: 'Chronologie du séjour', color: 'var(--p-tde)', status: 'actif' },
-      { href: '/suivi', icon: '📈', title: 'Suivi J+2/5/7', desc: 'Points d\'étape', color: 'var(--p-tpe)', status: 'bientôt' },
+      { href: '/suivi', icon: '📈', title: 'Suivi J+2/5/7', desc: 'Points d\'étape', color: 'var(--p-tpe)', status: 'actif' },
     ]
   },
   {
     label: 'PHASE 5 — SYNTHÈSE',
     modules: [
       { href: '/famille', icon: '👨‍👩‍👧', title: 'Espace Famille', desc: 'Langage accessible', color: 'var(--p-tde)', status: 'actif' },
-      { href: '/synthese', icon: '📑', title: 'Synthèse', desc: 'Vue consolidée', color: 'var(--p-pve)', status: 'bientôt' },
-      { href: '/export', icon: '📤', title: 'Export PDF', desc: 'Rapport complet', color: 'var(--p-tpe)', status: 'bientôt' },
+      { href: '/synthese', icon: '📑', title: 'Synthèse', desc: 'Vue consolidée', color: 'var(--p-pve)', status: 'actif' },
+      { href: '/export', icon: '📤', title: 'Export PDF', desc: 'Rapport complet', color: 'var(--p-tpe)', status: 'actif' },
     ]
   },
 ]
