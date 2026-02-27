@@ -113,6 +113,7 @@ function Breadcrumb({ pathname }: { pathname: string }) {
   const current = labels[pathname] || ''
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-2)' }}>
+      <img src="/assets/logo-pulsar.jpg" alt="PULSAR" width={24} height={24} style={{ borderRadius: 6, filter: 'drop-shadow(0 0 6px rgba(108,124,255,0.3))' }} />
       <span style={{ fontWeight: 800, color: 'var(--p-vps)', fontSize: 'var(--p-text-sm)', letterSpacing: '0.05em' }}>PULSAR</span>
       {current && <>
         <span style={{ color: 'var(--p-text-dim)', fontSize: '12px' }}>›</span>

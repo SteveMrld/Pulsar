@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -21,12 +22,12 @@ function getInesPS(overrides?: Partial<any>): PatientState {
 
 const SCENES: Scene[] = [
   {
-    id: 1, title: 'Admission', module: 'Urgence', phase: 'Phase 1', icon: '🚨', color: 'var(--p-critical)', duration: 12000,
+    id: 1, title: 'Admission', module: 'Urgence', phase: 'Phase 1', icon: 'heart', color: 'var(--p-critical)', duration: 12000,
     narrative: 'Inès M., 5 ans, est admise aux urgences pédiatriques. Fièvre à 39.2°C depuis 48h, première crise convulsive tonico-clonique il y a 6 heures. GCS 7/15 à l\'arrivée.',
     render: ps => <InfoGrid items={[{ l: 'Patiente', v: 'Inès M., 5 ans' }, { l: 'Poids', v: `${ps.weightKg} kg` }, { l: 'GCS', v: `${ps.neuro.gcs}/15`, c: 'var(--p-critical)' }, { l: 'T°', v: `${ps.hemodynamics.temp}°C`, c: 'var(--p-warning)' }, { l: 'Crises', v: `${ps.neuro.seizures24h}/24h` }, { l: 'Type', v: 'Status réfractaire', c: 'var(--p-critical)' }]} />,
   },
   {
-    id: 2, title: 'Mode Urgence 3h', module: 'Urgence', phase: 'Phase 1', icon: '⏱️', color: 'var(--p-critical)', duration: 10000,
+    id: 2, title: 'Mode Urgence 3h', module: 'Urgence', phase: 'Phase 1', icon: 'thermo', color: 'var(--p-critical)', duration: 10000,
     narrative: 'Le protocole urgence 3h est activé. Les 6 champs essentiels sont saisis en 30 secondes. Le premier score VPS est calculé automatiquement.',
     render: ps => {
       const vps = ps.vpsResult!
@@ -37,12 +38,12 @@ const SCENES: Scene[] = [
     },
   },
   {
-    id: 3, title: 'Bilan initial', module: 'Bilan', phase: 'Phase 1', icon: '🔬', color: 'var(--p-pve)', duration: 10000,
+    id: 3, title: 'Bilan initial', module: 'Bilan', phase: 'Phase 1', icon: 'virus', color: 'var(--p-pve)', duration: 10000,
     narrative: 'Le bilan diagnostique est lancé : NFS, CRP 85 mg/L, PCT 2.1, ferritine 680 µg/L. LCR : pléiocytose 120 cell/µL, protéinorachie élevée. Anticorps en cours.',
     render: ps => <InfoGrid items={[{ l: 'CRP', v: `${ps.biology.crp} mg/L`, c: 'var(--p-warning)' }, { l: 'PCT', v: `${ps.biology.pct} ng/mL` }, { l: 'Ferritine', v: `${ps.biology.ferritin} µg/L`, c: 'var(--p-warning)' }, { l: 'Pléiocytose', v: `${ps.csf.cells} cell/µL`, c: 'var(--p-critical)' }, { l: 'Anticorps', v: ps.csf.antibodies, c: 'var(--p-tpe)' }, { l: 'Protéinorachie', v: 'Élevée' }]} />,
   },
   {
-    id: 4, title: 'Diagnostic IA', module: 'Diagnostic', phase: 'Phase 2', icon: '🧬', color: 'var(--p-tde)', duration: 12000,
+    id: 4, title: 'Diagnostic IA', module: 'Diagnostic', phase: 'Phase 2', icon: 'dna', color: 'var(--p-tde)', duration: 12000,
     narrative: 'PULSAR analyse les données. Hypothèse FIRES : score 10/13 (élevé). Critères activés : âge, fièvre, status réfractaire, GCS<12, pléiocytose, Ac négatifs. Le TDE détecte un pattern FIRES avec 80% de confiance.',
     render: ps => {
       const tde = ps.tdeResult!
@@ -58,7 +59,7 @@ const SCENES: Scene[] = [
     },
   },
   {
-    id: 5, title: 'Interpellation', module: 'Interpellation', phase: 'Phase 2', icon: '⚠️', color: 'var(--p-warning)', duration: 10000,
+    id: 5, title: 'Interpellation', module: 'Interpellation', phase: 'Phase 2', icon: 'thermo', color: 'var(--p-warning)', duration: 10000,
     narrative: 'PULSAR déclenche 5 drapeaux rouges : GCS ≤ 8, status réfractaire, crises ≥10/24h, CRP élevée, et combinaison VPS critique. Intervention requise.',
     render: ps => <div>
       {[
@@ -76,7 +77,7 @@ const SCENES: Scene[] = [
     </div>,
   },
   {
-    id: 6, title: 'Case-Matching', module: 'Case-Matching', phase: 'Phase 2', icon: '🔄', color: 'var(--p-info)', duration: 10000,
+    id: 6, title: 'Case-Matching', module: 'Case-Matching', phase: 'Phase 2', icon: 'eeg', color: 'var(--p-info)', duration: 10000,
     narrative: 'Le profil d\'Inès est comparé aux 4 cas de référence. Similarité la plus élevée avec Alejandro R. (FIRES, 6 ans) : 78%. Le cas d\'Alejandro rappelle l\'importance d\'une escalade rapide.',
     render: () => <div>
       {[{ name: 'Alejandro R. (FIRES)', sim: 78, color: 'var(--p-critical)' }, { name: 'Emma S. (FIRES+Orage)', sim: 62, color: 'var(--p-warning)' }, { name: 'Lina B. (NMDAR)', sim: 35, color: 'var(--p-tde)' }, { name: 'Noah (PIMS)', sim: 18, color: 'var(--p-tpe)' }].map((c, i) => (
@@ -89,7 +90,7 @@ const SCENES: Scene[] = [
     </div>,
   },
   {
-    id: 7, title: '1ère ligne', module: 'Recommandations', phase: 'Phase 3', icon: '💊', color: 'var(--p-ewe)', duration: 10000,
+    id: 7, title: '1ère ligne', module: 'Recommandations', phase: 'Phase 3', icon: 'blood', color: 'var(--p-ewe)', duration: 10000,
     narrative: 'PULSAR recommande la 1ère ligne : Méthylprednisolone 30mg/kg/j × 3-5 jours + IgIV 0.4g/kg/j × 5 jours. Monitoring glycémie et TA.',
     render: ps => <div>
       {[{ drug: 'Méthylprednisolone IV', dose: `${Math.round(ps.weightKg * 30)} mg/j`, dur: '3-5 jours' }, { drug: 'IgIV', dose: `${(ps.weightKg * 0.4).toFixed(1)} g/j`, dur: '5 jours (total 2g/kg)' }].map((d, i) => (
@@ -101,7 +102,7 @@ const SCENES: Scene[] = [
     </div>,
   },
   {
-    id: 8, title: 'Pharmacovigilance', module: 'Pharmacovigilance', phase: 'Phase 3', icon: '🛡️', color: 'var(--p-pve)', duration: 10000,
+    id: 8, title: 'Pharmacovigilance', module: 'Pharmacovigilance', phase: 'Phase 3', icon: 'virus', color: 'var(--p-pve)', duration: 10000,
     narrative: 'Le PVE Engine détecte l\'interaction Valproate + Méropénème : chute VPA de -66 à -88% en 24h. Action : switch vers LEV, dosage VPA urgent.',
     render: ps => {
       const pve = ps.pveResult!
@@ -117,7 +118,7 @@ const SCENES: Scene[] = [
     },
   },
   {
-    id: 9, title: 'Cockpit J3', module: 'Cockpit', phase: 'Phase 4', icon: '📊', color: 'var(--p-vps)', duration: 10000,
+    id: 9, title: 'Cockpit J3', module: 'Cockpit', phase: 'Phase 4', icon: 'eeg', color: 'var(--p-vps)', duration: 10000,
     narrative: 'J3 d\'hospitalisation. Le cockpit vital montre : VPS 82 (CRITIQUE), TDE 75 (ESCALADE URGENTE). Les crises persistent. La 1ère ligne n\'a pas suffi.',
     render: ps => <div>
       {[{ n: 'VPS', s: ps.vpsResult!, c: 'var(--p-vps)' }, { n: 'TDE', s: ps.tdeResult!, c: 'var(--p-tde)' }, { n: 'PVE', s: ps.pveResult!, c: 'var(--p-pve)' }].map((e, i) => (
@@ -126,7 +127,7 @@ const SCENES: Scene[] = [
     </div>,
   },
   {
-    id: 10, title: 'Échec L1 → Escalade', module: 'Recommandations', phase: 'Phase 3', icon: '⬆️', color: 'var(--p-warning)', duration: 12000,
+    id: 10, title: 'Échec L1 → Escalade', module: 'Recommandations', phase: 'Phase 3', icon: 'heart', color: 'var(--p-warning)', duration: 12000,
     narrative: 'Échec de la 1ère ligne confirmé. Le TDE recommande l\'escalade : 2ème ligne — Rituximab 375mg/m² ou Plasmaphérèse 5-7 sessions. Considérer régime cétogène.',
     render: ps => <div>
       <div style={{ padding: '10px 14px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-critical-bg)', borderLeft: '3px solid var(--p-critical)', marginBottom: '10px' }}>
@@ -142,7 +143,7 @@ const SCENES: Scene[] = [
     </div>,
   },
   {
-    id: 11, title: 'Suivi J+5', module: 'Suivi', phase: 'Phase 4', icon: '📈', color: 'var(--p-tpe)', duration: 10000,
+    id: 11, title: 'Suivi J+5', module: 'Suivi', phase: 'Phase 4', icon: 'brain', color: 'var(--p-tpe)', duration: 10000,
     narrative: 'J5 : amélioration partielle. GCS remonte de 7 à 9. CRP en baisse à 55 mg/L. Crises réduites à 6/24h. La 2ème ligne montre des premiers effets.',
     render: () => <div>
       {[{ l: 'GCS', j0: '7', j5: '9', delta: '+2', good: true }, { l: 'CRP', j0: '85', j5: '55', delta: '-30', good: true }, { l: 'Crises/24h', j0: '12', j5: '6', delta: '-6', good: true }, { l: 'Ferritine', j0: '680', j5: '520', delta: '-160', good: true }].map((r, i) => (
@@ -157,7 +158,7 @@ const SCENES: Scene[] = [
     </div>,
   },
   {
-    id: 12, title: 'RCP', module: 'Staff', phase: 'Phase 5', icon: '👥', color: 'var(--p-info)', duration: 10000,
+    id: 12, title: 'RCP', module: 'Staff', phase: 'Phase 5', icon: 'lungs', color: 'var(--p-info)', duration: 10000,
     narrative: 'Réunion pluridisciplinaire. Le cas est présenté avec les scores PULSAR. Consensus : poursuivre Rituximab, ajouter régime cétogène, IRM contrôle à J+7.',
     render: () => <div>
       {['Poursuivre Rituximab (cycle 2/4)', 'Initier régime cétogène ratio 3:1', 'IRM contrôle à J+7', 'EEG continu maintenu', 'Réévaluation J+7 avec Dr Wirrell'].map((d, i) => (
@@ -169,7 +170,7 @@ const SCENES: Scene[] = [
     </div>,
   },
   {
-    id: 13, title: 'Synthèse & Export', module: 'Synthèse', phase: 'Phase 5', icon: '📑', color: 'var(--p-pve)', duration: 15000,
+    id: 13, title: 'Synthèse & Export', module: 'Synthèse', phase: 'Phase 5', icon: 'brain', color: 'var(--p-pve)', duration: 15000,
     narrative: 'Le parcours d\'Inès est synthétisé. Rapport exporté pour le centre de référence. PULSAR a accompagné l\'équipe de l\'admission à la RCP en 13 étapes.\n\n« Pour Gabriel, et pour tous les enfants que le temps n\'a pas attendus. »\n\nIn memory of Alejandro R. (2019–2025)',
     render: ps => <div style={{ textAlign: 'center', padding: '16px 0' }}>
       <div style={{ fontSize: '14px', fontWeight: 800, marginBottom: '12px' }}>PARCOURS COMPLET</div>
@@ -262,7 +263,7 @@ export default function DemoPage() {
               color: i === currentScene ? s.color : i < currentScene ? 'var(--p-text-dim)' : 'var(--p-text-muted)',
               fontWeight: i === currentScene ? 700 : 400, fontSize: '11px', textAlign: 'left',
             }}>
-              <span style={{ fontSize: '12px' }}>{s.icon}</span>
+              <Picto name={s.icon} size={18} />
               <span>{s.id}. {s.title}</span>
             </button>
           ))}
@@ -291,7 +292,7 @@ export default function DemoPage() {
         {/* Scene Header */}
         <div className={mounted ? 'animate-in' : ''} style={{ ...card, borderLeft: `4px solid ${scene.color}`, marginBottom: 'var(--p-space-4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-            <span style={{ fontSize: '20px' }}>{scene.icon}</span>
+            <Picto name={scene.icon} size={28} glow glowColor={scene.color} />
             <div>
               <div style={{ fontSize: 'var(--p-text-lg)', fontWeight: 800 }}>Scène {scene.id} — {scene.title}</div>
               <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: scene.color }}>{scene.phase} · {scene.module}</div>

@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useState, useCallback } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -98,8 +99,8 @@ const DEMO_CASES: {name:string;desc:string;color:string;data:FormData}[] = [
 
 const sections = [
   {title:'Identité Patient',icon:'👤',color:'var(--p-vps)',engine:'VPS'},
-  {title:'Tableau Neurologique',icon:'🧠',color:'var(--p-tde)',engine:'TDE'},
-  {title:'Biologie & LCR',icon:'🔬',color:'var(--p-pve)',engine:'PVE'},
+  {title:'Tableau Neurologique',icon:'brain',color:'var(--p-tde)',engine:'TDE'},
+  {title:'Biologie & LCR',icon:'virus',color:'var(--p-pve)',engine:'PVE'},
   {title:'Traitements & Réa',icon:'💊',color:'var(--p-ewe)',engine:'EWE'},
   {title:'Imagerie & Extensions',icon:'📊',color:'var(--p-tpe)',engine:'TPE'},
 ]
@@ -330,7 +331,7 @@ export default function ProjectPage() {
             <div key={i} onClick={()=>{if(i<=step+1)setStep(i)}} style={{flex:1,cursor:i<=step+1?'pointer':'default'}}>
               <div style={{height:'3px',borderRadius:'2px',marginBottom:'8px',transition:'all 250ms',background:i<=step?s.color:'var(--p-gray-1)',opacity:i===step?1:i<step?0.6:0.25}} />
               <div style={{display:'flex',alignItems:'center',gap:'6px'}}>
-                <span style={{fontSize:'12px'}}>{s.icon}</span>
+                <Picto name={s.icon} size={20} />
                 <span style={{fontSize:'11px',color:i===step?'var(--p-text)':'var(--p-text-dim)',fontWeight:i===step?600:400}}>{s.title}</span>
               </div>
             </div>

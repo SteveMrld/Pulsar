@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -175,7 +176,7 @@ export default function DiagnosticPage() {
     <div className="page-enter-stagger" style={{ maxWidth: '1100px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
-        <span style={{ fontSize: '2rem' }}>🧬</span>
+        <Picto name="dna" size={40} glow glowColor="#2FD1C8" />
         <div>
           <h1 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Diagnostic IA</h1>
           <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Phase 2 — Scoring FIRES / EAIS / PIMS</span>

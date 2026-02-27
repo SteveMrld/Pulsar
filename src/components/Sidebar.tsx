@@ -96,6 +96,7 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
       }}>
         {!collapsed && (
           <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 'var(--p-space-2)' }}>
+            <img src="/assets/logo-pulsar.jpg" alt="PULSAR" width={28} height={28} style={{ borderRadius: 6, filter: 'drop-shadow(0 0 6px rgba(108,124,255,0.3))' }} />
             <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--p-vps)', letterSpacing: '0.1em' }}>PULSAR</span>
             <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', padding: '2px 6px', background: 'var(--p-bg-elevated)', borderRadius: 'var(--p-radius-sm)' }}>V15</span>
           </Link>

@@ -5,6 +5,7 @@ import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 import dynamic from 'next/dynamic'
 import Silhouette from '@/components/Silhouette'
+import Picto from '@/components/Picto'
 
 const RadarChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
 const Radar = dynamic(() => import('recharts').then(m => m.Radar), { ssr: false })
@@ -68,11 +69,11 @@ export default function CockpitPage() {
   const makeSparkData = (current: number) => { const b = Math.max(0, current - 20); return [b + 5, b + 12, b + 8, b + 15, current] }
 
   const vitals = [
-    { l: 'FC', v: ps.hemodynamics.heartRate, u: 'bpm', icon: '❤️', ok: ps.hemodynamics.heartRate >= nr.hrLow && ps.hemodynamics.heartRate <= nr.hrHigh, nr: `${nr.hrLow}-${nr.hrHigh}` },
-    { l: 'TA', v: `${ps.hemodynamics.sbp}/${ps.hemodynamics.dbp}`, u: 'mmHg', icon: '🩸', ok: ps.hemodynamics.sbp >= nr.sbpLow && ps.hemodynamics.sbp <= nr.sbpHigh, nr: `${nr.sbpLow}-${nr.sbpHigh}` },
-    { l: 'SpO₂', v: ps.hemodynamics.spo2, u: '%', icon: '💨', ok: ps.hemodynamics.spo2 >= 95, nr: '95-100' },
-    { l: 'T°', v: ps.hemodynamics.temp, u: '°C', icon: '🌡️', ok: ps.hemodynamics.temp >= 36.5 && ps.hemodynamics.temp <= 37.5, nr: '36.5-37.5' },
-    { l: 'FR', v: ps.hemodynamics.respRate, u: '/min', icon: '🫁', ok: ps.hemodynamics.respRate >= 12 && ps.hemodynamics.respRate <= 25, nr: '12-25' },
+    { l: 'FC', v: ps.hemodynamics.heartRate, u: 'bpm', icon: 'heart', ok: ps.hemodynamics.heartRate >= nr.hrLow && ps.hemodynamics.heartRate <= nr.hrHigh, nr: `${nr.hrLow}-${nr.hrHigh}` },
+    { l: 'TA', v: `${ps.hemodynamics.sbp}/${ps.hemodynamics.dbp}`, u: 'mmHg', icon: 'blood', ok: ps.hemodynamics.sbp >= nr.sbpLow && ps.hemodynamics.sbp <= nr.sbpHigh, nr: `${nr.sbpLow}-${nr.sbpHigh}` },
+    { l: 'SpO₂', v: ps.hemodynamics.spo2, u: '%', icon: 'lungs', ok: ps.hemodynamics.spo2 >= 95, nr: '95-100' },
+    { l: 'T°', v: ps.hemodynamics.temp, u: '°C', icon: 'thermo', ok: ps.hemodynamics.temp >= 36.5 && ps.hemodynamics.temp <= 37.5, nr: '36.5-37.5' },
+    { l: 'FR', v: ps.hemodynamics.respRate, u: '/min', icon: 'lungs', ok: ps.hemodynamics.respRate >= 12 && ps.hemodynamics.respRate <= 25, nr: '12-25' },
   ]
 
   const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
@@ -86,7 +87,7 @@ export default function CockpitPage() {
     <div className="page-enter-stagger" style={{ maxWidth: '1200px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
-        <span style={{ fontSize: '2rem' }}>📊</span>
+        <Picto name="eeg" size={40} glow glowColor="#6C7CFF" />
         <div>
           <h1 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Cockpit Vital</h1>
           <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Phase 4 — Monitoring continu · 5 moteurs × 4 couches</span>
@@ -188,7 +189,7 @@ export default function CockpitPage() {
           {vitals.map((v, i) => (
             <div key={i} className="hover-lift" style={{ ...card, padding: '12px', borderLeft: `3px solid ${v.ok ? 'var(--p-success)' : 'var(--p-critical)'}` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                <span style={{ fontSize: '14px' }}>{v.icon}</span>
+                <Picto name={v.icon} size={22} glow={!v.ok} glowColor={v.ok ? undefined : 'rgba(255,107,138,0.6)'} />
                 <span style={{ padding: '1px 6px', borderRadius: 'var(--p-radius-full)', background: v.ok ? 'var(--p-success-bg)' : 'var(--p-critical-bg)', fontSize: '8px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: v.ok ? 'var(--p-success)' : 'var(--p-critical)' }}>{v.ok ? 'OK' : '!'}</span>
               </div>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: 'var(--p-text-xl)', fontWeight: 800 }}>{v.v}<span style={{ fontSize: '10px', color: 'var(--p-text-dim)', marginLeft: '2px' }}>{v.u}</span></div>

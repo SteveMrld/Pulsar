@@ -14,9 +14,9 @@ const engines = [
 ]
 
 const features = [
-  { icon: '🧠', title: '5 Moteurs Cerveau', desc: 'VPS · TDE · PVE · EWE · TPE — chaque moteur pense en 4 couches : intention, contexte, règles métier, courbe globale.' },
-  { icon: '⚡', title: '5 Pathologies', desc: 'FIRES · anti-NMDAR · NORSE · PIMS/MIS-C · MOGAD/ADEM — couverture des encéphalopathies inflammatoires pédiatriques.' },
-  { icon: '🔬', title: 'Evidence-Based', desc: '59 références cliniques. Benchmarké sur Francoeur JAMA 2024, Bilodeau 2024, Shakeshaft AUC 0.72, SPF 932 cas.' },
+  { icon: '/assets/organs/brain.png', title: '5 Moteurs Cerveau', desc: 'VPS · TDE · PVE · EWE · TPE — chaque moteur pense en 4 couches : intention, contexte, règles métier, courbe globale.' },
+  { icon: '/assets/organs/dna.png', title: '5 Pathologies', desc: 'FIRES · anti-NMDAR · NORSE · PIMS/MIS-C · MOGAD/ADEM — couverture des encéphalopathies inflammatoires pédiatriques.' },
+  { icon: '/assets/organs/virus.png', title: 'Evidence-Based', desc: '59 références cliniques. Benchmarké sur Francoeur JAMA 2024, Bilodeau 2024, Shakeshaft AUC 0.72, SPF 932 cas.' },
 ]
 
 export default function LandingPage() {
@@ -33,6 +33,7 @@ export default function LandingPage() {
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
+          <img src="/assets/logo-pulsar.jpg" alt="PULSAR" width={36} height={36} style={{ borderRadius: 8, filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.3))' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
           <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', padding: '2px 8px', background: 'var(--p-bg-elevated)', borderRadius: 'var(--p-radius-sm)' }}>V15</span>
         </div>
@@ -110,7 +111,7 @@ export default function LandingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--p-space-6)' }}>
           {features.map((f, i) => (
             <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-8)' }}>
-              <div style={{ fontSize: '2rem', marginBottom: 'var(--p-space-4)' }}>{f.icon}</div>
+              <div style={{ marginBottom: 'var(--p-space-4)' }}><img src={f.icon} alt={f.title} width={48} height={48} style={{ borderRadius: 8, filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.4))' }} /></div>
               <h3 style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700, marginBottom: 'var(--p-space-3)', color: 'var(--p-text)' }}>{f.title}</h3>
               <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 'var(--p-leading-relaxed)' }}>{f.desc}</p>
             </div>

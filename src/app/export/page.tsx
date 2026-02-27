@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -70,7 +71,7 @@ export default function ExportPage() {
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
-        <span style={{ fontSize: '2rem' }}>📤</span>
+        <Picto name="brain" size={40} glow glowColor="#FFB347" />
         <div>
           <h1 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Export PDF / Expert</h1>
           <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-tpe)', fontFamily: 'var(--p-font-mono)' }}>Phase 5 — Rapport pour centre de référence</span>
@@ -101,7 +102,7 @@ export default function ExportPage() {
         </div>
         <div style={{ display: 'flex', gap: '8px' }}>
           <button onClick={handlePrint} style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-tpe)', color: '#fff', border: 'none', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>📄 Imprimer / PDF</button>
-          <button onClick={handleCSV} style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-bg-elevated)', color: 'var(--p-text)', border: 'var(--p-border)', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>📊 Export CSV</button>
+          <button onClick={handleCSV} style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-bg-elevated)', color: 'var(--p-text)', border: 'var(--p-border)', fontWeight: 700, fontSize: '12px', cursor: 'pointer' }}>Export CSV</button>
         </div>
       </div>
 

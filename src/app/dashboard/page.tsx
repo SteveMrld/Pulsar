@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import Picto from '@/components/Picto'
 
 function Spark({ data, color, w = 64, h = 24 }: { data: number[]; color: string; w?: number; h?: number }) {
   if (data.length < 2) return null
@@ -36,37 +37,37 @@ function MiniGauge({ score, color, size = 44 }: { score: number; color: string; 
 
 const phases = [
   { label: 'PHASE 1 — ARRIVÉE', modules: [
-    { href: '/project', icon: '📋', title: 'Nouveau CDC', desc: 'Saisie patient complète', color: 'var(--p-vps)' },
-    { href: '/urgence', icon: '🚨', title: 'Mode Urgence 3h', desc: '6 champs essentiels', color: 'var(--p-critical)' },
-    { href: '/bilan', icon: '🔬', title: 'Bilan diagnostique', desc: '26 examens, 6 catégories', color: 'var(--p-pve)' },
+    { href: '/project', icon: 'brain', title: 'Nouveau CDC', desc: 'Saisie patient complète', color: 'var(--p-vps)' },
+    { href: '/urgence', icon: 'heart', title: 'Mode Urgence 3h', desc: '6 champs essentiels', color: 'var(--p-critical)' },
+    { href: '/bilan', icon: 'virus', title: 'Bilan diagnostique', desc: '26 examens, 6 catégories', color: 'var(--p-pve)' },
   ]},
   { label: 'PHASE 2 — DIAGNOSTIC', modules: [
-    { href: '/diagnostic', icon: '🧬', title: 'Diagnostic IA', desc: 'Scoring FIRES/EAIS/PIMS', color: 'var(--p-tde)' },
-    { href: '/interpellation', icon: '⚠️', title: 'Interpellation', desc: 'Drapeaux rouges, seuils', color: 'var(--p-warning)' },
-    { href: '/case-matching', icon: '🔄', title: 'Case-Matching', desc: '4 cas documentés', color: 'var(--p-info)' },
+    { href: '/diagnostic', icon: 'dna', title: 'Diagnostic IA', desc: 'Scoring FIRES/EAIS/PIMS', color: 'var(--p-tde)' },
+    { href: '/interpellation', icon: 'thermo', title: 'Interpellation', desc: 'Drapeaux rouges, seuils', color: 'var(--p-warning)' },
+    { href: '/case-matching', icon: 'eeg', title: 'Case-Matching', desc: '4 cas documentés', color: 'var(--p-info)' },
   ]},
   { label: 'PHASE 3 — TRAITEMENT', modules: [
-    { href: '/recommandations', icon: '💊', title: 'Recommandations', desc: '4 lignes thérapeutiques', color: 'var(--p-ewe)' },
-    { href: '/pharmacovigilance', icon: '🛡️', title: 'Pharmacovigilance', desc: 'Interactions, PVE Engine', color: 'var(--p-pve)' },
+    { href: '/recommandations', icon: 'blood', title: 'Recommandations', desc: '4 lignes thérapeutiques', color: 'var(--p-ewe)' },
+    { href: '/pharmacovigilance', icon: 'virus', title: 'Pharmacovigilance', desc: 'Interactions, PVE Engine', color: 'var(--p-pve)' },
   ]},
   { label: 'PHASE 4 — MONITORING', modules: [
-    { href: '/cockpit', icon: '📊', title: 'Cockpit Vital', desc: '5 paramètres + 5 moteurs', color: 'var(--p-vps)' },
-    { href: '/timeline', icon: '📅', title: 'Timeline', desc: 'Chronologie du séjour', color: 'var(--p-tde)' },
-    { href: '/suivi', icon: '📈', title: 'Suivi J+2/5/7', desc: "Points d'étape", color: 'var(--p-tpe)' },
+    { href: '/cockpit', icon: 'eeg', title: 'Cockpit Vital', desc: '5 paramètres + 5 moteurs', color: 'var(--p-vps)' },
+    { href: '/timeline', icon: 'brain', title: 'Timeline', desc: 'Chronologie du séjour', color: 'var(--p-tde)' },
+    { href: '/suivi', icon: 'heart', title: 'Suivi J+2/5/7', desc: "Points d'étape", color: 'var(--p-tpe)' },
   ]},
   { label: 'PHASE 5 — SYNTHÈSE', modules: [
-    { href: '/staff', icon: '👥', title: 'Staff / RCP', desc: 'Réunion pluridisciplinaire', color: 'var(--p-info)' },
-    { href: '/famille', icon: '👨‍👩‍👧', title: 'Espace Famille', desc: 'Langage accessible', color: 'var(--p-tde)' },
-    { href: '/synthese', icon: '📑', title: 'Synthèse', desc: 'Vue consolidée', color: 'var(--p-pve)' },
-    { href: '/export', icon: '📤', title: 'Export PDF', desc: 'Rapport complet', color: 'var(--p-tpe)' },
+    { href: '/staff', icon: 'lungs', title: 'Staff / RCP', desc: 'Réunion pluridisciplinaire', color: 'var(--p-info)' },
+    { href: '/famille', icon: 'heart', title: 'Espace Famille', desc: 'Langage accessible', color: 'var(--p-tde)' },
+    { href: '/synthese', icon: 'brain', title: 'Synthèse', desc: 'Vue consolidée', color: 'var(--p-pve)' },
+    { href: '/export', icon: 'dna', title: 'Export PDF', desc: 'Rapport complet', color: 'var(--p-tpe)' },
   ]},
   { label: 'RESSOURCES', modules: [
-    { href: '/demo', icon: '▶️', title: 'Démo Inès', desc: '13 scènes autopilotées', color: 'var(--p-ewe)' },
-    { href: '/engines/vps', icon: '💜', title: 'VPS Engine', desc: '4 couches BrainCore', color: 'var(--p-vps)' },
-    { href: '/engines/tde', icon: '💚', title: 'TDE Engine', desc: '4 couches BrainCore', color: 'var(--p-tde)' },
-    { href: '/engines/pve', icon: '💟', title: 'PVE Engine', desc: '4 couches BrainCore', color: 'var(--p-pve)' },
-    { href: '/engines/ewe', icon: '🔴', title: 'EWE Engine', desc: '4 couches BrainCore', color: 'var(--p-ewe)' },
-    { href: '/engines/tpe', icon: '🟠', title: 'TPE Engine', desc: '4 couches BrainCore', color: 'var(--p-tpe)' },
+    { href: '/demo', icon: 'eeg', title: 'Démo Inès', desc: '13 scènes autopilotées', color: 'var(--p-ewe)' },
+    { href: '/engines/vps', icon: 'brain', title: 'VPS Engine', desc: '4 couches BrainCore', color: 'var(--p-vps)' },
+    { href: '/engines/tde', icon: 'dna', title: 'TDE Engine', desc: '4 couches BrainCore', color: 'var(--p-tde)' },
+    { href: '/engines/pve', icon: 'virus', title: 'PVE Engine', desc: '4 couches BrainCore', color: 'var(--p-pve)' },
+    { href: '/engines/ewe', icon: 'heart', title: 'EWE Engine', desc: '4 couches BrainCore', color: 'var(--p-ewe)' },
+    { href: '/engines/tpe', icon: 'thermo', title: 'TPE Engine', desc: '4 couches BrainCore', color: 'var(--p-tpe)' },
   ]},
 ]
 
@@ -168,7 +169,7 @@ export default function DashboardPage() {
                   animationDelay: `${(pi * 3 + mi) * 50}ms`,
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--p-space-3)' }}>
-                    <span style={{ fontSize: '1.5rem' }}>{m.icon}</span>
+                    <Picto name={m.icon} size={36} glow glowColor={m.color} />
                   </div>
                   <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)', marginBottom: '4px' }}>{m.title}</div>
                   <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>{m.desc}</div>
@@ -183,13 +184,13 @@ export default function DashboardPage() {
       <div className="accent-line" style={{ margin: 'var(--p-space-4) 0' }} />
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--p-space-3)' }} className="grid-3">
         {[
-          { href: '/evidence', icon: '📚', label: 'Evidence Vault', badge: '17 publis' },
-          { href: '/experts', icon: '🎓', label: 'Consensus Expert', badge: '5 experts' },
-          { href: '/about', icon: '💙', label: 'Mémorial', badge: '' },
+          { href: '/evidence', icon: 'virus', label: 'Evidence Vault', badge: '17 publis' },
+          { href: '/experts', icon: 'brain', label: 'Consensus Expert', badge: '5 experts' },
+          { href: '/about', icon: 'heart', label: 'Mémorial', badge: '' },
         ].map((a, i) => (
           <Link key={i} href={a.href} style={{ textDecoration: 'none' }}>
             <div className="card-interactive" style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-3)', display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
-              <span>{a.icon}</span>
+              <Picto name={a.icon} size={28} glow />
               <span style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', flex: 1 }}>{a.label}</span>
               {a.badge && <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>{a.badge}</span>}
             </div>

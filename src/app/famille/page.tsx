@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 
 export default function FamillePage() {
   return (
@@ -22,15 +23,15 @@ export default function FamillePage() {
 
       {/* Sections */}
       {[
-        { icon: '🏥', title: 'Ce qui se passe', content: 'Votre enfant présente des crises (convulsions) accompagnées de fièvre. Ces crises sont provoquées par une inflammation dans le cerveau. Ce n\'est pas contagieux et ce n\'est pas de votre faute.' },
-        { icon: '🔬', title: 'Les examens', content: 'Nous avons réalisé des prises de sang pour vérifier l\'inflammation, une ponction lombaire (prélèvement dans le dos, sous anesthésie locale) pour analyser le liquide autour du cerveau, et une IRM (photo du cerveau sans douleur).' },
-        { icon: '💊', title: 'Les traitements', content: 'Votre enfant reçoit des médicaments contre les crises (antiépileptiques) et des traitements pour calmer l\'inflammation (corticoïdes, immunoglobulines). Ces traitements sont administrés par perfusion.' },
-        { icon: '📅', title: 'Les prochaines étapes', content: 'Nous surveillons votre enfant en continu. Un contrôle IRM est prévu dans quelques jours. L\'équipe vous tiendra informés de l\'évolution et des résultats.' },
-        { icon: '❓', title: 'Questions fréquentes', content: 'Combien de temps ? Chaque enfant est différent, mais la prise en charge dure généralement plusieurs semaines. Puis-je rester ? Oui, votre présence est importante pour votre enfant. Quand pourra-t-il sortir ? Quand les crises seront contrôlées et l\'inflammation calmée.' },
+        { icon: 'heart', title: 'Ce qui se passe', content: 'Votre enfant présente des crises (convulsions) accompagnées de fièvre. Ces crises sont provoquées par une inflammation dans le cerveau. Ce n\'est pas contagieux et ce n\'est pas de votre faute.' },
+        { icon: 'virus', title: 'Les examens', content: 'Nous avons réalisé des prises de sang pour vérifier l\'inflammation, une ponction lombaire (prélèvement dans le dos, sous anesthésie locale) pour analyser le liquide autour du cerveau, et une IRM (photo du cerveau sans douleur).' },
+        { icon: 'blood', title: 'Les traitements', content: 'Votre enfant reçoit des médicaments contre les crises (antiépileptiques) et des traitements pour calmer l\'inflammation (corticoïdes, immunoglobulines). Ces traitements sont administrés par perfusion.' },
+        { icon: 'brain', title: 'Les prochaines étapes', content: 'Nous surveillons votre enfant en continu. Un contrôle IRM est prévu dans quelques jours. L\'équipe vous tiendra informés de l\'évolution et des résultats.' },
+        { icon: 'eeg', title: 'Questions fréquentes', content: 'Combien de temps ? Chaque enfant est différent, mais la prise en charge dure généralement plusieurs semaines. Puis-je rester ? Oui, votre présence est importante pour votre enfant. Quand pourra-t-il sortir ? Quand les crises seront contrôlées et l\'inflammation calmée.' },
       ].map((s, i) => (
         <div key={i} className="animate-in" style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-3)', animationDelay: `${i * 80}ms` }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-3)' }}>
-            <span style={{ fontSize: '1.3rem' }}>{s.icon}</span>
+            <Picto name={s.icon} size={28} glow />
             <h3 style={{ fontSize: 'var(--p-text-base)', fontWeight: 700, color: 'var(--p-text)' }}>{s.title}</h3>
           </div>
           <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 1.8 }}>{s.content}</p>

@@ -22,7 +22,7 @@ export default function EvidencePage() {
   return (
     <div style={{maxWidth:'900px',margin:'0 auto'}}>
       <div style={{display:'flex',alignItems:'center',gap:'var(--p-space-4)',marginBottom:'var(--p-space-6)'}}>
-        <span style={{fontSize:'2rem'}}>📚</span>
+        <img src="/assets/organs/virus.png" alt="Evidence" width={40} height={40} style={{ borderRadius: 8, filter: 'drop-shadow(0 0 12px rgba(185,107,255,0.4))' }} />
         <div>
           <h1 style={{fontSize:'var(--p-text-2xl)',fontWeight:800,color:'var(--p-text)'}}>Evidence Vault</h1>
           <span style={{fontSize:'var(--p-text-xs)',color:'var(--p-vps)',fontFamily:'var(--p-font-mono)'}}>{publications.length} publications référencées</span>

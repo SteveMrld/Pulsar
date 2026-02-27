@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -13,14 +14,14 @@ const RResponsiveContainer = dynamic(() => import('recharts').then(m => m.Respon
 
 // ── Reference cases database ──
 interface RefCase {
-  id: string; name: string; age: string; pathology: string; color: string; emoji: string
+  id: string; name: string; age: string; pathology: string; color: string; picto: string
   outcome: string; summary: string
   features: { label: string; value: string | number; extractor: (ps: PatientState) => number; refValue: number; weight: number }[]
 }
 
 const REF_CASES: RefCase[] = [
   {
-    id: 'alejandro', name: 'Alejandro R.', age: '6 ans', pathology: 'FIRES', color: 'var(--p-critical)', emoji: '🕯️',
+    id: 'alejandro', name: 'Alejandro R.', age: '6 ans', pathology: 'FIRES', color: 'var(--p-critical)', picto: 'heart',
     outcome: 'Décédé (2019-2025) — Séquelles sévères, état de mal réfractaire prolongé',
     summary: 'FIRES typique : fièvre, crises réfractaires J3, GCS 5, échec multi-ligne. Orage cytokinique secondaire.',
     features: [
@@ -33,7 +34,7 @@ const REF_CASES: RefCase[] = [
     ],
   },
   {
-    id: 'lina', name: 'Lina B.', age: '14 ans', pathology: 'Anti-NMDAR', color: 'var(--p-tde)', emoji: '👧',
+    id: 'lina', name: 'Lina B.', age: '14 ans', pathology: 'Anti-NMDAR', color: 'var(--p-tde)', picto: 'brain',
     outcome: 'Rémission sous Rituximab — mRS 1 à 6 mois',
     summary: 'Encéphalite anti-NMDAR : troubles psychiatriques, crises focales, Ac anti-NMDAR+ dans LCR.',
     features: [
@@ -46,7 +47,7 @@ const REF_CASES: RefCase[] = [
     ],
   },
   {
-    id: 'emma', name: 'Emma S.', age: '8 ans', pathology: 'FIRES + Orage', color: 'var(--p-warning)', emoji: '👧',
+    id: 'emma', name: 'Emma S.', age: '8 ans', pathology: 'FIRES + Orage', color: 'var(--p-warning)', picto: 'brain',
     outcome: 'Survie avec séquelles modérées — Régime cétogène continu',
     summary: 'FIRES avec orage cytokinique : ferritine >5000, état de mal super-réfractaire, réponse partielle kétamine.',
     features: [
@@ -59,7 +60,7 @@ const REF_CASES: RefCase[] = [
     ],
   },
   {
-    id: 'noah', name: 'Noah & Sofia', age: '5 & 10 ans', pathology: 'PIMS/MIS-C', color: 'var(--p-tpe)', emoji: '👦👧',
+    id: 'noah', name: 'Noah & Sofia', age: '5 & 10 ans', pathology: 'PIMS/MIS-C', color: 'var(--p-tpe)', picto: 'dna',
     outcome: 'Rémission IVIg+Corticos — Suivi cardiaque 6 mois',
     summary: 'PIMS post-COVID : fièvre prolongée, troponine élevée, dysfonction VG, traitement 1ère ligne efficace.',
     features: [
@@ -160,7 +161,7 @@ export default function CaseMatchingPage() {
             <div>
               <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px' }}>CAS LE PLUS PROCHE</div>
               <div style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700, color: 'var(--p-text)', marginTop: '2px' }}>
-                {matches[0].emoji} {matches[0].name} — {matches[0].pathology}
+                <Picto name={matches[0].picto} size={20} /> {matches[0].name} — {matches[0].pathology}
               </div>
               <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)', marginTop: '2px' }}>{matches[0].outcome}</div>
             </div>
@@ -188,7 +189,7 @@ export default function CaseMatchingPage() {
                 background: `${m.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center',
                 fontSize: '18px', flexShrink: 0,
                 border: mi === 0 ? `2px solid ${m.color}` : 'none',
-              }}>{m.emoji}</div>
+              }}><Picto name={m.picto} size={28} glow /></div>
               <div style={{ textAlign: 'left' }}>
                 <div style={{ fontWeight: 700, fontSize: 'var(--p-text-sm)' }}>{m.name} — {m.age}</div>
                 <div style={{ fontSize: '11px', color: m.color, fontFamily: 'var(--p-font-mono)' }}>{m.pathology}</div>
