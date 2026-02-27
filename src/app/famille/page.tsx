@@ -1,47 +1,96 @@
 'use client'
-import Picto from '@/components/Picto';
+import { useState } from 'react'
+import Picto from '@/components/Picto'
+
+type Lang = 'simple' | 'detail'
+
+const sections = [
+  { icon: 'heart', color: 'var(--p-vps)', title: 'Ce qui se passe',
+    simple: 'Votre enfant présente des crises (convulsions) accompagnées de fièvre. Ces crises sont provoquées par une inflammation dans le cerveau. Ce n\'est pas contagieux et ce n\'est pas de votre faute. L\'équipe médicale surveille votre enfant en permanence.',
+    detail: 'Votre enfant est atteint d\'une encéphalite auto-immune, une maladie rare où le système immunitaire attaque par erreur des cellules du cerveau. Cela provoque des crises d\'épilepsie et parfois des changements de comportement. Le système PULSAR aide l\'équipe à suivre l\'évolution en temps réel.' },
+  { icon: 'microscope', color: 'var(--p-pve)', title: 'Les examens réalisés',
+    simple: 'Nous avons fait des prises de sang pour vérifier l\'inflammation, une ponction lombaire (prélèvement dans le dos, sous anesthésie) pour analyser le liquide autour du cerveau, et une IRM (photo du cerveau, sans douleur). Un EEG (capteurs sur la tête) surveille l\'activité du cerveau en continu.',
+    detail: 'Le bilan comprend : NFS/CRP/PCT (inflammation), panel d\'auto-anticorps sériques et dans le LCR (anti-NMDAR, LGI1, CASPR2), IRM cérébrale séquences FLAIR et diffusion, et EEG continu sur 24h minimum. Les résultats orientent le diagnostic et le choix du traitement.' },
+  { icon: 'pill', color: 'var(--p-ewe)', title: 'Les traitements donnés',
+    simple: 'Votre enfant reçoit des médicaments contre les crises (antiépileptiques) et des traitements pour calmer l\'inflammation (corticoïdes et immunoglobulines en perfusion). Ces traitements sont bien connus et utilisés régulièrement dans cette situation.',
+    detail: 'Ligne 1 : Méthylprednisolone 30 mg/kg/j pendant 3-5 jours + IgIV 2 g/kg sur 2 jours. Si insuffisant : Rituximab ou échanges plasmatiques. Les antiépileptiques (Lévétiracétam en 1ère intention) contrôlent les crises. La pharmacovigilance surveille les effets secondaires en temps réel.' },
+  { icon: 'chart', color: 'var(--p-tde)', title: 'L\'évolution attendue',
+    simple: 'Chaque enfant est différent, mais en général l\'amélioration commence dans les premiers jours de traitement. La surveillance dure plusieurs semaines. Nous vous informerons régulièrement de l\'évolution.',
+    detail: 'Le score VPS (Vital Prognosis Score) suit l\'évolution heure par heure. Un score en baisse = amélioration. Les crises diminuent généralement en 48-72h sous traitement. L\'IRM de contrôle à J+7-14 vérifie la régression des lésions. Le suivi neurologique se poursuit sur 6-12 mois.' },
+  { icon: 'brain', color: 'var(--p-tpe)', title: 'Questions fréquentes',
+    simple: 'Puis-je rester ? Oui, votre présence est importante et rassurante. Combien de temps ? Généralement 2-4 semaines en phase aiguë, puis suivi ambulatoire. Mon enfant va-t-il guérir ? Avec un traitement précoce, la grande majorité des enfants récupèrent bien. Chaque cas est unique.',
+    detail: 'Facteurs de bon pronostic : diagnostic précoce, réponse rapide à l\'immunothérapie, absence de complication infectieuse surajoutée. Le suivi à long terme inclut : EEG de contrôle, bilan neuropsychologique à 3 mois, suivi scolaire adapté si nécessaire. Un protocole de rechute est prévu.' },
+]
 
 export default function FamillePage() {
-  return (
-    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-2)' }}>
-        <div style={{ width: '8px', height: '32px', borderRadius: '4px', background: 'var(--p-tde)' }} />
-        <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)' }}>Espace Famille</h1>
-      </div>
-      <p style={{ color: 'var(--p-text-dim)', fontSize: 'var(--p-text-sm)', marginBottom: 'var(--p-space-6)' }}>Informations accessibles pour les parents — Langage simple, pas de jargon</p>
+  const [lang, setLang] = useState<Lang>('simple')
+  const [openIdx, setOpenIdx] = useState<number>(0)
 
-      {/* Welcome card */}
-      <div style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', marginBottom: 'var(--p-space-5)' }}>
-        <div style={{ marginBottom: 'var(--p-space-3)' }}><Picto name="family" size={36} glow glowColor="rgba(255,107,138,0.5)" /></div>
+  return (
+    <div className="page-enter" style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-2)' }}>
+        <Picto name="family" size={36} glow glowColor="rgba(255,107,138,0.5)" />
+        <div>
+          <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)' }}>Espace Famille</h1>
+          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>Informations pour les parents — langage adapté</span>
+        </div>
+      </div>
+
+      {/* Toggle langage */}
+      <div className="glass-card" style={{ padding: 'var(--p-space-3)', marginBottom: 'var(--p-space-5)', display: 'flex', gap: '8px' }}>
+        {([['simple', 'Langage simple'], ['detail', 'Détails médicaux']] as const).map(([key, label]) => (
+          <button key={key} onClick={() => setLang(key)} style={{
+            flex: 1, padding: '8px 16px', borderRadius: 'var(--p-radius-md)', cursor: 'pointer',
+            fontWeight: 600, fontSize: 'var(--p-text-sm)', transition: 'all 150ms',
+            border: lang === key ? '2px solid var(--p-vps)' : '1px solid var(--p-gray-2)',
+            background: lang === key ? 'rgba(108,124,255,0.12)' : 'transparent',
+            color: lang === key ? 'var(--p-vps)' : 'var(--p-text-muted)',
+          }}>{label}</button>
+        ))}
+      </div>
+
+      {/* Welcome */}
+      <div className="glass-card" style={{ padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-5)', borderTop: '2px solid var(--p-tde)' }}>
         <h2 style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700, color: 'var(--p-text)', marginBottom: 'var(--p-space-3)' }}>Chers parents,</h2>
         <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 1.8 }}>
-          Votre enfant est pris en charge par notre équipe. Cette page vous explique simplement ce qui se passe,
-          les examens réalisés, les traitements donnés, et les prochaines étapes. N&apos;hésitez pas à poser vos questions
-          à l&apos;équipe médicale.
+          Votre enfant est pris en charge par notre équipe. Cette page vous explique ce qui se passe, les examens, les traitements et les prochaines étapes. Nous sommes là pour répondre à vos questions.
         </p>
       </div>
 
-      {/* Sections */}
-      {[
-        { icon: 'heart', title: 'Ce qui se passe', content: 'Votre enfant présente des crises (convulsions) accompagnées de fièvre. Ces crises sont provoquées par une inflammation dans le cerveau. Ce n\'est pas contagieux et ce n\'est pas de votre faute.' },
-        { icon: 'virus', title: 'Les examens', content: 'Nous avons réalisé des prises de sang pour vérifier l\'inflammation, une ponction lombaire (prélèvement dans le dos, sous anesthésie locale) pour analyser le liquide autour du cerveau, et une IRM (photo du cerveau sans douleur).' },
-        { icon: 'blood', title: 'Les traitements', content: 'Votre enfant reçoit des médicaments contre les crises (antiépileptiques) et des traitements pour calmer l\'inflammation (corticoïdes, immunoglobulines). Ces traitements sont administrés par perfusion.' },
-        { icon: 'brain', title: 'Les prochaines étapes', content: 'Nous surveillons votre enfant en continu. Un contrôle IRM est prévu dans quelques jours. L\'équipe vous tiendra informés de l\'évolution et des résultats.' },
-        { icon: 'eeg', title: 'Questions fréquentes', content: 'Combien de temps ? Chaque enfant est différent, mais la prise en charge dure généralement plusieurs semaines. Puis-je rester ? Oui, votre présence est importante pour votre enfant. Quand pourra-t-il sortir ? Quand les crises seront contrôlées et l\'inflammation calmée.' },
-      ].map((s, i) => (
-        <div key={i} className="animate-in" style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-3)', animationDelay: `${i * 80}ms` }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-3)' }}>
-            <Picto name={s.icon} size={28} glow />
-            <h3 style={{ fontSize: 'var(--p-text-base)', fontWeight: 700, color: 'var(--p-text)' }}>{s.title}</h3>
-          </div>
-          <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 1.8 }}>{s.content}</p>
-        </div>
-      ))}
+      {/* Sections accordéon */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--p-space-3)' }}>
+        {sections.map((s, i) => {
+          const isOpen = openIdx === i
+          return (
+            <div key={i} className="glass-card card-interactive" style={{ padding: 0, overflow: 'hidden', borderLeft: `3px solid ${s.color}` }}>
+              <button onClick={() => setOpenIdx(isOpen ? -1 : i)} style={{
+                display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', width: '100%',
+                padding: 'var(--p-space-4) var(--p-space-5)', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--p-text)',
+              }}>
+                <Picto name={s.icon} size={24} glow={isOpen} glowColor={s.color} />
+                <span style={{ flex: 1, fontWeight: 700, fontSize: 'var(--p-text-sm)', textAlign: 'left' }}>{s.title}</span>
+                <span style={{ color: 'var(--p-text-dim)', transform: isOpen ? 'rotate(180deg)' : '', transition: 'transform 200ms' }}>▾</span>
+              </button>
+              {isOpen && (
+                <div style={{ padding: '0 var(--p-space-5) var(--p-space-5) calc(var(--p-space-5) + 36px)' }}>
+                  <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 1.8 }}>
+                    {lang === 'simple' ? s.simple : s.detail}
+                  </p>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
 
       {/* Contact */}
-      <div style={{ background: 'var(--p-info-bg)', border: '1px solid var(--p-info)', borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-4)', marginTop: 'var(--p-space-4)' }}>
-        <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 600, color: 'var(--p-info)' }}>📞 Contact équipe médicale</div>
-        <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)', marginTop: '4px' }}>N&apos;hésitez pas à nous appeler ou à demander à parler au médecin de garde à tout moment.</div>
+      <div className="glass-card" style={{ padding: 'var(--p-space-5)', marginTop: 'var(--p-space-5)', textAlign: 'center' }}>
+        <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)', marginBottom: 'var(--p-space-2)' }}>Besoin de parler ?</div>
+        <p style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)', marginBottom: 'var(--p-space-3)' }}>L&apos;équipe soignante est disponible 24h/24. N&apos;hésitez pas à poser vos questions.</p>
+        <div style={{ display: 'flex', gap: 'var(--p-space-3)', justifyContent: 'center' }}>
+          <div style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)', fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)' }}>Poste infirmier : <strong style={{ color: 'var(--p-text)' }}>Ext. 4201</strong></div>
+          <div style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)', fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)' }}>Psychologue : <strong style={{ color: 'var(--p-text)' }}>Ext. 4215</strong></div>
+        </div>
       </div>
     </div>
   )

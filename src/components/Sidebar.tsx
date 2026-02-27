@@ -11,6 +11,7 @@ const NAV_SECTIONS = [
     items: [
       { href: '/dashboard', icon: 'chart', label: 'Dashboard', badge: '' },
       { href: '/project', icon: 'clipboard', label: 'Nouveau CDC', badge: '' },
+      { href: '/admission', icon: 'clipboard', label: 'Admission', badge: 'NEW' },
     ]
   },
   {
@@ -26,6 +27,7 @@ const NAV_SECTIONS = [
       { href: '/diagnostic', icon: 'dna', label: 'Diagnostic IA', badge: '' },
       { href: '/interpellation', icon: 'warning', label: 'Interpellation', badge: '' },
       { href: '/case-matching', icon: 'cycle', label: 'Case-Matching', badge: '4' },
+      { href: '/cross-pathologie', icon: 'cycle', label: 'Cross-Pathologie', badge: '' },
     ]
   },
   {
@@ -54,6 +56,7 @@ const NAV_SECTIONS = [
       { href: '/synthese', icon: 'clipboard', label: 'Synthèse globale', badge: '' },
       { href: '/famille', icon: 'family', label: 'Espace Famille', badge: '' },
       { href: '/staff', icon: 'family', label: 'Staff / RCP', badge: '' },
+      { href: '/audit', icon: 'clipboard', label: 'Audit Trail', badge: '' },
       { href: '/export', icon: 'export', label: 'Export PDF', badge: '' },
     ]
   },
@@ -63,6 +66,7 @@ const NAV_SECTIONS = [
       { href: '/evidence', icon: 'books', label: 'Evidence Vault', badge: '17' },
       { href: '/experts', icon: 'books', label: 'Consensus Expert', badge: '5' },
       { href: '/demo', icon: 'play', label: 'Démo Inès', badge: '13' },
+      { href: '/onboarding', icon: 'play', label: 'Onboarding', badge: '' },
       { href: '/about', icon: 'heart', label: 'About / Mémorial', badge: '' },
     ]
   },
