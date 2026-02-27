@@ -101,8 +101,8 @@ const sections = [
   {title:'Identité Patient',icon:'👤',color:'var(--p-vps)',engine:'VPS'},
   {title:'Tableau Neurologique',icon:'brain',color:'var(--p-tde)',engine:'TDE'},
   {title:'Biologie & LCR',icon:'virus',color:'var(--p-pve)',engine:'PVE'},
-  {title:'Traitements & Réa',icon:'💊',color:'var(--p-ewe)',engine:'EWE'},
-  {title:'Imagerie & Extensions',icon:'📊',color:'var(--p-tpe)',engine:'TPE'},
+  {title:'Traitements & Réa',icon:'pill',color:'var(--p-ewe)',engine:'EWE'},
+  {title:'Imagerie & Extensions',icon:'chart',color:'var(--p-tpe)',engine:'TPE'},
 ]
 
 const DRUG_OPTIONS = ['Lévétiracétam','Phénytoïne','Valproate','Lacosamide','Midazolam','Thiopental','Kétamine','Propofol','Méthylprednisolone','IgIV','Rituximab','Anakinra']

@@ -1,5 +1,5 @@
 'use client'
-import Picto from '@/components/Picto'
+import Picto from '@/components/Picto';
 
 export default function FamillePage() {
   return (
@@ -12,7 +12,7 @@ export default function FamillePage() {
 
       {/* Welcome card */}
       <div style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', marginBottom: 'var(--p-space-5)' }}>
-        <div style={{ fontSize: '2rem', marginBottom: 'var(--p-space-3)' }}>👨‍👩‍👧</div>
+        <div style={{ marginBottom: 'var(--p-space-3)' }}><Picto name="family" size={36} glow glowColor="rgba(255,107,138,0.5)" /></div>
         <h2 style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700, color: 'var(--p-text)', marginBottom: 'var(--p-space-3)' }}>Chers parents,</h2>
         <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 1.8 }}>
           Votre enfant est pris en charge par notre équipe. Cette page vous explique simplement ce qui se passe,

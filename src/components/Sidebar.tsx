@@ -3,66 +3,67 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import ThemeToggle from './ThemeToggle'
+import Picto from './Picto'
 
 const NAV_SECTIONS = [
   {
     label: 'GÉNÉRAL',
     items: [
-      { href: '/dashboard', icon: '🏠', label: 'Dashboard', badge: '' },
-      { href: '/project', icon: '📋', label: 'Nouveau CDC', badge: '' },
+      { href: '/dashboard', icon: 'chart', label: 'Dashboard', badge: '' },
+      { href: '/project', icon: 'clipboard', label: 'Nouveau CDC', badge: '' },
     ]
   },
   {
     label: 'PHASE 1 — ARRIVÉE',
     items: [
-      { href: '/urgence', icon: '🚨', label: 'Mode Urgence 3h', badge: '' },
-      { href: '/bilan', icon: '🔬', label: 'Bilan diagnostique', badge: '26' },
+      { href: '/urgence', icon: 'alert', label: 'Mode Urgence 3h', badge: '' },
+      { href: '/bilan', icon: 'microscope', label: 'Bilan diagnostique', badge: '26' },
     ]
   },
   {
     label: 'PHASE 2 — DIAGNOSTIC',
     items: [
-      { href: '/diagnostic', icon: '🧬', label: 'Diagnostic IA', badge: '' },
-      { href: '/interpellation', icon: '⚠️', label: 'Interpellation', badge: '' },
-      { href: '/case-matching', icon: '🔄', label: 'Case-Matching', badge: '4' },
+      { href: '/diagnostic', icon: 'dna', label: 'Diagnostic IA', badge: '' },
+      { href: '/interpellation', icon: 'warning', label: 'Interpellation', badge: '' },
+      { href: '/case-matching', icon: 'cycle', label: 'Case-Matching', badge: '4' },
     ]
   },
   {
     label: 'PHASE 3 — TRAITEMENT',
     items: [
-      { href: '/recommandations', icon: '💊', label: 'Recommandations', badge: '4L' },
-      { href: '/pharmacovigilance', icon: '🛡️', label: 'Pharmacovigilance', badge: '' },
+      { href: '/recommandations', icon: 'pill', label: 'Recommandations', badge: '4L' },
+      { href: '/pharmacovigilance', icon: 'shield', label: 'Pharmacovigilance', badge: '' },
     ]
   },
   {
     label: 'PHASE 4 — MONITORING',
     items: [
-      { href: '/cockpit', icon: '📊', label: 'Cockpit Vital', badge: '' },
-      { href: '/engines/vps', icon: '💜', label: 'VPS Engine', badge: '' },
-      { href: '/engines/tde', icon: '💚', label: 'TDE Engine', badge: '' },
-      { href: '/engines/pve', icon: '💟', label: 'PVE Engine', badge: '' },
-      { href: '/engines/ewe', icon: '🔴', label: 'EWE Engine', badge: '' },
-      { href: '/engines/tpe', icon: '🟠', label: 'TPE Engine', badge: '' },
-      { href: '/timeline', icon: '📅', label: 'Timeline', badge: '' },
-      { href: '/suivi', icon: '📈', label: 'Suivi J+2/5/7', badge: '' },
+      { href: '/cockpit', icon: 'eeg', label: 'Cockpit Vital', badge: '' },
+      { href: '/engines/vps', icon: 'brain', label: 'VPS Engine', badge: '' },
+      { href: '/engines/tde', icon: 'heart', label: 'TDE Engine', badge: '' },
+      { href: '/engines/pve', icon: 'blood', label: 'PVE Engine', badge: '' },
+      { href: '/engines/ewe', icon: 'thermo', label: 'EWE Engine', badge: '' },
+      { href: '/engines/tpe', icon: 'lungs', label: 'TPE Engine', badge: '' },
+      { href: '/timeline', icon: 'chart', label: 'Timeline', badge: '' },
+      { href: '/suivi', icon: 'chart', label: 'Suivi J+2/5/7', badge: '' },
     ]
   },
   {
     label: 'PHASE 5 — SYNTHÈSE',
     items: [
-      { href: '/synthese', icon: '📑', label: 'Synthèse globale', badge: '' },
-      { href: '/famille', icon: '👨‍👩‍👧', label: 'Espace Famille', badge: '' },
-      { href: '/staff', icon: '👥', label: 'Staff / RCP', badge: '' },
-      { href: '/export', icon: '📤', label: 'Export PDF', badge: '' },
+      { href: '/synthese', icon: 'clipboard', label: 'Synthèse globale', badge: '' },
+      { href: '/famille', icon: 'family', label: 'Espace Famille', badge: '' },
+      { href: '/staff', icon: 'family', label: 'Staff / RCP', badge: '' },
+      { href: '/export', icon: 'export', label: 'Export PDF', badge: '' },
     ]
   },
   {
     label: 'RESSOURCES',
     items: [
-      { href: '/evidence', icon: '📚', label: 'Evidence Vault', badge: '17' },
-      { href: '/experts', icon: '🎓', label: 'Consensus Expert', badge: '5' },
-      { href: '/demo', icon: '▶️', label: 'Démo Inès', badge: '13' },
-      { href: '/about', icon: '💙', label: 'About / Mémorial', badge: '' },
+      { href: '/evidence', icon: 'books', label: 'Evidence Vault', badge: '17' },
+      { href: '/experts', icon: 'books', label: 'Consensus Expert', badge: '5' },
+      { href: '/demo', icon: 'play', label: 'Démo Inès', badge: '13' },
+      { href: '/about', icon: 'heart', label: 'About / Mémorial', badge: '' },
     ]
   },
 ]
@@ -134,7 +135,7 @@ export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; o
                   color: active ? 'var(--p-text)' : 'var(--p-text-muted)',
                   justifyContent: collapsed ? 'center' : 'flex-start',
                 }}>
-                  <span style={{ fontSize: '14px', flexShrink: 0 }}>{item.icon}</span>
+                  <Picto name={item.icon} size={18} glow={active} glowColor={active ? 'rgba(108,124,255,0.5)' : undefined} />
                   {!collapsed && (
                     <>
                       <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: active ? 600 : 400, flex: 1 }}>{item.label}</span>

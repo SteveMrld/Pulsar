@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto';
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -22,7 +23,7 @@ export default function SynthesePage() {
       <div style={card}>
         <button onClick={() => toggle(id)} style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--p-text)', padding: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '18px' }}>{icon}</span>
+            <Picto name={icon} size={20} glow glowColor={color} />
             <span style={{ fontWeight: 700, fontSize: 'var(--p-text-sm)', color }}>{title}</span>
           </div>
           <span style={{ color: 'var(--p-text-dim)', transform: isOpen ? 'rotate(180deg)' : '', transition: 'transform 200ms' }}>▾</span>
@@ -35,7 +36,7 @@ export default function SynthesePage() {
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
-        <span style={{ fontSize: '2rem' }}>📑</span>
+        <Picto name="clipboard" size={36} glow />
         <div>
           <h1 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Synthèse globale</h1>
           <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-pve)', fontFamily: 'var(--p-font-mono)' }}>Phase 5 — Vue consolidée du dossier</span>
@@ -73,7 +74,7 @@ export default function SynthesePage() {
       </div>
 
       {/* Section 1: Diagnostic */}
-      <Section id="diag" title="Diagnostic" icon="🧬" color="var(--p-tde)">
+      <Section id="diag" title="Diagnostic" icon="dna" color="var(--p-tde)">
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           {tde.intention.patterns.filter(p => p.confidence > 0.3).map((p, i) => (
             <div key={i} style={{ padding: '10px 14px', borderRadius: 'var(--p-radius-md)', background: p.confidence >= 0.7 ? 'var(--p-critical-bg)' : 'var(--p-bg-elevated)', borderLeft: `3px solid ${p.confidence >= 0.7 ? 'var(--p-critical)' : 'var(--p-warning)'}` }}>
@@ -91,7 +92,7 @@ export default function SynthesePage() {
       </Section>
 
       {/* Section 2: Pronostic vital */}
-      <Section id="vps" title="Pronostic vital" icon="💜" color="var(--p-vps)">
+      <Section id="vps" title="Pronostic vital" icon="brain" color="var(--p-vps)">
         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '10px' }}>
           {vps.intention.fields.map((f, i) => (
             <div key={i} style={{ flex: '1 1 150px', padding: '8px 12px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)' }}>
@@ -111,7 +112,7 @@ export default function SynthesePage() {
       </Section>
 
       {/* Section 3: Traitements */}
-      <Section id="tx" title="Traitements en cours" icon="💊" color="var(--p-ewe)">
+      <Section id="tx" title="Traitements en cours" icon="pill" color="var(--p-ewe)">
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', marginBottom: '10px' }}>
           {ps.drugs.map((d, i) => (
             <span key={i} style={{ padding: '4px 12px', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-bg-elevated)', fontSize: '12px', fontWeight: 500 }}>{d.name}</span>
@@ -132,7 +133,7 @@ export default function SynthesePage() {
       </Section>
 
       {/* Section 4: Pharmacovigilance */}
-      <Section id="pve" title="Pharmacovigilance" icon="🛡️" color="var(--p-pve)">
+      <Section id="pve" title="Pharmacovigilance" icon="shield" color="var(--p-pve)">
         <div style={{ fontSize: '12px', marginBottom: '8px' }}><strong>Score PVE :</strong> {pve.synthesis.score}/100 — {pve.synthesis.level}</div>
         {pve.synthesis.alerts.length > 0 ? pve.synthesis.alerts.map((a, i) => (
           <div key={i} style={{ padding: '6px 12px', marginBottom: '4px', borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${a.severity === 'critical' ? 'var(--p-critical)' : 'var(--p-warning)'}`, background: 'var(--p-bg-elevated)', fontSize: '12px' }}>
@@ -142,7 +143,7 @@ export default function SynthesePage() {
       </Section>
 
       {/* Section 5: Alertes */}
-      <Section id="alerts" title={`Alertes (${ps.alerts.length})`} icon="⚠️" color="var(--p-warning)">
+      <Section id="alerts" title={`Alertes (${ps.alerts.length})`} icon="warning" color="var(--p-warning)">
         {ps.alerts.length > 0 ? ps.alerts.slice(0, 10).map((a, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 12px', marginBottom: '4px', borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${a.severity === 'critical' ? 'var(--p-critical)' : 'var(--p-warning)'}`, background: 'var(--p-bg-elevated)', fontSize: '12px' }}>
             <span style={{ fontWeight: 600, flex: 1 }}>{a.title}</span>
@@ -152,7 +153,7 @@ export default function SynthesePage() {
       </Section>
 
       {/* Section 6: Recommandations */}
-      <Section id="reco" title={`Recommandations (${ps.recommendations.length})`} icon="📋" color="var(--p-info)">
+      <Section id="reco" title={`Recommandations (${ps.recommendations.length})`} icon="clipboard" color="var(--p-info)">
         {ps.recommendations.length > 0 ? ps.recommendations.map((r, i) => (
           <div key={i} style={{ padding: '8px 12px', marginBottom: '6px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>

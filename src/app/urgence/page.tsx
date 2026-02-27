@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto';
 import { useState } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -40,7 +41,7 @@ export default function UrgencePage() {
   return (
     <div style={{maxWidth:'900px',margin:'0 auto'}}>
       <div style={{display:'flex',alignItems:'center',gap:'var(--p-space-4)',marginBottom:'var(--p-space-2)'}}>
-        <span style={{fontSize:'2rem'}}>🚨</span>
+        <Picto name="alert" size={36} glow glowColor="rgba(255,71,87,0.5)" />
         <div>
           <h1 style={{fontSize:'var(--p-text-2xl)',fontWeight:800,color:'var(--p-text)'}}>Mode Urgence 3h</h1>
           <span style={{fontSize:'var(--p-text-xs)',color:'var(--p-critical)',fontFamily:'var(--p-font-mono)'}}>6 champs · Score immédiat</span>
