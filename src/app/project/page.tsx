@@ -37,6 +37,67 @@ const defaultForm: FormData = {
   bilateralOptic:false,demyelinatingLesions:false,il6:0,tnfa:0,
 }
 
+// ── 3 CAS DEMO FICTIFS ──
+const DEMO_CASES: {name:string;desc:string;color:string;data:FormData}[] = [
+  {
+    name: 'Léa — Suspicion FIRES',
+    desc: 'Fille 7 ans, état de mal réfractaire post-fièvre',
+    color: 'var(--p-vps)',
+    data: {
+      ageMonths:84,weightKg:23,sex:'female',hospDay:3,
+      gcs:8,gcsHistory:[14,12,9],pupils:'sluggish',seizures24h:12,seizureDuration:45,seizureType:'refractory_status',
+      crp:35,pct:0.8,ferritin:280,wbc:14,platelets:210,lactate:2.8,
+      heartRate:145,sbp:95,dbp:55,spo2:93,temp:39.2,respRate:32,
+      csfCells:18,csfProtein:0.52,csfAntibodies:'negative',
+      drugs:[{name:'Lévétiracétam'},{name:'Midazolam'}],
+      pimsConfirmed:false,covidExposure:false,weeksPostCovid:0,
+      troponin:0,dDimers:0.3,proBNP:0,ejectionFraction:62,
+      coronaryAnomaly:false,cardiacInvolvement:false,kawasaki:false,
+      mogAntibody:false,mogTiter:0,opticNeuritis:false,
+      transverseMyelitis:false,ademPresentation:false,
+      bilateralOptic:false,demyelinatingLesions:false,il6:45,tnfa:12,
+    }
+  },
+  {
+    name: 'Yanis — Suspicion anti-NMDAR',
+    desc: 'Garçon 9 ans, hallucinations + dyskinésies + crises',
+    color: 'var(--p-tde)',
+    data: {
+      ageMonths:108,weightKg:30,sex:'male',hospDay:5,
+      gcs:11,gcsHistory:[15,14,12],pupils:'reactive',seizures24h:4,seizureDuration:8,seizureType:'generalized_tonic_clonic',
+      crp:12,pct:0.15,ferritin:150,wbc:11,platelets:280,lactate:1.4,
+      heartRate:120,sbp:110,dbp:68,spo2:96,temp:38.1,respRate:24,
+      csfCells:42,csfProtein:0.65,csfAntibodies:'nmdar',
+      drugs:[{name:'Lévétiracétam'},{name:'Méthylprednisolone'}],
+      pimsConfirmed:false,covidExposure:false,weeksPostCovid:0,
+      troponin:0,dDimers:0.2,proBNP:0,ejectionFraction:65,
+      coronaryAnomaly:false,cardiacInvolvement:false,kawasaki:false,
+      mogAntibody:false,mogTiter:0,opticNeuritis:false,
+      transverseMyelitis:false,ademPresentation:false,
+      bilateralOptic:false,demyelinatingLesions:false,il6:18,tnfa:8,
+    }
+  },
+  {
+    name: 'Inès — Suspicion PIMS/MIS-C',
+    desc: 'Fille 10 ans, fièvre persistante + atteinte cardiaque post-COVID',
+    color: 'var(--p-ewe)',
+    data: {
+      ageMonths:120,weightKg:34,sex:'female',hospDay:2,
+      gcs:14,gcsHistory:[15,15],pupils:'reactive',seizures24h:0,seizureDuration:0,seizureType:'none',
+      crp:185,pct:8.5,ferritin:1200,wbc:22,platelets:95,lactate:3.2,
+      heartRate:155,sbp:82,dbp:48,spo2:94,temp:39.8,respRate:28,
+      csfCells:2,csfProtein:0.28,csfAntibodies:'negative',
+      drugs:[{name:'IgIV'},{name:'Méthylprednisolone'}],
+      pimsConfirmed:true,covidExposure:true,weeksPostCovid:4,
+      troponin:85,dDimers:4.2,proBNP:3500,ejectionFraction:42,
+      coronaryAnomaly:false,cardiacInvolvement:true,kawasaki:true,
+      mogAntibody:false,mogTiter:0,opticNeuritis:false,
+      transverseMyelitis:false,ademPresentation:false,
+      bilateralOptic:false,demyelinatingLesions:false,il6:320,tnfa:55,
+    }
+  },
+]
+
 const sections = [
   {title:'Identité Patient',icon:'👤',color:'var(--p-vps)',engine:'VPS'},
   {title:'Tableau Neurologique',icon:'🧠',color:'var(--p-tde)',engine:'TDE'},
@@ -272,7 +333,20 @@ export default function ProjectPage() {
 
       <main style={{maxWidth:'800px',margin:'0 auto',padding:'var(--p-space-8) var(--p-space-6)'}}>
         <h1 style={{fontSize:'var(--p-text-2xl)',fontWeight:800,color:'var(--p-text)',marginBottom:'var(--p-space-2)'}}>Cahier des Charges Clinique</h1>
-        <p style={{color:'var(--p-text-muted)',fontSize:'var(--p-text-sm)',marginBottom:'var(--p-space-6)'}}>Renseignez les données patient pour lancer le pipeline VPS → TDE → PVE → EWE → TPE</p>
+        <p style={{color:'var(--p-text-muted)',fontSize:'var(--p-text-sm)',marginBottom:'var(--p-space-4)'}}>Renseignez les données patient pour lancer le pipeline VPS → TDE → PVE → EWE → TPE</p>
+
+        {/* ── DEMO CASES ── */}
+        <div style={{display:'flex',gap:'var(--p-space-3)',marginBottom:'var(--p-space-6)',flexWrap:'wrap'}}>
+          <span style={{fontSize:'var(--p-text-xs)',color:'var(--p-text-dim)',alignSelf:'center',marginRight:'4px'}}>Cas démo :</span>
+          {DEMO_CASES.map((c,i)=>(
+            <button key={i} onClick={()=>{setForm(c.data);setStep(4)}} style={{padding:'8px 16px',background:'var(--p-bg-elevated)',border:`1px solid ${c.color}40`,borderRadius:'var(--p-radius-lg)',cursor:'pointer',transition:'all 150ms',display:'flex',flexDirection:'column',alignItems:'flex-start',gap:'2px'}}
+              onMouseEnter={e=>{(e.currentTarget as HTMLElement).style.background=`${c.color}15`;(e.currentTarget as HTMLElement).style.borderColor=c.color}}
+              onMouseLeave={e=>{(e.currentTarget as HTMLElement).style.background='var(--p-bg-elevated)';(e.currentTarget as HTMLElement).style.borderColor=`${c.color}40`}}>
+              <span style={{fontSize:'var(--p-text-sm)',fontWeight:700,color:c.color}}>{c.name}</span>
+              <span style={{fontSize:'10px',color:'var(--p-text-dim)'}}>{c.desc}</span>
+            </button>
+          ))}
+        </div>
 
         {/* Progress */}
         <div style={{display:'flex',gap:'4px',marginBottom:'var(--p-space-6)'}}>
