@@ -1,6 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Picto from '@/components/Picto'
+import { PatientState } from '@/lib/engines/PatientState'
+import { runPipeline } from '@/lib/engines/pipeline'
+import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 
 type Lang = 'simple' | 'detail'
 
@@ -25,15 +28,73 @@ const sections = [
 export default function FamillePage() {
   const [lang, setLang] = useState<Lang>('simple')
   const [openIdx, setOpenIdx] = useState<number>(0)
+  const [scenario, setScenario] = useState('FIRES')
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+
+  const ps = useMemo(() => {
+    const p = new PatientState(DEMO_PATIENTS[scenario].data)
+    runPipeline(p)
+    return p
+  }, [scenario])
+
+  const vpsScore = ps.vpsResult?.synthesis.score || 0
+  const vpsLevel = ps.vpsResult?.synthesis.level || 'N/A'
+  const lc = vpsScore >= 75 ? 'var(--p-critical)' : vpsScore >= 50 ? 'var(--p-warning)' : vpsScore >= 25 ? 'var(--p-tpe)' : 'var(--p-success)'
+  const hospDay = ps.hospDay
+  const drugs = ps.drugs.map(d => d.name).join(', ') || 'Aucun pour le moment'
+  const age = ps.ageMonths < 24 ? `${ps.ageMonths} mois` : `${Math.floor(ps.ageMonths / 12)} ans`
+
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
 
   return (
-    <div className="page-enter" style={{ maxWidth: '800px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="family" size={36} glow glowColor="rgba(255,107,138,0.5)" />
         <div>
           <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)' }}>Espace Famille</h1>
-          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>Informations pour les parents — langage adapté</span>
+          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Informations pour les parents · Pipeline connecté</span>
         </div>
+      </div>
+
+      {/* Scenario Tabs */}
+      <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-4) 0', flexWrap: 'wrap' }}>
+        {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
+          <button key={k} onClick={() => { setScenario(k); setOpenIdx(0) }} style={{
+            padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
+            border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)',
+            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-elevated)',
+            color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)',
+            fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
+          }}>{v.label}</button>
+        ))}
+      </div>
+
+      {/* Patient Status Banner */}
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{
+        ...card, marginBottom: 'var(--p-space-5)',
+        borderLeft: `4px solid ${lc}`,
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px',
+      }}>
+        <div style={{ display: 'flex', gap: 'var(--p-space-5)', alignItems: 'center', flexWrap: 'wrap' }}>
+          <div>
+            <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>PATIENT</div>
+            <div style={{ fontWeight: 700, color: 'var(--p-text)' }}>{ps.sex === 'male' ? 'Garçon' : 'Fille'}, {age}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>JOUR</div>
+            <div style={{ fontWeight: 700, color: 'var(--p-text)' }}>J+{hospDay}</div>
+          </div>
+          <div>
+            <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>ÉTAT</div>
+            <div style={{ padding: '3px 12px', borderRadius: 'var(--p-radius-full)', background: `${lc}15`, color: lc, fontFamily: 'var(--p-font-mono)', fontWeight: 700, fontSize: '11px' }}>{vpsLevel}</div>
+          </div>
+        </div>
+        <div style={{
+          padding: '4px 14px', borderRadius: 'var(--p-radius-full)',
+          background: 'var(--p-vps-dim)', border: '1px solid var(--p-vps)',
+          fontSize: '11px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: 'var(--p-vps)',
+        }}>VPS {vpsScore}/100</div>
       </div>
 
       {/* Toggle langage */}
@@ -49,11 +110,12 @@ export default function FamillePage() {
         ))}
       </div>
 
-      {/* Welcome */}
+      {/* Welcome with dynamic info */}
       <div className="glass-card" style={{ padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-5)', borderTop: '2px solid var(--p-tde)' }}>
         <h2 style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700, color: 'var(--p-text)', marginBottom: 'var(--p-space-3)' }}>Chers parents,</h2>
         <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 1.8 }}>
-          Votre enfant est pris en charge par notre équipe. Cette page vous explique ce qui se passe, les examens, les traitements et les prochaines étapes. Nous sommes là pour répondre à vos questions.
+          Votre {ps.sex === 'male' ? 'fils' : 'fille'} est pris{ps.sex === 'female' ? 'e' : ''} en charge depuis {hospDay} jour{hospDay > 1 ? 's' : ''}.
+          {ps.drugs.length > 0 ? ` ${ps.sex === 'male' ? 'Il' : 'Elle'} reçoit actuellement : ${drugs}.` : ''} Cette page vous explique ce qui se passe, les examens, les traitements et les prochaines étapes.
         </p>
       </div>
 
@@ -87,7 +149,7 @@ export default function FamillePage() {
       <div className="glass-card" style={{ padding: 'var(--p-space-5)', marginTop: 'var(--p-space-5)', textAlign: 'center' }}>
         <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)', marginBottom: 'var(--p-space-2)' }}>Besoin de parler ?</div>
         <p style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)', marginBottom: 'var(--p-space-3)' }}>L&apos;équipe soignante est disponible 24h/24. N&apos;hésitez pas à poser vos questions.</p>
-        <div style={{ display: 'flex', gap: 'var(--p-space-3)', justifyContent: 'center' }}>
+        <div style={{ display: 'flex', gap: 'var(--p-space-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
           <div style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)', fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)' }}>Poste infirmier : <strong style={{ color: 'var(--p-text)' }}>Ext. 4201</strong></div>
           <div style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)', fontSize: 'var(--p-text-xs)', color: 'var(--p-text-muted)' }}>Psychologue : <strong style={{ color: 'var(--p-text)' }}>Ext. 4215</strong></div>
         </div>

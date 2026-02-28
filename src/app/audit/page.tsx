@@ -1,30 +1,104 @@
 'use client'
-import { useState } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Picto from '@/components/Picto'
+import { PatientState } from '@/lib/engines/PatientState'
+import { runPipeline } from '@/lib/engines/pipeline'
+import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 
 type LogEntry = {
   id: number; time: string; day: number; user: string; role: string
   action: string; module: string; icon: string; color: string; detail: string; severity: 'info' | 'warning' | 'critical'
 }
 
-const AUDIT_LOG: LogEntry[] = [
-  { id: 1, time: '08:02', day: 0, user: 'Dr. Martin', role: 'Urgentiste', action: 'Admission patient', module: 'Admission', icon: 'clipboard', color: 'var(--p-vps)', detail: 'Création dossier — Inès, 7 ans, crises TC fébriles', severity: 'info' },
-  { id: 2, time: '08:05', day: 0, user: 'PULSAR', role: 'Système', action: 'Pipeline initialisé', module: 'VPS', icon: 'brain', color: 'var(--p-vps)', detail: '5 moteurs activés — VPS+TDE+PVE+EWE+TPE, couche 1 chargée', severity: 'info' },
-  { id: 3, time: '08:15', day: 0, user: 'IDE Dupont', role: 'Infirmier', action: 'Bilan lancé', module: 'Bilan', icon: 'microscope', color: 'var(--p-pve)', detail: 'NFS, CRP, PCT, iono, lactates, bilan hépatique — 8 tubes', severity: 'info' },
-  { id: 4, time: '09:30', day: 0, user: 'PULSAR', role: 'Système', action: 'ALERTE CRITIQUE', module: 'VPS', icon: 'alert', color: 'var(--p-critical)', detail: 'État de mal épileptique détecté — 2ème crise TC > 5 min', severity: 'critical' },
-  { id: 5, time: '09:32', day: 0, user: 'Dr. Martin', role: 'Urgentiste', action: 'Traitement administré', module: 'Urgence', icon: 'pill', color: 'var(--p-ewe)', detail: 'Midazolam 0.15 mg/kg IV — protocole état de mal', severity: 'warning' },
-  { id: 6, time: '10:00', day: 0, user: 'Dr. Leblanc', role: 'Neuropédiatre', action: 'Traitement prescrit', module: 'Recommandations', icon: 'pill', color: 'var(--p-ewe)', detail: 'Lévétiracétam 40 mg/kg IV — charge antiépileptique L1', severity: 'info' },
-  { id: 7, time: '10:05', day: 0, user: 'PULSAR', role: 'Système', action: 'PVE — Vérification', module: 'PVE', icon: 'shield', color: 'var(--p-pve)', detail: 'LEV : pas de CI identifiée, dose conforme poids 25kg', severity: 'info' },
-  { id: 8, time: '14:00', day: 0, user: 'Labo', role: 'Biologie', action: 'Résultats reçus', module: 'Bilan', icon: 'blood', color: 'var(--p-tde)', detail: 'CRP 35 mg/L, PCT 0.8 ng/mL, ferritine 280 µg/L', severity: 'info' },
-  { id: 9, time: '14:02', day: 0, user: 'PULSAR', role: 'Système', action: 'TDE — Hypothèse', module: 'TDE', icon: 'dna', color: 'var(--p-tde)', detail: 'Pattern inflammatoire compatible FIRES/EAIS — panel anticorps recommandé', severity: 'warning' },
-  { id: 10, time: '16:00', day: 0, user: 'PULSAR', role: 'Système', action: 'ALERTE ESCALADE', module: 'VPS', icon: 'warning', color: 'var(--p-warning)', detail: '4 crises en 8h malgré LEV + MDZ — escalade thérapeutique nécessaire', severity: 'critical' },
-  { id: 11, time: '17:00', day: 0, user: 'PULSAR', role: 'Système', action: 'VPS calculé', module: 'VPS', icon: 'brain', color: 'var(--p-vps)', detail: 'VPS = 68/100 — Niveau SÉVÈRE, pattern détérioration progressive', severity: 'critical' },
-  { id: 12, time: '08:00', day: 1, user: 'Dr. Leblanc', role: 'Neuropédiatre', action: 'Immunothérapie L1', module: 'Recommandations', icon: 'pill', color: 'var(--p-ewe)', detail: 'Méthylprednisolone 30 mg/kg IV — J1/5', severity: 'warning' },
-  { id: 13, time: '08:05', day: 1, user: 'PULSAR', role: 'Système', action: 'EWE — Monitoring', module: 'EWE', icon: 'eeg', color: 'var(--p-ewe)', detail: 'EEG patterns : GPD bilatéraux, pas d\'extreme delta brush', severity: 'info' },
-  { id: 14, time: '10:00', day: 2, user: 'Dr. Leblanc', role: 'Neuropédiatre', action: 'IgIV prescrites', module: 'Recommandations', icon: 'pill', color: 'var(--p-ewe)', detail: 'IgIV 2 g/kg — perfusion 12h', severity: 'info' },
-  { id: 15, time: '10:05', day: 2, user: 'PULSAR', role: 'Système', action: 'PVE — Alerte', module: 'PVE', icon: 'shield', color: 'var(--p-pve)', detail: 'IgIV : risque méningite aseptique, surveillance céphalées', severity: 'warning' },
-  { id: 16, time: '08:00', day: 3, user: 'PULSAR', role: 'Système', action: 'VPS recalculé', module: 'VPS', icon: 'brain', color: 'var(--p-tde)', detail: 'VPS = 45/100 — Amélioration modérée, 2 crises/24h vs 12 à J0', severity: 'info' },
-]
+function generateAuditLog(ps: PatientState): LogEntry[] {
+  const log: LogEntry[] = []
+  let id = 1
+  const add = (day: number, time: string, user: string, role: string, action: string, module: string, icon: string, color: string, detail: string, severity: 'info' | 'warning' | 'critical') => {
+    log.push({ id: id++, day, time, user, role, action, module, icon, color, detail, severity })
+  }
+
+  // J0 — Admission
+  const age = ps.ageMonths < 24 ? `${ps.ageMonths} mois` : `${Math.floor(ps.ageMonths / 12)} ans`
+  add(0, '08:02', 'Dr. Martin', 'Urgentiste', 'Admission patient', 'Admission', 'clipboard', 'var(--p-vps)',
+    `Création dossier — ${ps.sex === 'male' ? 'Garçon' : 'Fille'}, ${age}, ${ps.weightKg}kg, T° ${ps.hemodynamics.temp}°C, GCS ${ps.neuro.gcs}`, 'info')
+
+  add(0, '08:05', 'PULSAR', 'Système', 'Pipeline initialisé', 'VPS', 'brain', 'var(--p-vps)',
+    '5 moteurs activés — VPS+TDE+PVE+EWE+TPE, couche 1 chargée', 'info')
+
+  // Bilan biologique
+  add(0, '08:15', 'IDE Dupont', 'Infirmier', 'Bilan lancé', 'Bilan', 'microscope', 'var(--p-pve)',
+    `NFS, CRP (${ps.biology.crp}), PCT (${ps.biology.pct}), ferritine (${ps.biology.ferritin}), iono, lactates`, 'info')
+
+  // Neurological alerts
+  if (ps.neuro.seizures24h > 0) {
+    add(0, '09:30', 'PULSAR', 'Système', 'ALERTE CRITIQUE', 'VPS', 'alert', 'var(--p-critical)',
+      `${ps.neuro.seizures24h} crise(s) détectée(s) — type: ${ps.neuro.seizureType}, GCS ${ps.neuro.gcs}`, 'critical')
+  }
+
+  // Drugs administered
+  ps.drugs.forEach((d, i) => {
+    add(0, `09:${32 + i * 5}`, 'Dr. Martin', 'Urgentiste', 'Traitement administré', 'Urgence', 'pill', 'var(--p-ewe)',
+      `${d.name} ${d.dose || ''} — ${d.route || 'IV'}`, 'warning')
+  })
+
+  // PVE check
+  if (ps.pveResult) {
+    const interactions = ps.pveResult.rules.find(r => r.adjustment?.detectedInteractions)
+    add(0, '10:05', 'PULSAR', 'Système', 'PVE — Vérification', 'PVE', 'shield', 'var(--p-pve)',
+      interactions ? `${(interactions.adjustment!.detectedInteractions as any[]).length} interaction(s) détectée(s)` : `Aucune interaction critique détectée — ${ps.drugs.length} médicaments vérifiés`, 'info')
+  }
+
+  // Biology results
+  add(0, '14:00', 'Labo', 'Biologie', 'Résultats reçus', 'Bilan', 'blood', 'var(--p-tde)',
+    `CRP ${ps.biology.crp} mg/L, PCT ${ps.biology.pct} ng/mL, ferritine ${ps.biology.ferritin} µg/L`, 'info')
+
+  // TDE hypothesis
+  if (ps.tdeResult) {
+    add(0, '14:02', 'PULSAR', 'Système', 'TDE — Hypothèse', 'TDE', 'dna', 'var(--p-tde)',
+      `${ps.tdeResult.synthesis.level} — Score ${ps.tdeResult.synthesis.score}/100`, 'warning')
+  }
+
+  // VPS Score
+  if (ps.vpsResult) {
+    const vps = ps.vpsResult.synthesis.score
+    add(0, '17:00', 'PULSAR', 'Système', 'VPS calculé', 'VPS', 'brain', 'var(--p-vps)',
+      `VPS = ${vps}/100 — ${ps.vpsResult.synthesis.level}`, vps >= 75 ? 'critical' : vps >= 50 ? 'warning' : 'info')
+  }
+
+  // EWE analysis
+  if (ps.eweResult) {
+    add(1, '08:05', 'PULSAR', 'Système', 'EWE — Monitoring', 'EWE', 'eeg', 'var(--p-ewe)',
+      `Score ${ps.eweResult.synthesis.score}/100 — ${ps.eweResult.synthesis.level}`, 'info')
+  }
+
+  // TPE environment
+  if (ps.tpeResult) {
+    add(1, '09:00', 'PULSAR', 'Système', 'TPE — Environnement', 'TPE', 'thermo', 'var(--p-tpe)',
+      `Score ${ps.tpeResult.synthesis.score}/100 — ${ps.tpeResult.synthesis.level}`, 'info')
+  }
+
+  // Treatment history
+  ps.treatmentHistory.forEach((t, i) => {
+    const responseLabel = t.response === 'none' ? 'ÉCHEC' : t.response === 'partial' ? 'PARTIEL' : 'BON'
+    add(1 + i, '10:00', 'Dr. Leblanc', 'Neuropédiatre', `Bilan traitement: ${t.treatment}`, 'Recommandations', 'pill', 'var(--p-ewe)',
+      `${t.period} — Réponse: ${responseLabel}`, t.response === 'none' ? 'critical' : 'info')
+  })
+
+  // Recommendations
+  const recs = ps.tdeResult?.synthesis.recommendations || []
+  recs.filter(r => r.priority === 'urgent').forEach((r, i) => {
+    add(Math.max(1, ps.hospDay - 1), `${11 + i}:00`, 'PULSAR', 'Système', 'Recommandation urgente', 'Recommandations', 'warning', 'var(--p-warning)',
+      `${r.title}: ${r.body.slice(0, 80)}…`, 'warning')
+  })
+
+  // Critical alerts
+  const alerts = ps.vpsResult?.synthesis.alerts || []
+  alerts.filter(a => a.severity === 'critical').forEach((a, i) => {
+    add(ps.hospDay, `${8 + i}:00`, 'PULSAR', 'Système', 'ALERTE CRITIQUE', 'VPS', 'alert', 'var(--p-critical)', `${a.title}: ${a.body}`, 'critical')
+  })
+
+  return log.sort((a, b) => a.day !== b.day ? a.day - b.day : a.time.localeCompare(b.time))
+}
 
 const SEVERITY_STYLES = {
   info: { bg: 'var(--p-bg-elevated)', dot: 'var(--p-info)' },
@@ -35,11 +109,22 @@ const SEVERITY_STYLES = {
 export default function AuditPage() {
   const [filterModule, setFilterModule] = useState('Tous')
   const [filterUser, setFilterUser] = useState('Tous')
+  const [scenario, setScenario] = useState('FIRES')
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
-  const modules = ['Tous', ...new Set(AUDIT_LOG.map(e => e.module))]
-  const users = ['Tous', ...new Set(AUDIT_LOG.map(e => e.user))]
+  const ps = useMemo(() => {
+    const p = new PatientState(DEMO_PATIENTS[scenario].data)
+    runPipeline(p)
+    return p
+  }, [scenario])
 
-  const filtered = AUDIT_LOG.filter(e => {
+  const auditLog = useMemo(() => generateAuditLog(ps), [ps])
+
+  const modules = ['Tous', ...new Set(auditLog.map(e => e.module))]
+  const users = ['Tous', ...new Set(auditLog.map(e => e.user))]
+
+  const filtered = auditLog.filter(e => {
     if (filterModule !== 'Tous' && e.module !== filterModule) return false
     if (filterUser !== 'Tous' && e.user !== filterUser) return false
     return true
@@ -48,37 +133,49 @@ export default function AuditPage() {
   const days = [...new Set(filtered.map(e => e.day))].sort()
 
   return (
-    <div className="page-enter" style={{ maxWidth: '950px', margin: '0 auto' }}>
+    <div style={{ maxWidth: '950px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="clipboard" size={36} glow glowColor="rgba(108,124,255,0.5)" />
         <div>
           <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)' }}>Audit Trail</h1>
-          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>{AUDIT_LOG.length} événements tracés · Traçabilité complète</span>
+          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>{auditLog.length} événements tracés · Pipeline connecté</span>
         </div>
       </div>
-      <p style={{ color: 'var(--p-text-dim)', fontSize: 'var(--p-text-sm)', marginBottom: 'var(--p-space-5)' }}>Historique complet des actions humaines et système. Chaque décision est horodatée et attribuée.</p>
+
+      {/* Scenario Tabs */}
+      <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-4) 0', flexWrap: 'wrap' }}>
+        {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
+          <button key={k} onClick={() => { setScenario(k); setFilterModule('Tous'); setFilterUser('Tous') }} style={{
+            padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
+            border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)',
+            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-elevated)',
+            color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)',
+            fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
+          }}>{v.label}</button>
+        ))}
+      </div>
 
       {/* Filters */}
-      <div className="glass-card" style={{ padding: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)', display: 'flex', gap: 'var(--p-space-4)', flexWrap: 'wrap' }}>
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{ padding: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)', display: 'flex', gap: 'var(--p-space-4)', flexWrap: 'wrap', alignItems: 'flex-end' }}>
         <div>
-          <label style={{ fontSize: '10px', color: 'var(--p-text-dim)', display: 'block', marginBottom: '4px' }}>Module</label>
+          <label style={{ fontSize: '10px', color: 'var(--p-text-dim)', display: 'block', marginBottom: '4px', fontFamily: 'var(--p-font-mono)' }}>MODULE</label>
           <select value={filterModule} onChange={e => setFilterModule(e.target.value)} style={{ padding: '6px 12px', borderRadius: 'var(--p-radius-md)', border: 'var(--p-border)', background: 'var(--p-bg-elevated)', color: 'var(--p-text)', fontSize: 'var(--p-text-xs)' }}>
             {modules.map(m => <option key={m}>{m}</option>)}
           </select>
         </div>
         <div>
-          <label style={{ fontSize: '10px', color: 'var(--p-text-dim)', display: 'block', marginBottom: '4px' }}>Utilisateur</label>
+          <label style={{ fontSize: '10px', color: 'var(--p-text-dim)', display: 'block', marginBottom: '4px', fontFamily: 'var(--p-font-mono)' }}>UTILISATEUR</label>
           <select value={filterUser} onChange={e => setFilterUser(e.target.value)} style={{ padding: '6px 12px', borderRadius: 'var(--p-radius-md)', border: 'var(--p-border)', background: 'var(--p-bg-elevated)', color: 'var(--p-text)', fontSize: 'var(--p-text-xs)' }}>
             {users.map(u => <option key={u}>{u}</option>)}
           </select>
         </div>
-        <div style={{ marginLeft: 'auto', display: 'flex', gap: '12px', alignItems: 'flex-end' }}>
+        <div style={{ marginLeft: 'auto', display: 'flex', gap: '16px', alignItems: 'flex-end' }}>
           {(['info', 'warning', 'critical'] as const).map(s => {
             const count = filtered.filter(e => e.severity === s).length
             return (
               <div key={s} style={{ textAlign: 'center' }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: SEVERITY_STYLES[s].dot, margin: '0 auto 4px' }} />
-                <div style={{ fontSize: '10px', color: 'var(--p-text-dim)' }}>{count}</div>
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: SEVERITY_STYLES[s].dot, margin: '0 auto 4px' }} />
+                <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>{count}</div>
               </div>
             )
           })}
@@ -98,7 +195,7 @@ export default function AuditPage() {
                   <div style={{ minWidth: '42px', fontSize: '11px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', paddingTop: '2px' }}>{entry.time}</div>
                   <Picto name={entry.icon} size={18} />
                   <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '2px', flexWrap: 'wrap' }}>
                       <span style={{ fontSize: 'var(--p-text-xs)', fontWeight: 700, color: entry.color }}>{entry.action}</span>
                       <span style={{ fontSize: '9px', padding: '1px 6px', borderRadius: 'var(--p-radius-full)', background: 'var(--p-bg-elevated)', color: 'var(--p-text-dim)' }}>{entry.module}</span>
                     </div>
@@ -111,6 +208,10 @@ export default function AuditPage() {
           </div>
         </div>
       ))}
+
+      <div style={{ textAlign: 'center', padding: 'var(--p-space-4)', color: 'var(--p-text-dim)', fontSize: '10px', fontFamily: 'var(--p-font-mono)' }}>
+        PULSAR V15 — Audit Trail · Traçabilité complète · Pipeline connecté
+      </div>
     </div>
   )
 }
