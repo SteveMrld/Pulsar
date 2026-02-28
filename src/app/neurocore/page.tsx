@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo } from 'react'
 import Picto from '@/components/Picto'
+import BrainHeatmap from '@/components/BrainHeatmap'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
@@ -77,7 +78,30 @@ function EEGTab({ syndrome, phase }: { syndrome: SyndromeKey; phase: PhaseKey })
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Card border="#6C7CFF">
+      {/* Brain heatmap + EEG summary side by side */}
+      <div style={{ display: 'grid', gridTemplateColumns: '180px 1fr', gap: '12px', alignItems: 'start' }}>
+        <Card border="#6C7CFF">
+          <SectionLabel color="#6C7CFF">CARTOGRAPHIE</SectionLabel>
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}>
+            <BrainHeatmap
+              eegStatus={eeg.signaturePattern === 'status_electrographicus' ? 'seizure'
+                : eeg.signaturePattern === 'burst_suppression' ? 'burst_suppression'
+                : eeg.background.includes('severely_slow') ? 'slowing'
+                : eeg.background.includes('suppressed') ? 'suppressed'
+                : 'normal'}
+              channelIntensity={
+                eeg.signaturePattern === 'status_electrographicus' ? [0.95, 0.9, 0.5, 0.4, 0.85, 0.8]
+                : eeg.signaturePattern === 'extreme_delta_brush' ? [0.6, 0.5, 0.4, 0.3, 0.6, 0.5]
+                : eeg.background.includes('severely_slow') ? [0.7, 0.6, 0.5, 0.5, 0.7, 0.6]
+                : [0.3, 0.25, 0.2, 0.15, 0.3, 0.25]
+              }
+              vpsScore={50}
+              size={140}
+            />
+          </div>
+        </Card>
+
+        <Card border="#6C7CFF">
         <SectionLabel color="#6C7CFF">EEG ATTENDU — {PHASE_LABELS[phase].label.toUpperCase()}</SectionLabel>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           <div>
@@ -125,6 +149,7 @@ function EEGTab({ syndrome, phase }: { syndrome: SyndromeKey; phase: PhaseKey })
           </div>
         )}
       </Card>
+      </div>
 
       {signatures.length > 0 && (
         <Card border="#B96BFF">

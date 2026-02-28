@@ -158,7 +158,7 @@ export class PatientState {
   dti: DTIData | null
   pet: PETData | null
   qeeg: QEEGData | null
-  neuroCoreResult: { redFlags: string[]; traps: string[]; eegAlerts: string[]; mriAlerts: string[]; biomarkerAlerts: string[]; phase: string; guidance: any } | null
+  neuroCoreResult: { redFlags: string[]; traps: string[]; eegAlerts: string[]; mriAlerts: string[]; biomarkerAlerts: string[]; phase: string; guidance: any; score: number; urgency: string; brainDamageIndex: number } | null
 
   // Engine results (filled by pipeline)
   vpsResult: EngineResult | null

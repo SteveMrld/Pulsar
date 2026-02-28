@@ -33,6 +33,20 @@ export class TDEEngine extends BrainCore {
       ],
     }))
 
+    // ── Champ 3 (V16) : Orientation EEG/IRM thérapeutique (×2) ──
+    this.semanticFields.push(new SemanticField({
+      name: 'Orientation neuro-guidée', category: 'neuro_guidance', color: '#2FD1C8',
+      signals: [
+        { name: 'Status réfractaire EEG', weight: 3, extract: ps => ps.eeg?.seizuresPerHour, normalize: v => v == null ? 0 : (v as number) > 10 ? 100 : (v as number) > 5 ? 75 : (v as number) > 2 ? 45 : (v as number) > 0.5 ? 20 : 0 },
+        { name: 'Pattern signature', weight: 2, extract: ps => ps.eeg?.signaturePattern, normalize: v => v ? 60 : 0 },
+        { name: 'Fond EEG', weight: 2, extract: ps => ps.eeg?.background, normalize: v => ({ severely_slow: 80, burst_suppression: 90, suppressed: 100, moderately_slow: 40, mildly_slow: 15, normal: 0 }[v as string] || 0) },
+        { name: 'IRM lésionnelle', weight: 2, extract: ps => ps.mri?.t2FlairAbnormal, normalize: v => v === true ? 65 : 0 },
+        { name: 'Anticorps LCR', weight: 2.5, extract: ps => ps.csf.antibodies, normalize: v => v === 'negative' || v === 'pending' ? 0 : 80 },
+        { name: 'Cytokines IL-6 LCR', weight: 2, unit: 'pg/mL', extract: ps => ps.neuroBiomarkers?.il6Csf, normalize: v => v == null ? 0 : (v as number) > 100 ? 100 : (v as number) > 50 ? 65 : (v as number) > 10 ? 30 : 0 },
+        { name: 'Réponse traitement', weight: 2, extract: ps => ps.treatmentHistory[ps.treatmentHistory.length - 1]?.response, normalize: v => ({ none: 90, partial: 45, good: 15, complete: 0 }[v as string] || 0) },
+      ],
+    }))
+
     // ── Patterns (4) ──
     this.patterns.push({
       name: 'Pattern FIRES',

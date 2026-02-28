@@ -8,6 +8,7 @@ import { computeDiagnosticContext } from '@/lib/data/epidemioContext'
 import Picto from '@/components/Picto'
 import SilhouetteNeon from '@/components/SilhouetteNeon'
 import BrainMonitor from '@/components/BrainMonitor'
+import BrainHeatmap from '@/components/BrainHeatmap'
 
 /* ── Mini gauge circle ── */
 function MiniGauge({ score, color, size = 48 }: { score: number; color: string; size?: number }) {
@@ -30,6 +31,7 @@ const enginesDef = [
   { name: 'PVE', full: 'Paraclinical', color: '#B96BFF', href: '/engines?tab=pve' },
   { name: 'EWE', full: 'Early Warning', color: '#FF6B8A', href: '/engines?tab=ewe' },
   { name: 'TPE', full: 'Therapeutic Prospection', color: '#FFB347', href: '/engines?tab=tpe' },
+  { name: 'NCE', full: 'NeuroCore', color: '#2ED573', href: '/neurocore' },
 ]
 
 export default function CockpitPage() {
@@ -45,7 +47,14 @@ export default function CockpitPage() {
 
   const engines = enginesDef.map((e, i) => {
     const results = [ps.vpsResult, ps.tdeResult, ps.pveResult, ps.eweResult, ps.tpeResult]
-    return { ...e, score: results[i]?.synthesis.score ?? 0, level: results[i]?.synthesis.level ?? '—' }
+    if (i < 5) {
+      return { ...e, score: results[i]?.synthesis.score ?? 0, level: results[i]?.synthesis.level ?? '—' }
+    }
+    // NCE — NeuroCore
+    const nce = ps.neuroCoreResult
+    const nceScore = nce?.score ?? 0
+    const nceLevel = nceScore > 70 ? 'Critique' : nceScore > 40 ? 'Élevé' : nceScore > 20 ? 'Modéré' : 'Faible'
+    return { ...e, score: nceScore, level: nceLevel }
   })
 
   const critAlerts = ps.alerts.filter(a => a.severity === 'critical')
@@ -216,8 +225,8 @@ export default function CockpitPage() {
           )}
         </div>
 
-        {/* Right: Silhouette */}
-        <div>
+        {/* Right: Silhouette + Brain Heatmap */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--p-space-3)' }}>
           <SilhouetteNeon
             sex={ps.sex === 'female' ? 'F' : 'M'}
             vpsScore={ps.vpsResult?.synthesis.score ?? 0}
@@ -235,11 +244,41 @@ export default function CockpitPage() {
                 severity: ps.hemodynamics.temp >= 38 ? 1 : 0 },
             ]}
           />
+
+          {/* Brain Heatmap */}
+          <div className="glass-card" style={{
+            padding: 'var(--p-space-3)', borderRadius: 'var(--p-radius-xl)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+              <Picto name="brain" size={14} glow glowColor="rgba(108,124,255,0.3)" />
+              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800, color: '#6C7CFF', letterSpacing: '1.5px' }}>CARTOGRAPHIE CÉRÉBRALE</span>
+            </div>
+            <BrainHeatmap
+              eegStatus={
+                ps.neuro.seizureType === 'refractory_status' || ps.neuro.seizureType === 'super_refractory' ? 'seizure'
+                : ps.neuro.seizureType === 'status' ? 'seizure'
+                : ps.neuro.gcs <= 6 ? 'burst_suppression'
+                : ps.neuro.gcs <= 10 ? 'slowing'
+                : 'normal'
+              }
+              channelIntensity={[
+                ps.neuro.seizureType.includes('refractory') ? 0.95 : ps.neuro.seizures24h > 5 ? 0.7 : 0.3,
+                ps.neuro.seizureType.includes('refractory') ? 0.9 : 0.4,
+                ps.neuro.gcs <= 8 ? 0.6 : 0.25,
+                ps.neuro.gcs <= 8 ? 0.5 : 0.2,
+                ps.neuro.seizureType.includes('refractory') ? 0.85 : 0.35,
+                ps.neuro.seizures24h > 8 ? 0.8 : 0.3,
+              ]}
+              vpsScore={ps.vpsResult?.synthesis.score ?? 0}
+              size={160}
+            />
+          </div>
         </div>
       </div>
 
       {/* ═══ ZONE 2: Engine Pipeline ═══ */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-5)' }} className="grid-5">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-5)' }} className="grid-6">
         {engines.map((e) => (
           <Link key={e.name} href={e.href} style={{ textDecoration: 'none' }}>
             <div className="card-interactive glass-card" style={{

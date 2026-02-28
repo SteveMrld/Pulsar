@@ -294,6 +294,9 @@ export function runNeuroCore(ps: PatientState): NeuroCoreAnalysis {
     biomarkerAlerts: bioAnalysis.biomarkerAlerts,
     phase: phaseProfile.label,
     guidance,
+    score,
+    urgency,
+    brainDamageIndex: bioAnalysis.brainDamageIndex,
   }
 
   // Inject alerts into PatientState

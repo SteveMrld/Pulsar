@@ -61,6 +61,22 @@ export class PVEEngine extends BrainCore {
       ],
     }))
 
+    // ── Champ 4 (V16) : Validation neuro-imagerie/biomarqueurs (×1.5) ──
+    this.semanticFields.push(new SemanticField({
+      name: 'Validation neuro-imagerie', category: 'neuro_imaging', color: '#B96BFF',
+      signals: [
+        { name: 'IRM T2/FLAIR', weight: 2, extract: ps => ps.mri?.t2FlairAbnormal, normalize: v => v === true ? 70 : 0 },
+        { name: 'Restriction diffusion', weight: 2.5, extract: ps => ps.mri?.diffusionRestriction, normalize: v => v === true ? 80 : 0 },
+        { name: 'Œdème cérébral', weight: 2, extract: ps => ps.mri?.edemaType, normalize: v => ({ none: 0, vasogenic: 30, cytotoxic: 80, mixed: 60 }[v as string] || 0) },
+        { name: 'Engagement cérébral', weight: 3, extract: ps => ps.mri?.herniation, normalize: v => v === true ? 100 : 0 },
+        { name: 'Spectroscopie NAA/Cr', weight: 1.5, extract: ps => ps.mri?.spectroscopy?.naaCreatine, normalize: v => v == null ? 0 : (v as number) < 1.0 ? 90 : (v as number) < 1.5 ? 50 : (v as number) < 2.0 ? 20 : 0 },
+        { name: 'SSEP N20', weight: 2.5, extract: ps => ps.evokedPotentials?.ssep?.n20Present, normalize: v => v == null ? 0 : v === false ? 100 : 0 },
+        { name: 'SSEP amplitude', weight: 1.5, extract: ps => ps.evokedPotentials?.ssep?.corticalAmplitude, normalize: v => ({ absent: 100, reduced: 55, normal: 0 }[v as string] || 0) },
+        { name: 'Bandes oligoclonales', weight: 1, extract: ps => ps.neuroBiomarkers?.oligoclonalBands, normalize: v => v === true ? 60 : 0 },
+        { name: 'Index IgG', weight: 1, extract: ps => ps.neuroBiomarkers?.iggIndex, normalize: v => v == null ? 0 : (v as number) > 0.7 ? 70 : (v as number) > 0.6 ? 35 : 0 },
+      ],
+    }))
+
     // ── Patterns ──
     this.patterns.push({
       name: 'Cocktail réanimation',

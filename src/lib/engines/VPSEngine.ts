@@ -62,6 +62,25 @@ export class VPSEngine extends BrainCore {
       ],
     }))
 
+    // ── Champ 5 (V16) : Neuro-monitoring EEG/Biomarqueurs (×2) ──
+    this.semanticFields.push(new SemanticField({
+      name: 'Neuro-monitoring cérébral', category: 'neuro_monitoring', color: '#6C7CFF',
+      signals: [
+        { name: 'EEG Réactivité', weight: 2.5, extract: ps => ps.eeg?.reactivity, normalize: v => v == null ? 0 : v === false ? 80 : 0 },
+        { name: 'NCSE', weight: 3, extract: ps => ps.eeg?.NCSEstatus, normalize: v => v === true ? 100 : 0 },
+        { name: 'Crises EEG/h', weight: 2, unit: '/h', extract: ps => ps.eeg?.seizuresPerHour, normalize: v => v == null ? 0 : (v as number) > 10 ? 100 : (v as number) > 5 ? 80 : (v as number) > 2 ? 50 : (v as number) > 0 ? 20 : 0 },
+        { name: 'Tendance EEG', weight: 2, extract: ps => ps.eeg?.trend, normalize: v => ({ worsening: 90, stable: 30, improving: 0 }[v as string] || 0) },
+        { name: 'NfL', weight: 2.5, unit: 'pg/mL', extract: ps => ps.neuroBiomarkers?.nfl, normalize: v => v == null ? 0 : (v as number) > 500 ? 100 : (v as number) > 200 ? 70 : (v as number) > 100 ? 40 : (v as number) > 50 ? 15 : 0 },
+        { name: 'NSE', weight: 2, unit: 'µg/L', extract: ps => ps.neuroBiomarkers?.nse, normalize: v => v == null ? 0 : (v as number) > 50 ? 100 : (v as number) > 25 ? 60 : (v as number) > 15 ? 25 : 0 },
+        { name: 'S100B', weight: 1.5, unit: 'µg/L', extract: ps => ps.neuroBiomarkers?.s100b, normalize: v => v == null ? 0 : (v as number) > 0.5 ? 100 : (v as number) > 0.3 ? 70 : (v as number) > 0.15 ? 35 : 0 },
+        { name: 'NPI pupillaire', weight: 2, extract: ps => ps.pupillometry?.npiLeft, normalize: (v, ps) => {
+          if (v == null) return 0
+          const npi = Math.min(v as number, ps.pupillometry?.npiRight ?? v as number)
+          return npi < 1 ? 100 : npi < 2 ? 70 : npi < 3 ? 35 : 0
+        }},
+      ],
+    }))
+
     // ── Patterns (5) ──
     this.patterns.push({
       name: 'Détérioration neurologique progressive',
@@ -127,6 +146,24 @@ export class VPSEngine extends BrainCore {
         if (!pims || !neuro) return { confidence: 0, description: '', implications: '' }
         if (pims.intensity > 40 && neuro.intensity > 20) {
           return { confidence: Math.min(1, (pims.intensity + neuro.intensity) / 120), description: `PIMS ${pims.intensity} + Neuro ${neuro.intensity}`, implications: 'Atteinte neuro PIMS/MIS-C — OR 1.85/2.18 Francoeur JAMA 2024' }
+        }
+        return { confidence: 0, description: '', implications: '' }
+      },
+    })
+
+    // V16 — Pattern lésion cérébrale multimodale (EEG + biomarqueurs + IRM)
+    this.patterns.push({
+      name: 'Lésion cérébrale multimodale',
+      match: (ps, fields) => {
+        const neuroMon = fields.find(f => f.category === 'neuro_monitoring')
+        if (!neuroMon || neuroMon.intensity < 30) return { confidence: 0, description: '', implications: '' }
+        let multimodal = 0
+        if (ps.eeg && (ps.eeg.NCSEstatus || ps.eeg.seizuresPerHour > 3)) multimodal++
+        if (ps.mri && ps.mri.t2FlairAbnormal) multimodal++
+        if (ps.neuroBiomarkers && (ps.neuroBiomarkers.nfl ?? 0) > 100) multimodal++
+        if (ps.pupillometry && Math.min(ps.pupillometry.npiLeft ?? 5, ps.pupillometry.npiRight ?? 5) < 3) multimodal++
+        if (multimodal >= 2) {
+          return { confidence: Math.min(1, 0.5 + multimodal * 0.15), description: `${multimodal} modalités convergentes (neuro-monitoring ${neuroMon.intensity})`, implications: 'Convergence multimodale → pronostic péjoratif — Shakeshaft 2023' }
         }
         return { confidence: 0, description: '', implications: '' }
       },

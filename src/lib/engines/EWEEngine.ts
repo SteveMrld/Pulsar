@@ -114,6 +114,25 @@ export class EWEEngine extends BrainCore {
       ],
     }))
 
+    // ── Champ 4 (V16) : Signaux d'alerte neuro-monitoring (×2.5) ──
+    this.semanticFields.push(new SemanticField({
+      name: 'Alerte neuro-monitoring', category: 'neuro_alert', color: '#FF4757',
+      signals: [
+        { name: 'Tendance EEG', weight: 3, extract: ps => ps.eeg?.trend, normalize: v => ({ worsening: 100, stable: 20, improving: 0 }[v as string] || 0) },
+        { name: 'NCSE actif', weight: 3, extract: ps => ps.eeg?.NCSEstatus, normalize: v => v === true ? 100 : 0 },
+        { name: 'Sédation EEG', weight: 2, extract: ps => ps.eeg?.sedationEffect, normalize: v => ({ none: 0, mild: 15, moderate: 40, severe: 70, burst_suppression: 90 }[v as string] || 0) },
+        { name: 'TCD Vasospasme', weight: 2, extract: ps => ps.tcd?.vasospasm, normalize: v => v === true ? 85 : 0 },
+        { name: 'TCD Vélocité ACM', weight: 1.5, unit: 'cm/s', extract: ps => ps.tcd?.mca_velocity, normalize: v => v == null ? 0 : (v as number) > 200 ? 100 : (v as number) > 150 ? 65 : (v as number) > 120 ? 30 : 0 },
+        { name: 'Asymétrie pupillaire', weight: 2.5, extract: ps => ps.pupillometry?.asymmetry, normalize: v => v === true ? 90 : 0 },
+        { name: 'NPI minimal', weight: 2, extract: ps => ps.pupillometry?.npiLeft, normalize: (v, ps) => {
+          if (v == null) return 0
+          const npi = Math.min(v as number, ps.pupillometry?.npiRight ?? v as number)
+          return npi < 1 ? 100 : npi < 2 ? 75 : npi < 3 ? 40 : npi < 3.5 ? 15 : 0
+        }},
+        { name: 'GFAP', weight: 1.5, unit: 'ng/mL', extract: ps => ps.neuroBiomarkers?.gfap, normalize: v => v == null ? 0 : (v as number) > 2 ? 100 : (v as number) > 1 ? 70 : (v as number) > 0.5 ? 35 : 0 },
+      ],
+    }))
+
     // ── Patterns EWE ──
     this.patterns.push({
       name: 'Fenêtre pré-critique FIRES',

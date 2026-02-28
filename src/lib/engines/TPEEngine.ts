@@ -103,6 +103,23 @@ export class TPEEngine extends BrainCore {
       ],
     }))
 
+    // ── Champ 3 (V16) : Fenêtres thérapeutiques biomarqueur-guidées (×1.5) ──
+    this.semanticFields.push(new SemanticField({
+      name: 'Fenêtres biomarqueurs', category: 'biomarker_windows', color: '#FFB347',
+      signals: [
+        { name: 'IL-6 LCR (cible tocilizumab)', weight: 2.5, unit: 'pg/mL', extract: ps => ps.neuroBiomarkers?.il6Csf, normalize: v => v == null ? 0 : (v as number) > 100 ? 100 : (v as number) > 50 ? 65 : (v as number) > 20 ? 35 : 0 },
+        { name: 'Néoptérine (activation SNC)', weight: 2, extract: ps => ps.neuroBiomarkers?.neopterin, normalize: v => v == null ? 0 : (v as number) > 60 ? 100 : (v as number) > 40 ? 60 : (v as number) > 20 ? 25 : 0 },
+        { name: 'NfL (fenêtre neuroprotection)', weight: 2, unit: 'pg/mL', extract: ps => ps.neuroBiomarkers?.nfl, normalize: v => v == null ? 0 : (v as number) > 200 ? 100 : (v as number) > 100 ? 55 : (v as number) > 50 ? 20 : 0 },
+        { name: 'Tau (dégénérescence active)', weight: 1.5, extract: ps => ps.neuroBiomarkers?.tau, normalize: v => v == null ? 0 : (v as number) > 500 ? 90 : (v as number) > 300 ? 55 : (v as number) > 150 ? 25 : 0 },
+        { name: 'IRM spectro lactate', weight: 1.5, extract: ps => ps.mri?.spectroscopy?.lactate, normalize: v => v === true ? 75 : 0 },
+        { name: 'EEG pharmacorésistance', weight: 2, extract: ps => ps.eeg?.seizuresPerHour, normalize: (v, ps) => {
+          if (v == null) return 0
+          const drugs = ps.drugs.length
+          return (v as number) > 3 && drugs >= 3 ? 100 : (v as number) > 1 && drugs >= 2 ? 50 : 0
+        }},
+      ],
+    }))
+
     // ── Patterns TPE ──
     this.patterns.push({
       name: 'Profil IL-1β dominant',

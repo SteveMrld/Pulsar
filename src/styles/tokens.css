@@ -567,6 +567,7 @@ body {
    ════════════════════════════════════════════════════════════════ */
 @media (max-width: 768px) {
   .grid-5 { grid-template-columns: repeat(2, 1fr) !important; }
+  .grid-6 { grid-template-columns: repeat(3, 1fr) !important; }
   .grid-5-2 { grid-template-columns: repeat(2, 1fr) !important; }
   .grid-4 { grid-template-columns: repeat(2, 1fr) !important; }
   .grid-3 { grid-template-columns: 1fr !important; }
@@ -586,9 +587,11 @@ body {
 
   /* Stack engine pipeline on mobile */
   .grid-5 > * { min-width: 0; }
+  .grid-6 > * { min-width: 0; }
 }
 @media (max-width: 480px) {
   .grid-5 { grid-template-columns: 1fr !important; }
+  .grid-6 { grid-template-columns: repeat(2, 1fr) !important; }
   .grid-5-2 { grid-template-columns: 1fr !important; }
   .grid-4 { grid-template-columns: 1fr !important; }
 }
