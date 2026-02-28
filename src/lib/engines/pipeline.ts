@@ -10,6 +10,7 @@ import { TDEEngine } from './TDEEngine'
 import { PVEEngine } from './PVEEngine'
 import { EWEEngine } from './EWEEngine'
 import { TPEEngine } from './TPEEngine'
+import { runNeuroCore } from '@/lib/neurocore/engine'
 
 export function runPipeline(ps: PatientState): PatientState {
   const vps = new VPSEngine()
@@ -53,6 +54,12 @@ export function runPipeline(ps: PatientState): PatientState {
     ...eweResult.synthesis.recommendations,
     ...tpeResult.synthesis.recommendations,
   ]
+
+  // Étape 6 — NeuroCore : Analyse cerveau (EEG + IRM + Biomarqueurs)
+  // Tourne en dernier, enrichit les alertes avec les données neuro
+  if (ps.eeg || ps.mri || ps.neuroBiomarkers) {
+    runNeuroCore(ps)
+  }
 
   return ps
 }

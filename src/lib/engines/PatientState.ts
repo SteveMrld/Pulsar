@@ -3,6 +3,8 @@
 // L'objet central : 5 pathologies, 5 moteurs
 // ============================================================
 
+import type { EEGData, MRIData, NeuroBiomarkers, TCDData, EvokedPotentials, PupillometryData, DTIData, PETData, QEEGData } from '@/lib/neurocore/knowledgeBase'
+
 // ── Types fondamentaux ──
 
 export type AgeGroup = 'neonate' | 'infant' | 'toddler' | 'child' | 'adolescent'
@@ -146,6 +148,18 @@ export class PatientState {
     ccl2?: number; cxcl1?: number
   }
 
+  // V16 — NeuroCore
+  eeg: EEGData | null
+  mri: MRIData | null
+  neuroBiomarkers: NeuroBiomarkers | null
+  tcd: TCDData | null
+  evokedPotentials: EvokedPotentials | null
+  pupillometry: PupillometryData | null
+  dti: DTIData | null
+  pet: PETData | null
+  qeeg: QEEGData | null
+  neuroCoreResult: { redFlags: string[]; traps: string[]; eegAlerts: string[]; mriAlerts: string[]; biomarkerAlerts: string[]; phase: string; guidance: any } | null
+
   // Engine results (filled by pipeline)
   vpsResult: EngineResult | null
   tdeResult: EngineResult | null
@@ -206,6 +220,18 @@ export class PatientState {
     }
 
     this.cytokines = d.cytokines
+
+    // V16 — NeuroCore
+    this.eeg = d.eeg ?? null
+    this.mri = d.mri ?? null
+    this.neuroBiomarkers = d.neuroBiomarkers ?? null
+    this.tcd = d.tcd ?? null
+    this.evokedPotentials = d.evokedPotentials ?? null
+    this.pupillometry = d.pupillometry ?? null
+    this.dti = d.dti ?? null
+    this.pet = d.pet ?? null
+    this.qeeg = d.qeeg ?? null
+    this.neuroCoreResult = null
 
     this.vpsResult = null
     this.tdeResult = null
