@@ -37,6 +37,11 @@ const QUICK_ACCESS = [
     desc: 'Chronologie du séjour',
     color: '#FF6B8A', primary: false,
   },
+  {
+    href: '/observatory', icon: 'virus', label: 'Observatoire',
+    desc: 'Veille épidémiologique',
+    color: '#FFA502', primary: false,
+  },
 ]
 
 export default function WelcomePage() {
