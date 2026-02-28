@@ -65,7 +65,7 @@ export default function OnboardingPage() {
                 <button key={s} onClick={() => setSex(s)} style={{
                   width: '200px', padding: 'var(--p-space-5)', borderRadius: 'var(--p-radius-xl)', cursor: 'pointer',
                   border: sex === s ? `3px solid ${color}` : '2px solid var(--p-gray-2)',
-                  background: sex === s ? `${color}10` : 'var(--p-bg-card)', transition: 'all 200ms',
+                  background: sex === s ? `${color}10` : 'var(--p-bg-elevated)', transition: 'all 200ms',
                   display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'var(--p-space-3)',
                 }}>
                   <img src={img} alt={label} width={120} height={160} style={{ borderRadius: 12, objectFit: 'cover', filter: sex === s ? `drop-shadow(0 0 20px ${color})` : 'brightness(0.7)', transition: 'all 200ms' }} />

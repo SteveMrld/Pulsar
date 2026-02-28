@@ -62,7 +62,7 @@ export default function CrossPathologiePage() {
             <button key={p.id} onClick={() => toggle(p.id)} className="card-interactive" style={{
               padding: 'var(--p-space-4)', borderRadius: 'var(--p-radius-lg)', cursor: 'pointer', textAlign: 'center',
               border: active ? `2px solid ${p.color}` : 'var(--p-border)',
-              background: active ? `${p.color}10` : 'var(--p-bg-card)', transition: 'all 200ms',
+              background: active ? `${p.color}10` : 'var(--p-bg-elevated)', transition: 'all 200ms',
             }}>
               <Picto name={p.icon} size={28} glow={active} glowColor={p.color} />
               <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 800, color: active ? p.color : 'var(--p-text)', marginTop: '8px' }}>{p.name}</div>

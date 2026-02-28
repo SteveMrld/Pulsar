@@ -278,9 +278,9 @@ export default function DemoPage() {
             <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>5 ans · Suspicion FIRES · 13 scènes · ~3 minutes</span>
           </div>
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button onClick={() => { if (currentScene > 0) goTo(currentScene - 1) }} style={{ padding: '6px 14px', borderRadius: 'var(--p-radius-lg)', border: 'var(--p-border)', background: 'var(--p-bg-card)', color: 'var(--p-text-dim)', cursor: 'pointer', fontSize: '12px' }}>← Préc.</button>
+            <button onClick={() => { if (currentScene > 0) goTo(currentScene - 1) }} style={{ padding: '6px 14px', borderRadius: 'var(--p-radius-lg)', border: 'var(--p-border)', background: 'var(--p-bg-elevated)', color: 'var(--p-text-dim)', cursor: 'pointer', fontSize: '12px' }}>← Préc.</button>
             <button onClick={() => setPlaying(!playing)} style={{ padding: '6px 20px', borderRadius: 'var(--p-radius-lg)', border: 'none', background: playing ? 'var(--p-critical)' : 'var(--p-success)', color: '#fff', fontWeight: 700, cursor: 'pointer', fontSize: '12px' }}>{playing ? '⏸ Pause' : '▶ Play'}</button>
-            <button onClick={() => { if (currentScene < SCENES.length - 1) goTo(currentScene + 1) }} style={{ padding: '6px 14px', borderRadius: 'var(--p-radius-lg)', border: 'var(--p-border)', background: 'var(--p-bg-card)', color: 'var(--p-text-dim)', cursor: 'pointer', fontSize: '12px' }}>Suiv. →</button>
+            <button onClick={() => { if (currentScene < SCENES.length - 1) goTo(currentScene + 1) }} style={{ padding: '6px 14px', borderRadius: 'var(--p-radius-lg)', border: 'var(--p-border)', background: 'var(--p-bg-elevated)', color: 'var(--p-text-dim)', cursor: 'pointer', fontSize: '12px' }}>Suiv. →</button>
           </div>
         </div>
 
