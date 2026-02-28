@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import { computeDiagnosticContext } from '@/lib/data/epidemioContext'
 import dynamic from 'next/dynamic'
 
 const RChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
@@ -163,6 +164,9 @@ export default function DiagnosticPage() {
   const { ps, fc, firesScore, eais, pims } = computed
   const tdeP = ps.tdeResult?.intention.patterns || []
   const top = tdeP[0]
+
+  // Epidemiological context for diagnostic aid
+  const epiContext = useMemo(() => computeDiagnosticContext(scenario, 'Île-de-France'), [scenario])
   const radarD = [
     Math.round((firesScore / 13) * 100),
     Math.round((eais.score / eais.max) * 100),
@@ -195,6 +199,28 @@ export default function DiagnosticPage() {
           }}>{v.label}</button>
         ))}
       </div>
+
+      {/* Epidemiological Context Alerts */}
+      {epiContext.alerts.length > 0 && (
+        <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{
+          ...card, marginBottom: 'var(--p-space-4)',
+          borderLeft: '3px solid var(--p-warning)',
+          background: 'rgba(255,179,71,0.04)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
+            <Picto name="virus" size={16} glow glowColor="var(--p-warning)" />
+            <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-warning)', letterSpacing: '1px', fontWeight: 700 }}>CONTEXTE ÉPIDÉMIOLOGIQUE</span>
+          </div>
+          {epiContext.alerts.slice(0, 2).map((a, i) => (
+            <div key={i} style={{ fontSize: '11px', marginBottom: '4px' }}>
+              <span style={{ color: a.level === 'critical' ? 'var(--p-critical)' : 'var(--p-warning)', fontWeight: 700 }}>{a.level === 'critical' ? '⚠' : '⚡'}</span>{' '}
+              <span style={{ color: 'var(--p-text-muted)' }}>{a.message}</span>
+              <span style={{ fontSize: '10px', color: 'var(--p-text-dim)' }}> → Déclencheur {scenario} : {a.trigger}</span>
+            </div>
+          ))}
+          <a href="/observatory" style={{ fontSize: '10px', color: 'var(--p-info)', textDecoration: 'none', fontWeight: 600, marginTop: '4px', display: 'inline-block' }}>↗ Voir Observatory</a>
+        </div>
+      )}
 
       {/* Pattern Banner */}
       {top && (

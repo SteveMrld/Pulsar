@@ -5,15 +5,17 @@ import SignalPanel from './components/SignalPanel'
 import ClinicalAnalytics from './components/ClinicalAnalytics'
 import EvidenceLibrary from './components/EvidenceLibrary'
 import WorldMap from './components/WorldMap'
+import EpidemioPanel from './components/EpidemioPanel'
 import { SIGNALS, EVIDENCE, REGISTRY, AGGREGATES } from '@/lib/data/observatoryData'
 
-type Tab = 'overview' | 'signals' | 'registry' | 'evidence'
+type Tab = 'overview' | 'signals' | 'registry' | 'evidence' | 'epidemio'
 
 export default function ObservatoryPage() {
   const [tab, setTab] = useState<Tab>('overview')
 
   const tabs: { id: Tab; label: string; icon: string }[] = [
     { id: 'overview', label: 'Vue d\'ensemble', icon: 'brain' },
+    { id: 'epidemio', label: 'Contexte Épidémio', icon: 'virus' },
     { id: 'signals', label: 'Signal Lab', icon: 'eeg' },
     { id: 'registry', label: 'Registre mondial', icon: 'lungs' },
     { id: 'evidence', label: 'Evidence Library', icon: 'clipboard' },
@@ -76,6 +78,9 @@ export default function ObservatoryPage() {
 
       {/* Signals */}
       {tab === 'signals' && <SignalPanel signals={SIGNALS} />}
+
+      {/* Epidemio Context */}
+      {tab === 'epidemio' && <EpidemioPanel />}
 
       {/* Registry */}
       {tab === 'registry' && <WorldMap rows={REGISTRY} />}
