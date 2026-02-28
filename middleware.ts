@@ -27,19 +27,22 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
-  const protectedRoutes = ['/dashboard', '/project', '/urgence', '/bilan', '/diagnostic', '/interpellation', '/case-matching', '/recommandations', '/pharmacovigilance', '/cockpit', '/engines', '/timeline', '/suivi', '/synthese', '/famille', '/staff', '/export', '/evidence', '/experts', '/demo', '/about']
+  // Demo mode bypass via cookie
+  const isDemo = request.cookies.get('pulsar-demo')?.value === 'true'
+
+  const protectedRoutes = ['/dashboard', '/project', '/urgence', '/bilan', '/diagnostic', '/interpellation', '/case-matching', '/recommandations', '/pharmacovigilance', '/cockpit', '/engines', '/timeline', '/suivi', '/synthese', '/famille', '/staff', '/export', '/evidence', '/experts', '/demo', '/about', '/admission', '/audit', '/onboarding', '/observatory', '/cross-pathologie']
   const authRoutes = ['/login', '/signup']
   const path = request.nextUrl.pathname
 
   // Redirect unauthenticated users away from protected routes
-  if (!user && protectedRoutes.some(r => path.startsWith(r))) {
+  if (!user && !isDemo && protectedRoutes.some(r => path.startsWith(r))) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
   // Redirect authenticated users away from auth pages
-  if (user && authRoutes.some(r => path.startsWith(r))) {
+  if ((user || isDemo) && authRoutes.some(r => path.startsWith(r))) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)

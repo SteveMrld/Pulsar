@@ -141,6 +141,29 @@ export default function LoginPage() {
             Créer un compte
           </Link>
         </p>
+
+        <div style={{ marginTop: 'var(--p-space-4)', paddingTop: 'var(--p-space-4)', borderTop: 'var(--p-border)' }}>
+          <button
+            onClick={() => {
+              document.cookie = 'pulsar-demo=true; path=/; max-age=86400'
+              localStorage.setItem('pulsar-demo', 'true')
+              router.push('/dashboard')
+            }}
+            style={{
+              width: '100%',
+              padding: 'var(--p-space-3)',
+              borderRadius: 'var(--p-radius-md)',
+              background: 'transparent',
+              color: 'var(--p-tde)',
+              border: '1px solid var(--p-tde)',
+              fontWeight: 600,
+              fontSize: 'var(--p-text-sm)',
+              cursor: 'pointer',
+            }}
+          >
+            Accès Démo — Sans compte
+          </button>
+        </div>
       </div>
     </div>
   )

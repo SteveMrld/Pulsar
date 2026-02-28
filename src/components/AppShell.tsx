@@ -28,6 +28,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (isPublic) { setLoading(false); return }
+    // Demo mode bypass
+    if (typeof window !== 'undefined' && localStorage.getItem('pulsar-demo') === 'true') {
+      setUser('demo@pulsar.app')
+      setLoading(false)
+      return
+    }
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => {
       if (data.user) { setUser(data.user.email || 'Utilisateur') }
@@ -50,6 +56,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }
 
   const handleLogout = async () => {
+    document.cookie = 'pulsar-demo=; path=/; max-age=0'
+    localStorage.removeItem('pulsar-demo')
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/')
