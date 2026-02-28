@@ -1,0 +1,273 @@
+'use client'
+import Link from 'next/link'
+import { useState, useEffect, useMemo } from 'react'
+import { PatientState } from '@/lib/engines/PatientState'
+import { runPipeline } from '@/lib/engines/pipeline'
+import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import Picto from '@/components/Picto'
+import SilhouetteNeon from '@/components/SilhouetteNeon'
+import dynamic from 'next/dynamic'
+
+const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
+const Area = dynamic(() => import('recharts').then(m => m.Area), { ssr: false })
+const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
+const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
+const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
+const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
+
+function Spark({ data, color, w = 64, h = 24 }: { data: number[]; color: string; w?: number; h?: number }) {
+  if (data.length < 2) return null
+  const mn = Math.min(...data), mx = Math.max(...data), rng = mx - mn || 1
+  const pts = data.map((v, i) => `${(i / (data.length - 1)) * w},${h - ((v - mn) / rng) * (h - 4) - 2}`).join(' ')
+  const lastY = pts.split(' ').pop()?.split(',')[1] || '12'
+  const gid = `spk${color.replace(/[^a-z0-9]/gi,'')}`
+  return (
+    <svg width={w} height={h} style={{ display: 'block' }}>
+      <defs><linearGradient id={gid} x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stopColor={color} stopOpacity="0.3" /><stop offset="100%" stopColor={color} stopOpacity="0" /></linearGradient></defs>
+      <polygon points={`0,${h} ${pts} ${w},${h}`} fill={`url(#${gid})`} />
+      <polyline points={pts} fill="none" stroke={color} strokeWidth="1.5" strokeLinejoin="round" strokeLinecap="round" />
+      <circle cx={w} cy={Number(lastY)} r="2.5" fill={color} />
+    </svg>
+  )
+}
+
+function MiniGauge({ score, color, size = 44 }: { score: number; color: string; size?: number }) {
+  const r = (size - 6) / 2, c = 2 * Math.PI * r, off = c - (score / 100) * c
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="var(--p-dark-4)" strokeWidth="3" />
+      <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth="3"
+        strokeDasharray={c} strokeDashoffset={off} strokeLinecap="round"
+        className="gauge-ring" style={{ '--gauge-circumference': c, '--gauge-target': off } as React.CSSProperties} />
+      <text x={size/2} y={size/2 + 4} textAnchor="middle" fill={color} fontSize="12" fontWeight="800" fontFamily="var(--p-font-mono)">{score}</text>
+    </svg>
+  )
+}
+
+const phases = [
+  { label: 'PHASE 1 — ARRIVÉE', modules: [
+    { href: '/project', icon: 'brain', title: 'Nouveau CDC', desc: 'Saisie patient complète', color: 'var(--p-vps)' },
+    { href: '/urgence', icon: 'heart', title: 'Mode Urgence 3h', desc: '6 champs essentiels', color: 'var(--p-critical)' },
+    { href: '/bilan', icon: 'virus', title: 'Bilan diagnostique', desc: '26 examens, 6 catégories', color: 'var(--p-pve)' },
+  ]},
+  { label: 'PHASE 2 — DIAGNOSTIC', modules: [
+    { href: '/diagnostic', icon: 'dna', title: 'Diagnostic IA', desc: 'Scoring FIRES/EAIS/PIMS', color: 'var(--p-tde)' },
+    { href: '/interpellation', icon: 'thermo', title: 'Interpellation', desc: 'Drapeaux rouges, seuils', color: 'var(--p-warning)' },
+    { href: '/case-matching', icon: 'eeg', title: 'Case-Matching', desc: '4 cas documentés', color: 'var(--p-info)' },
+  ]},
+  { label: 'PHASE 3 — TRAITEMENT', modules: [
+    { href: '/recommandations', icon: 'blood', title: 'Recommandations', desc: '4 lignes thérapeutiques', color: 'var(--p-ewe)' },
+    { href: '/pharmacovigilance', icon: 'virus', title: 'Pharmacovigilance', desc: 'Interactions, PVE Engine', color: 'var(--p-pve)' },
+  ]},
+  { label: 'PHASE 4 — MONITORING', modules: [
+    { href: '/cockpit', icon: 'eeg', title: 'Cockpit Vital', desc: '5 paramètres + 5 moteurs', color: 'var(--p-vps)' },
+    { href: '/timeline', icon: 'brain', title: 'Timeline', desc: 'Chronologie du séjour', color: 'var(--p-tde)' },
+    { href: '/suivi', icon: 'heart', title: 'Suivi J+2/5/7', desc: "Points d'étape", color: 'var(--p-tpe)' },
+  ]},
+  { label: 'PHASE 5 — SYNTHÈSE', modules: [
+    { href: '/staff', icon: 'lungs', title: 'Staff / RCP', desc: 'Réunion pluridisciplinaire', color: 'var(--p-info)' },
+    { href: '/famille', icon: 'heart', title: 'Espace Famille', desc: 'Langage accessible', color: 'var(--p-tde)' },
+    { href: '/synthese', icon: 'brain', title: 'Synthèse', desc: 'Vue consolidée', color: 'var(--p-pve)' },
+    { href: '/export', icon: 'dna', title: 'Export PDF', desc: 'Rapport complet', color: 'var(--p-tpe)' },
+  ]},
+  { label: 'RESSOURCES', modules: [
+    { href: '/demo', icon: 'eeg', title: 'Démo Inès', desc: '13 scènes autopilotées', color: 'var(--p-ewe)' },
+    { href: '/engines/vps', icon: 'brain', title: 'VPS Engine', desc: '4 couches BrainCore', color: 'var(--p-vps)' },
+    { href: '/engines/tde', icon: 'dna', title: 'TDE Engine', desc: '4 couches BrainCore', color: 'var(--p-tde)' },
+    { href: '/engines/pve', icon: 'virus', title: 'PVE Engine', desc: '4 couches BrainCore', color: 'var(--p-pve)' },
+    { href: '/engines/ewe', icon: 'heart', title: 'EWE Engine', desc: '4 couches BrainCore', color: 'var(--p-ewe)' },
+    { href: '/engines/tpe', icon: 'thermo', title: 'TPE Engine', desc: '4 couches BrainCore', color: 'var(--p-tpe)' },
+  ]},
+]
+
+const enginesDef = [
+  { name: 'VPS', full: 'Vital Prognosis Score', color: '#6C7CFF' },
+  { name: 'TDE', full: 'Therapeutic Decision', color: '#2FD1C8' },
+  { name: 'PVE', full: 'Pharmacovigilance', color: '#B96BFF' },
+  { name: 'EWE', full: 'Early Warning', color: '#FF6B8A' },
+  { name: 'TPE', full: 'Therapeutic Prospection', color: '#FFB347' },
+]
+
+export default function DashboardPage() {
+  const [mounted, setMounted] = useState(false)
+  const [scenario, setScenario] = useState('FIRES')
+  useEffect(() => setMounted(true), [])
+
+  const ps = useMemo(() => {
+    const p = new PatientState(DEMO_PATIENTS[scenario].data)
+    runPipeline(p)
+    return p
+  }, [scenario])
+
+  const enginesLive = [
+    { ...enginesDef[0], score: ps.vpsResult?.synthesis.score ?? 0, level: ps.vpsResult?.synthesis.level ?? '—' },
+    { ...enginesDef[1], score: ps.tdeResult?.synthesis.score ?? 0, level: ps.tdeResult?.synthesis.level ?? '—' },
+    { ...enginesDef[2], score: ps.pveResult?.synthesis.score ?? 0, level: ps.pveResult?.synthesis.level ?? '—' },
+    { ...enginesDef[3], score: ps.eweResult?.synthesis.score ?? 0, level: ps.eweResult?.synthesis.level ?? '—' },
+    { ...enginesDef[4], score: ps.tpeResult?.synthesis.score ?? 0, level: ps.tpeResult?.synthesis.level ?? '—' },
+  ]
+
+  const mkSpk = (base: number) => [Math.max(0,base-15), Math.max(0,base-8), Math.max(0,base-12), Math.max(0,base-3), base]
+  const critCount = ps.alerts.filter(a => a.severity === 'critical').length
+
+  const card: React.CSSProperties = {
+    borderRadius: 'var(--p-radius-xl)',
+    padding: 'var(--p-space-5)',
+  }
+
+  return (
+    <div className="page-enter-stagger" style={{ maxWidth: '1200px', margin: '0 auto' }}>
+
+      {/* Hero Banner */}
+      <div className="glass-card" style={{
+        padding: 'var(--p-space-6) var(--p-space-8)', borderRadius: 'var(--p-radius-2xl)',
+        marginBottom: 'var(--p-space-6)', position: 'relative', overflow: 'hidden',
+      }}>
+        <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 20% 50%, rgba(108,124,255,0.08) 0%, transparent 60%), radial-gradient(ellipse at 80% 30%, rgba(47,209,200,0.05) 0%, transparent 50%)', pointerEvents: 'none' }} />
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+          <div>
+            <h1 className="text-gradient-brand" style={{ fontSize: 'var(--p-text-3xl)', fontWeight: 800, margin: 0, lineHeight: 1.2 }}>PULSAR V15</h1>
+            <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', margin: '6px 0 0', maxWidth: '500px' }}>
+              Pediatric Urgent Lifesaving System — 5 moteurs × 4 couches BrainCore
+            </p>
+          </div>
+          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
+            {[
+              { label: 'Moteurs', value: '5/5', color: 'var(--p-vps)' },
+              { label: 'Crash tests', value: '7/7', color: 'var(--p-success)' },
+              { label: 'Pathologies', value: '5', color: 'var(--p-tde)' },
+              { label: 'Alertes', value: String(critCount), color: critCount > 0 ? 'var(--p-critical)' : 'var(--p-success)' },
+            ].map((s, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: s.color }}>{s.value}</div>
+                <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', letterSpacing: '0.5px' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Scenario Tabs */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: 'var(--p-space-5)', flexWrap: 'wrap' }}>
+        {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
+          <button key={k} onClick={() => setScenario(k)} style={{
+            padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
+            border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)',
+            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-elevated)',
+            color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)',
+            fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
+          }}>{v.label}</button>
+        ))}
+      </div>
+
+      {/* Engine Pipeline with Live Scores */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-6)' }} className="grid-5">
+        {enginesLive.map((e) => (
+          <Link key={e.name} href={`/engines/${e.name.toLowerCase()}`} style={{ textDecoration: 'none' }}>
+            <div className="card-interactive glass-card" style={{
+              padding: 'var(--p-space-4)', borderRadius: 'var(--p-radius-xl)',
+              borderTop: `3px solid ${e.color}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px',
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
+                <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: e.color, fontSize: '11px', letterSpacing: '1px' }}>{e.name}</span>
+                <div className="dot-alive" />
+              </div>
+              <MiniGauge score={e.score} color={e.color} />
+              <Spark data={mkSpk(e.score)} color={e.color} />
+              <div style={{ padding: '2px 10px', borderRadius: 'var(--p-radius-full)', background: `${e.color}15`, fontSize: '8px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: e.color, maxWidth: '100%', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{e.level}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Silhouette + Trends */}
+      <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 'var(--p-space-5)', marginBottom: 'var(--p-space-6)' }} className="grid-2-1">
+        {/* Neon Silhouette */}
+        <SilhouetteNeon
+          sex={ps.sex === 'female' ? 'F' : 'M'}
+          vpsScore={ps.vpsResult?.synthesis.score ?? 0}
+          compact
+          vitals={[
+            { label: 'NEURO', icon: '🧠', value: `GCS: ${ps.neuro.gcs}/15`, color: '#6C7CFF',
+              severity: ps.neuro.gcs <= 8 ? 2 : ps.neuro.gcs <= 12 ? 1 : 0 },
+            { label: 'CARDIO', icon: '❤️', value: `FC: ${ps.hemodynamics.heartRate} bpm`, color: '#FF6B8A',
+              severity: ps.hemodynamics.heartRate > 140 ? 2 : 0 },
+            { label: 'RESP', icon: '🫁', value: `SpO₂: ${ps.hemodynamics.spo2}%`, color: '#2FD1C8',
+              severity: ps.hemodynamics.spo2 < 95 ? 1 : 0 },
+            { label: 'INFLAM', icon: '🔥', value: `CRP: ${ps.biology.crp} mg/L`, color: '#FFB347',
+              severity: ps.biology.crp > 100 ? 2 : ps.biology.crp > 20 ? 1 : 0 },
+            { label: 'TEMP', icon: '🌡️', value: `${ps.hemodynamics.temp}°C`, color: '#B96BFF',
+              severity: ps.hemodynamics.temp >= 38 ? 1 : 0 },
+          ]}
+        />
+        {/* Engine Trends Chart */}
+        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-5)' }}>
+          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: 'var(--p-space-3)' }}>
+            TENDANCES MOTEURS (72h)
+          </div>
+          {mounted && (
+            <ResponsiveContainer width="100%" height={260}>
+              <AreaChart data={[
+                { t: 'H-72', VPS: Math.max(0, (ps.vpsResult?.synthesis.score??0)-25), TDE: Math.max(0, (ps.tdeResult?.synthesis.score??0)-18), EWE: Math.max(0, (ps.eweResult?.synthesis.score??0)-30) },
+                { t: 'H-48', VPS: Math.max(0, (ps.vpsResult?.synthesis.score??0)-15), TDE: Math.max(0, (ps.tdeResult?.synthesis.score??0)-10), EWE: Math.max(0, (ps.eweResult?.synthesis.score??0)-20) },
+                { t: 'H-24', VPS: Math.max(0, (ps.vpsResult?.synthesis.score??0)-8), TDE: Math.max(0, (ps.tdeResult?.synthesis.score??0)-5), EWE: Math.max(0, (ps.eweResult?.synthesis.score??0)-10) },
+                { t: 'H-12', VPS: Math.max(0, (ps.vpsResult?.synthesis.score??0)-3), TDE: Math.max(0, (ps.tdeResult?.synthesis.score??0)-2), EWE: Math.max(0, (ps.eweResult?.synthesis.score??0)-5) },
+                { t: 'Now', VPS: ps.vpsResult?.synthesis.score??0, TDE: ps.tdeResult?.synthesis.score??0, EWE: ps.eweResult?.synthesis.score??0 },
+              ]} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(108,124,255,0.06)" />
+                <XAxis dataKey="t" tick={{ fill: '#6B6B85', fontSize: 10, fontFamily: 'JetBrains Mono' }} axisLine={false} />
+                <YAxis domain={[0, 100]} tick={{ fill: '#6B6B85', fontSize: 10 }} axisLine={false} width={30} />
+                <Tooltip contentStyle={{ background: 'rgba(14,14,22,0.9)', border: '1px solid rgba(108,124,255,0.2)', borderRadius: '8px', fontSize: '11px' }} />
+                <Area type="monotone" dataKey="VPS" stroke="#6C7CFF" fill="#6C7CFF" fillOpacity={0.1} strokeWidth={2} />
+                <Area type="monotone" dataKey="TDE" stroke="#2FD1C8" fill="#2FD1C8" fillOpacity={0.08} strokeWidth={2} />
+                <Area type="monotone" dataKey="EWE" stroke="#FF6B8A" fill="#FF6B8A" fillOpacity={0.06} strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
+      {/* Module Cards */}
+      {phases.map((phase, pi) => (
+        <div key={pi} style={{ marginBottom: 'var(--p-space-5)' }}>
+          <div className="section-label" style={{ marginBottom: 'var(--p-space-3)', paddingLeft: '2px' }}>{phase.label}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 'var(--p-space-3)' }}>
+            {phase.modules.map((m, mi) => (
+              <Link key={mi} href={m.href} style={{ textDecoration: 'none' }}>
+                <div className={`glass-card ${mounted ? 'animate-in' : ''} card-interactive`} style={{
+                  ...card, cursor: 'pointer', borderTop: `3px solid ${m.color}`,
+                  animationDelay: `${(pi * 3 + mi) * 50}ms`,
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--p-space-3)' }}>
+                    <Picto name={m.icon} size={36} glow glowColor={m.color} />
+                  </div>
+                  <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)', marginBottom: '4px' }}>{m.title}</div>
+                  <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>{m.desc}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {/* Quick Actions */}
+      <div className="accent-line" style={{ margin: 'var(--p-space-4) 0' }} />
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--p-space-3)' }} className="grid-3">
+        {[
+          { href: '/evidence', icon: 'virus', label: 'Evidence Vault', badge: '17 publis' },
+          { href: '/experts', icon: 'brain', label: 'Consensus Expert', badge: '5 experts' },
+          { href: '/about', icon: 'heart', label: 'Mémorial', badge: '' },
+        ].map((a, i) => (
+          <Link key={i} href={a.href} style={{ textDecoration: 'none' }}>
+            <div className="card-interactive glass-card" style={{ borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-3)', display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
+              <Picto name={a.icon} size={28} glow />
+              <span style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', flex: 1 }}>{a.label}</span>
+              {a.badge && <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>{a.badge}</span>}
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
+}

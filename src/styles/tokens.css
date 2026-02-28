@@ -297,6 +297,10 @@ body {
   from { opacity: 0; transform: translateX(-16px); }
   to   { opacity: 1; transform: translateX(0); }
 }
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
 @keyframes expandWidth {
   from { width: 0; opacity: 0; }
   to   { width: 100%; opacity: 1; }
