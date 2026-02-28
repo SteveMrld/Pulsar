@@ -1,9 +1,19 @@
 'use client'
+import dynamic from 'next/dynamic'
 import Picto from '@/components/Picto';
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+
+const BarChart = dynamic(() => import('recharts').then(m => m.BarChart), { ssr: false })
+const Bar = dynamic(() => import('recharts').then(m => m.Bar), { ssr: false })
+const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
+const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
+const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
+const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
+const Cell = dynamic(() => import('recharts').then(m => m.Cell), { ssr: false })
 
 // ── Therapeutic Lines Data ──
 interface TherapyItem {
@@ -213,6 +223,40 @@ export default function RecommandationsPage() {
             fontSize: '11px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: 'var(--p-vps)',
           }}>VPS {ps.vpsResult.synthesis.score}/100</div>
         )}
+      </div>
+
+      {/* Escalation Timeline Chart */}
+      <div className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
+        <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>TIMELINE ESCALADE THÉRAPEUTIQUE</div>
+        <div style={{ width: '100%', height: 180 }}>
+          <ResponsiveContainer>
+            <BarChart data={LINES.map(l => ({
+              name: `L${l.line}`,
+              drugs: l.items.length,
+              active: activeLine >= l.line ? 1 : 0,
+              color: l.color,
+              fill: activeLine >= l.line ? l.color : 'rgba(108,124,255,0.15)',
+            }))}>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(108,124,255,0.06)" />
+              <XAxis dataKey="name" tick={{ fill: 'var(--p-text-dim)', fontSize: 11, fontFamily: 'var(--p-font-mono)' }} />
+              <YAxis tick={{ fill: 'var(--p-text-dim)', fontSize: 10 }} label={{ value: 'Traitements', angle: -90, position: 'insideLeft', fill: 'var(--p-text-dim)', fontSize: 10 }} />
+              <Tooltip contentStyle={{ background: 'var(--p-bg-elevated)', border: 'var(--p-border)', borderRadius: 12, fontSize: 12 }} />
+              <Bar dataKey="drugs" radius={[6, 6, 0, 0]} name="Traitements">
+                {LINES.map((l, i) => (
+                  <Cell key={i} fill={activeLine >= l.line ? l.color : 'rgba(108,124,255,0.15)'} />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '8px', flexWrap: 'wrap' }}>
+          {LINES.map(l => (
+            <div key={l.line} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ width: 10, height: 10, borderRadius: 3, background: l.color, opacity: activeLine >= l.line ? 1 : 0.3 }} />
+              <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: activeLine >= l.line ? 'var(--p-text)' : 'var(--p-text-dim)' }}>L{l.line}</span>
+            </div>
+          ))}
+        </div>
       </div>
 
       {/* TDE Recommendations */}

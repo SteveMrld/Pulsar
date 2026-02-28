@@ -1,9 +1,18 @@
 'use client'
+import dynamic from 'next/dynamic'
 import Picto from '@/components/Picto';
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+
+const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
+const Area = dynamic(() => import('recharts').then(m => m.Area), { ssr: false })
+const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
+const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
+const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
+const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
 
 // ── Known interaction pairs for the matrix ──
 const INTERACTION_DB = [
@@ -88,6 +97,32 @@ export default function PharmacovigilancePage() {
             <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>INTERACTIONS</div>
             <div style={{ fontWeight: 700, color: detectedInteractions.length > 0 ? 'var(--p-critical)' : 'var(--p-success)' }}>{detectedInteractions.length} détectée{detectedInteractions.length !== 1 ? 's' : ''}</div>
           </div>
+        </div>
+      </div>
+
+      {/* Risk Profile Chart */}
+      <div className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
+        <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>PROFIL DE RISQUE · CHAMPS SÉMANTIQUES</div>
+        <div style={{ width: '100%', height: 200 }}>
+          <ResponsiveContainer>
+            <AreaChart data={pveResult.intention.fields.map(f => ({
+              name: f.name.length > 12 ? f.name.slice(0, 12) + '…' : f.name,
+              intensity: f.intensity,
+              fill: f.color,
+            }))}>
+              <defs>
+                <linearGradient id="riskGrad" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="var(--p-pve)" stopOpacity={0.4} />
+                  <stop offset="95%" stopColor="var(--p-pve)" stopOpacity={0.02} />
+                </linearGradient>
+              </defs>
+              <CartesianGrid strokeDasharray="3 3" stroke="rgba(108,124,255,0.06)" />
+              <XAxis dataKey="name" tick={{ fill: 'var(--p-text-dim)', fontSize: 9, fontFamily: 'var(--p-font-mono)' }} angle={-20} textAnchor="end" height={50} />
+              <YAxis domain={[0, 100]} tick={{ fill: 'var(--p-text-dim)', fontSize: 10 }} />
+              <Tooltip contentStyle={{ background: 'var(--p-bg-elevated)', border: 'var(--p-border)', borderRadius: 12, fontSize: 12 }} formatter={(v: any) => [`${v}%`, 'Intensité']} />
+              <Area type="monotone" dataKey="intensity" stroke="var(--p-pve)" strokeWidth={2} fill="url(#riskGrad)" dot={{ fill: 'var(--p-pve)', r: 4 }} />
+            </AreaChart>
+          </ResponsiveContainer>
         </div>
       </div>
 
