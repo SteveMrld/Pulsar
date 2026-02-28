@@ -36,7 +36,7 @@ function SeverityDots({ severity }: { severity: number }) {
 }
 
 export default function SilhouetteNeon({ sex, vitals, vpsScore, compact = false }: SilhouetteNeonProps) {
-  const img = sex === 'F' ? '/assets/silhouette-girl.jpg' : '/assets/silhouette-boy.jpg'
+  const img = sex === 'F' ? '/silhouette-girl.jpg' : '/silhouette-boy.jpg'
   const h = compact ? 320 : 420
   const level = vpsScore >= 70 ? 'CRITIQUE' : vpsScore >= 50 ? 'SÉVÈRE' : vpsScore >= 30 ? 'MODÉRÉ' : 'STABLE'
   const levelColor = vpsScore >= 70 ? 'var(--p-critical)' : vpsScore >= 50 ? 'var(--p-warning)' : vpsScore >= 30 ? 'var(--p-tpe)' : 'var(--p-success)'
