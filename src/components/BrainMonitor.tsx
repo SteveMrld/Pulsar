@@ -257,27 +257,42 @@ function VitalBox({ v, w }: { v: VitalSign; w: number }) {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   METRIC CHIP — with mini sparkline
+   METRIC PILL — individual rounded card (as in GPT mockup)
    ══════════════════════════════════════════════════════════════ */
-function Metric({ label, value, suffix, th }: { label: string; value: number; suffix?: string; th: [number, number] }) {
+function MetricPill({ label, value, suffix, th, icon }: {
+  label: string; value: number; suffix?: string; th: [number, number]; icon?: string
+}) {
   const c = value > th[1] ? '#FF4757' : value > th[0] ? '#FFA502' : '#2ED573'
-  // Mini sparkline dots
-  const dots = Array.from({ length: 8 }, (_, i) => Math.random() * 0.6 + 0.2)
+  const bars = Array.from({ length: 6 }, (_, i) => Math.random() * 0.6 + 0.2)
 
   return (
-    <div style={{ textAlign: 'center', minWidth: '60px' }}>
-      <div style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: 'rgba(180,180,200,0.35)', letterSpacing: '1.5px', marginBottom: '3px' }}>{label}</div>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-        <div style={{ fontSize: '24px', fontWeight: 900, fontFamily: 'var(--p-font-mono)', color: c, textShadow: `0 0 10px ${c}30`, letterSpacing: '-1px', lineHeight: 1 }}>
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: '8px',
+      padding: '6px 12px', borderRadius: '8px',
+      background: 'rgba(3,3,8,0.5)',
+      border: `1px solid ${c}15`,
+      minWidth: '80px',
+    }}>
+      {/* Icon */}
+      {icon && <Picto name={icon} size={12} glow glowColor={`${c}40`} />}
+
+      {/* Value */}
+      <div>
+        <div style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: 'rgba(180,180,200,0.3)', letterSpacing: '1px', lineHeight: 1 }}>{label}</div>
+        <div style={{
+          fontSize: '20px', fontWeight: 900, fontFamily: 'var(--p-font-mono)',
+          color: c, textShadow: `0 0 8px ${c}30`, letterSpacing: '-0.5px', lineHeight: 1,
+        }}>
           {value}<span style={{ fontSize: '10px', fontWeight: 600, opacity: 0.5 }}>{suffix}</span>
         </div>
-        {/* Mini sparkline */}
-        <svg width="20" height="14" viewBox="0 0 20 14" style={{ opacity: 0.5 }}>
-          {dots.map((d, i) => (
-            <rect key={i} x={i * 2.5} y={14 - d * 14} width="1.5" height={d * 14} rx="0.5" fill={c} />
-          ))}
-        </svg>
       </div>
+
+      {/* Mini sparkline bars */}
+      <svg width="18" height="16" viewBox="0 0 18 16" style={{ opacity: 0.45, flexShrink: 0 }}>
+        {bars.map((d, i) => (
+          <rect key={i} x={i * 3} y={16 - d * 16} width="2" height={d * 16} rx="0.5" fill={c} />
+        ))}
+      </svg>
     </div>
   )
 }
@@ -390,8 +405,8 @@ export default function BrainMonitor({
             boxShadow: `0 0 6px ${crit ? 'rgba(255,71,87,0.5)' : 'rgba(46,213,115,0.4)'}`,
           }} className="animate-breathe" />
           <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '13px', color: 'var(--p-white)' }}>{patientName}</span>
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '0.3px' }}>
-            {age} · {syndrome} · <span style={{ color: crit ? '#FF4757' : '#6C7CFF', fontWeight: 700 }}>J+{hospDay}</span>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
+            {age} <span style={{ opacity: 0.3 }}>·</span> {syndrome} <span style={{ opacity: 0.3 }}>·</span> <span style={{ display: 'inline-flex' }}><Picto name="eeg" size={11} /></span> <span style={{ opacity: 0.3 }}>·</span> <span style={{ color: crit ? '#FF4757' : '#6C7CFF', fontWeight: 700 }}>J+{hospDay}</span>
           </span>
           {ncsePossible && (
             <span className="animate-breathe" style={{
@@ -407,7 +422,11 @@ export default function BrainMonitor({
           padding: '4px 12px', borderRadius: '6px',
           background: `${st.color}12`, color: st.color, border: `1px solid ${st.color}25`,
           boxShadow: crit ? `0 0 12px ${st.color}15` : 'none',
-        }}>{st.label}</span>
+          display: 'flex', alignItems: 'center', gap: '5px',
+        }}>
+          {crit && <span style={{ fontSize: '10px' }}>▲</span>}
+          {st.label}
+        </span>
       </div>
 
       {/* ════ MAIN GRID ════ */}
@@ -422,6 +441,39 @@ export default function BrainMonitor({
           borderRight: compact ? 'none' : '1px solid rgba(108,124,255,0.04)',
           background: 'rgba(0,0,0,0.1)',
         }}>
+          {/* Compact: alert summary strip (mobile mockup) */}
+          {compact && crit && (
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '8px',
+              marginBottom: '10px', padding: '6px 10px',
+              background: 'rgba(255,71,87,0.06)', borderRadius: '8px',
+              border: '1px solid rgba(255,71,87,0.15)',
+            }}>
+              <span className="animate-breathe" style={{
+                fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800,
+                padding: '3px 10px', borderRadius: '4px', letterSpacing: '1px',
+                background: 'rgba(255,71,87,0.15)', color: '#FF4757',
+                border: '1px solid rgba(255,71,87,0.25)',
+              }}>▲ ALERTE</span>
+              <span style={{
+                fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800,
+                padding: '3px 10px', borderRadius: '4px', letterSpacing: '0.5px',
+                background: 'rgba(255,165,2,0.1)', color: '#FFA502',
+                border: '1px solid rgba(255,165,2,0.2)',
+              }}>▲ VPS</span>
+              <span style={{
+                marginLeft: 'auto',
+                fontFamily: 'var(--p-font-mono)', fontSize: '20px', fontWeight: 900,
+                color: '#FF4757', textShadow: '0 0 10px rgba(255,71,87,0.3)',
+              }}>={vpsScore}</span>
+              {/* Mini sparkline */}
+              <svg width="24" height="14" viewBox="0 0 24 14" style={{ opacity: 0.4, flexShrink: 0 }}>
+                {[0.4, 0.6, 0.3, 0.8, 0.5, 0.9, 0.7, 0.4].map((d, i) => (
+                  <rect key={i} x={i * 3} y={14 - d * 14} width="2" height={d * 14} rx="0.5" fill="#FF4757" />
+                ))}
+              </svg>
+            </div>
+          )}
           {/* EEG header */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
             <Picto name="eeg" size={14} glow glowColor="rgba(108,124,255,0.3)" />
@@ -463,25 +515,35 @@ export default function BrainMonitor({
             })}
           </div>
 
-          {/* ── Bottom metrics bar ── */}
+          {/* ── Bottom metrics bar — individual pill cards ── */}
           <div style={{
-            display: 'flex', alignItems: 'center', gap: '16px',
-            marginTop: '12px', padding: '10px 14px',
-            background: crit ? 'rgba(255,71,87,0.025)' : 'rgba(108,124,255,0.012)',
-            borderRadius: '10px',
-            border: `1px solid ${crit ? 'rgba(255,71,87,0.1)' : 'rgba(108,124,255,0.04)'}`,
+            display: 'flex', alignItems: 'center', gap: '8px',
+            marginTop: '12px', flexWrap: 'wrap',
           }}>
-            <Metric label="CRISES/H" value={seizuresPerHour} th={[3, 6]} />
-            <div style={{ width: '1px', height: '30px', background: 'rgba(108,124,255,0.06)' }} />
-            <Metric label="GCS" value={gcs} suffix="/15" th={[12, 8]} />
-            <div style={{ width: '1px', height: '30px', background: 'rgba(108,124,255,0.06)' }} />
-            <Metric label="VPS" value={vpsScore} th={[40, 65]} />
+            {/* EEG label + link (as in mockup) */}
+            <div style={{
+              display: 'flex', alignItems: 'center', gap: '6px',
+              padding: '4px 10px', borderRadius: '6px',
+              background: 'rgba(108,124,255,0.06)',
+              border: '1px solid rgba(108,124,255,0.08)',
+              marginRight: '4px',
+            }}>
+              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#6C7CFF', letterSpacing: '1px' }}>EEG</span>
+              <Link href="/neurocore?tab=eeg" style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: 'rgba(108,124,255,0.4)', textDecoration: 'none' }}>cEEG continu →</Link>
+            </div>
+
+            {/* Metric pill cards */}
+            <MetricPill label="CRISES/H" value={seizuresPerHour} th={[3, 6]} icon="eeg" />
+            <MetricPill label="GCS" value={gcs} suffix="/15" th={[12, 8]} icon="brain" />
+            <MetricPill label="VPS" value={vpsScore} th={[40, 65]} icon="heart" />
+
             <Link href="/neurocore?tab=redflags" style={{
               marginLeft: 'auto', fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
-              padding: '6px 14px', borderRadius: '8px', textDecoration: 'none',
-              background: 'rgba(255,71,87,0.06)', color: '#FF4757',
-              border: '1px solid rgba(255,71,87,0.15)',
-              transition: 'all 0.2s',
+              padding: '8px 16px', borderRadius: '8px', textDecoration: 'none',
+              background: 'rgba(255,71,87,0.08)', color: '#FF4757',
+              border: '1px solid rgba(255,71,87,0.18)',
+              boxShadow: '0 0 8px rgba(255,71,87,0.06)',
+              transition: 'all 0.2s', whiteSpace: 'nowrap',
             }}>Red Flags →</Link>
           </div>
         </div>
@@ -499,10 +561,15 @@ export default function BrainMonitor({
             }}>CONSTANTES VITALES</div>
             {vitals.map((v, i) => <VitalBox key={i} v={v} w={226} />)}
             <Link href="/neurocore" style={{
-              fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 600,
-              color: 'rgba(108,124,255,0.35)', textDecoration: 'none',
-              textAlign: 'center', marginTop: '2px', letterSpacing: '0.5px',
-            }}>NeuroCore →</Link>
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px',
+              fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 600,
+              color: 'rgba(108,124,255,0.4)', textDecoration: 'none',
+              marginTop: '4px', padding: '6px 0',
+              borderTop: '1px solid rgba(108,124,255,0.04)',
+              letterSpacing: '0.5px',
+            }}>
+              NeuroCore → <Picto name="clipboard" size={11} />
+            </Link>
           </div>
         )}
       </div>
