@@ -114,8 +114,7 @@ export default function TimelinePage() {
               boxShadow: e.type === 'alert' ? `0 0 8px ${e.color}` : 'none',
             }} />
 
-            <div className="card-interactive" style={{
-              background: 'var(--p-bg-card)', border: 'var(--p-border)',
+            <div className="card-interactive glass-card" style={{
               borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-4)',
               borderLeft: `3px solid ${e.color}`,
             }}>

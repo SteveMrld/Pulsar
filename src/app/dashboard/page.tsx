@@ -5,6 +5,16 @@ import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 import Picto from '@/components/Picto'
+import SilhouetteNeon from '@/components/SilhouetteNeon'
+import dynamic from 'next/dynamic'
+
+const AreaChart = dynamic(() => import('recharts').then(m => m.AreaChart), { ssr: false })
+const Area = dynamic(() => import('recharts').then(m => m.Area), { ssr: false })
+const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
+const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
+const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
+const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
 
 function Spark({ data, color, w = 64, h = 24 }: { data: number[]; color: string; w?: number; h?: number }) {
   if (data.length < 2) return null
@@ -101,7 +111,7 @@ export default function DashboardPage() {
   const critCount = ps.alerts.filter(a => a.severity === 'critical').length
 
   const card: React.CSSProperties = {
-    background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)',
+    borderRadius: 'var(--p-radius-xl)',
     padding: 'var(--p-space-5)',
   }
 
@@ -157,6 +167,53 @@ export default function DashboardPage() {
         ))}
       </div>
 
+      {/* Silhouette + Trends */}
+      <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 'var(--p-space-5)', marginBottom: 'var(--p-space-6)' }} className="grid-2-1">
+        {/* Neon Silhouette */}
+        <SilhouetteNeon
+          sex={ps.sex === 'female' ? 'F' : 'M'}
+          vpsScore={ps.vpsResult?.synthesis.score ?? 0}
+          compact
+          vitals={[
+            { label: 'NEURO', icon: '🧠', value: `GCS: ${ps.neuro.gcs}/15`, color: '#6C7CFF',
+              severity: ps.neuro.gcs <= 8 ? 2 : ps.neuro.gcs <= 12 ? 1 : 0 },
+            { label: 'CARDIO', icon: '❤️', value: `FC: ${ps.hemodynamics.heartRate} bpm`, color: '#FF6B8A',
+              severity: ps.hemodynamics.heartRate > 140 ? 2 : 0 },
+            { label: 'RESP', icon: '🫁', value: `SpO₂: ${ps.hemodynamics.spo2}%`, color: '#2FD1C8',
+              severity: ps.hemodynamics.spo2 < 95 ? 1 : 0 },
+            { label: 'INFLAM', icon: '🔥', value: `CRP: ${ps.biology.crp} mg/L`, color: '#FFB347',
+              severity: ps.biology.crp > 100 ? 2 : ps.biology.crp > 20 ? 1 : 0 },
+            { label: 'TEMP', icon: '🌡️', value: `${ps.hemodynamics.temp}°C`, color: '#B96BFF',
+              severity: ps.hemodynamics.temp >= 38 ? 1 : 0 },
+          ]}
+        />
+        {/* Engine Trends Chart */}
+        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-5)' }}>
+          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: 'var(--p-space-3)' }}>
+            TENDANCES MOTEURS (72h)
+          </div>
+          {mounted && (
+            <ResponsiveContainer width="100%" height={260}>
+              <AreaChart data={[
+                { t: 'H-72', VPS: Math.max(0, (ps.vpsResult?.synthesis.score??0)-25), TDE: Math.max(0, (ps.tdeResult?.synthesis.score??0)-18), EWE: Math.max(0, (ps.eweResult?.synthesis.score??0)-30) },
+                { t: 'H-48', VPS: Math.max(0, (ps.vpsResult?.synthesis.score??0)-15), TDE: Math.max(0, (ps.tdeResult?.synthesis.score??0)-10), EWE: Math.max(0, (ps.eweResult?.synthesis.score??0)-20) },
+                { t: 'H-24', VPS: Math.max(0, (ps.vpsResult?.synthesis.score??0)-8), TDE: Math.max(0, (ps.tdeResult?.synthesis.score??0)-5), EWE: Math.max(0, (ps.eweResult?.synthesis.score??0)-10) },
+                { t: 'H-12', VPS: Math.max(0, (ps.vpsResult?.synthesis.score??0)-3), TDE: Math.max(0, (ps.tdeResult?.synthesis.score??0)-2), EWE: Math.max(0, (ps.eweResult?.synthesis.score??0)-5) },
+                { t: 'Now', VPS: ps.vpsResult?.synthesis.score??0, TDE: ps.tdeResult?.synthesis.score??0, EWE: ps.eweResult?.synthesis.score??0 },
+              ]} margin={{ top: 5, right: 10, bottom: 5, left: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(108,124,255,0.06)" />
+                <XAxis dataKey="t" tick={{ fill: '#6B6B85', fontSize: 10, fontFamily: 'JetBrains Mono' }} axisLine={false} />
+                <YAxis domain={[0, 100]} tick={{ fill: '#6B6B85', fontSize: 10 }} axisLine={false} width={30} />
+                <Tooltip contentStyle={{ background: 'rgba(14,14,22,0.9)', border: '1px solid rgba(108,124,255,0.2)', borderRadius: '8px', fontSize: '11px' }} />
+                <Area type="monotone" dataKey="VPS" stroke="#6C7CFF" fill="#6C7CFF" fillOpacity={0.1} strokeWidth={2} />
+                <Area type="monotone" dataKey="TDE" stroke="#2FD1C8" fill="#2FD1C8" fillOpacity={0.08} strokeWidth={2} />
+                <Area type="monotone" dataKey="EWE" stroke="#FF6B8A" fill="#FF6B8A" fillOpacity={0.06} strokeWidth={2} />
+              </AreaChart>
+            </ResponsiveContainer>
+          )}
+        </div>
+      </div>
+
       {/* Module Cards */}
       {phases.map((phase, pi) => (
         <div key={pi} style={{ marginBottom: 'var(--p-space-5)' }}>
@@ -164,7 +221,7 @@ export default function DashboardPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 'var(--p-space-3)' }}>
             {phase.modules.map((m, mi) => (
               <Link key={mi} href={m.href} style={{ textDecoration: 'none' }}>
-                <div className={`${mounted ? 'animate-in' : ''} card-interactive`} style={{
+                <div className={`glass-card ${mounted ? 'animate-in' : ''} card-interactive`} style={{
                   ...card, cursor: 'pointer', borderTop: `3px solid ${m.color}`,
                   animationDelay: `${(pi * 3 + mi) * 50}ms`,
                 }}>
@@ -189,7 +246,7 @@ export default function DashboardPage() {
           { href: '/about', icon: 'heart', label: 'Mémorial', badge: '' },
         ].map((a, i) => (
           <Link key={i} href={a.href} style={{ textDecoration: 'none' }}>
-            <div className="card-interactive" style={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-3)', display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
+            <div className="card-interactive glass-card" style={{ borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-3)', display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
               <Picto name={a.icon} size={28} glow />
               <span style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', flex: 1 }}>{a.label}</span>
               {a.badge && <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>{a.badge}</span>}

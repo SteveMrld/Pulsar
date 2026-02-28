@@ -72,12 +72,12 @@ const NAV_SECTIONS = [
   },
 ]
 
-export default function Sidebar({ collapsed, onToggle }: { collapsed: boolean; onToggle: () => void }) {
+export default function Sidebar({ collapsed, onToggle, isMobile = false }: { collapsed: boolean; onToggle: () => void; isMobile?: boolean }) {
   const pathname = usePathname()
 
   return (
     <aside className="glass-card" style={{
-      width: collapsed ? '60px' : '240px',
+      width: isMobile ? '280px' : (collapsed ? '60px' : '240px'),
       minHeight: '100vh',
       display: 'flex',
       flexDirection: 'column',

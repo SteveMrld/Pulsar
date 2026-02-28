@@ -1,11 +1,35 @@
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 import '@/styles/tokens.css'
 import AppShell from '@/components/AppShell'
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: [
+    { media: '(prefers-color-scheme: dark)', color: '#0E0E16' },
+    { media: '(prefers-color-scheme: light)', color: '#F8F9FC' },
+  ],
+}
+
 export const metadata: Metadata = {
   title: 'PULSAR V15 — Pediatric Urgent Lifesaving System',
-  description: '5 Brain Engines × 4 Layers — Clinical Decision Support for Pediatric Neuroinflammatory Emergencies',
-  icons: { icon: '/favicon.ico' },
+  description: '5 Brain Engines × 4 Layers — Système d\'aide à la décision clinique pour les urgences neuro-inflammatoires pédiatriques. VPS + TDE + PVE + EWE + TPE.',
+  keywords: ['PULSAR', 'neurologie pédiatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide à la décision clinique', 'neuro-inflammatoire'],
+  authors: [{ name: 'Steve Moradel' }],
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/icon-192.png',
+  },
+  manifest: '/manifest.json',
+  openGraph: {
+    title: 'PULSAR V15 — Pediatric Urgent Lifesaving System',
+    description: '5 Brain Engines × 4 Layers — Clinical Decision Support for Pediatric Neuroinflammatory Emergencies',
+    type: 'website',
+    locale: 'fr_FR',
+    siteName: 'PULSAR V15',
+  },
+  robots: { index: false, follow: false },
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

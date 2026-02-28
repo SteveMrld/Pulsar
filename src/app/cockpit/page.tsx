@@ -5,6 +5,7 @@ import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 import dynamic from 'next/dynamic'
 import Silhouette from '@/components/Silhouette'
+import SilhouetteNeon from '@/components/SilhouetteNeon'
 import Picto from '@/components/Picto'
 
 const RadarChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
@@ -76,7 +77,7 @@ export default function CockpitPage() {
     { l: 'FR', v: ps.hemodynamics.respRate, u: '/min', icon: 'lungs', ok: ps.hemodynamics.respRate >= 12 && ps.hemodynamics.respRate <= 25, nr: '12-25' },
   ]
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
   const critAlerts = ps.alerts.filter(a => a.severity === 'critical')
 
   // VPS field intensities for silhouette
@@ -97,7 +98,7 @@ export default function CockpitPage() {
       {/* Scenario */}
       <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-5) 0', flexWrap: 'wrap' }}>
         {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
-          <button key={k} onClick={() => setScenario(k)} className="hover-lift" style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)', background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-card)', color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
+          <button key={k} onClick={() => setScenario(k)} className="hover-lift" style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)', background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-elevated)', color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
         ))}
       </div>
 
@@ -113,7 +114,7 @@ export default function CockpitPage() {
       )}
 
       {/* Patient Context */}
-      <div className={mounted ? 'animate-in' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
         <div style={{ display: 'flex', gap: 'var(--p-space-6)', flexWrap: 'wrap' }}>
           {[
             { l: 'Âge', v: `${ps.getAgeYears()} ans` }, { l: 'Poids', v: `${ps.weightKg} kg` },
@@ -128,26 +129,33 @@ export default function CockpitPage() {
         </div>
       </div>
 
-      {/* Main Grid: Silhouette + Radar + Engines */}
-      <div style={{ display: 'grid', gridTemplateColumns: '200px 1fr', gap: 'var(--p-space-5)', marginBottom: 'var(--p-space-5)' }}>
+      {/* Main Grid: SilhouetteNeon + Radar + Engines */}
+      <div style={{ display: 'grid', gridTemplateColumns: '380px 1fr', gap: 'var(--p-space-5)', marginBottom: 'var(--p-space-5)' }} className="grid-2-1">
 
-        {/* Left: Silhouette */}
-        <div className={`${mounted ? 'animate-in stagger-1' : ''} glass-card`} style={{ ...card, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <Silhouette
+        {/* Left: Neon Silhouette with vital overlays */}
+        <div className={mounted ? 'animate-in stagger-1' : ''}>
+          <SilhouetteNeon
+            sex={ps.sex === 'female' ? 'F' : 'M'}
             vpsScore={ps.vpsResult?.synthesis.score ?? 0}
-            neuroIntensity={getFieldIntensity('neuro') || getFieldIntensity('défaillance n')}
-            cardioIntensity={getFieldIntensity('hémo') || getFieldIntensity('défaillance h')}
-            respIntensity={Math.min(100, (ps.hemodynamics.respRate > 25 ? 60 : 20) + (ps.hemodynamics.spo2 < 95 ? 40 : 0))}
-            digestIntensity={getFieldIntensity('inflamm') || getFieldIntensity('orage')}
-            renalIntensity={Math.min(100, ps.biology.crp > 100 ? 50 : 20)}
-            compact
+            vitals={[
+              { label: 'NEURO', icon: '🧠', value: `GCS: ${ps.neuro.gcs}/15 · Crises: ${ps.neuro.seizures24h}/24h`, color: '#6C7CFF',
+                severity: ps.neuro.gcs <= 8 ? 2 : ps.neuro.gcs <= 12 ? 1 : 0 },
+              { label: 'CARDIO', icon: '❤️', value: `FC: ${ps.hemodynamics.heartRate} bpm · TA: ${ps.hemodynamics.sbp}/${ps.hemodynamics.dbp}`, color: '#FF6B8A',
+                severity: ps.hemodynamics.heartRate > 140 ? 2 : ps.hemodynamics.heartRate > 120 ? 1 : 0 },
+              { label: 'RESP', icon: '🫁', value: `SpO₂: ${ps.hemodynamics.spo2}% · FR: ${ps.hemodynamics.respRate}/min`, color: '#2FD1C8',
+                severity: ps.hemodynamics.spo2 < 92 ? 2 : ps.hemodynamics.spo2 < 95 ? 1 : 0 },
+              { label: 'INFLAM', icon: '🔥', value: `CRP: ${ps.biology.crp} mg/L · Ferritine: ${ps.biology.ferritin}`, color: '#FFB347',
+                severity: ps.biology.crp > 100 ? 2 : ps.biology.crp > 20 ? 1 : 0 },
+              { label: 'TEMP', icon: '🌡️', value: `${ps.hemodynamics.temp}°C`, color: '#B96BFF',
+                severity: ps.hemodynamics.temp >= 39 ? 2 : ps.hemodynamics.temp >= 38 ? 1 : 0 },
+            ]}
           />
         </div>
 
         {/* Right: Radar + Engine Cards */}
         <div>
           {/* Radar Chart */}
-          <div className={mounted ? 'animate-in stagger-2' : ''} style={{ ...card, marginBottom: 'var(--p-space-4)', height: '220px' }}>
+          <div className={`glass-card ${mounted ? 'animate-in stagger-2' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-4)', height: '220px' }}>
             <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '4px' }}>RADAR 5 MOTEURS</div>
             {mounted && (
               <ResponsiveContainer width="100%" height={180}>
@@ -167,7 +175,7 @@ export default function CockpitPage() {
               const level = e.result?.synthesis.level ?? '—'
               const alerts = e.result?.synthesis.alerts?.length ?? 0
               return (
-                <div key={e.name} className={`${mounted ? 'animate-in' : ''} hover-lift`} style={{ ...card, padding: '12px', position: 'relative', animationDelay: `${(i + 3) * 80}ms`, cursor: 'default' }}>
+                <div key={e.name} className={`glass-card ${mounted ? 'animate-in' : ''} hover-lift`} style={{ ...card, padding: '12px', position: 'relative', animationDelay: `${(i + 3) * 80}ms`, cursor: 'default' }}>
                   <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: e.color, borderRadius: '12px 12px 0 0' }} />
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
                     <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: e.color, letterSpacing: '1px' }}>{e.name}</span>
@@ -183,11 +191,11 @@ export default function CockpitPage() {
       </div>
 
       {/* Vitals */}
-      <div className={mounted ? 'animate-in stagger-4' : ''} style={{ marginBottom: 'var(--p-space-5)' }}>
+      <div className={`${mounted ? 'animate-in stagger-4' : ''}`} style={{ marginBottom: 'var(--p-space-5)' }}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>PARAMÈTRES VITAUX</div>
         <div className="grid-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '8px' }}>
           {vitals.map((v, i) => (
-            <div key={i} className="hover-lift" style={{ ...card, padding: '12px', borderLeft: `3px solid ${v.ok ? 'var(--p-success)' : 'var(--p-critical)'}` }}>
+            <div key={i} className="glass-card hover-lift" style={{ ...card, padding: '12px', borderLeft: `3px solid ${v.ok ? 'var(--p-success)' : 'var(--p-critical)'}` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
                 <Picto name={v.icon} size={22} glow={!v.ok} glowColor={v.ok ? undefined : 'rgba(255,107,138,0.6)'} />
                 <span style={{ padding: '1px 6px', borderRadius: 'var(--p-radius-full)', background: v.ok ? 'var(--p-success-bg)' : 'var(--p-critical-bg)', fontSize: '8px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: v.ok ? 'var(--p-success)' : 'var(--p-critical)' }}>{v.ok ? 'OK' : '!'}</span>
@@ -202,7 +210,7 @@ export default function CockpitPage() {
 
       {/* VPS Semantic Fields */}
       {ps.vpsResult && (
-        <div className={mounted ? 'animate-in stagger-5' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
+        <div className={`glass-card ${mounted ? 'animate-in stagger-5' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>CHAMPS SÉMANTIQUES VPS</div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
             {vpsFields.map((f, i) => (
@@ -222,7 +230,7 @@ export default function CockpitPage() {
 
       {/* Active Alerts */}
       {ps.alerts.length > 0 && (
-        <div className={mounted ? 'animate-in stagger-6' : ''} style={{ ...card }}>
+        <div className={`glass-card ${mounted ? 'animate-in stagger-6' : ''}`} style={{ ...card }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>ALERTES ({ps.alerts.length})</div>
           {ps.alerts.slice(0, 8).map((a, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px', marginBottom: '4px', borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${a.severity === 'critical' ? 'var(--p-critical)' : 'var(--p-warning)'}`, background: 'var(--p-bg-elevated)' }}>

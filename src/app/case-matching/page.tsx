@@ -98,7 +98,7 @@ function computeSimilarity(ps: PatientState, refCase: RefCase): { total: number;
 function MiniRadar({ data, labels, color, size = 120 }: { data: number[]; labels: string[]; color: string; size?: number }) {
   const chartData = data.map((v, i) => ({ axis: labels[i]?.slice(0, 6) ?? `C${i}`, value: v, fullMark: 100 }))
   return (
-    <div style={{ width: size + 30, height: size }}>
+    <div className="page-enter-stagger" style={{ width: size + 30, height: size }}>
       <RResponsiveContainer width="100%" height="100%">
         <RChart data={chartData} margin={{ top: 0, right: 15, bottom: 0, left: 15 }}>
           <RPolarGrid stroke="var(--p-dark-4)" />
@@ -126,10 +126,10 @@ export default function CaseMatchingPage() {
     return REF_CASES.map(rc => ({ ...rc, similarity: computeSimilarity(ps, rc) })).sort((a, b) => b.similarity.total - a.similarity.total)
   }, [ps])
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="cycle" size={36} glow />
         <div>
@@ -143,7 +143,7 @@ export default function CaseMatchingPage() {
           <button key={k} onClick={() => { setScenario(k); setExpanded(null) }} style={{
             padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
             border: scenario === k ? '2px solid var(--p-info)' : 'var(--p-border)',
-            background: scenario === k ? 'var(--p-info-bg)' : 'var(--p-bg-card)',
+            background: scenario === k ? 'var(--p-info-bg)' : 'var(--p-bg-elevated)',
             color: scenario === k ? 'var(--p-info)' : 'var(--p-text-muted)',
             fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
           }}>{v.label}</button>
@@ -152,7 +152,7 @@ export default function CaseMatchingPage() {
 
       {/* Best Match Banner */}
       {matches.length > 0 && (
-        <div className={mounted ? 'animate-in' : ''} style={{
+        <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{
           ...card, marginBottom: 'var(--p-space-5)',
           borderLeft: `4px solid ${matches[0].color}`,
           background: `${matches[0].color}08`,
@@ -174,7 +174,7 @@ export default function CaseMatchingPage() {
 
       {/* 4 Case Cards */}
       {matches.map((m, mi) => (
-        <div key={m.id} className={mounted ? `animate-in stagger-${Math.min(mi + 1, 5)}` : ''} style={{
+        <div key={m.id} className={`glass-card card-interactive ${mounted ? `animate-in stagger-${Math.min(mi + 1, 5)}` : ''}`} style={{
           ...card, marginBottom: 'var(--p-space-4)',
           borderLeft: `4px solid ${m.color}`,
           opacity: m.similarity.total < 20 ? 0.5 : 1,

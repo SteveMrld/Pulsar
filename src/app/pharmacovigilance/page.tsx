@@ -40,10 +40,10 @@ export default function PharmacovigilancePage() {
   const level = pveResult.synthesis.level
   const lc = score >= 75 ? 'var(--p-critical)' : score >= 50 ? 'var(--p-warning)' : score >= 25 ? 'var(--p-tpe)' : 'var(--p-success)'
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1100px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="shield" size={36} glow glowColor="rgba(185,107,255,0.5)" />
@@ -59,7 +59,7 @@ export default function PharmacovigilancePage() {
           <button key={k} onClick={() => { setScenario(k); setSelectedInteraction(null) }} style={{
             padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
             border: scenario === k ? '2px solid var(--p-pve)' : 'var(--p-border)',
-            background: scenario === k ? 'var(--p-pve-dim)' : 'var(--p-bg-card)',
+            background: scenario === k ? 'var(--p-pve-dim)' : 'var(--p-bg-elevated)',
             color: scenario === k ? 'var(--p-pve)' : 'var(--p-text-muted)',
             fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
           }}>{v.label}</button>
@@ -67,7 +67,7 @@ export default function PharmacovigilancePage() {
       </div>
 
       {/* PVE Score Header */}
-      <div className={mounted ? 'animate-in' : ''} style={{
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{
         ...card, marginBottom: 'var(--p-space-5)', borderLeft: '4px solid var(--p-pve)',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px',
       }}>
@@ -92,7 +92,7 @@ export default function PharmacovigilancePage() {
       </div>
 
       {/* Active Drugs Grid */}
-      <div className={mounted ? 'animate-in stagger-1' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>MÉDICAMENTS ACTIFS</div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           {ps.drugs.map((d, i) => {
@@ -117,11 +117,11 @@ export default function PharmacovigilancePage() {
         <div className={mounted ? 'animate-in stagger-2' : ''} style={{ marginBottom: 'var(--p-space-5)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>INTERACTIONS DÉTECTÉES</div>
           {detectedInteractions.map((inter: any, i: number) => (
-            <div key={i} style={{
+            <div key={i} className="glass-card" style={{
               ...card, marginBottom: '10px',
               borderLeft: `4px solid ${sevColor(inter.severity)}`,
               cursor: 'pointer',
-              background: selectedInteraction === i ? `${sevColor(inter.severity)}08` : 'var(--p-bg-card)',
+              background: selectedInteraction === i ? `${sevColor(inter.severity)}08` : 'var(--p-bg-elevated)',
             }} onClick={() => setSelectedInteraction(selectedInteraction === i ? null : i)}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
                 <div style={{ flex: 1 }}>
@@ -155,7 +155,7 @@ export default function PharmacovigilancePage() {
 
       {/* Patterns */}
       {patterns.length > 0 && (
-        <div className={mounted ? 'animate-in stagger-3' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
+        <div className={`glass-card ${mounted ? 'animate-in stagger-3' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>PATTERNS PVE</div>
           {patterns.map((p, i) => (
             <div key={i} style={{
@@ -180,7 +180,7 @@ export default function PharmacovigilancePage() {
       )}
 
       {/* Interaction Reference Matrix */}
-      <div className={mounted ? 'animate-in stagger-4' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-4' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>BASE D'INTERACTIONS RÉFÉRENCÉES</div>
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '12px' }}>
@@ -216,7 +216,7 @@ export default function PharmacovigilancePage() {
       </div>
 
       {/* Semantic Fields */}
-      <div className={mounted ? 'animate-in stagger-5' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-5' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>CHAMPS SÉMANTIQUES PVE</div>
         {pveResult.intention.fields.map((f, i) => (
           <div key={i} style={{ marginBottom: '14px' }}>

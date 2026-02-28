@@ -233,7 +233,7 @@ export default function ProjectPage() {
       <div style={{maxWidth:'1100px',margin:'0 auto'}}>
         <button onClick={()=>{setResult(null);setStep(0)}} style={{padding:'var(--p-space-2) var(--p-space-4)',background:'var(--p-bg-elevated)',border:'var(--p-border)',borderRadius:'var(--p-radius-md)',color:'var(--p-text-muted)',cursor:'pointer',fontSize:'var(--p-text-sm)',marginBottom:'var(--p-space-4)'}}>← Nouveau CDC</button>
           {/* Risk Banner */}
-          <div className="animate-in" style={{background:'var(--p-bg-card)',border:'var(--p-border)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)',marginBottom:'var(--p-space-6)',borderLeft:`4px solid ${vpsScore>70?'var(--p-critical)':vpsScore>40?'var(--p-warning)':'var(--p-success)'}`}}>
+          <div className="animate-in glass-card" style={{borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)',marginBottom:'var(--p-space-6)',borderLeft:`4px solid ${vpsScore>70?'var(--p-critical)':vpsScore>40?'var(--p-warning)':'var(--p-success)'}`}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
               <div>
                 <div style={{fontSize:'var(--p-text-xs)',color:'var(--p-text-muted)',letterSpacing:'1px',textTransform:'uppercase',marginBottom:'var(--p-space-2)'}}>Score VPS Global</div>
@@ -251,7 +251,7 @@ export default function ProjectPage() {
 
           {/* Alerts */}
           {result.alerts.length>0 && (
-            <div className="animate-in stagger-1" style={{background:'var(--p-bg-card)',border:'var(--p-border)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)',marginBottom:'var(--p-space-6)'}}>
+            <div className="animate-in stagger-1 glass-card" style={{borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)',marginBottom:'var(--p-space-6)'}}>
               <h3 style={{fontSize:'var(--p-text-base)',fontWeight:700,color:'var(--p-critical)',marginBottom:'var(--p-space-4)'}}>🚨 Alertes ({result.alerts.length})</h3>
               {result.alerts.map((a,i)=>(
                 <div key={i} style={{padding:'var(--p-space-3) var(--p-space-4)',marginBottom:'var(--p-space-2)',borderRadius:'var(--p-radius-md)',background:a.severity==='critical'?'var(--p-critical-bg)':a.severity==='warning'?'var(--p-warning-bg)':'var(--p-info-bg)',borderLeft:`3px solid ${a.severity==='critical'?'var(--p-critical)':a.severity==='warning'?'var(--p-warning)':'var(--p-info)'}`}}>
@@ -266,7 +266,7 @@ export default function ProjectPage() {
           {/* Engine Cards */}
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'var(--p-space-4)'}}>
             {engines.map((eng,i)=>(
-              <div key={eng.name} className={`animate-in stagger-${Math.min(i+1,5)}`} style={{background:'var(--p-bg-card)',border:'var(--p-border)',borderRadius:'var(--p-radius-lg)',padding:'var(--p-space-5)',borderTop:`3px solid ${eng.color}`,gridColumn:i===4?'span 2':undefined}}>
+              <div key={eng.name} className={`animate-in stagger-${Math.min(i+1,5)} glass-card`} style={{borderRadius:'var(--p-radius-lg)',padding:'var(--p-space-5)',borderTop:`3px solid ${eng.color}`,gridColumn:i===4?'span 2':undefined}}>
                 <div style={{display:'flex',alignItems:'center',gap:'var(--p-space-3)',marginBottom:'var(--p-space-4)'}}>
                   <span style={{fontFamily:'var(--p-font-mono)',fontWeight:800,color:eng.color,fontSize:'var(--p-text-sm)'}}>{eng.name}</span>
                   <span style={{color:'var(--p-text-muted)',fontSize:'var(--p-text-xs)'}}>{eng.label}</span>
@@ -308,7 +308,7 @@ export default function ProjectPage() {
   // CDC FORM VIEW
   // ══════════════════════════════════════════════════
   return (
-    <div style={{maxWidth:'800px',margin:'0 auto'}}>
+    <div className="page-enter-stagger" style={{maxWidth:'800px',margin:'0 auto'}}>
         <h1 style={{fontSize:'var(--p-text-2xl)',fontWeight:800,color:'var(--p-text)',marginBottom:'var(--p-space-2)'}}>Cahier des Charges Clinique</h1>
         <p style={{color:'var(--p-text-muted)',fontSize:'var(--p-text-sm)',marginBottom:'var(--p-space-4)'}}>Renseignez les données patient pour lancer le pipeline VPS → TDE → PVE → EWE → TPE</p>
 
@@ -339,7 +339,7 @@ export default function ProjectPage() {
         </div>
 
         {/* Form Card */}
-        <div className="animate-in" style={{background:'var(--p-bg-card)',border:'var(--p-border)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)'}}>
+        <div className="animate-in glass-card" style={{borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)'}}>
           <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'var(--p-space-5)',paddingBottom:'var(--p-space-4)',borderBottom:'var(--p-border)'}}>
             <div style={{width:'32px',height:'32px',borderRadius:'50%',background:sections[step].color,display:'flex',alignItems:'center',justifyContent:'center',fontSize:'14px',fontWeight:700,color:'#fff'}}>{step+1}</div>
             <div>

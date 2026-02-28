@@ -110,7 +110,7 @@ function getActiveLine(ps: PatientState): number {
 // ── Escalation Arrow ──
 function EscalationArrow({ from, to, active }: { from: number; to: number; active: boolean }) {
   return (
-    <div style={{
+    <div className="page-enter-stagger" style={{
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: '4px 0', opacity: active ? 1 : 0.3,
     }}>
@@ -156,7 +156,7 @@ export default function RecommandationsPage() {
   const tdeLevel = ps.tdeResult?.synthesis.level || 'N/A'
   const tdeScore = ps.tdeResult?.synthesis.score || 0
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
 
   return (
     <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
@@ -175,7 +175,7 @@ export default function RecommandationsPage() {
           <button key={k} onClick={() => { setScenario(k); setExpandedLine(null) }} style={{
             padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
             border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)',
-            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-card)',
+            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-elevated)',
             color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)',
             fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
           }}>{v.label}</button>
@@ -183,7 +183,7 @@ export default function RecommandationsPage() {
       </div>
 
       {/* TDE Summary Bar */}
-      <div className={mounted ? 'animate-in' : ''} style={{
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{
         ...card, marginBottom: 'var(--p-space-5)',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px',
         borderLeft: `4px solid var(--p-tde)`,
@@ -220,10 +220,10 @@ export default function RecommandationsPage() {
         <div className={mounted ? 'animate-in stagger-1' : ''} style={{ marginBottom: 'var(--p-space-5)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>RECOMMANDATIONS TDE ENGINE</div>
           {recs.map((r, i) => (
-            <div key={i} style={{
+            <div key={i} className="glass-card" style={{
               ...card, marginBottom: '8px',
               borderLeft: `4px solid ${r.priority === 'urgent' ? 'var(--p-critical)' : r.priority === 'high' ? 'var(--p-warning)' : 'var(--p-info)'}`,
-              background: r.priority === 'urgent' ? 'var(--p-critical-bg)' : 'var(--p-bg-card)',
+              background: r.priority === 'urgent' ? 'var(--p-critical-bg)' : 'var(--p-bg-elevated)',
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
                 <div>
@@ -258,7 +258,7 @@ export default function RecommandationsPage() {
         return (
           <div key={line.line}>
             {li > 0 && <EscalationArrow from={li} to={li + 1} active={activeLine > li} />}
-            <div className={mounted ? `animate-in stagger-${Math.min(li + 2, 5)}` : ''} style={{
+            <div className={`glass-card ${mounted ? `animate-in stagger-${Math.min(li + 2, 5)}` : ''}`} style={{
               ...card,
               opacity: isActive ? 1 : 0.45,
               borderLeft: `4px solid ${line.color}`,
@@ -339,7 +339,7 @@ export default function RecommandationsPage() {
                         {item.monitoring.map((m, mi) => (
                           <span key={mi} style={{
                             padding: '1px 8px', borderRadius: 'var(--p-radius-full)',
-                            background: 'var(--p-bg-card)', border: 'var(--p-border)',
+                            background: 'var(--p-bg-elevated)', border: 'var(--p-border)',
                             fontSize: '10px', color: 'var(--p-text-muted)',
                           }}>{m}</span>
                         ))}
@@ -355,7 +355,7 @@ export default function RecommandationsPage() {
 
       {/* MOGAD Warning */}
       {ps.tdeResult?.rules.some(r => r.name.includes('MOGAD')) && (
-        <div className={mounted ? 'animate-in' : ''} style={{
+        <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{
           ...card, marginTop: 'var(--p-space-5)',
           borderLeft: '4px solid var(--p-critical)', background: 'var(--p-critical-bg)',
         }}>
@@ -368,7 +368,7 @@ export default function RecommandationsPage() {
 
       {/* Treatment History */}
       {ps.treatmentHistory.length > 0 && (
-        <div className={mounted ? 'animate-in stagger-5' : ''} style={{ ...card, marginTop: 'var(--p-space-5)' }}>
+        <div className={`glass-card ${mounted ? 'animate-in stagger-5' : ''}`} style={{ ...card, marginTop: 'var(--p-space-5)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>HISTORIQUE THÉRAPEUTIQUE</div>
           {ps.treatmentHistory.map((t, i) => (
             <div key={i} style={{

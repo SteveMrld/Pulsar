@@ -93,10 +93,10 @@ export default function InterpellationPage() {
   const critCount = triggered.filter(t => t.severity === 'critical').length
   const warnCount = triggered.filter(t => t.severity === 'warning').length
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="warning" size={36} glow glowColor="rgba(255,179,71,0.5)" />
         <div>
@@ -110,7 +110,7 @@ export default function InterpellationPage() {
           <button key={k} onClick={() => { setScenario(k); setAcknowledged(new Set()) }} style={{
             padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
             border: scenario === k ? '2px solid var(--p-warning)' : 'var(--p-border)',
-            background: scenario === k ? 'var(--p-warning-bg)' : 'var(--p-bg-card)',
+            background: scenario === k ? 'var(--p-warning-bg)' : 'var(--p-bg-elevated)',
             color: scenario === k ? 'var(--p-warning)' : 'var(--p-text-muted)',
             fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
           }}>{v.label}</button>
@@ -118,7 +118,7 @@ export default function InterpellationPage() {
       </div>
 
       {/* Summary Bar */}
-      <div className={mounted ? 'animate-in' : ''} style={{
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{
         ...card, marginBottom: 'var(--p-space-5)',
         borderLeft: `4px solid ${critCount > 0 ? 'var(--p-critical)' : warnCount > 0 ? 'var(--p-warning)' : 'var(--p-success)'}`,
         display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px',
@@ -166,7 +166,7 @@ export default function InterpellationPage() {
 
       {/* Alerts List */}
       {filtered.length === 0 ? (
-        <div style={{ ...card, textAlign: 'center', padding: 'var(--p-space-8)' }}>
+        <div className="glass-card" style={{ ...card, textAlign: 'center', padding: 'var(--p-space-8)' }}>
           <div style={{ fontSize: '2rem', marginBottom: '8px' }}>✅</div>
           <div style={{ fontWeight: 600, color: 'var(--p-success)' }}>Aucun drapeau rouge actif</div>
           <div style={{ fontSize: '12px', color: 'var(--p-text-dim)', marginTop: '4px' }}>Tous les paramètres sont dans les seuils acceptables</div>
@@ -176,7 +176,7 @@ export default function InterpellationPage() {
           const isAcked = acknowledged.has(rf.id)
           const sc = rf.severity === 'critical' ? 'var(--p-critical)' : 'var(--p-warning)'
           return (
-            <div key={rf.id} className={mounted ? `animate-in stagger-${Math.min(i + 1, 5)}` : ''} style={{
+            <div key={rf.id} className={`glass-card card-interactive ${mounted ? `animate-in stagger-${Math.min(i + 1, 5)}` : ''}`} style={{
               ...card, marginBottom: '10px',
               borderLeft: `4px solid ${sc}`,
               opacity: isAcked ? 0.5 : 1,
@@ -229,7 +229,7 @@ export default function InterpellationPage() {
 
       {/* Engine Alerts */}
       {ps.alerts.length > 0 && (
-        <div className={mounted ? 'animate-in' : ''} style={{ ...card, marginTop: 'var(--p-space-5)' }}>
+        <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{ ...card, marginTop: 'var(--p-space-5)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>
             ALERTES MOTEURS ({ps.alerts.length})
           </div>

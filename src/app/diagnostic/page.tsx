@@ -62,7 +62,7 @@ function Gauge({ value, max, label, color, size = 130 }: { value: number; max: n
   const lc = pct >= 0.7 ? 'var(--p-critical)' : pct >= 0.5 ? 'var(--p-warning)' : pct >= 0.25 ? color : 'var(--p-success)'
   const lt = pct >= 0.7 ? 'ÉLEVÉ' : pct >= 0.5 ? 'MODÉRÉ' : pct >= 0.25 ? 'INTERMÉD.' : 'FAIBLE'
   return (
-    <div style={{ textAlign: 'center' }}>
+    <div className="page-enter-stagger" style={{ textAlign: 'center' }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="var(--p-dark-4)" strokeWidth="7" />
         <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={lc} strokeWidth="7" strokeLinecap="round"
@@ -102,8 +102,8 @@ function CriteriaBlock({ title, color, items, expanded, onToggle }: {
 }) {
   const metCount = items.filter(x => x.met).length
   return (
-    <div style={{
-      background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)',
+    <div className="glass-card card-interactive" style={{
+      borderRadius: 'var(--p-radius-xl)',
       padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)',
     }}>
       <button onClick={onToggle} style={{
@@ -170,7 +170,7 @@ export default function DiagnosticPage() {
     ps.vpsResult?.synthesis.score || 0,
     ps.tdeResult?.synthesis.score || 0,
   ]
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)' }
 
   return (
     <div className="page-enter-stagger" style={{ maxWidth: '1100px', margin: '0 auto' }}>
@@ -189,7 +189,7 @@ export default function DiagnosticPage() {
           <button key={k} onClick={() => setScenario(k)} style={{
             padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
             border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)',
-            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-card)',
+            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-elevated)',
             color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)',
             fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
           }}>{v.label}</button>
@@ -198,7 +198,7 @@ export default function DiagnosticPage() {
 
       {/* Pattern Banner */}
       {top && (
-        <div className={mounted ? 'animate-in' : ''} style={{
+        <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{
           ...card, marginBottom: 'var(--p-space-5)',
           borderLeft: `4px solid ${top.confidence >= 0.8 ? 'var(--p-critical)' : 'var(--p-warning)'}`,
           background: top.confidence >= 0.8 ? 'var(--p-critical-bg)' : 'var(--p-warning-bg)',
@@ -220,19 +220,19 @@ export default function DiagnosticPage() {
 
       {/* 3 Gauges */}
       <div className={mounted ? 'animate-in' : ''} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)' }}>
-        <div style={{ ...card, textAlign: 'center', borderTop: '3px solid var(--p-critical)' }}><Gauge value={firesScore} max={13} label="FIRES" color="var(--p-critical)" /></div>
-        <div style={{ ...card, textAlign: 'center', borderTop: '3px solid var(--p-tde)' }}><Gauge value={eais.score} max={eais.max} label="EAIS" color="var(--p-tde)" /></div>
-        <div style={{ ...card, textAlign: 'center', borderTop: '3px solid var(--p-warning)' }}><Gauge value={pims.score} max={pims.max} label="PIMS" color="var(--p-warning)" /></div>
+        <div className="glass-card" style={{ ...card, textAlign: 'center', borderTop: '3px solid var(--p-critical)' }}><Gauge value={firesScore} max={13} label="FIRES" color="var(--p-critical)" /></div>
+        <div className="glass-card" style={{ ...card, textAlign: 'center', borderTop: '3px solid var(--p-tde)' }}><Gauge value={eais.score} max={eais.max} label="EAIS" color="var(--p-tde)" /></div>
+        <div className="glass-card" style={{ ...card, textAlign: 'center', borderTop: '3px solid var(--p-warning)' }}><Gauge value={pims.score} max={pims.max} label="PIMS" color="var(--p-warning)" /></div>
       </div>
 
       {/* Radar + Hypotheses */}
       <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)' }}>
-        <div className={mounted ? 'animate-in stagger-1' : ''} style={{ ...card, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={{ ...card, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>RADAR DIAGNOSTIQUE</div>
           <DiagRadar data={radarD} labels={['FIRES', 'EAIS', 'PIMS', 'VPS', 'TDE']}
             colors={['var(--p-critical)', 'var(--p-tde)', 'var(--p-warning)', 'var(--p-vps)', 'var(--p-tde)']} />
         </div>
-        <div className={mounted ? 'animate-in stagger-2' : ''} style={card}>
+        <div className={`glass-card ${mounted ? 'animate-in stagger-2' : ''}`} style={card}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '14px' }}>HYPOTHÈSES CLASSÉES</div>
           {[
             { tag: 'FIRES', s: firesScore, m: 13, c: 'var(--p-critical)', desc: 'Febrile Infection-Related Epilepsy Syndrome' },
@@ -276,7 +276,7 @@ export default function DiagnosticPage() {
 
       {/* TDE Patterns */}
       {tdeP.length > 0 && (
-        <div className={mounted ? 'animate-in stagger-4' : ''} style={{ ...card, marginBottom: 'var(--p-space-4)' }}>
+        <div className={`glass-card ${mounted ? 'animate-in stagger-4' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-4)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>PATTERNS TDE DÉTECTÉS</div>
           {tdeP.map((p, i) => (
             <div key={i} style={{

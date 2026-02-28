@@ -15,12 +15,12 @@ export default function SynthesePage() {
   const toggle = (id: string) => setCollapsed(prev => { const n = new Set(prev); n.has(id) ? n.delete(id) : n.add(id); return n })
 
   const vps = ps.vpsResult!, tde = ps.tdeResult!, pve = ps.pveResult!
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
 
   function Section({ id, title, icon, color, children }: { id: string; title: string; icon: string; color: string; children: React.ReactNode }) {
     const isOpen = !collapsed.has(id)
     return (
-      <div style={card}>
+      <div className="glass-card" style={card}>
         <button onClick={() => toggle(id)} style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', background: 'none', border: 'none', cursor: 'pointer', color: 'var(--p-text)', padding: 0 }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Picto name={icon} size={20} glow glowColor={color} />
@@ -34,7 +34,7 @@ export default function SynthesePage() {
   }
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="clipboard" size={36} glow />
         <div>
@@ -45,12 +45,12 @@ export default function SynthesePage() {
 
       <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-5) 0', flexWrap: 'wrap' }}>
         {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
-          <button key={k} onClick={() => setScenario(k)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-pve)' : 'var(--p-border)', background: scenario === k ? 'var(--p-pve-dim)' : 'var(--p-bg-card)', color: scenario === k ? 'var(--p-pve)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
+          <button key={k} onClick={() => setScenario(k)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-pve)' : 'var(--p-border)', background: scenario === k ? 'var(--p-pve-dim)' : 'var(--p-bg-elevated)', color: scenario === k ? 'var(--p-pve)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
         ))}
       </div>
 
       {/* Patient Header */}
-      <div className={mounted ? 'animate-in' : ''} style={{ ...card, borderLeft: '4px solid var(--p-vps)' }}>
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{ ...card, borderLeft: '4px solid var(--p-vps)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ fontSize: 'var(--p-text-lg)', fontWeight: 800 }}>{DEMO_PATIENTS[scenario].label}</div>

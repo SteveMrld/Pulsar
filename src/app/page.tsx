@@ -21,7 +21,7 @@ const features = [
 
 export default function LandingPage() {
   return (
-    <div style={{ minHeight: '100vh', background: 'var(--p-bg)', position: 'relative' }}>
+    <div className="page-enter" style={{ minHeight: '100vh', background: 'var(--p-bg)', position: 'relative' }}>
       {/* Background mesh */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0,
         background: 'radial-gradient(ellipse 80% 60% at 20% 30%, rgba(108,124,255,0.06) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 80% 70%, rgba(185,107,255,0.04) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 50% 50%, rgba(47,209,200,0.03) 0%, transparent 50%)' }} />
@@ -44,7 +44,7 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero */}
-      <section style={{ textAlign: 'center', padding: 'var(--p-space-24) var(--p-space-8) var(--p-space-16)', maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter" style={{ textAlign: 'center', padding: 'var(--p-space-24) var(--p-space-8) var(--p-space-16)', maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'inline-block', padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: 'var(--p-vps-dim)', color: 'var(--p-vps)', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', marginBottom: 'var(--p-space-6)', fontFamily: 'var(--p-font-mono)' }}>
           5 BRAIN ENGINES × 4 LAYERS
         </div>
@@ -81,7 +81,7 @@ export default function LandingPage() {
       </section>
 
       {/* Pipeline Visual */}
-      <section style={{ padding: '0 var(--p-space-8) var(--p-space-16)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ padding: '0 var(--p-space-8) var(--p-space-16)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-6)', overflow: 'hidden' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>PIPELINE BRAINCORE — 4 COUCHES</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -107,7 +107,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section id="features" style={{ padding: 'var(--p-space-16) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section id="features" className="page-enter-stagger" style={{ padding: 'var(--p-space-16) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--p-space-6)' }}>
           {features.map((f, i) => (
             <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-8)' }}>
@@ -120,7 +120,7 @@ export default function LandingPage() {
       </section>
 
       {/* Engines Preview */}
-      <section style={{ padding: 'var(--p-space-16) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-16) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <h2 className="text-gradient-brand" style={{ fontSize: 'var(--p-text-3xl)', fontWeight: 800, textAlign: 'center', marginBottom: 'var(--p-space-12)' }}>
           Moteurs Cerveau
         </h2>
@@ -138,7 +138,7 @@ export default function LandingPage() {
       </section>
 
       {/* CTA */}
-      <section style={{ textAlign: 'center', padding: 'var(--p-space-16) var(--p-space-8) var(--p-space-24)', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-16) var(--p-space-8) var(--p-space-24)', position: 'relative', zIndex: 1 }}>
         <h2 style={{ fontSize: 'var(--p-text-3xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)' }}>Prêt à tester ?</h2>
         <p style={{ fontSize: 'var(--p-text-base)', color: 'var(--p-text-muted)', marginBottom: 'var(--p-space-8)' }}>7/7 crash tests passés. 59 références cliniques. Pipeline validé.</p>
         <Link href="/signup" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>

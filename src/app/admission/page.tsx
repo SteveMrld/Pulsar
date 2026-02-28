@@ -38,7 +38,7 @@ function getNormalRanges(ageMonths: number) {
   return { fc: '60-100', ta: '100-130/65-85', fr: '12-20', spo2: '≥95%' }
 }
 
-const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
+const card: React.CSSProperties = { borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
 const label: React.CSSProperties = { display: 'block', fontSize: 'var(--p-text-xs)', fontWeight: 600, color: 'var(--p-text-muted)', marginBottom: '4px' }
 const input: React.CSSProperties = { width: '100%', padding: '8px 12px', borderRadius: 'var(--p-radius-md)', border: 'var(--p-border)', background: 'var(--p-bg-elevated)', color: 'var(--p-text)', fontSize: 'var(--p-text-sm)', outline: 'none' }
 const grid2: React.CSSProperties = { display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--p-space-3)' }
@@ -113,7 +113,7 @@ export default function AdmissionPage() {
       <p style={{ color: 'var(--p-text-dim)', fontSize: 'var(--p-text-sm)', marginBottom: 'var(--p-space-5)' }}>Renseignez les informations du patient. Les normes vitales sont calculées automatiquement selon l&apos;âge.</p>
 
       {/* IDENTITÉ */}
-      <div style={card}>
+      <div className="glass-card" style={card}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-4)' }}>
           <Picto name="family" size={20} />
           <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-vps)' }}>Identité</span>
@@ -148,7 +148,7 @@ export default function AdmissionPage() {
       </div>
 
       {/* MORPHOLOGIE */}
-      <div style={card}>
+      <div className="glass-card" style={card}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-4)' }}>
           <Picto name="heart" size={20} />
           <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-tde)' }}>Morphologie</span>
@@ -167,7 +167,7 @@ export default function AdmissionPage() {
       </div>
 
       {/* TERRAIN */}
-      <div style={card}>
+      <div className="glass-card" style={card}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-4)' }}>
           <Picto name="warning" size={20} />
           <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-ewe)' }}>Terrain à risque</span>
@@ -209,7 +209,7 @@ export default function AdmissionPage() {
       </div>
 
       {/* PRÉSENTATION CLINIQUE */}
-      <div style={card}>
+      <div className="glass-card" style={card}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-4)' }}>
           <Picto name="alert" size={20} />
           <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-critical)' }}>Présentation clinique initiale</span>

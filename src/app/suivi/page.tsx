@@ -66,10 +66,10 @@ export default function SuiviPage() {
   const tdeH = snapshots.map(s => s.ps.tdeResult?.synthesis.score ?? 0)
   const pveH = snapshots.map(s => s.ps.pveResult?.synthesis.score ?? 0)
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1100px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="chart" size={36} glow />
         <div>
@@ -80,12 +80,12 @@ export default function SuiviPage() {
 
       <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-5) 0', flexWrap: 'wrap' }}>
         {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
-          <button key={k} onClick={() => setScenario(k)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-tpe)' : 'var(--p-border)', background: scenario === k ? 'var(--p-tpe-dim)' : 'var(--p-bg-card)', color: scenario === k ? 'var(--p-tpe)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
+          <button key={k} onClick={() => setScenario(k)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-tpe)' : 'var(--p-border)', background: scenario === k ? 'var(--p-tpe-dim)' : 'var(--p-bg-elevated)', color: scenario === k ? 'var(--p-tpe)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
         ))}
       </div>
 
       {/* Timeline Nav */}
-      <div className={mounted ? 'animate-in' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)', display: 'flex', alignItems: 'center', position: 'relative' }}>
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)', display: 'flex', alignItems: 'center', position: 'relative' }}>
         <div style={{ position: 'absolute', top: '50%', left: '40px', right: '40px', height: '2px', background: 'var(--p-dark-4)' }} />
         {CHECKPOINTS.map(cp => (
           <button key={cp.day} onClick={() => setActiveDay(cp.day)} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', background: 'none', border: 'none', cursor: 'pointer', position: 'relative', zIndex: 1 }}>
@@ -106,7 +106,7 @@ export default function SuiviPage() {
           const prevScore = eng.prevResult?.synthesis.score ?? 0
           const j0Score = eng.j0Result?.synthesis.score ?? 0
           return (
-            <div key={eng.name} style={{ ...card, borderTop: `3px solid ${eng.color}` }}>
+            <div key={eng.name} className="glass-card" style={{ ...card, borderTop: `3px solid ${eng.color}` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
                 <div>
                   <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>{eng.name}</div>
@@ -127,14 +127,14 @@ export default function SuiviPage() {
 
       {/* Evolution Chart (Recharts) */}
       {mounted && (
-        <div className="animate-in stagger-2" style={{ ...card, marginBottom: 'var(--p-space-5)', height: '220px' }}>
+        <div className="glass-card animate-in stagger-2" style={{ ...card, marginBottom: 'var(--p-space-5)', height: '220px' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>ÉVOLUTION SCORES J0 → J+7</div>
           <RespContainer width="100%" height={170}>
             <LineChart data={CHECKPOINTS.map((cp, i) => ({ name: cp.label, VPS: vpsH[i], TDE: tdeH[i], PVE: pveH[i] }))} margin={{ top: 5, right: 10, bottom: 5, left: 10 }}>
               <CartesianGrid strokeDasharray="3 3" stroke="var(--p-dark-4)" />
               <XAxis dataKey="name" tick={{ fill: 'var(--p-text-dim)', fontSize: 10, fontFamily: 'JetBrains Mono' }} />
               <YAxis domain={[0, 100]} tick={{ fill: 'var(--p-text-dim)', fontSize: 10 }} width={30} />
-              <Tooltip contentStyle={{ background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: '8px', fontSize: '11px' }} />
+              <Tooltip contentStyle={{ background: 'var(--p-bg-elevated)', border: 'var(--p-border)', borderRadius: '8px', fontSize: '11px' }} />
               <Line type="monotone" dataKey="VPS" stroke="#6C7CFF" strokeWidth={2} dot={{ r: 4, fill: '#6C7CFF' }} />
               <Line type="monotone" dataKey="TDE" stroke="#2FD1C8" strokeWidth={2} dot={{ r: 4, fill: '#2FD1C8' }} />
               <Line type="monotone" dataKey="PVE" stroke="#B96BFF" strokeWidth={2} dot={{ r: 4, fill: '#B96BFF' }} />
@@ -144,7 +144,7 @@ export default function SuiviPage() {
       )}
 
       {/* Clinical Parameters */}
-      <div className={mounted ? 'animate-in stagger-2' : ''} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-2' : ''}`} style={{ ...card, marginBottom: 'var(--p-space-5)' }}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>PARAMÈTRES CLINIQUES — {current.label}</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' }}>
           {[
@@ -172,7 +172,7 @@ export default function SuiviPage() {
       </div>
 
       {/* Response Assessment */}
-      <div className={mounted ? 'animate-in stagger-3' : ''} style={{ ...card }}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-3' : ''}`} style={{ ...card }}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>ÉVALUATION RÉPONSE THÉRAPEUTIQUE</div>
         {(() => {
           const vps0 = j0.vpsResult?.synthesis.score ?? 0

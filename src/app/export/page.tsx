@@ -14,7 +14,7 @@ export default function ExportPage() {
   const ps = useMemo(() => { const p = new PatientState(DEMO_PATIENTS[scenario].data); runPipeline(p); return p }, [scenario])
   const vps = ps.vpsResult!, tde = ps.tdeResult!, pve = ps.pveResult!
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
 
   const handlePrint = () => {
     const el = document.getElementById('export-preview')
@@ -69,7 +69,7 @@ export default function ExportPage() {
   }
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="brain" size={40} glow glowColor="#FFB347" />
         <div>
@@ -80,12 +80,12 @@ export default function ExportPage() {
 
       <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-5) 0', flexWrap: 'wrap' }}>
         {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
-          <button key={k} onClick={() => setScenario(k)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-tpe)' : 'var(--p-border)', background: scenario === k ? 'var(--p-tpe-dim)' : 'var(--p-bg-card)', color: scenario === k ? 'var(--p-tpe)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
+          <button key={k} onClick={() => setScenario(k)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-tpe)' : 'var(--p-border)', background: scenario === k ? 'var(--p-tpe-dim)' : 'var(--p-bg-elevated)', color: scenario === k ? 'var(--p-tpe)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
         ))}
       </div>
 
       {/* Section Selector + Actions */}
-      <div className={mounted ? 'animate-in' : ''} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{ ...card, display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '16px' }}>
         <div>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>SECTIONS À INCLURE</div>
           <div style={{ display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
@@ -107,7 +107,7 @@ export default function ExportPage() {
       </div>
 
       {/* Preview */}
-      <div id="export-preview" className={mounted ? 'animate-in stagger-1' : ''} style={{ ...card, background: 'var(--p-bg-card)' }}>
+      <div id="export-preview" className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={{ ...card, background: 'var(--p-bg-elevated)' }}>
         <h1 style={{ fontSize: 'var(--p-text-lg)', fontWeight: 800, borderBottom: '2px solid var(--p-vps)', paddingBottom: '8px', marginBottom: '16px' }}>
           PULSAR V15 — Rapport clinique
         </h1>

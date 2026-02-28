@@ -29,7 +29,7 @@ export default function EnginePageWrapper({ config }: { config: EnginePageConfig
   const result = ps[config.engineKey] as EngineResult | null
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1000px', margin: '0 auto' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '14px', marginBottom: 'var(--p-space-2)' }}>
         <div style={{
@@ -46,10 +46,10 @@ export default function EnginePageWrapper({ config }: { config: EnginePageConfig
       {/* Scenario Tabs */}
       <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-5) 0', flexWrap: 'wrap' }}>
         {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
-          <button key={k} onClick={() => setScenario(k)} style={{
+          <button key={k} onClick={() => setScenario(k)} className="hover-lift" style={{
             padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
             border: scenario === k ? `2px solid ${config.color}` : 'var(--p-border)',
-            background: scenario === k ? `${config.color}15` : 'var(--p-bg-card)',
+            background: scenario === k ? `${config.color}15` : 'var(--p-bg-elevated)',
             color: scenario === k ? config.color : 'var(--p-text-muted)',
             fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
           }}>{v.label}</button>

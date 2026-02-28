@@ -23,7 +23,7 @@ export default function StaffPage() {
   const ps = useMemo(() => { const p = new PatientState(DEMO_PATIENTS[scenario].data); runPipeline(p); return p }, [scenario])
   const vps = ps.vpsResult!, tde = ps.tdeResult!, pve = ps.pveResult!
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
 
   // Auto-generate RCP propositions
   const propositions = useMemo(() => {
@@ -42,7 +42,7 @@ export default function StaffPage() {
   const updateDecision = (i: number, status: 'approved' | 'rejected') => setDecisions(prev => prev.map((d, idx) => idx === i ? { ...d, status } : d))
 
   return (
-    <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1000px', margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-2)' }}>
         <Picto name="family" size={36} glow />
         <div>
@@ -53,12 +53,12 @@ export default function StaffPage() {
 
       <div style={{ display: 'flex', gap: '8px', margin: 'var(--p-space-5) 0', flexWrap: 'wrap' }}>
         {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
-          <button key={k} onClick={() => setScenario(k)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-info)' : 'var(--p-border)', background: scenario === k ? 'var(--p-info-bg)' : 'var(--p-bg-card)', color: scenario === k ? 'var(--p-info)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
+          <button key={k} onClick={() => setScenario(k)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-lg)', border: scenario === k ? '2px solid var(--p-info)' : 'var(--p-border)', background: scenario === k ? 'var(--p-info-bg)' : 'var(--p-bg-elevated)', color: scenario === k ? 'var(--p-info)' : 'var(--p-text-muted)', fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer' }}>{v.label}</button>
         ))}
       </div>
 
       {/* RCP Header */}
-      <div className={mounted ? 'animate-in' : ''} style={{ ...card, borderLeft: '4px solid var(--p-info)' }}>
+      <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{ ...card, borderLeft: '4px solid var(--p-info)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '12px' }}>
           <div>
             <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px' }}>RCP NEURO-PÉDIATRIQUE</div>
@@ -79,7 +79,7 @@ export default function StaffPage() {
       </div>
 
       {/* Context */}
-      <div className={mounted ? 'animate-in stagger-1' : ''} style={card}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={card}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>CONTEXTE CLINIQUE</div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           <div style={{ padding: '10px 12px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)' }}>
@@ -102,7 +102,7 @@ export default function StaffPage() {
       </div>
 
       {/* Questions clés */}
-      <div className={mounted ? 'animate-in stagger-2' : ''} style={card}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-2' : ''}`} style={card}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>QUESTIONS CLÉS À DISCUTER</div>
         {[
           vps.synthesis.score >= 50 ? `Le score VPS à ${vps.synthesis.score} justifie-t-il un transfert en centre de référence ?` : null,
@@ -120,7 +120,7 @@ export default function StaffPage() {
       </div>
 
       {/* Propositions */}
-      <div className={mounted ? 'animate-in stagger-3' : ''} style={card}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-3' : ''}`} style={card}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>PROPOSITIONS THÉRAPEUTIQUES</div>
         {propositions.map((p, i) => (
           <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', marginBottom: '6px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)' }}>
@@ -132,7 +132,7 @@ export default function StaffPage() {
 
       {/* Decisions */}
       {decisions.length > 0 && (
-        <div className={mounted ? 'animate-in' : ''} style={card}>
+        <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={card}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>DÉCISIONS RCP ({decisions.length})</div>
           {decisions.map((d, i) => (
             <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 12px', marginBottom: '6px', borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${d.status === 'approved' ? 'var(--p-success)' : d.status === 'rejected' ? 'var(--p-critical)' : 'var(--p-warning)'}`, background: 'var(--p-bg-elevated)' }}>
@@ -147,13 +147,13 @@ export default function StaffPage() {
       )}
 
       {/* Notes */}
-      <div className={mounted ? 'animate-in stagger-4' : ''} style={card}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-4' : ''}`} style={card}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>NOTES DE RÉUNION</div>
         <textarea value={rcpNotes} onChange={e => setRcpNotes(e.target.value)} placeholder="Saisir les notes de la RCP..." style={{ width: '100%', minHeight: '100px', padding: '10px', borderRadius: 'var(--p-radius-md)', border: 'var(--p-border)', background: 'var(--p-bg-elevated)', color: 'var(--p-text)', fontSize: '12px', fontFamily: 'inherit', resize: 'vertical' }} />
       </div>
 
       {/* Expert Panel */}
-      <div className={mounted ? 'animate-in stagger-5' : ''} style={card}>
+      <div className={`glass-card ${mounted ? 'animate-in stagger-5' : ''}`} style={card}>
         <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>PANEL D'EXPERTS DE RÉFÉRENCE</div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '8px' }}>
           {EXPERTS.map((e, i) => (

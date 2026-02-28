@@ -39,7 +39,7 @@ export default function UrgencePage() {
   const iS={width:'100%',marginTop:'8px',padding:'10px 12px',background:'var(--p-input-bg)',border:'var(--p-border)',borderRadius:'var(--p-radius-md)',color:'var(--p-text)',fontSize:'var(--p-text-sm)',outline:'none'} as const
 
   return (
-    <div style={{maxWidth:'900px',margin:'0 auto'}}>
+    <div className="page-enter-stagger" style={{maxWidth:'900px',margin:'0 auto'}}>
       <div style={{display:'flex',alignItems:'center',gap:'var(--p-space-4)',marginBottom:'var(--p-space-2)'}}>
         <Picto name="alert" size={36} glow glowColor="rgba(255,71,87,0.5)" />
         <div>
@@ -50,7 +50,7 @@ export default function UrgencePage() {
       <p style={{color:'var(--p-text-dim)',fontSize:'var(--p-text-sm)',marginBottom:'var(--p-space-6)'}}>Protocole rapide — 30 secondes pour un premier score VPS.</p>
 
       <div style={{display:'grid',gridTemplateColumns:result?'1fr 1fr':'1fr',gap:'var(--p-space-6)'}}>
-        <div style={{background:'var(--p-bg-card)',border:'2px solid var(--p-critical)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)'}}>
+        <div className="glass-card" style={{border:'2px solid var(--p-critical)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)'}}>
           {/* 1. GCS */}
           <div style={{marginBottom:'var(--p-space-5)'}}>
             <label style={{fontSize:'var(--p-text-xs)',fontWeight:700,color:'var(--p-text-muted)',textTransform:'uppercase',letterSpacing:'0.5px'}}>1. Glasgow (GCS) <span style={{color:'var(--p-critical)'}}>*</span></label>
@@ -101,16 +101,16 @@ export default function UrgencePage() {
 
         {result && (
           <div className="animate-in">
-            <div style={{background:'var(--p-bg-card)',border:'var(--p-border)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)',marginBottom:'var(--p-space-4)',borderLeft:`4px solid ${vc}`,textAlign:'center'}}>
+            <div className="glass-card" style={{borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)',marginBottom:'var(--p-space-4)',borderLeft:`4px solid ${vc}`,textAlign:'center'}}>
               <div style={{fontSize:'var(--p-text-xs)',color:'var(--p-text-muted)',letterSpacing:'2px',textTransform:'uppercase',marginBottom:'var(--p-space-2)'}}>Score VPS</div>
               <div style={{fontSize:'4rem',fontWeight:800,fontFamily:'var(--p-font-mono)',color:vc,lineHeight:1}}>{vs}</div>
               <div style={{fontSize:'var(--p-text-sm)',color:'var(--p-text-muted)',marginTop:'var(--p-space-2)'}}>/ 100 — {result.vpsResult?.synthesis.level?.toUpperCase()}</div>
             </div>
-            {result.alerts.length>0 && <div style={{background:'var(--p-bg-card)',border:'var(--p-border)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-5)',marginBottom:'var(--p-space-4)'}}>
+            {result.alerts.length>0 && <div className="glass-card" style={{borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-5)',marginBottom:'var(--p-space-4)'}}>
               <div style={{fontSize:'var(--p-text-xs)',fontWeight:700,color:'var(--p-critical)',marginBottom:'var(--p-space-3)'}}>🚨 {result.alerts.length} ALERTES</div>
               {result.alerts.slice(0,5).map((a,i)=><div key={i} style={{padding:'var(--p-space-2) var(--p-space-3)',marginBottom:'4px',borderRadius:'var(--p-radius-md)',fontSize:'var(--p-text-xs)',background:a.severity==='critical'?'var(--p-critical-bg)':'var(--p-warning-bg)',borderLeft:`3px solid ${a.severity==='critical'?'var(--p-critical)':'var(--p-warning)'}`}}><span style={{fontWeight:600,color:'var(--p-text)'}}>{a.title}</span></div>)}
             </div>}
-            {result.recommendations.length>0 && <div style={{background:'var(--p-bg-card)',border:'var(--p-border)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-5)'}}>
+            {result.recommendations.length>0 && <div className="glass-card" style={{borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-5)'}}>
               <div style={{fontSize:'var(--p-text-xs)',fontWeight:700,color:'var(--p-tde)',marginBottom:'var(--p-space-3)'}}>💊 RECOMMANDATIONS</div>
               {result.recommendations.slice(0,4).map((r,i)=><div key={i} style={{padding:'var(--p-space-2) var(--p-space-3)',marginBottom:'4px',borderLeft:`2px solid ${r.priority==='urgent'?'var(--p-critical)':'var(--p-tde)'}`,fontSize:'var(--p-text-xs)',color:'var(--p-text-dim)'}}><span style={{fontWeight:600,color:'var(--p-text-muted)'}}>{r.title}</span></div>)}
             </div>}

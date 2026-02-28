@@ -50,8 +50,8 @@ function LayerSection({ index, title, color, children, defaultOpen = false }: {
 }) {
   const [open, setOpen] = useState(defaultOpen)
   return (
-    <div style={{
-      background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)',
+    <div className="glass-card" style={{
+      borderRadius: 'var(--p-radius-xl)',
       marginBottom: 'var(--p-space-4)', overflow: 'hidden',
     }}>
       <button onClick={() => setOpen(!open)} style={{
@@ -89,8 +89,8 @@ export default function EngineDetailView({ engineName, fullName, color, result, 
   return (
     <div>
       {/* Synthesis Header */}
-      <div style={{
-        background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)',
+      <div className="glass-card" style={{
+        borderRadius: 'var(--p-radius-xl)',
         padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-5)',
         borderLeft: `4px solid ${color}`,
       }}>
@@ -284,8 +284,8 @@ export default function EngineDetailView({ engineName, fullName, color, result, 
 
       {/* Alerts */}
       {synthesis.alerts.length > 0 && (
-        <div style={{
-          background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)',
+        <div className="glass-card" style={{
+          borderRadius: 'var(--p-radius-xl)',
           padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)',
         }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '10px' }}>

@@ -247,10 +247,10 @@ export default function DemoPage() {
 
   const goTo = useCallback((i: number) => { setCurrentScene(i); setPlaying(false) }, [])
 
-  const card: React.CSSProperties = { background: 'var(--p-bg-card)', border: 'var(--p-border)', borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
+  const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)' }
 
   return (
-    <div style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', gap: 'var(--p-space-5)' }}>
+    <div className="page-enter-stagger" style={{ maxWidth: '1100px', margin: '0 auto', display: 'flex', gap: 'var(--p-space-5)' }}>
       {/* Scene sidebar */}
       <div style={{ width: '200px', flexShrink: 0 }}>
         <div style={{ position: 'sticky', top: '80px' }}>
@@ -290,7 +290,7 @@ export default function DemoPage() {
         </div>
 
         {/* Scene Header */}
-        <div className={mounted ? 'animate-in' : ''} style={{ ...card, borderLeft: `4px solid ${scene.color}`, marginBottom: 'var(--p-space-4)' }}>
+        <div className={`glass-card ${mounted ? 'animate-in' : ''}`} style={{ ...card, borderLeft: `4px solid ${scene.color}`, marginBottom: 'var(--p-space-4)' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
             <Picto name={scene.icon} size={28} glow glowColor={scene.color} />
             <div>
@@ -302,7 +302,7 @@ export default function DemoPage() {
         </div>
 
         {/* Scene Content */}
-        <div className={mounted ? 'animate-in stagger-1' : ''} style={{ ...card }}>
+        <div className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={{ ...card }}>
           {scene.render(ps)}
         </div>
 
