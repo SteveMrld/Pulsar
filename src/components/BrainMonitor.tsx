@@ -103,10 +103,10 @@ function genResp(len: number): number[] {
 }
 
 /* ══════════════════════════════════════════════════════════════
-   ANIMATED CANVAS TRACE
+   ANIMATED CANVAS TRACE — Enhanced glow & sweep
    ══════════════════════════════════════════════════════════════ */
-function Trace({ data, color, w, h, alert: isAlert, speed = 1.3 }: {
-  data: number[]; color: string; w: number; h: number; alert?: boolean; speed?: number
+function Trace({ data, color, w, h, alert: isAlert, speed = 1.3, thick }: {
+  data: number[]; color: string; w: number; h: number; alert?: boolean; speed?: number; thick?: boolean
 }) {
   const cvs = useRef<HTMLCanvasElement>(null)
   const off = useRef(0)
@@ -126,23 +126,44 @@ function Trace({ data, color, w, h, alert: isAlert, speed = 1.3 }: {
       ctx.scale(dpr, dpr)
       ctx.clearRect(0, 0, w, h)
 
-      /* Grid (oscilloscope feel) */
-      ctx.strokeStyle = 'rgba(46,213,115,0.035)'
+      /* Grid — oscilloscope */
+      ctx.strokeStyle = 'rgba(46,213,115,0.03)'
       ctx.lineWidth = 0.5
       for (let y = h / 4; y < h; y += h / 4) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke() }
-      for (let x = w / 8; x < w; x += w / 8) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke() }
+      for (let x = w / 10; x < w; x += w / 10) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke() }
 
       /* Center baseline */
-      ctx.strokeStyle = 'rgba(108,124,255,0.05)'
+      ctx.strokeStyle = 'rgba(108,124,255,0.04)'
       ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke()
 
-      /* Trace */
       const b = buf.current, step = w / b.length, mid = h / 2, amp = h * 0.42
       const tc = isAlert ? '#FF4757' : color
       const sweepIdx = Math.floor(off.current) % b.length
 
-      ctx.shadowColor = tc; ctx.shadowBlur = isAlert ? 8 : 4
-      ctx.strokeStyle = tc; ctx.lineWidth = isAlert ? 1.6 : 1.1; ctx.lineJoin = 'round'
+      /* Glow layer (wider, dimmer) */
+      ctx.save()
+      ctx.shadowColor = tc
+      ctx.shadowBlur = isAlert ? 14 : 8
+      ctx.strokeStyle = tc
+      ctx.lineWidth = thick ? 2.5 : (isAlert ? 2.0 : 1.4)
+      ctx.lineJoin = 'round'
+      ctx.globalAlpha = 0.5
+      ctx.beginPath()
+      for (let i = 0; i < b.length; i++) {
+        const idx = (i + sweepIdx) % b.length
+        const x = i * step, y = mid - b[idx] * amp
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y)
+      }
+      ctx.stroke()
+      ctx.restore()
+
+      /* Main trace (sharp) */
+      ctx.shadowColor = tc
+      ctx.shadowBlur = isAlert ? 6 : 3
+      ctx.strokeStyle = tc
+      ctx.lineWidth = thick ? 1.8 : (isAlert ? 1.5 : 1.0)
+      ctx.lineJoin = 'round'
+      ctx.globalAlpha = 1
       ctx.beginPath()
       for (let i = 0; i < b.length; i++) {
         const idx = (i + sweepIdx) % b.length
@@ -152,29 +173,35 @@ function Trace({ data, color, w, h, alert: isAlert, speed = 1.3 }: {
       ctx.stroke()
       ctx.shadowBlur = 0
 
-      /* Sweep dot */
-      ctx.fillStyle = tc; ctx.shadowColor = tc; ctx.shadowBlur = 10
+      /* Sweep dot — bright phosphor point */
+      const dotY = mid - b[sweepIdx] * amp
+      ctx.fillStyle = tc
+      ctx.shadowColor = tc
+      ctx.shadowBlur = 16
       ctx.beginPath()
-      ctx.arc(w - 2, mid - b[sweepIdx] * amp, 1.8, 0, Math.PI * 2)
-      ctx.fill(); ctx.shadowBlur = 0
+      ctx.arc(w - 1, dotY, thick ? 2.5 : 2, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.shadowBlur = 0
 
-      /* Fade-out trail */
-      const gr = ctx.createLinearGradient(w - 30, 0, w, 0)
-      gr.addColorStop(0, 'transparent'); gr.addColorStop(1, 'rgba(4,4,10,0.7)')
-      ctx.fillStyle = gr; ctx.fillRect(w - 30, 0, 30, h)
+      /* Fade-out at right edge */
+      const gr = ctx.createLinearGradient(w - 35, 0, w, 0)
+      gr.addColorStop(0, 'transparent')
+      gr.addColorStop(1, 'rgba(3,3,8,0.85)')
+      ctx.fillStyle = gr
+      ctx.fillRect(w - 35, 0, 35, h)
 
       off.current += speed
       id = requestAnimationFrame(draw)
     }
     draw()
     return () => cancelAnimationFrame(id)
-  }, [w, h, color, isAlert, speed])
+  }, [w, h, color, isAlert, speed, thick])
 
   return <canvas ref={cvs} style={{ width: w, height: h, display: 'block' }} />
 }
 
 /* ══════════════════════════════════════════════════════════════
-   VITAL BOX
+   VITAL BOX — Cleaner, larger values
    ══════════════════════════════════════════════════════════════ */
 function VitalBox({ v, w }: { v: VitalSign; w: number }) {
   const [data, setData] = useState<number[]>([])
@@ -193,56 +220,70 @@ function VitalBox({ v, w }: { v: VitalSign; w: number }) {
 
   return (
     <div style={{
-      background: 'rgba(4,4,10,0.5)', borderRadius: '8px', padding: '8px 10px',
-      border: `1px solid ${isCrit ? 'rgba(255,71,87,0.25)' : 'rgba(108,124,255,0.06)'}`,
-      boxShadow: isCrit ? '0 0 16px rgba(255,71,87,0.1), inset 0 0 10px rgba(255,71,87,0.03)' : 'none',
+      background: 'rgba(3,3,8,0.6)', borderRadius: '10px', padding: '10px 12px',
+      border: `1px solid ${isCrit ? 'rgba(255,71,87,0.3)' : isWarn ? 'rgba(255,165,2,0.15)' : 'rgba(108,124,255,0.06)'}`,
+      boxShadow: isCrit ? '0 0 20px rgba(255,71,87,0.1), inset 0 0 12px rgba(255,71,87,0.03)' : 'none',
       position: 'relative', overflow: 'hidden',
     }}>
-      {/* Micro scanlines */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.025,
+      {/* Scanlines micro */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', opacity: 0.02,
         background: 'repeating-linear-gradient(0deg, transparent 0px, transparent 2px, rgba(255,255,255,0.08) 2px, rgba(255,255,255,0.08) 3px)' }} />
 
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px', position: 'relative' }}>
-        <span style={{ fontSize: '8px', fontFamily: 'var(--p-font-mono)', color: v.color, fontWeight: 700, letterSpacing: '1.5px' }}>{v.label}</span>
+      {/* Label + alert */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', position: 'relative' }}>
+        <span style={{ fontSize: '9px', fontFamily: 'var(--p-font-mono)', color: v.color, fontWeight: 700, letterSpacing: '1.5px' }}>{v.label}</span>
         {isCrit && <span style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: '#FF4757', fontWeight: 800, letterSpacing: '1px' }} className="animate-breathe">ALERTE</span>}
-        {isWarn && <span style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: '#FFA502', fontWeight: 700 }}>VIGIL.</span>}
+        {isWarn && <span style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: '#FFA502', fontWeight: 700, letterSpacing: '0.5px' }}>VIGIL.</span>}
       </div>
 
+      {/* Waveform */}
       {v.waveform && data.length > 0 && (
-        <div style={{ margin: '2px 0', opacity: 0.85 }}>
-          <Trace data={data} color={v.color} w={w - 24} h={22} alert={isCrit} speed={v.waveform === 'ecg' ? 1.5 : 1} />
+        <div style={{ margin: '3px 0', opacity: 0.85, borderRadius: '4px', overflow: 'hidden', background: 'rgba(0,0,0,0.2)' }}>
+          <Trace data={data} color={v.color} w={w - 28} h={26} alert={isCrit} speed={v.waveform === 'ecg' ? 1.5 : 1} />
         </div>
       )}
 
-      <div style={{ display: 'flex', alignItems: 'baseline', gap: '3px', position: 'relative' }}>
+      {/* Value */}
+      <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', position: 'relative', marginTop: '4px' }}>
         <span style={{
-          fontSize: '20px', fontWeight: 900, fontFamily: 'var(--p-font-mono)',
-          color: vc, textShadow: isCrit ? '0 0 12px rgba(255,71,87,0.5)' : `0 0 8px ${v.color}25`,
-          letterSpacing: '-0.5px',
+          fontSize: '24px', fontWeight: 900, fontFamily: 'var(--p-font-mono)',
+          color: vc, textShadow: isCrit ? '0 0 14px rgba(255,71,87,0.5)' : `0 0 10px ${v.color}20`,
+          letterSpacing: '-0.5px', lineHeight: 1,
         }}>{v.value}</span>
-        <span style={{ fontSize: '9px', color: 'rgba(180,180,200,0.4)', fontFamily: 'var(--p-font-mono)' }}>{v.unit}</span>
+        <span style={{ fontSize: '10px', color: 'rgba(180,180,200,0.4)', fontFamily: 'var(--p-font-mono)', fontWeight: 500 }}>{v.unit}</span>
       </div>
     </div>
   )
 }
 
 /* ══════════════════════════════════════════════════════════════
-   METRIC CHIP
+   METRIC CHIP — with mini sparkline
    ══════════════════════════════════════════════════════════════ */
 function Metric({ label, value, suffix, th }: { label: string; value: number; suffix?: string; th: [number, number] }) {
   const c = value > th[1] ? '#FF4757' : value > th[0] ? '#FFA502' : '#2ED573'
+  // Mini sparkline dots
+  const dots = Array.from({ length: 8 }, (_, i) => Math.random() * 0.6 + 0.2)
+
   return (
-    <div style={{ textAlign: 'center' }}>
-      <div style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: 'rgba(180,180,200,0.35)', letterSpacing: '1.5px', marginBottom: '2px' }}>{label}</div>
-      <div style={{ fontSize: '22px', fontWeight: 900, fontFamily: 'var(--p-font-mono)', color: c, textShadow: `0 0 10px ${c}35`, letterSpacing: '-1px', lineHeight: 1 }}>
-        {value}<span style={{ fontSize: '10px', fontWeight: 600, opacity: 0.5 }}>{suffix}</span>
+    <div style={{ textAlign: 'center', minWidth: '60px' }}>
+      <div style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: 'rgba(180,180,200,0.35)', letterSpacing: '1.5px', marginBottom: '3px' }}>{label}</div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+        <div style={{ fontSize: '24px', fontWeight: 900, fontFamily: 'var(--p-font-mono)', color: c, textShadow: `0 0 10px ${c}30`, letterSpacing: '-1px', lineHeight: 1 }}>
+          {value}<span style={{ fontSize: '10px', fontWeight: 600, opacity: 0.5 }}>{suffix}</span>
+        </div>
+        {/* Mini sparkline */}
+        <svg width="20" height="14" viewBox="0 0 20 14" style={{ opacity: 0.5 }}>
+          {dots.map((d, i) => (
+            <rect key={i} x={i * 2.5} y={14 - d * 14} width="1.5" height={d * 14} rx="0.5" fill={c} />
+          ))}
+        </svg>
       </div>
     </div>
   )
 }
 
 /* ══════════════════════════════════════════════════════════════
-   BRAIN MONITOR — MAIN
+   BRAIN MONITOR — MAIN COMPONENT
    ══════════════════════════════════════════════════════════════ */
 const CHANNELS = [
   { label: 'Fp1-F7', seed: 0.1 }, { label: 'F7-T3', seed: 0.4 },
@@ -250,7 +291,7 @@ const CHANNELS = [
   { label: 'Fp2-F8', seed: 1.3 }, { label: 'F8-T4', seed: 1.6 },
 ]
 const CH_COLORS = ['#6C7CFF', '#2FD1C8', '#B96BFF', '#FFB347', '#6C7CFF', '#FF6B8A']
-const STATUS: Record<string, { label: string; color: string }> = {
+const STATUS_MAP: Record<string, { label: string; color: string }> = {
   normal: { label: 'NORMAL', color: '#2ED573' },
   slowing: { label: 'RALENTISSEMENT', color: '#FFA502' },
   seizure: { label: 'ACTIVITÉ CRITIQUE', color: '#FF4757' },
@@ -268,8 +309,8 @@ export default function BrainMonitor({
 
   useEffect(() => {
     const r = () => setBufs(CHANNELS.map((ch, i) => {
-      const st = (eegStatus === 'seizure' && i >= 4) ? 'seizure' : eegStatus
-      return genEEG(st, 280, ch.seed + Math.random() * 0.01)
+      const st = eegStatus === 'seizure' && (i === 0 || i === 1 || i === 5) ? 'seizure' : eegStatus
+      return genEEG(st, 300, ch.seed + Math.random() * 0.01)
     }))
     r(); const iv = setInterval(r, 4000); return () => clearInterval(iv)
   }, [eegStatus])
@@ -286,114 +327,182 @@ export default function BrainMonitor({
     setFlash(false)
   }, [vpsScore, seizuresPerHour])
 
-  const st = STATUS[eegStatus] || STATUS.normal
+  const st = STATUS_MAP[eegStatus] || STATUS_MAP.normal
   const crit = eegStatus === 'seizure' || vpsScore > 65
-  const trW = compact ? 260 : 440
-  const trH = compact ? 18 : 24
+  const trW = compact ? 280 : 460
+  const trH = compact ? 22 : 30
 
   return (
     <div style={{
-      background: 'linear-gradient(160deg, rgba(4,4,10,0.97), rgba(8,8,18,0.97) 50%, rgba(6,6,14,0.97))',
-      borderRadius: 'var(--p-radius-xl)', overflow: 'hidden', position: 'relative',
-      border: `1px solid ${crit && flash ? 'rgba(255,71,87,0.2)' : 'rgba(108,124,255,0.08)'}`,
+      background: 'linear-gradient(160deg, rgba(3,3,8,0.98), rgba(6,6,16,0.98) 50%, rgba(4,4,12,0.98))',
+      borderRadius: '14px', overflow: 'hidden', position: 'relative',
+      border: `1px solid ${crit && flash ? 'rgba(255,71,87,0.25)' : 'rgba(108,124,255,0.08)'}`,
       boxShadow: crit
-        ? `0 0 40px rgba(255,71,87,${flash ? '0.1' : '0.04'}), 0 8px 32px rgba(0,0,0,0.5)`
-        : '0 8px 32px rgba(0,0,0,0.4)',
+        ? `0 0 50px rgba(255,71,87,${flash ? '0.12' : '0.04'}), 0 8px 40px rgba(0,0,0,0.6)`
+        : '0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(108,124,255,0.04)',
       transition: 'box-shadow 0.4s, border-color 0.4s',
     }}>
-      {/* Scanlines */}
-      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2, opacity: 0.018,
-        background: 'repeating-linear-gradient(0deg, transparent 0px, transparent 1px, rgba(255,255,255,0.12) 1px, rgba(255,255,255,0.12) 2px)' }} />
+      {/* Scanlines CRT */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2, opacity: 0.015,
+        background: 'repeating-linear-gradient(0deg, transparent 0px, transparent 1px, rgba(255,255,255,0.1) 1px, rgba(255,255,255,0.1) 2px)' }} />
 
-      {/* ── TOP BAR ── */}
+      {/* Vignette edges */}
+      <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 1,
+        background: 'radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.3) 100%)' }} />
+
+      {/* ════ TOP BAR — BRAINMONITOR title ════ */}
       <div style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        padding: '10px 16px', borderBottom: '1px solid rgba(108,124,255,0.05)',
-        background: crit && flash ? 'rgba(255,71,87,0.03)' : 'rgba(108,124,255,0.015)',
+        padding: '10px 18px',
+        borderBottom: `1px solid ${crit && flash ? 'rgba(255,71,87,0.12)' : 'rgba(108,124,255,0.06)'}`,
+        background: crit && flash ? 'rgba(255,71,87,0.025)' : 'rgba(108,124,255,0.01)',
         position: 'relative', zIndex: 3,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div className="dot-alive" style={{ width: '7px', height: '7px',
-            background: crit ? '#FF4757' : '#2ED573',
-            boxShadow: `0 0 8px ${crit ? 'rgba(255,71,87,0.6)' : 'rgba(46,213,115,0.5)'}` }} />
-          <Picto name="brain" size={16} glow glowColor="rgba(108,124,255,0.3)" />
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '12px', color: 'var(--p-white)' }}>{patientName}</span>
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>
-            {age} · {syndrome} · <span style={{ color: crit ? '#FF4757' : '#6C7CFF' }}>J+{hospDay}</span>
+          <Picto name="brain" size={18} glow glowColor="rgba(108,124,255,0.4)" />
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 900, fontSize: '14px', letterSpacing: '1px' }}>
+            <span style={{ color: 'var(--p-white)' }}>BRAIN</span>
+            <span style={{ color: '#6C7CFF' }}>MONITOR</span>
           </span>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {ncsePossible && (
-            <span className="animate-breathe" style={{
-              fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800, letterSpacing: '1px',
-              padding: '3px 8px', borderRadius: '4px',
-              background: 'rgba(255,71,87,0.1)', color: '#FF4757', border: '1px solid rgba(255,71,87,0.2)',
-            }}>NCSE ?</span>
-          )}
-          <span style={{
-            fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.8px',
-            padding: '3px 10px', borderRadius: '6px',
-            background: `${st.color}0D`, color: st.color, border: `1px solid ${st.color}20`,
-          }}>{st.label}</span>
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', color: 'rgba(108,124,255,0.6)', fontWeight: 600, letterSpacing: '1px' }}>{clock}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div className="dot-alive" style={{
+            width: '6px', height: '6px',
+            background: crit ? '#FF4757' : '#2ED573',
+            boxShadow: `0 0 8px ${crit ? 'rgba(255,71,87,0.6)' : 'rgba(46,213,115,0.5)'}`,
+          }} />
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '13px', color: '#6C7CFF', fontWeight: 700, letterSpacing: '1px' }}>{clock}</span>
         </div>
       </div>
 
-      {/* ── MAIN GRID ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: compact ? '1fr' : '1fr 220px', position: 'relative', zIndex: 3 }}>
+      {/* ════ PATIENT BAR ════ */}
+      <div style={{
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        padding: '8px 18px',
+        borderBottom: '1px solid rgba(108,124,255,0.04)',
+        background: 'rgba(0,0,0,0.15)',
+        position: 'relative', zIndex: 3,
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{
+            width: '7px', height: '7px', borderRadius: '50%',
+            background: crit ? '#FF4757' : '#2ED573',
+            boxShadow: `0 0 6px ${crit ? 'rgba(255,71,87,0.5)' : 'rgba(46,213,115,0.4)'}`,
+          }} className="animate-breathe" />
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '13px', color: 'var(--p-white)' }}>{patientName}</span>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '0.3px' }}>
+            {age} · {syndrome} · <span style={{ color: crit ? '#FF4757' : '#6C7CFF', fontWeight: 700 }}>J+{hospDay}</span>
+          </span>
+          {ncsePossible && (
+            <span className="animate-breathe" style={{
+              fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800, letterSpacing: '1px',
+              padding: '3px 8px', borderRadius: '4px', marginLeft: '4px',
+              background: 'rgba(255,71,87,0.12)', color: '#FF4757', border: '1px solid rgba(255,71,87,0.25)',
+              boxShadow: '0 0 8px rgba(255,71,87,0.1)',
+            }}>NCSE ?</span>
+          )}
+        </div>
+        <span style={{
+          fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, letterSpacing: '0.8px',
+          padding: '4px 12px', borderRadius: '6px',
+          background: `${st.color}12`, color: st.color, border: `1px solid ${st.color}25`,
+          boxShadow: crit ? `0 0 12px ${st.color}15` : 'none',
+        }}>{st.label}</span>
+      </div>
 
-        {/* LEFT: EEG */}
-        <div style={{ padding: '10px 12px', borderRight: compact ? 'none' : '1px solid rgba(108,124,255,0.04)', background: 'rgba(0,0,0,0.12)' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-            <Picto name="eeg" size={13} glow glowColor="rgba(108,124,255,0.3)" />
+      {/* ════ MAIN GRID ════ */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: compact ? '1fr' : '1fr 230px',
+        position: 'relative', zIndex: 3,
+      }}>
+        {/* ──── LEFT: EEG TRACES ──── */}
+        <div style={{
+          padding: '12px 14px',
+          borderRight: compact ? 'none' : '1px solid rgba(108,124,255,0.04)',
+          background: 'rgba(0,0,0,0.1)',
+        }}>
+          {/* EEG header */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '10px' }}>
+            <Picto name="eeg" size={14} glow glowColor="rgba(108,124,255,0.3)" />
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800, color: '#6C7CFF', letterSpacing: '2px' }}>cEEG CONTINU</span>
-            <div style={{ width: '1px', height: '10px', background: 'rgba(108,124,255,0.12)' }} />
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'rgba(180,180,200,0.3)' }}>{eegBackground}</span>
-            <Link href="/neurocore?tab=eeg" style={{ marginLeft: 'auto', fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'rgba(108,124,255,0.4)', textDecoration: 'none' }}>NeuroCore →</Link>
+            <div style={{ width: '1px', height: '10px', background: 'rgba(108,124,255,0.1)' }} />
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'rgba(180,180,200,0.25)' }}>{eegBackground}</span>
+            <Link href="/neurocore?tab=eeg" style={{ marginLeft: 'auto', fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'rgba(108,124,255,0.35)', textDecoration: 'none', letterSpacing: '0.5px' }}>NeuroCore →</Link>
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1px' }}>
+          {/* Channels */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
             {CHANNELS.map((ch, i) => {
               const isSeiz = eegStatus === 'seizure' && (i === 0 || i === 1 || i === 5)
               return (
-                <div key={ch.label} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ width: '38px', textAlign: 'right', fontFamily: 'var(--p-font-mono)', fontSize: '7px', fontWeight: 600,
-                    color: isSeiz ? 'rgba(255,71,87,0.6)' : 'rgba(180,180,200,0.25)' }}>{ch.label}</span>
-                  <div style={{ background: 'rgba(0,0,0,0.25)', borderRadius: '2px', overflow: 'hidden',
-                    border: isSeiz ? '1px solid rgba(255,71,87,0.12)' : '1px solid rgba(108,124,255,0.025)' }}>
-                    {bufs[i] && <Trace data={bufs[i]} color={isSeiz ? '#FF4757' : CH_COLORS[i]} w={trW} h={trH} alert={isSeiz} speed={1.2 + i * 0.08} />}
+                <div key={ch.label} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{
+                    width: '42px', textAlign: 'right',
+                    fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 600,
+                    color: isSeiz ? 'rgba(255,71,87,0.7)' : 'rgba(180,180,200,0.2)',
+                    letterSpacing: '0.3px',
+                  }}>{ch.label}</span>
+                  <div style={{
+                    background: 'rgba(0,0,0,0.3)', borderRadius: '3px', overflow: 'hidden',
+                    border: isSeiz ? '1px solid rgba(255,71,87,0.15)' : '1px solid rgba(108,124,255,0.02)',
+                  }}>
+                    {bufs[i] && (
+                      <Trace
+                        data={bufs[i]}
+                        color={isSeiz ? '#FF4757' : CH_COLORS[i]}
+                        w={trW} h={trH}
+                        alert={isSeiz}
+                        speed={1.2 + i * 0.08}
+                        thick={isSeiz}
+                      />
+                    )}
                   </div>
                 </div>
               )
             })}
           </div>
 
-          {/* Bottom metrics */}
+          {/* ── Bottom metrics bar ── */}
           <div style={{
-            display: 'flex', alignItems: 'center', gap: '20px', marginTop: '10px', padding: '8px 12px',
-            background: crit ? 'rgba(255,71,87,0.03)' : 'rgba(108,124,255,0.015)',
-            borderRadius: 'var(--p-radius-md)', border: `1px solid ${crit ? 'rgba(255,71,87,0.08)' : 'rgba(108,124,255,0.04)'}`,
+            display: 'flex', alignItems: 'center', gap: '16px',
+            marginTop: '12px', padding: '10px 14px',
+            background: crit ? 'rgba(255,71,87,0.025)' : 'rgba(108,124,255,0.012)',
+            borderRadius: '10px',
+            border: `1px solid ${crit ? 'rgba(255,71,87,0.1)' : 'rgba(108,124,255,0.04)'}`,
           }}>
             <Metric label="CRISES/H" value={seizuresPerHour} th={[3, 6]} />
-            <div style={{ width: '1px', height: '28px', background: 'rgba(108,124,255,0.06)' }} />
+            <div style={{ width: '1px', height: '30px', background: 'rgba(108,124,255,0.06)' }} />
             <Metric label="GCS" value={gcs} suffix="/15" th={[12, 8]} />
-            <div style={{ width: '1px', height: '28px', background: 'rgba(108,124,255,0.06)' }} />
+            <div style={{ width: '1px', height: '30px', background: 'rgba(108,124,255,0.06)' }} />
             <Metric label="VPS" value={vpsScore} th={[40, 65]} />
             <Link href="/neurocore?tab=redflags" style={{
-              marginLeft: 'auto', fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 700,
-              padding: '5px 12px', borderRadius: '6px', textDecoration: 'none',
-              background: 'rgba(255,71,87,0.06)', color: '#FF4757', border: '1px solid rgba(255,71,87,0.12)',
+              marginLeft: 'auto', fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+              padding: '6px 14px', borderRadius: '8px', textDecoration: 'none',
+              background: 'rgba(255,71,87,0.06)', color: '#FF4757',
+              border: '1px solid rgba(255,71,87,0.15)',
+              transition: 'all 0.2s',
             }}>Red Flags →</Link>
           </div>
         </div>
 
-        {/* RIGHT: VITALS */}
+        {/* ──── RIGHT: VITAL SIGNS ──── */}
         {!compact && (
-          <div style={{ padding: '10px', display: 'flex', flexDirection: 'column', gap: '6px', background: 'rgba(0,0,0,0.06)' }}>
-            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', fontWeight: 800, color: 'rgba(255,107,138,0.5)', letterSpacing: '2px', marginBottom: '2px' }}>
-              CONSTANTES VITALES
-            </div>
-            {vitals.map((v, i) => <VitalBox key={i} v={v} w={218} />)}
+          <div style={{
+            padding: '12px',
+            display: 'flex', flexDirection: 'column', gap: '8px',
+            background: 'rgba(0,0,0,0.05)',
+          }}>
+            <div style={{
+              fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800,
+              color: 'rgba(255,107,138,0.45)', letterSpacing: '2px', marginBottom: '2px',
+            }}>CONSTANTES VITALES</div>
+            {vitals.map((v, i) => <VitalBox key={i} v={v} w={226} />)}
+            <Link href="/neurocore" style={{
+              fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 600,
+              color: 'rgba(108,124,255,0.35)', textDecoration: 'none',
+              textAlign: 'center', marginTop: '2px', letterSpacing: '0.5px',
+            }}>NeuroCore →</Link>
           </div>
         )}
       </div>
