@@ -23,6 +23,11 @@ const QUICK_ACCESS = [
     color: '#2FD1C8', primary: false,
   },
   {
+    href: '/neurocore', icon: 'brain', label: 'NeuroCore',
+    desc: 'EEG · IRM · Biomarqueurs · Red Flags',
+    color: '#B96BFF', primary: false,
+  },
+  {
     href: '/recommandations', icon: 'pill', label: 'Recommandations',
     desc: 'Lignes thérapeutiques',
     color: '#2ED573', primary: false,

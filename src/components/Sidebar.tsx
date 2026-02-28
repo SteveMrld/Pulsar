@@ -49,6 +49,16 @@ const CORRIDORS: Corridor[] = [
       { href: '/suivi', label: 'Suivi J+2/5/7', icon: 'chart' },
     ],
   },
+  {
+    id: 'neurocore', icon: 'brain', label: 'NeuroCore', color: '#B96BFF', glow: 'rgba(185,107,255,0.4)',
+    pages: [
+      { href: '/neurocore', label: 'Moteur de Connaissance', icon: 'brain' },
+      { href: '/neurocore?tab=eeg', label: 'EEG', icon: 'eeg' },
+      { href: '/neurocore?tab=irm', label: 'IRM', icon: 'brain' },
+      { href: '/neurocore?tab=biomarkers', label: 'Biomarqueurs', icon: 'dna' },
+      { href: '/neurocore?tab=redflags', label: 'Red Flags & Pièges', icon: 'warning' },
+    ],
+  },
 ]
 
 const SECONDARY = [
