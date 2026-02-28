@@ -24,11 +24,11 @@ function MiniGauge({ score, color, size = 48 }: { score: number; color: string; 
 }
 
 const enginesDef = [
-  { name: 'VPS', full: 'Vital Prognosis', color: '#6C7CFF', href: '/engines/vps' },
-  { name: 'TDE', full: 'Therapeutic Decision', color: '#2FD1C8', href: '/engines/tde' },
-  { name: 'PVE', full: 'Paraclinical', color: '#B96BFF', href: '/engines/pve' },
-  { name: 'EWE', full: 'Early Warning', color: '#FF6B8A', href: '/engines/ewe' },
-  { name: 'TPE', full: 'Therapeutic Prospection', color: '#FFB347', href: '/engines/tpe' },
+  { name: 'VPS', full: 'Vital Prognosis', color: '#6C7CFF', href: '/engines?tab=vps' },
+  { name: 'TDE', full: 'Therapeutic Decision', color: '#2FD1C8', href: '/engines?tab=tde' },
+  { name: 'PVE', full: 'Paraclinical', color: '#B96BFF', href: '/engines?tab=pve' },
+  { name: 'EWE', full: 'Early Warning', color: '#FF6B8A', href: '/engines?tab=ewe' },
+  { name: 'TPE', full: 'Therapeutic Prospection', color: '#FFB347', href: '/engines?tab=tpe' },
 ]
 
 export default function CockpitPage() {

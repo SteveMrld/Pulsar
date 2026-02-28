@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import Sidebar from './Sidebar'
 import PatientBanner from './PatientBanner'
-import Picto from './Picto'
+import PulsarAI from './PulsarAI'
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -134,6 +134,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </div>
         </main>
       </div>
+
+      {/* PulsarAI — contextual assistant */}
+      <PulsarAI />
     </div>
   )
 }
@@ -152,6 +155,7 @@ function Breadcrumb({ pathname }: { pathname: string }) {
     '/pharmacovigilance': { label: 'Traitement', color: '#2ED573' },
     '/experts': { label: 'Traitement', color: '#2ED573' },
     '/cockpit': { label: 'Monitoring', color: '#2FD1C8' },
+    '/engines': { label: 'Monitoring', color: '#2FD1C8' },
     '/engines/vps': { label: 'Monitoring', color: '#2FD1C8' },
     '/engines/tde': { label: 'Monitoring', color: '#2FD1C8' },
     '/engines/pve': { label: 'Monitoring', color: '#2FD1C8' },
@@ -166,6 +170,7 @@ function Breadcrumb({ pathname }: { pathname: string }) {
     '/bilan': 'Bilan diagnostique', '/diagnostic': 'Diagnostic IA', '/interpellation': 'Interpellation',
     '/case-matching': 'Case-Matching', '/recommandations': 'Recommandations',
     '/pharmacovigilance': 'Pharmacovigilance', '/cockpit': 'Cockpit Vital',
+    '/engines': 'Pipeline 5 Moteurs',
     '/engines/vps': 'VPS Engine', '/engines/tde': 'TDE Engine', '/engines/pve': 'PVE Engine',
     '/engines/ewe': 'EWE Engine', '/engines/tpe': 'TPE Engine',
     '/timeline': 'Timeline', '/suivi': 'Suivi J+2/5/7', '/synthese': 'Synthèse',

@@ -44,11 +44,7 @@ const CORRIDORS: Corridor[] = [
     id: 'monitoring', icon: 'eeg', label: 'Monitoring', color: '#2FD1C8', glow: 'rgba(47,209,200,0.4)',
     pages: [
       { href: '/cockpit', label: 'Cockpit Vital', icon: 'eeg' },
-      { href: '/engines/vps', label: 'VPS Engine', icon: 'brain' },
-      { href: '/engines/tde', label: 'TDE Engine', icon: 'heart' },
-      { href: '/engines/pve', label: 'PVE Engine', icon: 'blood' },
-      { href: '/engines/ewe', label: 'EWE Engine', icon: 'thermo' },
-      { href: '/engines/tpe', label: 'TPE Engine', icon: 'lungs' },
+      { href: '/engines', label: 'Pipeline 5 Moteurs', icon: 'brain' },
       { href: '/timeline', label: 'Timeline', icon: 'chart' },
       { href: '/suivi', label: 'Suivi J+2/5/7', icon: 'chart' },
     ],
