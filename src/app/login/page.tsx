@@ -23,7 +23,7 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/dashboard')
+      router.push('/welcome')
     }
   }
 
@@ -147,7 +147,7 @@ export default function LoginPage() {
             onClick={() => {
               document.cookie = 'pulsar-demo=true; path=/; max-age=86400'
               localStorage.setItem('pulsar-demo', 'true')
-              router.push('/dashboard')
+              router.push('/welcome')
             }}
             style={{
               width: '100%',
