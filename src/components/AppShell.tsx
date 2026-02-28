@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
+import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import Sidebar from './Sidebar'
 import PatientBanner from './PatientBanner'
@@ -171,6 +172,7 @@ function Breadcrumb({ pathname }: { pathname: string }) {
     '/case-matching': 'Case-Matching', '/recommandations': 'Recommandations',
     '/pharmacovigilance': 'Pharmacovigilance', '/cockpit': 'Cockpit Vital',
     '/engines': 'Pipeline 5 Moteurs',
+    '/welcome': 'Accueil',
     '/engines/vps': 'VPS Engine', '/engines/tde': 'TDE Engine', '/engines/pve': 'PVE Engine',
     '/engines/ewe': 'EWE Engine', '/engines/tpe': 'TPE Engine',
     '/timeline': 'Timeline', '/suivi': 'Suivi J+2/5/7', '/synthese': 'Synthèse',
@@ -186,7 +188,7 @@ function Breadcrumb({ pathname }: { pathname: string }) {
 
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-      <span style={{ fontWeight: 800, color: 'var(--p-vps)', fontSize: '13px', letterSpacing: '0.05em' }}>PULSAR</span>
+      <Link href="/welcome" style={{ fontWeight: 800, color: 'var(--p-vps)', fontSize: '13px', letterSpacing: '0.05em', textDecoration: 'none' }}>PULSAR</Link>
       {corridor && <>
         <span style={{ color: 'var(--p-text-dim)', fontSize: '11px' }}>›</span>
         <span style={{ color: corridor.color, fontSize: '11px', fontWeight: 700, fontFamily: 'var(--p-font-mono)' }}>{corridor.label}</span>

@@ -108,7 +108,7 @@ export default function Sidebar({ onToggle, isMobile = false }: { collapsed?: bo
           padding: 'var(--p-space-4) var(--p-space-5)', borderBottom: 'var(--p-border)',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between', minHeight: '60px',
         }}>
-          <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 'var(--p-space-2)' }}>
+          <Link href="/welcome" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 'var(--p-space-2)' }}>
             <img src="/assets/logo-pulsar.jpg" alt="PULSAR" width={28} height={28} style={{ borderRadius: 6, filter: 'drop-shadow(0 0 6px rgba(108,124,255,0.3))' }} />
             <span style={{ fontSize: '18px', fontWeight: 800, color: 'var(--p-vps)', letterSpacing: '0.1em' }}>PULSAR</span>
             <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', padding: '2px 6px', background: 'var(--p-bg-elevated)', borderRadius: 'var(--p-radius-sm)' }}>V16</span>
@@ -143,7 +143,7 @@ export default function Sidebar({ onToggle, isMobile = false }: { collapsed?: bo
         width: '64px', minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center',
         borderRight: '1px solid rgba(108,124,255,0.08)', borderRadius: 0, paddingTop: '8px',
       }}>
-        <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0 12px', borderBottom: 'var(--p-border)', width: '100%', marginBottom: '8px' }}>
+        <Link href="/welcome" style={{ textDecoration: 'none', display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '8px 0 12px', borderBottom: 'var(--p-border)', width: '100%', marginBottom: '8px' }}>
           <img src="/assets/logo-pulsar.jpg" alt="PULSAR" width={32} height={32} style={{ borderRadius: 8, filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.4))' }} />
           <span style={{ fontSize: '7px', fontWeight: 800, color: 'var(--p-vps)', letterSpacing: '0.15em', marginTop: '4px' }}>PULSAR</span>
         </Link>

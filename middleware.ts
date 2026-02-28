@@ -30,7 +30,7 @@ export async function middleware(request: NextRequest) {
   // Demo mode bypass via cookie
   const isDemo = request.cookies.get('pulsar-demo')?.value === 'true'
 
-  const protectedRoutes = ['/dashboard', '/project', '/urgence', '/bilan', '/diagnostic', '/interpellation', '/case-matching', '/recommandations', '/pharmacovigilance', '/cockpit', '/engines', '/timeline', '/suivi', '/synthese', '/famille', '/staff', '/export', '/evidence', '/experts', '/demo', '/about', '/admission', '/audit', '/onboarding', '/observatory', '/cross-pathologie']
+  const protectedRoutes = ['/welcome', '/dashboard', '/project', '/urgence', '/bilan', '/diagnostic', '/interpellation', '/case-matching', '/recommandations', '/pharmacovigilance', '/cockpit', '/engines', '/timeline', '/suivi', '/synthese', '/famille', '/staff', '/export', '/evidence', '/experts', '/demo', '/about', '/admission', '/audit', '/onboarding', '/observatory', '/cross-pathologie']
   const authRoutes = ['/login', '/signup']
   const path = request.nextUrl.pathname
 
@@ -44,7 +44,7 @@ export async function middleware(request: NextRequest) {
   // Redirect authenticated users away from auth pages
   if ((user || isDemo) && authRoutes.some(r => path.startsWith(r))) {
     const url = request.nextUrl.clone()
-    url.pathname = '/dashboard'
+    url.pathname = '/welcome'
     return NextResponse.redirect(url)
   }
 
