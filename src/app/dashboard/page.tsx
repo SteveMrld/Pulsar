@@ -7,6 +7,7 @@ import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 import { computeDiagnosticContext } from '@/lib/data/epidemioContext'
 import Picto from '@/components/Picto'
 import SilhouetteNeon from '@/components/SilhouetteNeon'
+import BrainMonitor from '@/components/BrainMonitor'
 
 /* ── Mini gauge circle ── */
 function MiniGauge({ score, color, size = 48 }: { score: number; color: string; size?: number }) {
@@ -89,6 +90,46 @@ export default function CockpitPage() {
             fontSize: '11px', fontWeight: 600, cursor: 'pointer',
           }}>{v.label}</button>
         ))}
+      </div>
+
+      {/* ═══ ZONE 0: Brain Monitor ICU ═══ */}
+      <div style={{ marginBottom: 'var(--p-space-4)' }}>
+        <BrainMonitor
+          patientName={ps.sex === 'female' ? 'Inès M.' : 'Lucas R.'}
+          age={`${Math.floor(ps.ageMonths / 12)} ans`}
+          syndrome={scenario === 'NMDAR' ? 'Anti-NMDAR' : scenario === 'CYTOKINE' ? 'MOGAD' : scenario}
+          hospDay={ps.hospDay}
+          gcs={ps.neuro.gcs}
+          seizuresPerHour={ps.neuro.seizures24h > 0 ? Math.round(ps.neuro.seizures24h / 24 * 10) / 10 : 0}
+          vpsScore={ps.vpsResult?.synthesis.score ?? 0}
+          eegStatus={
+            ps.neuro.seizureType === 'refractory_status' || ps.neuro.seizureType === 'super_refractory' ? 'seizure'
+            : ps.neuro.seizureType === 'status' ? 'seizure'
+            : ps.neuro.gcs <= 6 ? 'burst_suppression'
+            : ps.neuro.gcs <= 10 ? 'slowing'
+            : 'normal'
+          }
+          eegBackground={
+            ps.neuro.gcs <= 6 ? 'Fond sévèrement ralenti'
+            : ps.neuro.gcs <= 10 ? 'Fond modérément ralenti'
+            : 'Fond normal'
+          }
+          ncsePossible={ps.neuro.seizures24h > 8 || ps.neuro.seizureType === 'refractory_status'}
+          vitals={[
+            { label: 'FC', value: `${ps.hemodynamics.heartRate}`, unit: 'bpm', color: '#FF6B8A', icon: 'heart',
+              severity: ps.hemodynamics.heartRate > 160 ? 2 : ps.hemodynamics.heartRate > 140 ? 1 : 0,
+              waveform: 'ecg', numericValue: ps.hemodynamics.heartRate, range: [60, 180] },
+            { label: 'SpO₂', value: `${ps.hemodynamics.spo2}`, unit: '%', color: '#2FD1C8', icon: 'lungs',
+              severity: ps.hemodynamics.spo2 < 90 ? 2 : ps.hemodynamics.spo2 < 95 ? 1 : 0,
+              waveform: 'spo2', numericValue: ps.hemodynamics.spo2, range: [85, 100] },
+            { label: 'TEMP', value: `${ps.hemodynamics.temp}`, unit: '°C', color: '#B96BFF', icon: 'thermo',
+              severity: ps.hemodynamics.temp >= 39 ? 2 : ps.hemodynamics.temp >= 38 ? 1 : 0,
+              waveform: 'flat', numericValue: ps.hemodynamics.temp, range: [36, 40] },
+            { label: 'PA', value: `${ps.hemodynamics.sbp}/${ps.hemodynamics.dbp}`, unit: 'mmHg', color: '#FFB347', icon: 'blood',
+              severity: ps.hemodynamics.map < 60 ? 2 : 0,
+              waveform: 'resp', numericValue: ps.hemodynamics.respRate, range: [10, 40] },
+          ]}
+        />
       </div>
 
       {/* ═══ ZONE 1: Patient + Silhouette ═══ */}
@@ -228,6 +269,7 @@ export default function CockpitPage() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 'var(--p-space-3)' }}>
         {[
           { href: '/bilan', icon: 'microscope', label: 'Bilan diagnostique', color: '#FF4757', badge: '26' },
+          { href: '/neurocore', icon: 'brain', label: 'NeuroCore', color: '#B96BFF' },
           { href: '/cross-pathologie', icon: 'cycle', label: 'Cross-Pathologie', color: '#6C7CFF' },
           { href: '/timeline', icon: 'chart', label: 'Timeline', color: '#2FD1C8' },
           { href: '/synthese', icon: 'clipboard', label: 'Synthèse', color: '#B96BFF' },
@@ -251,7 +293,7 @@ export default function CockpitPage() {
 
       {/* Footer */}
       <div style={{ textAlign: 'center', padding: 'var(--p-space-5) 0 var(--p-space-3)', color: 'var(--p-text-dim)', fontSize: '9px', fontFamily: 'var(--p-font-mono)' }}>
-        PULSAR V16 · Cockpit Patient · Aide à la décision — Ne se substitue pas au jugement clinique
+        PULSAR V16 · L&apos;intelligence clinique qui veille sur chaque enfant · Ne se substitue pas au jugement clinique
       </div>
     </div>
   )
