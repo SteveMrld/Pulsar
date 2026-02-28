@@ -147,6 +147,7 @@ function Breadcrumb({ pathname }: { pathname: string }) {
     '/evidence': 'Evidence Vault', '/experts': 'Consensus Expert', '/demo': 'Démo Inès',
     '/about': 'About / Mémorial', '/admission': 'Admission', '/audit': 'Audit Trail',
     '/onboarding': 'Onboarding', '/cross-pathologie': 'Cross-Pathologie',
+    '/observatory': 'Observatory',
   }
   const current = labels[pathname] || ''
   return (

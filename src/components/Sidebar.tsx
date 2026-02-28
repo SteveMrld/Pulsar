@@ -63,6 +63,7 @@ const NAV_SECTIONS = [
   {
     label: 'RESSOURCES',
     items: [
+      { href: '/observatory', icon: 'cycle', label: 'Observatory', badge: 'NEW' },
       { href: '/evidence', icon: 'books', label: 'Evidence Vault', badge: '17' },
       { href: '/experts', icon: 'books', label: 'Consensus Expert', badge: '5' },
       { href: '/demo', icon: 'play', label: 'Démo Inès', badge: '13' },
