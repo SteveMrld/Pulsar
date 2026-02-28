@@ -33,7 +33,7 @@ export default function OnboardingPage() {
             <div style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', marginBottom: 'var(--p-space-2)' }}>Pediatric Urgent Limbic &amp; Systemic Alert Response</div>
             <div style={{ fontSize: '11px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', marginBottom: 'var(--p-space-8)' }}>Version 15 — Fusion Définitive</div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-6)', textAlign: 'left' }}>
+            <div className="grid-2-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--p-space-3)', marginBottom: 'var(--p-space-6)', textAlign: 'left' }}>
               {FEATURES.map((f, i) => (
                 <div key={i} className="glass-card" style={{ padding: 'var(--p-space-4)', display: 'flex', gap: 'var(--p-space-3)', alignItems: 'center' }}>
                   <Picto name={f.icon} size={28} glow glowColor={f.color} />

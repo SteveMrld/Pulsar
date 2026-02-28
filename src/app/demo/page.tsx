@@ -192,7 +192,7 @@ const SCENES: Scene[] = [
 
 // ── Helper Components ──
 function InfoGrid({ items }: { items: { l: string; v: string | number; c?: string }[] }) {
-  return <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+  return <div className="grid-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
     {items.map((it, i) => (
       <div key={i} style={{ padding: '6px 10px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-elevated)' }}>
         <div style={{ fontSize: '10px', color: 'var(--p-text-dim)' }}>{it.l}</div>

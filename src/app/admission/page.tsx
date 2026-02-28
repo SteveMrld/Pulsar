@@ -256,7 +256,7 @@ export default function AdmissionPage() {
       {normals && (
         <div className="glass-card" style={{ padding: 'var(--p-space-4)', marginBottom: 'var(--p-space-4)' }}>
           <div style={{ fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--p-text-dim)', marginBottom: 'var(--p-space-3)' }}>Normes vitales calculées — {ageGroup}</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 'var(--p-space-3)' }}>
+          <div className="grid-4" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: 'var(--p-space-3)' }}>
             {[
               { l: 'FC', v: normals.fc, u: 'bpm', icon: 'heart' },
               { l: 'TA', v: normals.ta, u: 'mmHg', icon: 'blood' },

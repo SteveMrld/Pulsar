@@ -27,7 +27,7 @@ export default function AboutPage() {
       {/* Architecture */}
       <div className="glass-card" style={{ padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)', textAlign: 'left' }}>
         <h2 style={{ fontSize: 'var(--p-text-base)', fontWeight: 700, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)' }}>Architecture V15</h2>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--p-space-3)' }}>
+        <div className="grid-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 'var(--p-space-3)' }}>
           {[
             { label: 'Brain Engines', value: '5', sub: 'VPS·TDE·PVE·EWE·TPE', color: 'var(--p-vps)' },
             { label: 'Couches/moteur', value: '4', sub: 'Intention·Contexte·Règles·Courbe', color: 'var(--p-tde)' },

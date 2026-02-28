@@ -91,13 +91,14 @@ const enginesDef = [
 
 export default function DashboardPage() {
   const [mounted, setMounted] = useState(false)
+  const [scenario, setScenario] = useState('FIRES')
   useEffect(() => setMounted(true), [])
 
   const ps = useMemo(() => {
-    const p = new PatientState(DEMO_PATIENTS['FIRES'].data)
+    const p = new PatientState(DEMO_PATIENTS[scenario].data)
     runPipeline(p)
     return p
-  }, [])
+  }, [scenario])
 
   const enginesLive = [
     { ...enginesDef[0], score: ps.vpsResult?.synthesis.score ?? 0, level: ps.vpsResult?.synthesis.level ?? '—' },
@@ -145,6 +146,19 @@ export default function DashboardPage() {
             ))}
           </div>
         </div>
+      </div>
+
+      {/* Scenario Tabs */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: 'var(--p-space-5)', flexWrap: 'wrap' }}>
+        {Object.entries(DEMO_PATIENTS).map(([k, v]) => (
+          <button key={k} onClick={() => setScenario(k)} style={{
+            padding: '6px 16px', borderRadius: 'var(--p-radius-lg)',
+            border: scenario === k ? '2px solid var(--p-vps)' : 'var(--p-border)',
+            background: scenario === k ? 'var(--p-vps-dim)' : 'var(--p-bg-elevated)',
+            color: scenario === k ? 'var(--p-vps)' : 'var(--p-text-muted)',
+            fontSize: 'var(--p-text-sm)', fontWeight: 600, cursor: 'pointer',
+          }}>{v.label}</button>
+        ))}
       </div>
 
       {/* Engine Pipeline with Live Scores */}

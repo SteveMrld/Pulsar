@@ -96,7 +96,7 @@ export default function SuiviPage() {
       </div>
 
       {/* Engine Scores */}
-      <div className={mounted ? 'animate-in stagger-1' : ''} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)' }}>
+      <div className={`grid-3 ${mounted ? 'animate-in stagger-1' : ''}`} style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)' }}>
         {[
           { name: 'VPS', color: 'var(--p-vps)', history: vpsH, result: current.ps.vpsResult, prevResult: previous.ps.vpsResult, j0Result: j0.vpsResult },
           { name: 'TDE', color: 'var(--p-tde)', history: tdeH, result: current.ps.tdeResult, prevResult: previous.ps.tdeResult, j0Result: j0.tdeResult },

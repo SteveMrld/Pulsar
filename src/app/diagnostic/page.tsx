@@ -226,7 +226,7 @@ export default function DiagnosticPage() {
       </div>
 
       {/* Radar + Hypotheses */}
-      <div style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)' }}>
+      <div className="grid-2-1" style={{ display: 'grid', gridTemplateColumns: '260px 1fr', gap: 'var(--p-space-4)', marginBottom: 'var(--p-space-5)' }}>
         <div className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={{ ...card, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '12px' }}>RADAR DIAGNOSTIQUE</div>
           <DiagRadar data={radarD} labels={['FIRES', 'EAIS', 'PIMS', 'VPS', 'TDE']}
