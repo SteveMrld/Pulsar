@@ -30,21 +30,22 @@ export async function middleware(request: NextRequest) {
   // Demo mode bypass via cookie
   const isDemo = request.cookies.get('pulsar-demo')?.value === 'true'
 
-  const protectedRoutes = ['/welcome', '/dashboard', '/project', '/urgence', '/bilan', '/diagnostic', '/interpellation', '/case-matching', '/recommandations', '/pharmacovigilance', '/cockpit', '/engines', '/timeline', '/suivi', '/synthese', '/famille', '/staff', '/export', '/evidence', '/experts', '/demo', '/about', '/admission', '/audit', '/onboarding', '/observatory', '/cross-pathologie', '/neurocore']
-  const authRoutes = ['/login', '/signup']
   const path = request.nextUrl.pathname
+  const isPublic = ['/', '/login', '/signup'].includes(path)
+  const isAuthPage = ['/login', '/signup'].includes(path)
+  const isProtected = path.startsWith('/patients') || path.startsWith('/patient/')
 
   // Redirect unauthenticated users away from protected routes
-  if (!user && !isDemo && protectedRoutes.some(r => path.startsWith(r))) {
+  if (!user && !isDemo && isProtected) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from auth pages
-  if ((user || isDemo) && authRoutes.some(r => path.startsWith(r))) {
+  // Redirect authenticated users away from auth pages → file active
+  if ((user || isDemo) && isAuthPage) {
     const url = request.nextUrl.clone()
-    url.pathname = '/welcome'
+    url.pathname = '/patients'
     return NextResponse.redirect(url)
   }
 

@@ -13,8 +13,8 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'PULSAR V15 — Pediatric Urgent Lifesaving System',
-  description: '5 Brain Engines × 4 Layers — Système d\'aide à la décision clinique pour les urgences neuro-inflammatoires pédiatriques. VPS + TDE + PVE + EWE + TPE.',
+  title: 'PULSAR — Aide à la décision clinique pédiatrique',
+  description: 'Système d\'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.',
   keywords: ['PULSAR', 'neurologie pédiatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide à la décision clinique', 'neuro-inflammatoire'],
   authors: [{ name: 'Steve Moradel' }],
   icons: {
@@ -23,11 +23,11 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'PULSAR V15 — Pediatric Urgent Lifesaving System',
-    description: '5 Brain Engines × 4 Layers — Clinical Decision Support for Pediatric Neuroinflammatory Emergencies',
+    title: 'PULSAR — Aide à la décision clinique pédiatrique',
+    description: 'Système d\'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.',
     type: 'website',
     locale: 'fr_FR',
-    siteName: 'PULSAR V15',
+    siteName: 'PULSAR',
   },
   robots: { index: false, follow: false },
 }

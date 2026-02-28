@@ -135,7 +135,7 @@ export function runCrashTests(): { totalPass: number; totalFail: number; results
   let totalPass = 0, totalFail = 0
 
   results.push('═══════════════════════════════════════════════════')
-  results.push('  PULSAR V15 — CRASH TESTS — 5 MOTEURS × 5 CAS')
+  results.push('  PULSAR — CRASH TESTS — 5 MOTEURS × 5 CAS')
   results.push('═══════════════════════════════════════════════════')
 
   for (const test of TESTS) {

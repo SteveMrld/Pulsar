@@ -1,8 +1,8 @@
 {
-  "name": "PULSAR V15 — Pediatric Urgent Lifesaving System",
+  "name": "PULSAR — Aide à la décision clinique pédiatrique",
   "short_name": "PULSAR",
-  "description": "5 Brain Engines × 4 Layers — Clinical Decision Support for Pediatric Neuroinflammatory Emergencies",
-  "start_url": "/dashboard",
+  "description": "Système d'aide à la décision pour les urgences neuro-inflammatoires pédiatriques",
+  "start_url": "/patients",
   "display": "standalone",
   "background_color": "#0E0E16",
   "theme_color": "#6C7CFF",

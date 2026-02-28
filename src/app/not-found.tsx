@@ -22,7 +22,7 @@ export default function NotFound() {
             Les 5 moteurs sont actifs mais ne trouvent rien ici.
           </p>
           <div style={{ display: 'flex', gap: 'var(--p-space-3)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/dashboard" style={{
+            <Link href="/patients" style={{
               padding: '10px 24px', borderRadius: 'var(--p-radius-lg)', border: 'none',
               background: 'linear-gradient(135deg, var(--p-vps), var(--p-tde))',
               color: '#fff', fontSize: 'var(--p-text-sm)', fontWeight: 700,
@@ -40,7 +40,7 @@ export default function NotFound() {
             </Link>
           </div>
           <div style={{ marginTop: 'var(--p-space-6)', fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
-            PULSAR V15 · 5 moteurs × 4 couches
+            PULSAR · Aide à la décision clinique pédiatrique
           </div>
         </div>
       </div>

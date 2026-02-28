@@ -43,11 +43,10 @@ export default function LandingPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
           <img src="/assets/logo-pulsar.jpg" alt="PULSAR" width={36} height={36} style={{ borderRadius: 8, filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.3))' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
-          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', padding: '2px 8px', background: 'var(--p-bg-elevated)', borderRadius: 'var(--p-radius-sm)' }}>V16</span>
         </div>
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
           <Link href="/login" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)', textDecoration: 'none', fontSize: 'var(--p-text-sm)' }}>Connexion</Link>
-          <Link href="/signup" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontSize: 'var(--p-text-sm)', fontWeight: 600, boxShadow: '0 0 16px rgba(108,124,255,0.3)' }}>Commencer</Link>
+          <Link href="/patients" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontSize: 'var(--p-text-sm)', fontWeight: 600, boxShadow: '0 0 16px rgba(108,124,255,0.3)' }}>Commencer</Link>
         </div>
       </nav>
 
@@ -67,10 +66,10 @@ export default function LandingPage() {
         </p>
 
         <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/signup" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', boxShadow: 'var(--p-shadow-glow-vps)' }}>
+          <Link href="/patients" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', boxShadow: 'var(--p-shadow-glow-vps)' }}>
             Accéder à PULSAR
           </Link>
-          <Link href="/demo" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-bg-elevated)', border: '2px solid rgba(108,124,255,0.3)', color: 'var(--p-vps)', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <Link href="/patients" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-bg-elevated)', border: '2px solid rgba(108,124,255,0.3)', color: 'var(--p-vps)', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <span style={{ fontSize: '18px' }}>▶</span> Voir en action
           </Link>
         </div>
@@ -117,7 +116,7 @@ export default function LandingPage() {
           </div>
 
           <div style={{ textAlign: 'center' }}>
-            <Link href="/demo" style={{
+            <Link href="/patients" style={{
               display: 'inline-flex', alignItems: 'center', gap: '10px',
               padding: 'var(--p-space-3) var(--p-space-8)',
               borderRadius: 'var(--p-radius-lg)',
@@ -195,10 +194,10 @@ export default function LandingPage() {
         <h2 style={{ fontSize: 'var(--p-text-3xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)' }}>Prêt à tester ?</h2>
         <p style={{ fontSize: 'var(--p-text-base)', color: 'var(--p-text-muted)', marginBottom: 'var(--p-space-8)' }}>7/7 crash tests passés. 59 références cliniques. Pipeline validé.</p>
         <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/signup" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>
+          <Link href="/patients" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>
             Commencer gratuitement
           </Link>
-          <Link href="/demo" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-bg-elevated)', border: '2px solid rgba(108,124,255,0.2)', color: 'var(--p-text)', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)', display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <Link href="/patients" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-bg-elevated)', border: '2px solid rgba(108,124,255,0.2)', color: 'var(--p-text)', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <span>▶</span> Voir la démo
           </Link>
         </div>
@@ -216,7 +215,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer style={{ borderTop: 'var(--p-border)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
-        PULSAR V16 — Pediatric Urgent Lifesaving System for Acute Response · © 2026 Steve Moradel
+        PULSAR · Aide à la décision clinique pédiatrique · © 2026 Steve Moradel
       </footer>
     </div>
   )
