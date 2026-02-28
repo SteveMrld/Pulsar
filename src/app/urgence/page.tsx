@@ -49,7 +49,7 @@ export default function UrgencePage() {
       </div>
       <p style={{color:'var(--p-text-dim)',fontSize:'var(--p-text-sm)',marginBottom:'var(--p-space-6)'}}>Protocole rapide — 30 secondes pour un premier score VPS.</p>
 
-      <div style={{display:'grid',gridTemplateColumns:result?'1fr 1fr':'1fr',gap:'var(--p-space-6)'}}>
+      <div className="grid-2-1" style={{display:'grid',gridTemplateColumns:result?'1fr 1fr':'1fr',gap:'var(--p-space-6)'}}>
         <div className="glass-card" style={{border:'2px solid var(--p-critical)',borderRadius:'var(--p-radius-xl)',padding:'var(--p-space-6)'}}>
           {/* 1. GCS */}
           <div style={{marginBottom:'var(--p-space-5)'}}>

@@ -264,7 +264,7 @@ export default function ProjectPage() {
           )}
 
           {/* Engine Cards */}
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'var(--p-space-4)'}}>
+          <div className="grid-2-1" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'var(--p-space-4)'}}>
             {engines.map((eng,i)=>(
               <div key={eng.name} className={`animate-in stagger-${Math.min(i+1,5)} glass-card`} style={{borderRadius:'var(--p-radius-lg)',padding:'var(--p-space-5)',borderTop:`3px solid ${eng.color}`,gridColumn:i===4?'span 2':undefined}}>
                 <div style={{display:'flex',alignItems:'center',gap:'var(--p-space-3)',marginBottom:'var(--p-space-4)'}}>
@@ -349,7 +349,7 @@ export default function ProjectPage() {
           </div>
 
           {/* S0: Identité */}
-          {step===0 && <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'var(--p-space-4)'}}>
+          {step===0 && <div className="grid-3" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'var(--p-space-4)'}}>
             <Field label="Âge (mois)" required hint="0-216"><NI value={form.ageMonths} onChange={v=>u('ageMonths',v)} placeholder="72" min={0} max={216} /></Field>
             <Field label="Poids (kg)" required><NI value={form.weightKg} onChange={v=>u('weightKg',v)} placeholder="25" step={0.1} /></Field>
             <Field label="Sexe" required><Sel value={form.sex} onChange={v=>u('sex',v as any)} options={[{value:'male',label:'Masculin'},{value:'female',label:'Féminin'}]} /></Field>
@@ -364,7 +364,7 @@ export default function ProjectPage() {
           </div>}
 
           {/* S1: Neuro */}
-          {step===1 && <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'var(--p-space-4)'}}>
+          {step===1 && <div className="grid-2-1" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'var(--p-space-4)'}}>
             <Field label="Glasgow (GCS)" required span={2} hint="3 (coma) → 15 (normal)">
               <div style={{display:'flex',alignItems:'center',gap:'16px'}}>
                 <input type="range" min={3} max={15} value={form.gcs} onChange={e=>u('gcs',Number(e.target.value))} style={{flex:1,accentColor:form.gcs<=8?'var(--p-critical)':form.gcs<=12?'var(--p-warning)':'var(--p-success)'}} />
@@ -378,7 +378,7 @@ export default function ProjectPage() {
           </div>}
 
           {/* S2: Bio & LCR */}
-          {step===2 && <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'var(--p-space-4)'}}>
+          {step===2 && <div className="grid-3" style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'var(--p-space-4)'}}>
             <Field label="CRP (mg/L)"><NI value={form.crp} onChange={v=>u('crp',v)} placeholder="0" /></Field>
             <Field label="PCT (ng/mL)"><NI value={form.pct} onChange={v=>u('pct',v)} placeholder="0" step={0.01} /></Field>
             <Field label="Ferritine (µg/L)"><NI value={form.ferritin} onChange={v=>u('ferritin',v)} placeholder="0" /></Field>
@@ -419,7 +419,7 @@ export default function ProjectPage() {
           </div>}
 
           {/* S4: Imagerie & Extensions */}
-          {step===4 && <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'var(--p-space-4)'}}>
+          {step===4 && <div className="grid-2-1" style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'var(--p-space-4)'}}>
             <div style={{gridColumn:'span 2',padding:'var(--p-space-3) var(--p-space-4)',background:'var(--p-tpe-dim)',borderRadius:'var(--p-radius-md)'}}>
               <span style={{fontSize:'var(--p-text-xs)',fontWeight:600,color:'var(--p-tpe)'}}>🧬 MOGAD / ADEM</span>
             </div>

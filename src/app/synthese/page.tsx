@@ -1,9 +1,18 @@
 'use client'
+import dynamic from 'next/dynamic'
 import Picto from '@/components/Picto';
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+
+const RadarChart = dynamic(() => import('recharts').then(m => m.RadarChart), { ssr: false })
+const Radar = dynamic(() => import('recharts').then(m => m.Radar), { ssr: false })
+const PolarGrid = dynamic(() => import('recharts').then(m => m.PolarGrid), { ssr: false })
+const PolarAngleAxis = dynamic(() => import('recharts').then(m => m.PolarAngleAxis), { ssr: false })
+const PolarRadiusAxis = dynamic(() => import('recharts').then(m => m.PolarRadiusAxis), { ssr: false })
+const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
 
 export default function SynthesePage() {
   const [mounted, setMounted] = useState(false)
@@ -73,9 +82,45 @@ export default function SynthesePage() {
         </div>
       </div>
 
+      {/* 5 Engines Radar Chart */}
+      <div className={`glass-card ${mounted ? 'animate-in stagger-1' : ''}`} style={{ ...card }}>
+        <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>RADAR 5 MOTEURS</div>
+        <div style={{ width: '100%', height: 280 }}>
+          <ResponsiveContainer>
+            <RadarChart data={[
+              { engine: 'VPS', score: ps.vpsResult?.synthesis.score ?? 0 },
+              { engine: 'TDE', score: ps.tdeResult?.synthesis.score ?? 0 },
+              { engine: 'PVE', score: ps.pveResult?.synthesis.score ?? 0 },
+              { engine: 'EWE', score: ps.eweResult?.synthesis.score ?? 0 },
+              { engine: 'TPE', score: ps.tpeResult?.synthesis.score ?? 0 },
+            ]}>
+              <PolarGrid stroke="rgba(108,124,255,0.12)" />
+              <PolarAngleAxis dataKey="engine" tick={{ fill: 'var(--p-text-dim)', fontSize: 11, fontFamily: 'JetBrains Mono', fontWeight: 700 }} />
+              <PolarRadiusAxis domain={[0, 100]} tick={{ fill: 'var(--p-text-dim)', fontSize: 9 }} axisLine={false} />
+              <Tooltip contentStyle={{ background: 'var(--p-bg-elevated)', border: 'var(--p-border)', borderRadius: 12, fontSize: 12 }} />
+              <Radar dataKey="score" stroke="#6C7CFF" fill="#6C7CFF" fillOpacity={0.2} strokeWidth={2} dot={{ fill: '#6C7CFF', r: 4 }} />
+            </RadarChart>
+          </ResponsiveContainer>
+        </div>
+        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          {[
+            { n: 'VPS', c: '#6C7CFF', s: ps.vpsResult?.synthesis.score ?? 0 },
+            { n: 'TDE', c: '#2FD1C8', s: ps.tdeResult?.synthesis.score ?? 0 },
+            { n: 'PVE', c: '#B96BFF', s: ps.pveResult?.synthesis.score ?? 0 },
+            { n: 'EWE', c: '#FF6B8A', s: ps.eweResult?.synthesis.score ?? 0 },
+            { n: 'TPE', c: '#FFB347', s: ps.tpeResult?.synthesis.score ?? 0 },
+          ].map(e => (
+            <div key={e.n} style={{ textAlign: 'center' }}>
+              <div style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, color: e.c, fontSize: '16px' }}>{e.s}</div>
+              <div style={{ fontSize: '9px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>{e.n}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Section 1: Diagnostic */}
       <Section id="diag" title="Diagnostic" icon="dna" color="var(--p-tde)">
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
+        <div className="grid-2-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
           {tde.intention.patterns.filter(p => p.confidence > 0.3).map((p, i) => (
             <div key={i} style={{ padding: '10px 14px', borderRadius: 'var(--p-radius-md)', background: p.confidence >= 0.7 ? 'var(--p-critical-bg)' : 'var(--p-bg-elevated)', borderLeft: `3px solid ${p.confidence >= 0.7 ? 'var(--p-critical)' : 'var(--p-warning)'}` }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>

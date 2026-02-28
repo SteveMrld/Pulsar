@@ -1,9 +1,19 @@
 'use client'
+import dynamic from 'next/dynamic'
 import Picto from '@/components/Picto'
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+
+const BarChart = dynamic(() => import('recharts').then(m => m.BarChart), { ssr: false })
+const Bar = dynamic(() => import('recharts').then(m => m.Bar), { ssr: false })
+const XAxis = dynamic(() => import('recharts').then(m => m.XAxis), { ssr: false })
+const YAxis = dynamic(() => import('recharts').then(m => m.YAxis), { ssr: false })
+const CartesianGrid = dynamic(() => import('recharts').then(m => m.CartesianGrid), { ssr: false })
+const Tooltip = dynamic(() => import('recharts').then(m => m.Tooltip), { ssr: false })
+const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.ResponsiveContainer), { ssr: false })
+const Cell = dynamic(() => import('recharts').then(m => m.Cell), { ssr: false })
 
 export default function ExportPage() {
   const [mounted, setMounted] = useState(false)
@@ -13,6 +23,15 @@ export default function ExportPage() {
 
   const ps = useMemo(() => { const p = new PatientState(DEMO_PATIENTS[scenario].data); runPipeline(p); return p }, [scenario])
   const vps = ps.vpsResult!, tde = ps.tdeResult!, pve = ps.pveResult!
+
+  const ewe = ps.eweResult!, tpe = ps.tpeResult!
+  const engineData = [
+    { name: 'VPS', score: vps.synthesis.score, color: '#6C7CFF' },
+    { name: 'TDE', score: tde.synthesis.score, color: '#2FD1C8' },
+    { name: 'PVE', score: pve.synthesis.score, color: '#B96BFF' },
+    { name: 'EWE', score: ewe.synthesis.score, color: '#FF6B8A' },
+    { name: 'TPE', score: tpe.synthesis.score, color: '#FFB347' },
+  ]
 
   const card: React.CSSProperties = { borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5)', marginBottom: 'var(--p-space-4)' }
 
@@ -124,11 +143,28 @@ export default function ExportPage() {
         {sections.scores && (
           <>
             <h2 style={{ fontSize: '13px', color: 'var(--p-vps)', borderBottom: '1px solid var(--p-dark-4)', paddingBottom: '4px', marginTop: '16px' }}>2. Scores moteurs</h2>
-            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-              {[{ n: 'VPS', s: vps.synthesis.score, l: vps.synthesis.level, c: 'var(--p-vps)' }, { n: 'TDE', s: tde.synthesis.score, l: tde.synthesis.level, c: 'var(--p-tde)' }, { n: 'PVE', s: pve.synthesis.score, l: pve.synthesis.level, c: 'var(--p-pve)' }].map(e => (
-                <span key={e.n} style={{ padding: '4px 14px', borderRadius: '6px', background: `${e.c}10`, fontFamily: 'var(--p-font-mono)', fontWeight: 700, fontSize: '12px', color: e.c }}>{e.n}: {e.s}/100 — {e.l}</span>
+            <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '12px' }}>
+              {engineData.map(e => (
+                <span key={e.name} style={{ padding: '4px 14px', borderRadius: '6px', background: `${e.color}15`, fontFamily: 'var(--p-font-mono)', fontWeight: 700, fontSize: '12px', color: e.color }}>{e.name}: {e.score}/100</span>
               ))}
             </div>
+            {mounted && (
+              <div style={{ width: '100%', height: 180 }}>
+                <ResponsiveContainer>
+                  <BarChart data={engineData}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(108,124,255,0.06)" />
+                    <XAxis dataKey="name" tick={{ fill: 'var(--p-text-dim)', fontSize: 11, fontFamily: 'JetBrains Mono' }} />
+                    <YAxis domain={[0, 100]} tick={{ fill: 'var(--p-text-dim)', fontSize: 10 }} />
+                    <Tooltip contentStyle={{ background: 'var(--p-bg-elevated)', border: 'var(--p-border)', borderRadius: 12, fontSize: 12 }} />
+                    <Bar dataKey="score" radius={[6, 6, 0, 0]}>
+                      {engineData.map((e, i) => (
+                        <Cell key={i} fill={e.color} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            )}
           </>
         )}
 
