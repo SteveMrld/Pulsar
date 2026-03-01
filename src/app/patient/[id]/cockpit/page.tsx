@@ -138,7 +138,7 @@ export default function PatientCockpit() {
               <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: 'var(--p-critical)', marginBottom: '8px', letterSpacing: '0.5px' }}>ALERTES ACTIVES</div>
               {allAlerts.slice(0, 4).map((a, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '6px' }}>
-                  <span style={{ fontSize: '10px', marginTop: '2px' }}>{a.severity === 'critical' ? '🔴' : '🟡'}</span>
+                  <Picto name={a.severity === 'critical' ? 'alert' : 'heart'} size={10} glow={a.severity === 'critical'} glowColor={a.severity === 'critical' ? 'rgba(255,71,87,0.5)' : 'rgba(255,179,71,0.5)'} />
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--p-text)' }}>{a.title}</div>
                     <div style={{ fontSize: '10px', color: 'var(--p-text-dim)' }}>{a.body}</div>
@@ -156,7 +156,7 @@ export default function PatientCockpit() {
             sex={info.sex === 'female' ? 'F' : 'M'}
             vpsScore={ps.vpsResult?.synthesis.score ?? 0} compact
             vitals={[
-              { label: 'NEURO', icon: '🧠', value: `GCS: ${ps.neuro.gcs}/15`, color: '#6C7CFF', severity: ps.neuro.gcs <= 8 ? 2 : ps.neuro.gcs <= 12 ? 1 : 0 },
+              { label: 'NEURO', icon: 'brain', value: `GCS: ${ps.neuro.gcs}/15`, color: '#6C7CFF', severity: ps.neuro.gcs <= 8 ? 2 : ps.neuro.gcs <= 12 ? 1 : 0 },
               { label: 'CARDIO', icon: '❤️', value: `FC: ${ps.hemodynamics.heartRate} bpm`, color: '#FF6B8A', severity: ps.hemodynamics.heartRate > 140 ? 2 : 0 },
               { label: 'RESP', icon: '🫁', value: `SpO₂: ${ps.hemodynamics.spo2}%`, color: '#2FD1C8', severity: ps.hemodynamics.spo2 < 95 ? 1 : 0 },
               { label: 'INFLAM', icon: '🔥', value: `CRP: ${ps.biology.crp} mg/L`, color: '#FFB347', severity: ps.biology.crp > 100 ? 2 : ps.biology.crp > 20 ? 1 : 0 },

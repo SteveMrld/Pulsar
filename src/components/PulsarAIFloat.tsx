@@ -89,7 +89,7 @@ export default function PulsarAIFloat({ patientName, vpsScore }: PulsarAIFloatPr
             color: 'var(--p-text-dim)', fontSize: '11px',
             fontFamily: 'var(--p-font-mono)',
           }}>
-            <div style={{ fontSize: '24px', marginBottom: '8px' }}>🧠</div>
+            <div style={{ marginBottom: '8px' }}><Picto name="brain" size={24} glow glowColor="rgba(108,124,255,0.5)" /></div>
             Assistant IA contextuel<br />
             <span style={{ fontSize: '9px', color: 'rgba(108,124,255,0.4)' }}>
               Posez une question sur {patientName}

@@ -212,7 +212,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer style={{ borderTop: 'var(--p-border)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
-        PULSAR · Aide à la décision clinique pédiatrique · © 2026 Steve Moradel
+        PULSAR V17 · Intelligence clinique pédiatrique · © 2026 Steve Moradel
       </footer>
     </div>
   )

@@ -210,7 +210,7 @@ export default function PulsarAI() {
               background: 'linear-gradient(135deg, #6C7CFF, #2FD1C8)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: '14px',
-            }}>🧠</div>
+            }}><Picto name="brain" size={20} glow glowColor="rgba(108,124,255,0.5)" /></div>
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: '13px', fontWeight: 800, color: 'var(--p-text)' }}>PulsarAI</div>
               <div style={{ fontSize: '9px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>Assistant contextuel</div>
@@ -276,7 +276,7 @@ export default function PulsarAI() {
         transition: 'all 200ms',
         animation: !open ? 'breathe 3s ease-in-out infinite' : 'none',
       }}>
-        <span style={{ fontSize: '22px' }}>{open ? '✕' : '🧠'}</span>
+        <span style={{ fontSize: '22px' }}>{open ? '✕' : '✦'}</span>
         {/* Badge */}
         {!open && totalBadge > 0 && (
           <div style={{

@@ -51,7 +51,7 @@ export default function UrgencePage() {
             padding: '6px 16px', borderRadius: 'var(--p-radius-full)',
             background: 'rgba(255,71,87,0.12)', border: '1px solid rgba(255,71,87,0.25)',
             fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#FF4757',
-          }}>🚨 URGENCE ACTIVE</div>
+          }}><Picto name="alert" size={14} glow glowColor="rgba(255,71,87,0.5)" /> URGENCE ACTIVE</div>
         )}
       </div>
 
