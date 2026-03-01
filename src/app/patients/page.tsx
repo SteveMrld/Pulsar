@@ -196,6 +196,17 @@ export default function FileActivePage() {
             }} />
             Démo
           </button>
+          {/* Observatory link */}
+          <Link href="/observatory" style={{
+            padding: '6px 14px', borderRadius: 'var(--p-radius-full)',
+            background: 'rgba(47,209,200,0.08)', border: '1px solid rgba(47,209,200,0.15)',
+            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 600,
+            color: '#2FD1C8', textDecoration: 'none',
+            display: 'flex', alignItems: 'center', gap: '6px',
+          }}>
+            <Picto name="dna" size={12} />
+            Observatory
+          </Link>
           {hasPatients && criticalCount > 0 && (
             <div className="animate-breathe" style={{
               padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
