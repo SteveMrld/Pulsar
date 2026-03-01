@@ -18,14 +18,14 @@ interface PatientCard {
   syndrome: string; hospDay: number; room: string
   vps: number; gcs: number; critAlerts: number
   phase: ClinicalPhase; lastEvent: string; isDemo: boolean
-  vpsHistory: number[]
+  vpsHistory: number[]; avatar?: string
 }
 
-const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 'male' | 'female'; room: string; syndrome: string }> = {
-  FIRES:    { id: 'ines',  name: 'Inès M.',  age: '4 ans',  sex: 'female', room: 'Réa Neuro — Lit 3',  syndrome: 'FIRES' },
-  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'Réa Neuro — Lit 7',  syndrome: 'Anti-NMDAR' },
-  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'Neuropéd. — Lit 12', syndrome: 'MOGAD' },
-  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. — Lit 5',  syndrome: 'Épil. focale' },
+const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 'male' | 'female'; room: string; syndrome: string; avatar: string }> = {
+  FIRES:    { id: 'ines',  name: 'Inès M.',  age: '4 ans',  sex: 'female', room: 'Réa Neuro — Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/avatar-ines.png' },
+  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'Réa Neuro — Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/avatar-lucas.png' },
+  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'Neuropéd. — Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/avatar-amara.png' },
+  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. — Lit 5',  syndrome: 'Épil. focale', avatar: '/assets/avatars/avatar-noah.png' },
 }
 
 function detectPhase(hospDay: number, vps: number): ClinicalPhase {
@@ -62,20 +62,25 @@ function buildDemoPatients(): PatientCard[] {
 }
 
 /* ── Mini Avatar SVG ── */
-function MiniAvatar({ sex, vpsColor, size = 36, name }: { sex: 'male' | 'female'; vpsColor: string; size?: number; name?: string }) {
-  const initial = name ? name.charAt(0).toUpperCase() : sex === 'female' ? 'F' : 'M'
+function MiniAvatar({ vpsColor, size = 36, name, avatar }: { vpsColor: string; size?: number; name?: string; avatar?: string }) {
+  const initial = name ? name.charAt(0).toUpperCase() : '?'
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%',
       background: `${vpsColor}12`, border: `2px solid ${vpsColor}30`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flexShrink: 0,
+      flexShrink: 0, overflow: 'hidden',
       boxShadow: `0 0 12px ${vpsColor}15`,
     }}>
-      <span style={{
-        fontFamily: 'var(--p-font-mono)', fontWeight: 900,
-        fontSize: size * 0.4, color: vpsColor, lineHeight: 1,
-      }}>{initial}</span>
+      {avatar ? (
+        <img src={avatar} alt={name || ''} width={size} height={size}
+          style={{ objectFit: 'cover', display: 'block', filter: `drop-shadow(0 0 4px ${vpsColor})` }} />
+      ) : (
+        <span style={{
+          fontFamily: 'var(--p-font-mono)', fontWeight: 900,
+          fontSize: size * 0.4, color: vpsColor, lineHeight: 1,
+        }}>{initial}</span>
+      )}
     </div>
   )
 }
@@ -123,7 +128,7 @@ function PatientRow({ p }: { p: PatientCard }) {
         transition: 'all 0.2s',
       }}>
         {/* Avatar */}
-        <MiniAvatar sex={p.sex} vpsColor={vpsColor} size={40} name={p.name} />
+        <MiniAvatar vpsColor={vpsColor} size={40} name={p.name} avatar={p.avatar} />
 
         {/* Identity + phase */}
         <div>
