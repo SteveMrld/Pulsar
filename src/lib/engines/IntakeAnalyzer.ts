@@ -21,6 +21,13 @@ export interface MedicalHistory {
   autoimmune: boolean
   renalDisease: boolean
   cardiacDisease: boolean
+  diabetesType1: boolean
+  cancer: boolean
+  cancerType: string
+  transplant: boolean
+  transplantOrgan: string
+  hydrocephalus: boolean // DVP
+  tsa: boolean // trouble spectre autistique
   otherChronic: string
   // ATCD infectieux
   previousMeningitis: boolean
@@ -31,11 +38,23 @@ export interface MedicalHistory {
   recentInfection: boolean
   infectionType: string
   herpesHistory: boolean
+  hivPositive: boolean
+  tuberculosis: boolean
+  recentEBVCMV: boolean
+  recentTropicalTravel: boolean
+  travelDestination: string
+  tickBite: boolean
   // ATCD neuro
   febrileSeizuresHistory: boolean
   developmentalDelay: boolean
   neuroPsychHistory: boolean
   neuroPsychDetail: string
+  previousADEM: boolean
+  previousOpticNeuritis: boolean
+  previousMyelitis: boolean
+  recentHeadTrauma: boolean
+  previousKawasaki: boolean
+  ovarianTeratoma: boolean // critical pour NMDAR
   // Vaccination
   vaccinationUpToDate: boolean
   recentVaccination: boolean
@@ -180,12 +199,17 @@ const SYNDROME_COLORS: Record<SyndromeKey, string> = {
 export const DEFAULT_HISTORY: MedicalHistory = {
   sickleCellDisease: false, asthma: false, epilepsyKnown: false,
   immunodeficiency: false, autoimmune: false, renalDisease: false,
-  cardiacDisease: false, otherChronic: '',
+  cardiacDisease: false, diabetesType1: false, cancer: false, cancerType: '',
+  transplant: false, transplantOrgan: '', hydrocephalus: false, tsa: false, otherChronic: '',
   previousMeningitis: false, meningitisAge: '', previousEncephalitis: false,
   recentCovid: false, covidWeeksAgo: 0, recentInfection: false, infectionType: '',
-  herpesHistory: false,
+  herpesHistory: false, hivPositive: false, tuberculosis: false,
+  recentEBVCMV: false, recentTropicalTravel: false, travelDestination: '',
+  tickBite: false,
   febrileSeizuresHistory: false, developmentalDelay: false,
   neuroPsychHistory: false, neuroPsychDetail: '',
+  previousADEM: false, previousOpticNeuritis: false, previousMyelitis: false,
+  recentHeadTrauma: false, previousKawasaki: false, ovarianTeratoma: false,
   vaccinationUpToDate: true, recentVaccination: false, recentVaccineName: '',
   familyEpilepsy: false, familyAutoimmune: false, familyConsanguinity: false,
   drugAllergies: [],
@@ -227,7 +251,7 @@ export function analyzeIntake(data: Partial<IntakeData>): IntakeAnalysis {
   if (d.eegDone) filled++
   if (d.mriDone) filled++
   if (d.consciousness !== 'alert') filled++
-  if (h.sickleCellDisease || h.previousMeningitis || h.recentCovid || h.epilepsyKnown || h.herpesHistory || h.autoimmune) filled++
+  if (h.sickleCellDisease || h.previousMeningitis || h.recentCovid || h.epilepsyKnown || h.herpesHistory || h.autoimmune || h.hivPositive || h.ovarianTeratoma || h.cancer || h.tuberculosis || h.previousADEM || h.recentTropicalTravel || h.tickBite || h.transplant || h.hydrocephalus || h.recentEBVCMV || h.diabetesType1 || h.previousKawasaki || h.tsa || h.recentHeadTrauma) filled++
   if (isTransfer && d.existingExams.length > 0) filled++
   const completeness = Math.round((filled / total) * 100)
 
@@ -252,6 +276,11 @@ export function analyzeIntake(data: Partial<IntakeData>): IntakeAnalysis {
   if (h.sickleCellDisease) urgency += 5
   if (h.immunodeficiency) urgency += 5
   if (h.previousEncephalitis) urgency += 3
+  if (h.hivPositive) urgency += 5
+  if (h.ovarianTeratoma) urgency += 5
+  if (h.cancer) urgency += 3
+  if (h.transplant) urgency += 5
+  if (h.hydrocephalus && d.gcs <= 12) urgency += 8
   urgency = Math.min(100, urgency)
 
   const urgencyLevel: IntakeAnalysis['urgencyLevel'] =
@@ -273,9 +302,17 @@ export function analyzeIntake(data: Partial<IntakeData>): IntakeAnalysis {
     ))
     // History boosts
     if (syndrome === 'NMDAR' && h.herpesHistory) confidence = Math.min(95, confidence + 12)
+    if (syndrome === 'NMDAR' && h.ovarianTeratoma) confidence = Math.min(95, confidence + 25)
+    if (syndrome === 'NMDAR' && h.recentEBVCMV) confidence = Math.min(95, confidence + 8)
+    if (syndrome === 'NMDAR' && h.previousEncephalitis) confidence = Math.min(95, confidence + 10)
     if (syndrome === 'PIMS' && h.recentCovid) confidence = Math.min(95, confidence + 15)
+    if (syndrome === 'PIMS' && h.previousKawasaki) confidence = Math.min(95, confidence + 5)
     if (syndrome === 'FIRES' && h.febrileSeizuresHistory && d.feverBefore) confidence = Math.min(95, confidence + 5)
     if (syndrome === 'MOGAD' && h.autoimmune) confidence = Math.min(95, confidence + 8)
+    if (syndrome === 'MOGAD' && h.previousADEM) confidence = Math.min(95, confidence + 20)
+    if (syndrome === 'MOGAD' && h.previousOpticNeuritis) confidence = Math.min(95, confidence + 15)
+    if (syndrome === 'MOGAD' && h.previousMyelitis) confidence = Math.min(95, confidence + 12)
+    if (syndrome === 'MOGAD' && h.diabetesType1) confidence = Math.min(95, confidence + 5)
 
     if (confidence > 5) {
       differentials.push({
@@ -301,6 +338,12 @@ export function analyzeIntake(data: Partial<IntakeData>): IntakeAnalysis {
   if (d.temp >= 40) redFlags.push({ flag: 'Hyperthermie ≥ 40°C', source: 'Constantes', severity: 'warning' })
   if (h.sickleCellDisease && d.temp >= 38.5) redFlags.push({ flag: 'Drépanocytaire fébrile — Risque septique majeur', source: 'ATCD', severity: 'critical' })
   if (h.immunodeficiency && d.crp > 50) redFlags.push({ flag: 'Immunodéficient + syndrome inflammatoire', source: 'ATCD', severity: 'critical' })
+  if (h.ovarianTeratoma) redFlags.push({ flag: 'Tératome ovarien — Anti-NMDAR en urgence absolue', source: 'ATCD', severity: 'critical' })
+  if (h.hivPositive && d.gcs <= 12) redFlags.push({ flag: 'VIH + encéphalopathie — Infections opportunistes SNC', source: 'ATCD', severity: 'critical' })
+  if (h.hydrocephalus && d.gcs <= 12) redFlags.push({ flag: 'DVP + trouble conscience — Dysfonction valve ?', source: 'ATCD', severity: 'critical' })
+  if (h.transplant && d.temp >= 38.5) redFlags.push({ flag: 'Transplanté fébrile — Sepsis + neurotoxicité immunosup.', source: 'ATCD', severity: 'critical' })
+  if (h.recentTropicalTravel && d.temp >= 38.5) redFlags.push({ flag: 'Retour tropical + fièvre — Paludisme cérébral ?', source: 'ATCD', severity: 'critical' })
+  if (h.cancer && d.seizures24h > 0) redFlags.push({ flag: 'Néoplasie + crises — Syndrome paranéoplasique / métastases', source: 'ATCD', severity: 'critical' })
   const uniqueFlags = redFlags.filter((f, i) => redFlags.findIndex(x => x.flag === f.flag) === i)
 
   // ── HISTORY ALERTS (Scan du carnet médical) ──
@@ -542,6 +585,247 @@ function analyzeHistory(d: IntakeData, h: MedicalHistory, diffs: DiagnosisCandid
     })
   }
 
+  // ── Tératome ovarien (NMDAR !!) ──
+  if (h.ovarianTeratoma) {
+    alerts.push({
+      title: 'Tératome ovarien', detail: 'Tératome ovarien documenté ou suspecté — association majeure avec encéphalite anti-NMDAR.',
+      severity: 'critical', icon: 'alert',
+      implications: [
+        'URGENCE : 40% des encéphalites anti-NMDAR adultes associées à un tératome',
+        'Pédiatrie : 5-8% mais augmente chez l\'adolescente post-pubère',
+        'Anticorps anti-NMDAR dans LCR en PRIORITÉ ABSOLUE',
+        'Scanner/IRM abdo-pelvien si non fait',
+        'Résection tumorale = traitement étiologique → amélioration neurologique attendue',
+      ],
+    })
+  } else if (d.sex === 'female' && d.ageMonths >= 120 && topSyndromes.includes('NMDAR')) {
+    // Adolescente + suspicion NMDAR → chercher tératome même si pas connu
+    alerts.push({
+      title: 'Recherche tératome ovarien', detail: 'Adolescente + suspicion anti-NMDAR → échographie pelvienne systématique.',
+      severity: 'warning', icon: 'alert',
+      implications: [
+        'Échographie pelvienne à programmer en urgence',
+        'Si négatif : scanner ou IRM pelvien en complément',
+        'Tératome parfois infraclinique et découvert au bilan d\'encéphalite',
+      ],
+    })
+  }
+
+  // ── Cancer / Tumeur ──
+  if (h.cancer) {
+    alerts.push({
+      title: `Tumeur / Cancer${h.cancerType ? ` : ${h.cancerType}` : ''}`, detail: 'Néoplasie connue — syndrome paranéoplasique à considérer.',
+      severity: 'critical', icon: 'dna',
+      implications: [
+        'Encéphalite paranéoplasique : anticorps anti-Hu, anti-Yo, anti-CV2, anti-amphiphysine',
+        'Panel anticorps onco-neuronaux en plus des anticorps de surface',
+        'Immunosuppression iatrogène (chimio) → spectre infectieux élargi',
+        'Interaction médicamenteuse avec traitements oncologiques',
+      ],
+    })
+  }
+
+  // ── VIH ──
+  if (h.hivPositive) {
+    alerts.push({
+      title: 'VIH positif', detail: 'Infection VIH — immunodépression et infections opportunistes du SNC.',
+      severity: 'critical', icon: 'virus',
+      implications: [
+        'Toxoplasmose cérébrale à éliminer en priorité (IRM + sérologie)',
+        'LEMP (virus JC) : IRM caractéristique + PCR JC dans LCR',
+        'Cryptococcose méningée : antigène cryptococcique dans LCR',
+        'CMV encéphalite : PCR CMV dans LCR',
+        'Lymphome cérébral primitif à considérer',
+        'Charge virale et CD4 en urgence pour évaluer immunodépression',
+        'Interactions ARV avec antiépileptiques (CYP450)',
+      ],
+    })
+  }
+
+  // ── Tuberculose ──
+  if (h.tuberculosis) {
+    alerts.push({
+      title: 'ATCD / Contact tuberculose', detail: 'Tuberculose documentée ou contact — méningite tuberculeuse en différentiel.',
+      severity: 'warning', icon: 'virus',
+      implications: [
+        'Méningite tuberculeuse : LCR lymphocytaire, protéinorachie, glycorachie basse',
+        'PCR BK dans LCR + culture sur milieu spécifique',
+        'QuantiFERON / IDR si non fait',
+        'IRM : rehaussement méningé basal caractéristique',
+        'Hydrocéphalie communicante fréquente → surveillance PIC',
+      ],
+    })
+  }
+
+  // ── EBV / CMV récent ──
+  if (h.recentEBVCMV) {
+    alerts.push({
+      title: 'EBV / CMV récent', detail: 'Infection EBV ou CMV récente — déclencheur d\'encéphalite auto-immune.',
+      severity: 'warning', icon: 'virus',
+      implications: [
+        'EBV : encéphalite directe possible + trigger auto-immun (anti-NMDAR, ADEM)',
+        'CMV : encéphalite à CMV si immunodéprimé + ventriculite',
+        'PCR EBV et CMV dans LCR',
+        'Sérologie EBV complète (VCA IgM, EBNA) pour dater l\'infection',
+        'Panel anticorps anti-neuronaux si tableau auto-immun',
+      ],
+    })
+  }
+
+  // ── Voyage tropical ──
+  if (h.recentTropicalTravel) {
+    alerts.push({
+      title: `Voyage tropical${h.travelDestination ? ` : ${h.travelDestination}` : ''}`, detail: 'Séjour en zone tropicale — étiologies spécifiques à considérer.',
+      severity: 'warning', icon: 'virus',
+      implications: [
+        'Paludisme cérébral (P. falciparum) : frottis + goutte épaisse EN URGENCE',
+        'Arboviroses : dengue, chikungunya, Zika, encéphalite japonaise',
+        'Fièvre typhoïde : encéphalopathie possible',
+        'Cysticercose si zone endémique (Amérique latine, Asie du SE)',
+        'Rage si contact animal non vacciné',
+        'Adapter le bilan infectieux au pays visité',
+      ],
+    })
+  }
+
+  // ── Piqûre de tique ──
+  if (h.tickBite) {
+    alerts.push({
+      title: 'Piqûre de tique', detail: 'Morsure de tique documentée — neuroborréliose et encéphalite à tiques.',
+      severity: 'warning', icon: 'virus',
+      implications: [
+        'Neuroborréliose (Lyme) : paralysie faciale, méningite lymphocytaire, radiculite',
+        'Sérologie Borrelia sérum + index LCR/sérum',
+        'Encéphalite à tiques (TBE) si zone endémique (Europe centrale)',
+        'Sérologie TBE IgM/IgG',
+        'Ehrlichiose / anaplasmose : NFS (leucopénie, thrombopénie)',
+      ],
+    })
+  }
+
+  // ── Diabète type 1 ──
+  if (h.diabetesType1) {
+    alerts.push({
+      title: 'Diabète type 1', detail: 'Terrain auto-immun — comorbidités auto-immunes fréquentes.',
+      severity: 'info', icon: 'blood',
+      implications: [
+        'Prédisposition auto-immune : risque accru d\'encéphalite auto-immune',
+        'Attention hypoglycémie/acidocétose comme diagnostic différentiel de l\'encéphalopathie',
+        'Glycémie et cétonémie systématiques',
+        'HbA1c pour évaluer l\'équilibre de base',
+      ],
+    })
+  }
+
+  // ── Transplantation ──
+  if (h.transplant) {
+    alerts.push({
+      title: `Transplantation${h.transplantOrgan ? ` : ${h.transplantOrgan}` : ''}`, detail: 'Patient transplanté — immunosuppression iatrogène.',
+      severity: 'critical', icon: 'shield',
+      implications: [
+        'Immunosuppresseurs en cours : interactions majeures avec antiépileptiques',
+        'LEMP (virus JC) : complication rare mais grave',
+        'Infections opportunistes : Aspergillus, Listeria, Nocardia, CMV, HSV',
+        'Dosage des immunosuppresseurs (tacrolimus, ciclosporine) : neurotoxicité possible',
+        'PRES (posterior reversible encephalopathy syndrome) si tacrolimus/ciclosporine',
+      ],
+    })
+  }
+
+  // ── Hydrocéphalie / DVP ──
+  if (h.hydrocephalus) {
+    alerts.push({
+      title: 'Hydrocéphalie / DVP', detail: 'Dérivation ventriculo-péritonéale — dysfonction de valve à éliminer.',
+      severity: 'warning', icon: 'brain',
+      implications: [
+        'PRIORITÉ : TDM cérébrale pour taille ventriculaire (comparaison)',
+        'Dysfonction de valve = urgence neurochirurgicale',
+        'Infection de valve si fièvre (hémocultures + ponction de valve)',
+        'Pression intracrânienne à surveiller',
+        'GCS basal possiblement différent du GCS normal',
+      ],
+    })
+  }
+
+  // ── ATCD ADEM / névrite optique / myélite ──
+  if (h.previousADEM) {
+    alerts.push({
+      title: 'ATCD ADEM', detail: 'Encéphalomyélite aiguë disséminée antérieure — récidive MOGAD ?',
+      severity: 'critical', icon: 'brain',
+      implications: [
+        'ADEM multiphasique = forte suspicion MOGAD',
+        'Anti-MOG sérum + LCR en URGENCE',
+        'IRM comparative avec imagerie de l\'épisode initial',
+        'Si anti-MOG+ : traitement immunosuppresseur au long cours à discuter',
+      ],
+    })
+  }
+  if (h.previousOpticNeuritis) {
+    alerts.push({
+      title: 'ATCD Névrite optique', detail: 'Névrite optique antérieure — spectre MOGAD / NMO.',
+      severity: 'warning', icon: 'brain',
+      implications: [
+        'MOGAD : association névrite optique + ADEM + myélite',
+        'Anti-MOG et anti-AQP4 à rechercher',
+        'Examen ophtalmologique + OCT de référence',
+        'IRM orbites + moelle si non fait',
+      ],
+    })
+  }
+  if (h.previousMyelitis) {
+    alerts.push({
+      title: 'ATCD Myélite transverse', detail: 'Myélite transverse antérieure — spectre MOGAD / NMO.',
+      severity: 'warning', icon: 'brain',
+      implications: [
+        'MOGAD ou NMO spectrum disorder',
+        'Anti-MOG et anti-AQP4 en priorité',
+        'IRM médullaire de contrôle',
+      ],
+    })
+  }
+
+  // ── Traumatisme crânien récent ──
+  if (h.recentHeadTrauma) {
+    alerts.push({
+      title: 'Traumatisme crânien récent', detail: 'TC récent — lésion structurelle en différentiel.',
+      severity: 'warning', icon: 'alert',
+      implications: [
+        'TDM/IRM : éliminer hématome sous/extra-dural, contusion',
+        'Crises post-traumatiques précoces vs épilepsie post-traumatique',
+        'Si TC sévère : vulnérabilité neurologique préexistante',
+        'Attention : TC peut masquer ou coexister avec pathologie auto-immune',
+      ],
+    })
+  }
+
+  // ── Kawasaki ──
+  if (h.previousKawasaki) {
+    alerts.push({
+      title: 'ATCD Kawasaki', detail: 'Maladie de Kawasaki antérieure — différentiel PIMS.',
+      severity: 'warning', icon: 'heart',
+      implications: [
+        'PIMS et Kawasaki : chevauchement clinique mais entités distinctes',
+        'Suivi coronaire antérieur à consulter',
+        'Échographie cardiaque comparative',
+        'Risque accru de rechute inflammatoire ?',
+      ],
+    })
+  }
+
+  // ── TSA ──
+  if (h.tsa) {
+    alerts.push({
+      title: 'Trouble du spectre autistique', detail: 'TSA documenté — évaluation comportementale de base modifiée.',
+      severity: 'info', icon: 'brain',
+      implications: [
+        'Comportement de base atypique : ne pas confondre avec symptômes psychiatriques aigus',
+        'Évaluation neurologique clinique plus difficile',
+        'Communication avec la famille indispensable pour repérer les changements',
+        'Si régression autistique aiguë chez enfant connu TSA → rechercher encéphalite auto-immune',
+      ],
+    })
+  }
+
   return alerts
 }
 
@@ -628,6 +912,67 @@ function analyzeExams(d: IntakeData, h: MedicalHistory, diffs: DiagnosisCandidat
     if (!hasExam('metabolic')) {
       recs.push({ name: 'Bilan métabolique (ammoniémie, lactate, AA, acylcarnitines)', urgency: 'standard', rationale: 'Terrain génétique/neurodéveloppemental — étiologie métabolique à éliminer', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
     }
+  }
+
+  // ── Tératome ovarien / NMDAR chez adolescente ──
+  if (h.ovarianTeratoma || (d.sex === 'female' && d.ageMonths >= 120 && topSyndromes.includes('NMDAR'))) {
+    recs.push({ name: 'Échographie pelvienne + Scanner abdo-pelvien', urgency: 'urgent', rationale: h.ovarianTeratoma ? 'Tératome connu — bilan extension + anti-NMDAR' : 'Adolescente + suspicion NMDAR → recherche tératome ovarien', forSyndromes: ['NMDAR'], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── VIH ──
+  if (h.hivPositive) {
+    recs.push({ name: 'Charge virale VIH + CD4 + PCR opportunistes LCR', urgency: 'urgent', rationale: 'VIH+ : évaluer immunodépression et exclure infections opportunistes SNC', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── Tuberculose ──
+  if (h.tuberculosis) {
+    recs.push({ name: 'PCR BK LCR + QuantiFERON + culture BK', urgency: 'urgent', rationale: 'ATCD TB — méningite tuberculeuse à éliminer', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── Voyage tropical ──
+  if (h.recentTropicalTravel) {
+    recs.push({ name: 'Frottis + goutte épaisse (paludisme)', urgency: 'immediate', rationale: 'Retour de zone tropicale — paludisme cérébral à exclure en urgence', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+    recs.push({ name: 'Sérologies arboviroses (dengue, chik, Zika)', urgency: 'urgent', rationale: 'Arboviroses endémiques selon destination', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── Tique ──
+  if (h.tickBite) {
+    recs.push({ name: 'Sérologie Borrelia + index LCR/sérum', urgency: 'urgent', rationale: 'Piqûre de tique — neuroborréliose à éliminer', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── EBV / CMV ──
+  if (h.recentEBVCMV) {
+    recs.push({ name: 'PCR EBV/CMV dans LCR + sérologie EBV complète', urgency: 'urgent', rationale: 'Infection EBV/CMV récente — encéphalite directe ou trigger auto-immun', forSyndromes: ['NMDAR'], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── Hydrocéphalie ──
+  if (h.hydrocephalus && d.gcs <= 12) {
+    recs.push({ name: 'TDM cérébrale urgente (taille ventriculaire)', urgency: 'immediate', rationale: 'DVP + trouble de conscience → dysfonction de valve à éliminer', forSyndromes: [], alreadyDone: hasExam('ct'), needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── Cancer / paranéoplasique ──
+  if (h.cancer) {
+    recs.push({ name: 'Panel anticorps onco-neuronaux (Hu, Yo, CV2)', urgency: 'urgent', rationale: 'Néoplasie connue — syndrome paranéoplasique à exclure', forSyndromes: ['NMDAR'], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── Transplant ──
+  if (h.transplant) {
+    recs.push({ name: 'Dosage immunosuppresseurs + PCR JC virus LCR', urgency: 'urgent', rationale: 'Transplanté — neurotoxicité et LEMP à exclure', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── ADEM récidive ──
+  if (h.previousADEM || h.previousOpticNeuritis || h.previousMyelitis) {
+    recs.push({ name: 'Anti-MOG + Anti-AQP4 (sérum + LCR)', urgency: 'urgent', rationale: 'ATCD démyélinisant — MOGAD / NMO spectrum à caractériser', forSyndromes: ['MOGAD'], alreadyDone: hasExam('antibodies'), needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── TC récent ──
+  if (h.recentHeadTrauma && !mriDone && !hasExam('ct')) {
+    recs.push({ name: 'TDM cérébrale sans injection', urgency: 'immediate', rationale: 'TC récent — éliminer lésion hémorragique', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+
+  // ── Diabète ──
+  if (h.diabetesType1) {
+    recs.push({ name: 'Glycémie + cétonémie + HbA1c', urgency: 'urgent', rationale: 'DT1 — éliminer hypoglycémie/acidocétose comme cause d\'encéphalopathie', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
   }
 
   // ═══ GAP ANALYSIS ═══

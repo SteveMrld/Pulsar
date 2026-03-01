@@ -189,26 +189,45 @@ export default function IntakePage() {
               <Toggle label="Épilepsie connue" sub="Diagnostiquée avant admission" active={h.epilepsyKnown} color="#B96BFF" onClick={()=>setH('epilepsyKnown',!h.epilepsyKnown)}/>
               <Toggle label="Immunodéficience" sub="Primaire ou acquise" active={h.immunodeficiency} color="#FF4757" onClick={()=>setH('immunodeficiency',!h.immunodeficiency)}/>
               <Toggle label="Maladie auto-immune" sub="Lupus, SAPL, etc." active={h.autoimmune} color="#FFB347" onClick={()=>setH('autoimmune',!h.autoimmune)}/>
-              <Toggle label="Asthme" sub="Traitement de fond" active={h.asthma} color="#6C7CFF" onClick={()=>setH('asthma',!h.asthma)}/>
+              <Toggle label="Diabète type 1" sub="Terrain auto-immun" active={h.diabetesType1} color="#FFB347" onClick={()=>setH('diabetesType1',!h.diabetesType1)}/>
               <Toggle label="Cardiopathie" sub="Congénitale ou acquise" active={h.cardiacDisease} color="#FF6B8A" onClick={()=>setH('cardiacDisease',!h.cardiacDisease)}/>
+              <Toggle label="Cancer / Tumeur" sub="Active ou en rémission" active={h.cancer} color="#FF4757" onClick={()=>setH('cancer',!h.cancer)}/>
+              <Toggle label="Transplantation" sub="Organe solide ou moelle" active={h.transplant} color="#FF4757" onClick={()=>setH('transplant',!h.transplant)}/>
+              <Toggle label="VIH positif" sub="Charge virale / CD4" active={h.hivPositive} color="#FF4757" onClick={()=>setH('hivPositive',!h.hivPositive)}/>
+              <Toggle label="Hydrocéphalie / DVP" sub="Dérivation ventriculaire" active={h.hydrocephalus} color="#B96BFF" onClick={()=>setH('hydrocephalus',!h.hydrocephalus)}/>
+              <Toggle label="TSA" sub="Trouble spectre autistique" active={h.tsa} color="#6C7CFF" onClick={()=>setH('tsa',!h.tsa)}/>
+              <Toggle label="Asthme" sub="Traitement de fond" active={h.asthma} color="#6C7CFF" onClick={()=>setH('asthma',!h.asthma)}/>
             </div>
+            {h.cancer && <F label="TYPE DE TUMEUR"><input style={inputS} value={h.cancerType} onChange={e=>setH('cancerType',e.target.value)} placeholder="ex: neuroblastome, lymphome"/></F>}
+            {h.transplant && <F label="ORGANE TRANSPLANTÉ"><input style={inputS} value={h.transplantOrgan} onChange={e=>setH('transplantOrgan',e.target.value)} placeholder="ex: rein, foie, moelle"/></F>}
 
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#FFB347',letterSpacing:'1px',marginTop:'8px'}}>ANTÉCÉDENTS INFECTIEUX</div>
+            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#FFB347',letterSpacing:'1px',marginTop:'8px'}}>ANTÉCÉDENTS INFECTIEUX & EXPOSITIONS</div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
               <Toggle label="ATCD Méningite" sub="Âge et germe si connu" active={h.previousMeningitis} color="#FFB347" onClick={()=>setH('previousMeningitis',!h.previousMeningitis)}/>
               <Toggle label="ATCD Encéphalite" sub="Épisode antérieur" active={h.previousEncephalitis} color="#FF4757" onClick={()=>setH('previousEncephalitis',!h.previousEncephalitis)}/>
               <Toggle label="Herpès / HSV" sub="Encéphalite ou récidives" active={h.herpesHistory} color="#FF6B8A" onClick={()=>setH('herpesHistory',!h.herpesHistory)}/>
               <Toggle label="COVID récent" sub="< 6 semaines" active={h.recentCovid} color="#FFB347" onClick={()=>setH('recentCovid',!h.recentCovid)}/>
+              <Toggle label="EBV / CMV récent" sub="Mononucléose, CMV" active={h.recentEBVCMV} color="#FFB347" onClick={()=>setH('recentEBVCMV',!h.recentEBVCMV)}/>
+              <Toggle label="Tuberculose" sub="ATCD ou contage" active={h.tuberculosis} color="#FF4757" onClick={()=>setH('tuberculosis',!h.tuberculosis)}/>
+              <Toggle label="Voyage tropical" sub="Zone endémique récente" active={h.recentTropicalTravel} color="#FFB347" onClick={()=>setH('recentTropicalTravel',!h.recentTropicalTravel)}/>
+              <Toggle label="Piqûre de tique" sub="Documentée ou suspectée" active={h.tickBite} color="#FFB347" onClick={()=>setH('tickBite',!h.tickBite)}/>
             </div>
             {h.previousMeningitis && <F label="ÂGE MÉNINGITE"><input style={inputS} value={h.meningitisAge} onChange={e=>setH('meningitisAge',e.target.value)} placeholder="ex: 2 ans, pneumocoque"/></F>}
             {h.recentCovid && <F label="SEMAINES DEPUIS COVID"><input type="number" style={inputS} value={h.covidWeeksAgo||''} onChange={e=>setH('covidWeeksAgo',parseInt(e.target.value)||0)}/></F>}
+            {h.recentTropicalTravel && <F label="DESTINATION"><input style={inputS} value={h.travelDestination} onChange={e=>setH('travelDestination',e.target.value)} placeholder="ex: Sénégal, Thaïlande"/></F>}
             {h.recentInfection && <F label="TYPE D'INFECTION"><input style={inputS} value={h.infectionType} onChange={e=>setH('infectionType',e.target.value)}/></F>}
             <Toggle label="Infection récente (autre)" sub="Virale / bactérienne" active={h.recentInfection} color="#FFB347" onClick={()=>setH('recentInfection',!h.recentInfection)}/>
 
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#B96BFF',letterSpacing:'1px',marginTop:'8px'}}>NEURODÉVELOPPEMENT</div>
+            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#B96BFF',letterSpacing:'1px',marginTop:'8px'}}>NEURODÉVELOPPEMENT & ATCD NEURO</div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
               <Toggle label="Convulsions fébriles" sub="Épisodes antérieurs" active={h.febrileSeizuresHistory} color="#B96BFF" onClick={()=>setH('febrileSeizuresHistory',!h.febrileSeizuresHistory)}/>
               <Toggle label="Retard développement" sub="Moteur / cognitif / langage" active={h.developmentalDelay} color="#B96BFF" onClick={()=>setH('developmentalDelay',!h.developmentalDelay)}/>
+              <Toggle label="ATCD ADEM" sub="Encéphalomyélite disséminée" active={h.previousADEM} color="#FF4757" onClick={()=>setH('previousADEM',!h.previousADEM)}/>
+              <Toggle label="Névrite optique" sub="Épisode antérieur" active={h.previousOpticNeuritis} color="#B96BFF" onClick={()=>setH('previousOpticNeuritis',!h.previousOpticNeuritis)}/>
+              <Toggle label="Myélite transverse" sub="Épisode antérieur" active={h.previousMyelitis} color="#B96BFF" onClick={()=>setH('previousMyelitis',!h.previousMyelitis)}/>
+              <Toggle label="TC récent" sub="Traumatisme crânien" active={h.recentHeadTrauma} color="#FFB347" onClick={()=>setH('recentHeadTrauma',!h.recentHeadTrauma)}/>
+              <Toggle label="Tératome ovarien" sub="Connu ou suspecté (NMDAR)" active={h.ovarianTeratoma} color="#FF4757" onClick={()=>setH('ovarianTeratoma',!h.ovarianTeratoma)}/>
+              <Toggle label="Kawasaki" sub="Épisode antérieur" active={h.previousKawasaki} color="#FFB347" onClick={()=>setH('previousKawasaki',!h.previousKawasaki)}/>
             </div>
 
             <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#2FD1C8',letterSpacing:'1px',marginTop:'8px'}}>PÉRINATAL & FAMILLE</div>
