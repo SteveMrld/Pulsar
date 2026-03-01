@@ -6,17 +6,19 @@ import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import { PHASES, type ClinicalPhase } from '@/contexts/PatientContext'
 
 /* ══════════════════════════════════════════════════════════════
    FILE ACTIVE — PULSAR V17
-   Tour de contrôle · Patients actifs · Mode démo · Admission
+   Tour de contrôle · Avatars · Phases · Quick access · Démo
    ══════════════════════════════════════════════════════════════ */
 
 interface PatientCard {
   id: string; name: string; age: string; sex: 'male' | 'female'
   syndrome: string; hospDay: number; room: string
   vps: number; gcs: number; critAlerts: number
-  lastEvent: string; isDemo: boolean
+  phase: ClinicalPhase; lastEvent: string; isDemo: boolean
+  vpsHistory: number[]
 }
 
 const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 'male' | 'female'; room: string; syndrome: string }> = {
@@ -26,74 +28,97 @@ const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 
   STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. — Lit 5',  syndrome: 'Épil. focale' },
 }
 
+function detectPhase(hospDay: number, vps: number): ClinicalPhase {
+  if (vps >= 70) return 'acute'
+  if (hospDay <= 3) return 'acute'
+  if (hospDay <= 7) return 'stabilization'
+  if (hospDay <= 14) return 'monitoring'
+  return 'recovery'
+}
+
 function buildDemoPatients(): PatientCard[] {
   return Object.entries(DEMO_PATIENTS).map(([key, demo]) => {
     const meta = PATIENT_MAP[key]
     if (!meta) return null
     const ps = new PatientState(demo.data)
     runPipeline(ps)
+    const vps = ps.vpsResult?.synthesis.score ?? 0
+    const vpsHistory = ps.vpsResult?.curve?.curveData?.slice(-6) ?? [vps]
     return {
       ...meta,
       hospDay: ps.hospDay,
-      vps: ps.vpsResult?.synthesis.score ?? 0,
+      vps,
       gcs: ps.neuro.gcs,
       critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
+      phase: detectPhase(ps.hospDay, vps),
       lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status réfractaire en cours'
         : ps.neuro.seizures24h > 3 ? `${ps.neuro.seizures24h} crises/24h`
         : ps.neuro.gcs <= 8 ? 'GCS critique'
         : 'Stable',
       isDemo: true,
+      vpsHistory,
     }
   }).filter(Boolean) as PatientCard[]
 }
 
-/* ── Empty State ── */
-function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }) {
+/* ── Mini Avatar SVG ── */
+function MiniAvatar({ sex, vpsColor, size = 36 }: { sex: 'male' | 'female'; vpsColor: string; size?: number }) {
   return (
-    <div style={{ textAlign: 'center', padding: '80px 20px', maxWidth: '500px', margin: '0 auto' }}>
-      <div style={{
-        width: '80px', height: '80px', borderRadius: '50%',
-        background: 'rgba(108,124,255,0.08)', border: '1px solid rgba(108,124,255,0.15)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        margin: '0 auto 24px',
-      }}>
-        <Picto name="heart" size={36} glow glowColor="rgba(108,124,255,0.4)" />
-      </div>
-      <h2 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '8px' }}>
-        Aucun patient actif
-      </h2>
-      <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: '32px' }}>
-        Admettez un nouveau patient pour commencer l&apos;analyse clinique,
-        ou explorez la démo avec des cas fictifs.
-      </p>
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
-        <button onClick={onNew} style={{
-          padding: '14px 32px', borderRadius: 'var(--p-radius-lg)',
-          background: 'linear-gradient(135deg, #6C7CFF, #B96BFF)',
-          border: 'none', cursor: 'pointer',
-          fontFamily: 'var(--p-font-mono)', fontSize: '13px', fontWeight: 700,
-          color: 'white', letterSpacing: '0.5px', width: '280px',
-          boxShadow: '0 4px 20px rgba(108,124,255,0.3)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-        }}>
-          <span style={{ fontSize: '16px' }}>+</span> Nouveau patient
-        </button>
-        <button onClick={onDemo} style={{
-          padding: '12px 32px', borderRadius: 'var(--p-radius-lg)',
-          background: 'var(--p-bg-elevated)',
-          border: '1px solid rgba(108,124,255,0.15)', cursor: 'pointer',
-          fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 600,
-          color: 'var(--p-text-muted)', letterSpacing: '0.3px', width: '280px',
-          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-        }}>
-          <span style={{ fontSize: '14px' }}>▶</span> Explorer avec des cas fictifs
-        </button>
-      </div>
+    <div style={{
+      width: size, height: size, borderRadius: '50%',
+      background: `${vpsColor}12`, border: `2px solid ${vpsColor}30`,
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      flexShrink: 0, position: 'relative',
+      boxShadow: `0 0 12px ${vpsColor}15`,
+    }}>
+      <svg width={size * 0.55} height={size * 0.55} viewBox="0 0 24 24" fill="none">
+        {sex === 'female' ? (
+          <>
+            <circle cx="12" cy="8" r="4" fill={vpsColor} opacity="0.7" />
+            <path d="M12 14c-4 0-7 2-7 4.5V20h14v-1.5c0-2.5-3-4.5-7-4.5z" fill={vpsColor} opacity="0.5" />
+            <path d="M8 5c0-2 1.5-3.5 4-3.5s4 1.5 4 3.5c0 0-1-1-4-1s-4 1-4 1z" fill={vpsColor} opacity="0.4" />
+          </>
+        ) : (
+          <>
+            <circle cx="12" cy="8" r="4" fill={vpsColor} opacity="0.7" />
+            <path d="M12 14c-4 0-7 2-7 4.5V20h14v-1.5c0-2.5-3-4.5-7-4.5z" fill={vpsColor} opacity="0.5" />
+            <rect x="8" y="2" width="8" height="4" rx="2" fill={vpsColor} opacity="0.3" />
+          </>
+        )}
+      </svg>
     </div>
   )
 }
 
-/* ── Patient Row ── */
+/* ── Mini VPS Sparkline ── */
+function VPSSparkline({ data, color }: { data: number[]; color: string }) {
+  if (data.length < 2) return null
+  const max = Math.max(...data, 100)
+  const w = 48, h = 20
+  const points = data.map((v, i) => `${(i / (data.length - 1)) * w},${h - (v / max) * h}`).join(' ')
+  return (
+    <svg width={w} height={h} style={{ opacity: 0.7 }}>
+      <polyline points={points} fill="none" stroke={color} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+      <circle cx={(data.length - 1) / (data.length - 1) * w} cy={h - (data[data.length - 1] / max) * h} r="2" fill={color} />
+    </svg>
+  )
+}
+
+/* ── Phase Bar ── */
+function PhaseBar({ phase }: { phase: ClinicalPhase }) {
+  const p = PHASES[phase]
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginTop: '4px' }}>
+      <div style={{
+        width: '40px', height: '3px', borderRadius: '2px',
+        background: p.color, boxShadow: `0 0 6px ${p.color}40`,
+      }} />
+      <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: p.color, fontWeight: 700 }}>{p.label}</span>
+    </div>
+  )
+}
+
+/* ── Patient Card Row ── */
 function PatientRow({ p }: { p: PatientCard }) {
   const vpsColor = p.vps >= 70 ? '#FF4757' : p.vps >= 50 ? '#FFA502' : p.vps >= 30 ? '#FFB347' : '#2ED573'
   return (
@@ -102,14 +127,15 @@ function PatientRow({ p }: { p: PatientCard }) {
         padding: '14px 18px', borderRadius: 'var(--p-radius-lg)',
         background: 'var(--p-bg-card)',
         border: p.vps >= 70 ? '1px solid rgba(255,71,87,0.15)' : 'var(--p-border)',
-        display: 'grid', gridTemplateColumns: '8px 1fr auto auto auto auto',
-        alignItems: 'center', gap: '16px',
+        display: 'grid', gridTemplateColumns: '44px 1fr auto auto auto auto auto',
+        alignItems: 'center', gap: '14px',
         boxShadow: p.vps >= 70 ? '0 0 20px rgba(255,71,87,0.05)' : 'none',
         transition: 'all 0.2s',
       }}>
-        <div className={p.vps >= 50 ? 'dot-critical' : 'dot-alive'} style={{
-          width: '8px', height: '8px', background: vpsColor, boxShadow: `0 0 6px ${vpsColor}`,
-        }} />
+        {/* Avatar */}
+        <MiniAvatar sex={p.sex} vpsColor={vpsColor} size={40} />
+
+        {/* Identity + phase */}
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '14px', color: 'var(--p-text)' }}>{p.name}</span>
@@ -124,17 +150,29 @@ function PatientRow({ p }: { p: PatientCard }) {
             )}
           </div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{p.lastEvent}</div>
+          <PhaseBar phase={p.phase} />
         </div>
+
+        {/* Syndrome */}
         <span style={{
           fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
           padding: '3px 10px', borderRadius: 'var(--p-radius-full)',
           background: 'rgba(108,124,255,0.08)', color: '#6C7CFF',
         }}>{p.syndrome}</span>
+
+        {/* Sparkline */}
+        <VPSSparkline data={p.vpsHistory} color={vpsColor} />
+
+        {/* Day */}
         <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: vpsColor }}>J+{p.hospDay}</span>
+
+        {/* GCS */}
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '14px', fontWeight: 900, color: p.gcs <= 8 ? '#FF4757' : 'var(--p-text)', lineHeight: 1 }}>{p.gcs}</div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: 'var(--p-text-dim)' }}>GCS</div>
         </div>
+
+        {/* VPS */}
         <div style={{
           textAlign: 'center', padding: '6px 12px', borderRadius: 'var(--p-radius-md)',
           background: `${vpsColor}10`, border: `1px solid ${vpsColor}20`, minWidth: '50px',
@@ -144,6 +182,103 @@ function PatientRow({ p }: { p: PatientCard }) {
         </div>
       </div>
     </Link>
+  )
+}
+
+/* ── Pulsing Brain Animation ── */
+function PulsingBrain() {
+  return (
+    <div className="animate-breathe" style={{
+      width: '100px', height: '100px', borderRadius: '50%',
+      background: 'radial-gradient(circle, rgba(108,124,255,0.15) 0%, rgba(108,124,255,0.03) 70%, transparent 100%)',
+      border: '1px solid rgba(108,124,255,0.15)',
+      display: 'flex', alignItems: 'center', justifyContent: 'center',
+      margin: '0 auto 24px',
+      boxShadow: '0 0 40px rgba(108,124,255,0.1), inset 0 0 30px rgba(108,124,255,0.05)',
+    }}>
+      <Picto name="brain" size={44} glow glowColor="rgba(108,124,255,0.6)" />
+    </div>
+  )
+}
+
+/* ── Empty State ── */
+function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }) {
+  return (
+    <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '600px', margin: '0 auto' }}>
+      <PulsingBrain />
+
+      <h2 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '8px' }}>
+        Aucun patient actif
+      </h2>
+      <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: '32px' }}>
+        Admettez un nouveau patient pour commencer l&apos;analyse clinique,
+        ou explorez la démo avec des cas fictifs.
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
+        <button onClick={onNew} style={{
+          padding: '14px 32px', borderRadius: 'var(--p-radius-lg)',
+          background: 'linear-gradient(135deg, #6C7CFF, #B96BFF)',
+          border: 'none', cursor: 'pointer',
+          fontFamily: 'var(--p-font-mono)', fontSize: '13px', fontWeight: 700,
+          color: 'white', letterSpacing: '0.5px', width: '300px',
+          boxShadow: '0 4px 20px rgba(108,124,255,0.3)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+        }}>
+          <span style={{ fontSize: '16px' }}>+</span> Nouveau patient
+        </button>
+        <button onClick={onDemo} style={{
+          padding: '12px 32px', borderRadius: 'var(--p-radius-lg)',
+          background: 'var(--p-bg-elevated)',
+          border: '1px solid rgba(108,124,255,0.15)', cursor: 'pointer',
+          fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 600,
+          color: 'var(--p-text-muted)', letterSpacing: '0.3px', width: '300px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+        }}>
+          <span style={{ fontSize: '14px' }}>▶</span> Explorer avec des cas fictifs
+        </button>
+      </div>
+
+      {/* Stats bar */}
+      <div style={{
+        display: 'flex', justifyContent: 'center', gap: '24px', marginTop: '48px',
+        padding: '16px 0', borderTop: '1px solid var(--p-border)',
+      }}>
+        {[
+          { value: '5', label: 'Moteurs IA' },
+          { value: '59', label: 'Références' },
+          { value: '5', label: 'Pathologies' },
+          { value: '15', label: 'Cas registre' },
+        ].map((s, i) => (
+          <div key={i} style={{ textAlign: 'center' }}>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '18px', fontWeight: 900, color: '#6C7CFF', lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', marginTop: '3px' }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Quick access */}
+      <div style={{
+        display: 'flex', justifyContent: 'center', gap: '10px', marginTop: '16px',
+      }}>
+        {[
+          { href: '/observatory', label: 'Observatory', icon: 'dna', color: '#2FD1C8' },
+          { href: '/neurocore', label: 'NeuroCore', icon: 'brain', color: '#B96BFF' },
+          { href: '/cross-pathologie', label: 'Cross-Patho', icon: 'virus', color: '#FF6B8A' },
+        ].map((link, i) => (
+          <Link key={i} href={link.href} style={{
+            padding: '8px 16px', borderRadius: 'var(--p-radius-lg)',
+            background: `${link.color}08`, border: `1px solid ${link.color}15`,
+            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 600,
+            color: link.color, textDecoration: 'none',
+            display: 'flex', alignItems: 'center', gap: '6px',
+          }}>
+            <Picto name={link.icon} size={12} />
+            {link.label}
+          </Link>
+        ))}
+      </div>
+    </div>
   )
 }
 
@@ -279,9 +414,34 @@ export default function FileActivePage() {
             {filtered.map(p => <PatientRow key={p.id} p={p} />)}
           </div>
 
+          {/* Quick tools */}
+          <div style={{
+            display: 'flex', gap: '8px', marginTop: '20px', flexWrap: 'wrap',
+          }}>
+            {[
+              { href: '/neurocore', label: 'NeuroCore', icon: 'brain', color: '#B96BFF' },
+              { href: '/case-matching', label: 'Case Matching', icon: 'heart', color: '#FF6B8A' },
+              { href: '/cross-pathologie', label: 'Cross-Patho', icon: 'virus', color: '#FFB347' },
+              { href: '/bilan', label: 'Bilan', icon: 'clipboard', color: '#2FD1C8' },
+              { href: '/export', label: 'Export', icon: 'shield', color: '#6C7CFF' },
+              { href: '/staff', label: 'Experts', icon: 'books', color: '#2ED573' },
+            ].map((link, i) => (
+              <Link key={i} href={link.href} style={{
+                padding: '6px 14px', borderRadius: 'var(--p-radius-full)',
+                background: `${link.color}08`, border: `1px solid ${link.color}15`,
+                fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 600,
+                color: link.color, textDecoration: 'none',
+                display: 'flex', alignItems: 'center', gap: '5px',
+              }}>
+                <Picto name={link.icon} size={11} />
+                {link.label}
+              </Link>
+            ))}
+          </div>
+
           {showDemo && (
             <div style={{
-              marginTop: '20px', padding: '12px 16px', borderRadius: 'var(--p-radius-lg)',
+              marginTop: '16px', padding: '12px 16px', borderRadius: 'var(--p-radius-lg)',
               background: 'rgba(108,124,255,0.04)', border: '1px solid rgba(108,124,255,0.1)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>

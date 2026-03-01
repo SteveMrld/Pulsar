@@ -33,7 +33,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
   const isPublic = ['/', '/login', '/signup'].includes(path)
   const isAuthPage = ['/login', '/signup'].includes(path)
-  const isProtected = path.startsWith('/patients') || path.startsWith('/patient/') || path.startsWith('/observatory')
+  const isProtected = path.startsWith('/patients') || path.startsWith('/patient/') || path.startsWith('/observatory') || path.startsWith('/neurocore') || path.startsWith('/case-matching') || path.startsWith('/cross-pathologie') || path.startsWith('/export') || path.startsWith('/bilan') || path.startsWith('/staff')
 
   // Redirect unauthenticated users away from protected routes
   if (!user && !isDemo && isProtected) {
