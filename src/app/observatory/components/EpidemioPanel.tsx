@@ -162,7 +162,7 @@ export default function EpidemioPanel({ family, region }: { family?: string; reg
 
         {alertFeeds.length > 0 && (
           <>
-            <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-critical)', letterSpacing: '1px', marginBottom: '6px' }}>🔴 ALERTES</div>
+            <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-critical)', letterSpacing: '1px', marginBottom: '6px' }}>● ALERTES</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: 'var(--p-space-4)' }}>
               {alertFeeds.map(f => <FeedCard key={f.id} feed={f} />)}
             </div>
@@ -171,7 +171,7 @@ export default function EpidemioPanel({ family, region }: { family?: string; reg
 
         {elevatedFeeds.length > 0 && (
           <>
-            <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-warning)', letterSpacing: '1px', marginBottom: '6px' }}>🟡 ÉLEVÉS / EN HAUSSE</div>
+            <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-warning)', letterSpacing: '1px', marginBottom: '6px' }}>● ÉLEVÉS / EN HAUSSE</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: 'var(--p-space-4)' }}>
               {elevatedFeeds.map(f => <FeedCard key={f.id} feed={f} />)}
             </div>

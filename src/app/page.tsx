@@ -41,7 +41,7 @@ export default function LandingPage() {
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
-          <img src="/assets/logo-pulsar.jpg" alt="PULSAR" width={36} height={36} style={{ borderRadius: 8, filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.3))' }} />
+          <img src="/assets/logo-pulsar.jpg" alt="PULSAR" width={36} height={36} style={{ borderRadius: 8, filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.3))', display: 'block', objectFit: 'cover' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
         </div>
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
@@ -163,7 +163,7 @@ export default function LandingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--p-space-6)' }}>
           {features.map((f, i) => (
             <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-8)' }}>
-              <div style={{ marginBottom: 'var(--p-space-4)', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(108,124,255,0.06)', borderRadius: 'var(--p-radius-lg)', border: '1px solid rgba(108,124,255,0.1)' }}><img src={f.icon} alt={f.title} width={40} height={40} style={{ objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.5))' }} /></div>
+              <div style={{ marginBottom: 'var(--p-space-4)', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(108,124,255,0.06)', borderRadius: 'var(--p-radius-lg)', border: '1px solid rgba(108,124,255,0.1)' }}><img src={f.icon} alt={f.title} width={40} height={40} style={{ objectFit: 'contain', display: 'block', filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.5))' }} /></div>
               <h3 style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700, marginBottom: 'var(--p-space-3)', color: 'var(--p-text)' }}>{f.title}</h3>
               <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 'var(--p-leading-relaxed)' }}>{f.desc}</p>
             </div>

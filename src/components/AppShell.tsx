@@ -84,7 +84,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             <img
               src="/assets/logo-pulsar.jpg" alt="PULSAR"
               width={28} height={28}
-              style={{ borderRadius: 6, filter: 'drop-shadow(0 0 6px rgba(108,124,255,0.3))' }}
+              style={{ borderRadius: 6, filter: 'drop-shadow(0 0 6px rgba(108,124,255,0.3))', display: 'block', objectFit: 'cover' }}
             />
             <span style={{
               fontSize: '15px', fontWeight: 800, color: 'var(--p-vps)',

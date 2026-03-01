@@ -60,83 +60,79 @@ const PICTO_MAP: Record<string, string> = {
 
 /* ── Emoji → Picto fallback mapping ──────────────────────── */
 const EMOJI_TO_PICTO: Record<string, string> = {
-  '🧠': 'brain',
-  '🫁': 'lungs',
-  '❤️': 'heart',
-  '🌡️': 'thermo',
-  '🌡': 'thermo',
-  '🩸': 'blood',
-  '🧬': 'dna',
-  '🔬': 'microscope',
-  '📊': 'chart',
-  '💊': 'pill',
-  '🧪': 'virus',
-  '🏥': 'heart',
-  '🚨': 'alert',
-  '🛡️': 'shield',
-  '🛡': 'shield',
-  '📋': 'clipboard',
-  '📈': 'chart',
-  '⚠️': 'warning',
-  '⚠': 'warning',
-  '🔄': 'cycle',
-  '📤': 'export',
-  '📚': 'books',
-  '👪': 'family',
-  '🎬': 'play',
-  '💜': 'brain',
+  '🧠': 'brain', '🫁': 'lungs', '❤️': 'heart',
+  '🌡️': 'thermo', '🌡': 'thermo', '🩸': 'blood',
+  '🧬': 'dna', '🔬': 'microscope', '📊': 'chart',
+  '💊': 'pill', '🧪': 'virus', '🏥': 'heart',
+  '🚨': 'alert', '🛡️': 'shield', '🛡': 'shield',
+  '📋': 'clipboard', '📈': 'chart', '⚠️': 'warning',
+  '⚠': 'warning', '🔄': 'cycle', '📤': 'export',
+  '📚': 'books', '👪': 'family', '🎬': 'play', '💜': 'brain',
 };
 
 interface PictoProps {
-  name: string;       // key from PICTO_MAP or emoji character
-  size?: number;      // px, default 24
+  name: string;
+  size?: number;
   className?: string;
   style?: React.CSSProperties;
-  glow?: boolean;     // add neon glow effect
-  glowColor?: string; // custom glow color
+  glow?: boolean;
+  glowColor?: string;
 }
 
 export default function Picto({ name, size = 24, className, style, glow, glowColor }: PictoProps) {
-  // Resolve: try direct name, then emoji alias
   const resolved = PICTO_MAP[name] || PICTO_MAP[EMOJI_TO_PICTO[name] || ''];
 
   if (!resolved) {
-    // Fallback: render as text (emoji or letter)
     return (
       <span
         className={className}
-        style={{ fontSize: size * 0.8, lineHeight: 1, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: size, height: size, ...style }}
+        style={{
+          fontSize: size * 0.8, lineHeight: 1,
+          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+          width: size, height: size, flexShrink: 0, ...style,
+        }}
       >
         {name}
       </span>
     );
   }
 
-  const gc = glowColor || "rgba(108,124,255,0.5)"
-  const blur = String(size * 0.3)
-  const glowStyle: React.CSSProperties = glow ? {
-    filter: "drop-shadow(0 0 " + blur + "px " + gc + ")",
-  } : {};
+  const gc = glowColor || 'rgba(108,124,255,0.5)';
+  const blur = String(Math.round(size * 0.3));
+  const glowFilter = glow ? `drop-shadow(0 0 ${blur}px ${gc})` : undefined;
 
   return (
-    <Image
-      src={resolved}
-      alt={name}
-      width={size}
-      height={size}
+    <span
       className={className}
       style={{
-        objectFit: 'contain',
-        borderRadius: size > 48 ? 8 : 4,
-        ...glowStyle,
+        display: 'inline-flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: size,
+        height: size,
+        flexShrink: 0,
         ...style,
       }}
-      unoptimized
-    />
+    >
+      <Image
+        src={resolved}
+        alt={name}
+        width={size}
+        height={size}
+        style={{
+          objectFit: 'contain',
+          borderRadius: size > 48 ? 8 : size > 24 ? 4 : 2,
+          filter: glowFilter,
+          display: 'block',
+          maxWidth: '100%',
+          maxHeight: '100%',
+        }}
+        unoptimized
+      />
+    </span>
   );
 }
 
-/* ── Helper: get picto src for inline use ─────────────────── */
 export function pictoSrc(name: string): string {
   return PICTO_MAP[name] || PICTO_MAP[EMOJI_TO_PICTO[name] || ''] || '';
 }

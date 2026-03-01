@@ -62,30 +62,20 @@ function buildDemoPatients(): PatientCard[] {
 }
 
 /* ── Mini Avatar SVG ── */
-function MiniAvatar({ sex, vpsColor, size = 36 }: { sex: 'male' | 'female'; vpsColor: string; size?: number }) {
+function MiniAvatar({ sex, vpsColor, size = 36, name }: { sex: 'male' | 'female'; vpsColor: string; size?: number; name?: string }) {
+  const initial = name ? name.charAt(0).toUpperCase() : sex === 'female' ? 'F' : 'M'
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%',
       background: `${vpsColor}12`, border: `2px solid ${vpsColor}30`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flexShrink: 0, position: 'relative',
+      flexShrink: 0,
       boxShadow: `0 0 12px ${vpsColor}15`,
     }}>
-      <svg width={size * 0.55} height={size * 0.55} viewBox="0 0 24 24" fill="none">
-        {sex === 'female' ? (
-          <>
-            <circle cx="12" cy="8" r="4" fill={vpsColor} opacity="0.7" />
-            <path d="M12 14c-4 0-7 2-7 4.5V20h14v-1.5c0-2.5-3-4.5-7-4.5z" fill={vpsColor} opacity="0.5" />
-            <path d="M8 5c0-2 1.5-3.5 4-3.5s4 1.5 4 3.5c0 0-1-1-4-1s-4 1-4 1z" fill={vpsColor} opacity="0.4" />
-          </>
-        ) : (
-          <>
-            <circle cx="12" cy="8" r="4" fill={vpsColor} opacity="0.7" />
-            <path d="M12 14c-4 0-7 2-7 4.5V20h14v-1.5c0-2.5-3-4.5-7-4.5z" fill={vpsColor} opacity="0.5" />
-            <rect x="8" y="2" width="8" height="4" rx="2" fill={vpsColor} opacity="0.3" />
-          </>
-        )}
-      </svg>
+      <span style={{
+        fontFamily: 'var(--p-font-mono)', fontWeight: 900,
+        fontSize: size * 0.4, color: vpsColor, lineHeight: 1,
+      }}>{initial}</span>
     </div>
   )
 }
@@ -133,7 +123,7 @@ function PatientRow({ p }: { p: PatientCard }) {
         transition: 'all 0.2s',
       }}>
         {/* Avatar */}
-        <MiniAvatar sex={p.sex} vpsColor={vpsColor} size={40} />
+        <MiniAvatar sex={p.sex} vpsColor={vpsColor} size={40} name={p.name} />
 
         {/* Identity + phase */}
         <div>
