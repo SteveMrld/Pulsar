@@ -7,26 +7,14 @@ import Picto from '@/components/Picto'
 import PulsarAI from '@/components/PulsarAI'
 
 /* ══════════════════════════════════════════════════════════════
-   PATIENT LAYOUT
-   Sticky header + tab nav + floating AI + timeline drawer
+   PATIENT LAYOUT V17
+   Phase-aware header · Adaptive tabs · Timeline drawer · AI float
    ══════════════════════════════════════════════════════════════ */
 
-const TABS = [
-  { id: 'cockpit',     label: 'Cockpit',     icon: 'heart',      color: '#FF4757', emoji: '🔴' },
-  { id: 'urgence',     label: 'Urgence',     icon: 'alert',      color: '#FF6B8A', emoji: '🚨' },
-  { id: 'diagnostic',  label: 'Diagnostic',  icon: 'brain',      color: '#6C7CFF', emoji: '🧠' },
-  { id: 'traitement',  label: 'Traitement',  icon: 'pill',       color: '#2FD1C8', emoji: '💊' },
-  { id: 'suivi',       label: 'Suivi',       icon: 'chart',      color: '#FFB347', emoji: '📊' },
-  { id: 'examens',     label: 'Examens',     icon: 'microscope', color: '#B96BFF', emoji: '🧪' },
-  { id: 'synthese',    label: 'Synthèse',    icon: 'clipboard',  color: '#2ED573', emoji: '🧾' },
-  { id: 'ressources',  label: 'Ressources',  icon: 'books',      color: '#FFB347', emoji: '📚' },
-]
-
 function PatientHeader() {
-  const { ps, info } = usePatient()
-  const vps = ps.vpsResult?.synthesis.score ?? 0
-  const vpsColor = vps >= 70 ? '#FF4757' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
-  const vpsLevel = vps >= 70 ? 'CRITIQUE' : vps >= 50 ? 'SÉVÈRE' : vps >= 30 ? 'MODÉRÉ' : 'STABLE'
+  const { info, engineSummary } = usePatient()
+  const { vps, vpsColor, vpsLevel, criticalAlerts } = engineSummary
+  const { ps } = usePatient()
 
   return (
     <div style={{
@@ -37,11 +25,11 @@ function PatientHeader() {
       position: 'sticky', top: 0, zIndex: 50,
       backdropFilter: 'blur(12px)',
     }}>
-      {/* Back to file active */}
+      {/* Back */}
       <Link href="/patients" style={{
         display: 'flex', alignItems: 'center', padding: '6px',
         borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-dim)',
-        textDecoration: 'none', transition: 'all 0.2s',
+        textDecoration: 'none',
       }}>
         <span style={{ fontSize: '16px' }}>←</span>
       </Link>
@@ -64,17 +52,29 @@ function PatientHeader() {
             {info.age} · {info.sex === 'female' ? '♀' : '♂'} · {info.weight}
           </span>
         </div>
-        <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '0.3px', marginTop: '1px' }}>
-          {info.room}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '1px' }}>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '0.3px' }}>
+            {info.room}
+          </span>
+          {/* Phase badge */}
+          <span style={{
+            fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 700,
+            padding: '1px 8px', borderRadius: 'var(--p-radius-full)',
+            background: `${info.phaseInfo.color}12`,
+            color: info.phaseInfo.color,
+            border: `1px solid ${info.phaseInfo.color}25`,
+          }}>{info.phaseInfo.label}</span>
           {info.allergies.length > 0 && (
-            <span style={{ color: '#FF4757', fontWeight: 700, marginLeft: '8px' }}>⚠ {info.allergies.join(', ')}</span>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FF4757', fontWeight: 700 }}>
+              ⚠ {info.allergies.join(', ')}
+            </span>
           )}
         </div>
       </div>
 
       {/* Clinical status */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexShrink: 0 }}>
-        {/* Syndrome badge */}
+        {/* Syndrome */}
         <span style={{
           fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700,
           padding: '3px 10px', borderRadius: 'var(--p-radius-full)',
@@ -82,7 +82,7 @@ function PatientHeader() {
           border: '1px solid rgba(108,124,255,0.2)',
         }}>{info.syndrome}</span>
 
-        {/* Day badge */}
+        {/* Day */}
         <span style={{
           fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700,
           padding: '3px 10px', borderRadius: 'var(--p-radius-full)',
@@ -103,23 +103,19 @@ function PatientHeader() {
           textAlign: 'center', padding: '4px 10px', borderRadius: 'var(--p-radius-md)',
           background: `${vpsColor}10`, border: `1px solid ${vpsColor}20`,
         }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '18px', fontWeight: 900, color: vpsColor, lineHeight: 1 }}>
-            {vps}
-          </div>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '18px', fontWeight: 900, color: vpsColor, lineHeight: 1 }}>{vps}</div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: vpsColor, letterSpacing: '0.5px', opacity: 0.7 }}>VPS</div>
         </div>
 
-        {/* Alerts count */}
-        {ps.alerts.length > 0 && (
+        {/* Alerts */}
+        {criticalAlerts > 0 && (
           <div style={{
             display: 'flex', alignItems: 'center', gap: '4px',
             padding: '4px 10px', borderRadius: 'var(--p-radius-md)',
             background: 'rgba(255,71,87,0.08)', border: '1px solid rgba(255,71,87,0.15)',
           }}>
             <span style={{ fontSize: '12px' }}>⚠</span>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 800, color: '#FF4757' }}>
-              {ps.alerts.filter(a => a.severity === 'critical').length}
-            </span>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 800, color: '#FF4757' }}>{criticalAlerts}</span>
           </div>
         )}
       </div>
@@ -128,7 +124,7 @@ function PatientHeader() {
 }
 
 function PatientTabs() {
-  const { info } = usePatient()
+  const { info, tabs } = usePatient()
   const pathname = usePathname()
   const currentTab = pathname.split('/').pop() || 'cockpit'
 
@@ -141,7 +137,7 @@ function PatientTabs() {
       overflowX: 'auto',
       position: 'sticky', top: '52px', zIndex: 49,
     }}>
-      {TABS.map(t => {
+      {tabs.map(t => {
         const active = currentTab === t.id
         return (
           <Link key={t.id} href={`/patient/${info.id}/${t.id}`} style={{
@@ -155,12 +151,101 @@ function PatientTabs() {
             transition: 'all 0.2s',
             whiteSpace: 'nowrap',
             letterSpacing: '0.3px',
+            position: 'relative',
           }}>
-            <Picto name={t.icon} size={14} glow={active} glowColor={active ? `${t.color}40` : undefined} />
+            <Picto name={t.icon} size={14} glow={active || t.pulsing} glowColor={active ? `${t.color}40` : t.pulsing ? `${t.color}30` : undefined} />
             {t.label}
+            {t.badge && (
+              <span className={t.pulsing ? 'animate-breathe' : ''} style={{
+                position: 'absolute', top: '4px', right: '4px',
+                width: t.badge === '!' ? '14px' : 'auto', height: '14px',
+                borderRadius: t.badge === '!' ? '50%' : 'var(--p-radius-full)',
+                background: t.badge === '!' ? '#FF4757' : `${t.color}20`,
+                color: t.badge === '!' ? 'white' : t.color,
+                fontSize: '7px', fontWeight: 800,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                padding: t.badge === '!' ? 0 : '0 4px',
+                lineHeight: 1,
+              }}>
+                {t.badge}
+              </span>
+            )}
           </Link>
         )
       })}
+    </div>
+  )
+}
+
+function TimelineDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { timeline, info } = usePatient()
+  if (!open) return null
+
+  const severityColor = (s?: string) => {
+    switch (s) {
+      case 'critical': return '#FF4757'
+      case 'warning': return '#FFB347'
+      case 'success': return '#2ED573'
+      default: return '#6C7CFF'
+    }
+  }
+
+  return (
+    <div style={{
+      position: 'fixed', top: 0, right: 0, bottom: 0, width: '340px', zIndex: 100,
+      background: 'var(--p-bg-card)', borderLeft: '1px solid var(--p-border)',
+      boxShadow: '-8px 0 40px rgba(0,0,0,0.3)',
+      display: 'flex', flexDirection: 'column',
+    }}>
+      <div style={{
+        padding: '16px 20px', borderBottom: '1px solid var(--p-border)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+      }}>
+        <div>
+          <h3 style={{ fontSize: '14px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Timeline</h3>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)' }}>{info.displayName} · J0→J+{info.hospDay}</span>
+        </div>
+        <button onClick={onClose} style={{
+          background: 'none', border: 'none', cursor: 'pointer',
+          color: 'var(--p-text-dim)', fontSize: '18px',
+        }}>✕</button>
+      </div>
+
+      <div style={{ flex: 1, overflow: 'auto', padding: '16px 20px' }}>
+        {timeline.map((ev, i) => (
+          <div key={i} style={{ display: 'flex', gap: '12px', marginBottom: '16px', position: 'relative' }}>
+            {/* Timeline line */}
+            {i < timeline.length - 1 && (
+              <div style={{
+                position: 'absolute', left: '5px', top: '14px', bottom: '-16px',
+                width: '1px', background: 'var(--p-border)',
+              }} />
+            )}
+            {/* Dot */}
+            <div style={{
+              width: '11px', height: '11px', borderRadius: '50%', flexShrink: 0, marginTop: '2px',
+              background: severityColor(ev.severity),
+              boxShadow: `0 0 6px ${severityColor(ev.severity)}50`,
+            }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '6px' }}>
+                <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 700, color: 'var(--p-text)' }}>{ev.title}</span>
+                {ev.engine && (
+                  <span style={{
+                    fontFamily: 'var(--p-font-mono)', fontSize: '7px', fontWeight: 700,
+                    padding: '1px 5px', borderRadius: 'var(--p-radius-full)',
+                    background: 'rgba(108,124,255,0.08)', color: '#6C7CFF',
+                  }}>{ev.engine}</span>
+                )}
+              </div>
+              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-muted)', marginTop: '2px' }}>{ev.detail}</div>
+              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', marginTop: '3px' }}>
+                J+{ev.day}{ev.hour ? ` · ${ev.hour}` : ''}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   )
 }
@@ -169,6 +254,7 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
   const params = useParams()
   const id = (params?.id as string) || 'ines'
   const [showAI, setShowAI] = useState(false)
+  const [showTimeline, setShowTimeline] = useState(false)
 
   return (
     <PatientProvider id={id}>
@@ -180,6 +266,25 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
         <div style={{ flex: 1, padding: '20px', maxWidth: '1400px', margin: '0 auto', width: '100%' }}>
           {children}
         </div>
+
+        {/* Timeline button */}
+        <button
+          onClick={() => setShowTimeline(!showTimeline)}
+          style={{
+            position: 'fixed', bottom: '24px', left: '24px', zIndex: 99,
+            padding: '10px 16px', borderRadius: 'var(--p-radius-full)',
+            background: 'var(--p-bg-card)', border: '1px solid var(--p-border)',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px',
+            boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 600,
+            color: showTimeline ? '#6C7CFF' : 'var(--p-text-dim)',
+          }}
+        >
+          <Picto name="chart" size={14} />
+          Timeline
+        </button>
+
+        <TimelineDrawer open={showTimeline} onClose={() => setShowTimeline(false)} />
 
         {/* PulsarAI floating button */}
         <button
@@ -200,7 +305,6 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
           </span>
         </button>
 
-        {/* PulsarAI panel */}
         {showAI && (
           <div style={{
             position: 'fixed', bottom: '90px', right: '24px', zIndex: 99,

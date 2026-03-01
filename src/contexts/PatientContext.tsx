@@ -5,10 +5,40 @@ import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 
 /* ══════════════════════════════════════════════════════════════
-   PATIENT CONTEXT — patient-centric architecture
-   Provides PatientState + metadata to all patient sub-pages
+   PATIENT CONTEXT V17 — patient-centric architecture
+   Phase clinique · Timeline · Nav adaptative · Engine results
    ══════════════════════════════════════════════════════════════ */
 
+// ── Clinical phases ──
+export type ClinicalPhase = 'acute' | 'stabilization' | 'monitoring' | 'recovery'
+
+export interface PhaseInfo {
+  id: ClinicalPhase
+  label: string
+  color: string
+  dayRange: string
+  description: string
+}
+
+export const PHASES: Record<ClinicalPhase, PhaseInfo> = {
+  acute:         { id: 'acute',         label: 'Phase aiguë',       color: '#FF4757', dayRange: 'J0–J3',  description: 'Urgence · Stabilisation · Bilan initial' },
+  stabilization: { id: 'stabilization', label: 'Stabilisation',     color: '#FFB347', dayRange: 'J3–J7',  description: 'Ajustement thérapeutique · Monitoring renforcé' },
+  monitoring:    { id: 'monitoring',    label: 'Monitoring',        color: '#6C7CFF', dayRange: 'J7–J14', description: 'Suivi évolutif · Réévaluation · Prospection' },
+  recovery:      { id: 'recovery',      label: 'Récupération',     color: '#2ED573', dayRange: 'J14+',   description: 'Consolidation · Préparation sortie · Suivi long' },
+}
+
+// ── Timeline events ──
+export interface TimelineEvent {
+  day: number
+  hour?: string
+  type: 'admission' | 'crisis' | 'treatment' | 'exam' | 'alert' | 'decision' | 'milestone'
+  title: string
+  detail: string
+  severity?: 'critical' | 'warning' | 'info' | 'success'
+  engine?: string
+}
+
+// ── Patient info ──
 export interface PatientInfo {
   id: string
   displayName: string
@@ -19,18 +49,173 @@ export interface PatientInfo {
   room: string
   weight: string
   allergies: string[]
+  phase: ClinicalPhase
+  phaseInfo: PhaseInfo
+}
+
+// ── Tab configuration ──
+export interface TabConfig {
+  id: string
+  label: string
+  icon: string
+  color: string
+  available: boolean    // visible in nav
+  priority: number      // sort order (lower = more left)
+  badge?: string        // notification badge
+  pulsing?: boolean     // animate for attention
 }
 
 interface PatientContextValue {
   ps: PatientState
   info: PatientInfo
   scenarioKey: string
+  tabs: TabConfig[]
+  timeline: TimelineEvent[]
+  engineSummary: {
+    vps: number
+    vpsLevel: string
+    vpsColor: string
+    criticalAlerts: number
+    warningAlerts: number
+    totalRecommendations: number
+    topRecommendation: string | null
+  }
 }
 
 const PatientCtx = createContext<PatientContextValue | null>(null)
 
+/* ── Determine clinical phase from hospDay + severity ── */
+function detectPhase(hospDay: number, vps: number): ClinicalPhase {
+  // VPS override: critical patients stay in acute regardless of day
+  if (vps >= 70) return 'acute'
+  if (hospDay <= 3) return 'acute'
+  if (hospDay <= 7) return 'stabilization'
+  if (hospDay <= 14) return 'monitoring'
+  return 'recovery'
+}
+
+/* ── Build adaptive tabs based on phase + data ── */
+function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
+  const hasAlerts = ps.alerts.filter(a => a.severity === 'critical').length > 0
+  const vps = ps.vpsResult?.synthesis.score ?? 0
+
+  const allTabs: TabConfig[] = [
+    {
+      id: 'cockpit',     label: 'Cockpit',     icon: 'heart',      color: '#FF4757',
+      available: true, priority: 1,
+      pulsing: vps >= 70,
+    },
+    {
+      id: 'urgence',     label: 'Urgence',     icon: 'alert',      color: '#FF6B8A',
+      available: phase === 'acute' || hasAlerts, priority: 2,
+      badge: hasAlerts ? '!' : undefined,
+      pulsing: hasAlerts,
+    },
+    {
+      id: 'diagnostic',  label: 'Diagnostic',  icon: 'brain',      color: '#6C7CFF',
+      available: true, priority: 3,
+    },
+    {
+      id: 'traitement',  label: 'Traitement',  icon: 'pill',       color: '#2FD1C8',
+      available: true, priority: 4,
+      badge: ps.tdeResult ? undefined : 'NEW',
+    },
+    {
+      id: 'examens',     label: 'Examens',     icon: 'microscope', color: '#B96BFF',
+      available: true, priority: 5,
+    },
+    {
+      id: 'suivi',       label: 'Suivi',       icon: 'chart',      color: '#FFB347',
+      available: phase !== 'acute', priority: 6,
+    },
+    {
+      id: 'synthese',    label: 'Synthèse',    icon: 'clipboard',  color: '#2ED573',
+      available: true, priority: 7,
+    },
+    {
+      id: 'ressources',  label: 'Ressources',  icon: 'books',      color: '#FFB347',
+      available: true, priority: 8,
+    },
+  ]
+
+  return allTabs.filter(t => t.available).sort((a, b) => a.priority - b.priority)
+}
+
+/* ── Build timeline from engine results ── */
+function buildTimeline(ps: PatientState, info: { hospDay: number; syndrome: string }): TimelineEvent[] {
+  const events: TimelineEvent[] = []
+
+  // Admission
+  events.push({
+    day: 0, hour: '08:00', type: 'admission',
+    title: 'Admission',
+    detail: `Prise en charge pour ${info.syndrome}`,
+    severity: 'info',
+  })
+
+  // VPS alerts
+  if (ps.vpsResult) {
+    const score = ps.vpsResult.synthesis.score
+    if (score >= 70) {
+      events.push({
+        day: 0, hour: '08:15', type: 'alert',
+        title: `VPS critique: ${score}/100`,
+        detail: ps.vpsResult.synthesis.level,
+        severity: 'critical', engine: 'VPS',
+      })
+    }
+  }
+
+  // Seizure events
+  if (ps.neuro.seizures24h > 0) {
+    events.push({
+      day: Math.max(0, info.hospDay - 1), type: 'crisis',
+      title: `${ps.neuro.seizures24h} crise${ps.neuro.seizures24h > 1 ? 's' : ''} / 24h`,
+      detail: `Type: ${ps.neuro.seizureType.replace(/_/g, ' ')}`,
+      severity: ps.neuro.seizures24h > 5 ? 'critical' : 'warning',
+    })
+  }
+
+  // TDE recommendations
+  if (ps.tdeResult?.synthesis.recommendations) {
+    const urgent = ps.tdeResult.synthesis.recommendations.filter(r => r.priority === 'urgent')
+    urgent.forEach((r, i) => {
+      events.push({
+        day: info.hospDay, type: 'treatment',
+        title: r.title, detail: r.body,
+        severity: 'warning', engine: 'TDE',
+      })
+    })
+  }
+
+  // PVE alerts (drug interactions)
+  if (ps.pveResult?.synthesis.alerts) {
+    ps.pveResult.synthesis.alerts.filter(a => a.severity === 'critical').forEach(a => {
+      events.push({
+        day: info.hospDay, type: 'alert',
+        title: a.title, detail: a.body,
+        severity: 'critical', engine: 'PVE',
+      })
+    })
+  }
+
+  // EWE predictions
+  if (ps.eweResult?.synthesis.riskWindows) {
+    ps.eweResult.synthesis.riskWindows.filter(w => w.risk > 0.6).forEach(w => {
+      events.push({
+        day: info.hospDay, type: 'alert',
+        title: `Fenêtre de risque: ${w.window}`,
+        detail: w.factors.join(', '),
+        severity: 'warning', engine: 'EWE',
+      })
+    })
+  }
+
+  return events.sort((a, b) => a.day - b.day)
+}
+
 /* ── Patient info from scenario key ── */
-const PATIENT_INFO: Record<string, PatientInfo> = {
+const PATIENT_INFO: Record<string, Omit<PatientInfo, 'phase' | 'phaseInfo'>> = {
   FIRES: {
     id: 'ines', displayName: 'Inès M.', age: '4 ans', sex: 'female',
     syndrome: 'FIRES', hospDay: 4, room: 'Réa Neuro — Lit 3',
@@ -53,7 +238,6 @@ const PATIENT_INFO: Record<string, PatientInfo> = {
   },
 }
 
-/* ── Map patient ID → scenario key ── */
 const ID_TO_SCENARIO: Record<string, string> = {
   ines: 'FIRES', lucas: 'NMDAR', amara: 'CYTOKINE', noah: 'STABLE',
 }
@@ -61,22 +245,52 @@ const ID_TO_SCENARIO: Record<string, string> = {
 export function PatientProvider({ id, children }: { id: string; children: ReactNode }) {
   const scenarioKey = ID_TO_SCENARIO[id] || 'FIRES'
 
-  const { ps, info } = useMemo(() => {
+  const value = useMemo(() => {
     const demo = DEMO_PATIENTS[scenarioKey]
-    if (!demo) {
-      const fallback = DEMO_PATIENTS.FIRES
-      const ps = new PatientState(fallback.data)
-      runPipeline(ps)
-      return { ps, info: PATIENT_INFO.FIRES }
-    }
-    const ps = new PatientState(demo.data)
+    const fallbackKey = demo ? scenarioKey : 'FIRES'
+    const data = demo?.data || DEMO_PATIENTS.FIRES.data
+
+    const ps = new PatientState(data)
     runPipeline(ps)
-    const info = PATIENT_INFO[scenarioKey] || PATIENT_INFO.FIRES
-    return { ps, info: { ...info, hospDay: ps.hospDay } }
+
+    const baseInfo = PATIENT_INFO[fallbackKey] || PATIENT_INFO.FIRES
+    const vps = ps.vpsResult?.synthesis.score ?? 0
+    const phase = detectPhase(ps.hospDay, vps)
+
+    const info: PatientInfo = {
+      ...baseInfo,
+      hospDay: ps.hospDay,
+      phase,
+      phaseInfo: PHASES[phase],
+    }
+
+    const tabs = buildTabs(phase, ps)
+    const timeline = buildTimeline(ps, info)
+
+    const vpsColor = vps >= 70 ? '#FF4757' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
+    const vpsLevel = vps >= 70 ? 'CRITIQUE' : vps >= 50 ? 'SÉVÈRE' : vps >= 30 ? 'MODÉRÉ' : 'STABLE'
+
+    const allRecs = [
+      ...(ps.vpsResult?.synthesis.recommendations || []),
+      ...(ps.tdeResult?.synthesis.recommendations || []),
+      ...(ps.pveResult?.synthesis.recommendations || []),
+    ]
+
+    const engineSummary = {
+      vps,
+      vpsLevel,
+      vpsColor,
+      criticalAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
+      warningAlerts: ps.alerts.filter(a => a.severity === 'warning').length,
+      totalRecommendations: allRecs.length,
+      topRecommendation: allRecs.find(r => r.priority === 'urgent')?.title || null,
+    }
+
+    return { ps, info, scenarioKey, tabs, timeline, engineSummary }
   }, [scenarioKey])
 
   return (
-    <PatientCtx.Provider value={{ ps, info, scenarioKey }}>
+    <PatientCtx.Provider value={value}>
       {children}
     </PatientCtx.Provider>
   )
