@@ -206,8 +206,8 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
         Aucun patient actif
       </h2>
       <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: '32px' }}>
-        Admettez un nouveau patient pour commencer l&apos;analyse clinique,
-        ou explorez la démo avec des cas fictifs.
+        Lancez l&apos;analyse intelligente pour un nouveau patient —
+        diagnostic différentiel, red flags et parcours clinique en temps réel.
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
@@ -220,7 +220,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
           boxShadow: '0 4px 20px rgba(108,124,255,0.3)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
         }}>
-          <span style={{ fontSize: '16px' }}>+</span> Nouveau patient
+          <Picto name="brain" size={16} /> Analyse intelligente
         </button>
         <button onClick={onDemo} style={{
           padding: '12px 32px', borderRadius: 'var(--p-radius-lg)',
@@ -361,7 +361,7 @@ export default function FileActivePage() {
 
       {/* ── CONTENT ── */}
       {!hasPatients ? (
-        <EmptyState onDemo={() => setShowDemo(true)} onNew={() => router.push('/patients/admission')} />
+        <EmptyState onDemo={() => setShowDemo(true)} onNew={() => router.push('/patients/intake')} />
       ) : (
         <div style={{ padding: '20px 24px', maxWidth: '1200px', margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
@@ -377,14 +377,14 @@ export default function FileActivePage() {
                   fontFamily: 'var(--p-font-body)', fontSize: '13px', color: 'var(--p-text)' }}
               />
             </div>
-            <button onClick={() => router.push('/patients/admission')} style={{
+            <button onClick={() => router.push('/patients/intake')} style={{
               padding: '10px 20px', borderRadius: 'var(--p-radius-lg)',
               background: 'linear-gradient(135deg, #6C7CFF, #B96BFF)',
               border: 'none', cursor: 'pointer',
               fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 700,
               color: 'white', letterSpacing: '0.5px',
               boxShadow: '0 4px 16px rgba(108,124,255,0.3)',
-            }}>+ Nouveau patient</button>
+            }}>+ Analyse intelligente</button>
           </div>
 
           {totalAlerts > 0 && (
@@ -416,6 +416,7 @@ export default function FileActivePage() {
             {[
               { href: '/neurocore', label: 'NeuroCore', icon: 'brain', color: '#B96BFF' },
               { href: '/case-matching', label: 'Case Matching', icon: 'heart', color: '#FF6B8A' },
+              { href: '/patients/intake', label: 'Analyse IA', icon: 'brain', color: '#6C7CFF' },
               { href: '/cross-pathologie', label: 'Cross-Patho', icon: 'virus', color: '#FFB347' },
               { href: '/bilan', label: 'Bilan', icon: 'clipboard', color: '#2FD1C8' },
               { href: '/export', label: 'Export', icon: 'shield', color: '#6C7CFF' },
