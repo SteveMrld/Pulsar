@@ -55,7 +55,7 @@ const PICTO_MAP: Record<string, string> = {
   demo:        '/assets/organs/play.png',
   admission:   '/assets/organs/clipboard.png',
   // Logo
-  logo:        '/assets/logo-pulsar.jpg',
+  logo:        '/assets/logo-pulsar.png',
 };
 
 /* ── Emoji → Picto fallback mapping ──────────────────────── */
