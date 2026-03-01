@@ -57,12 +57,12 @@ export default function LandingPage() {
         </div>
 
         <h1 style={{ fontSize: 'var(--p-text-5xl)', fontWeight: 800, lineHeight: 'var(--p-leading-tight)', marginBottom: 'var(--p-space-6)', color: 'var(--p-text)' }}>
-          L&apos;aide à la décision<br />qui pense comme un<br />
-          <span className="text-gradient-vps">clinicien</span>
+          L&apos;intelligence clinique<br />qui devance<br />
+          <span className="text-gradient-vps">l&apos;urgence</span>
         </h1>
 
         <p style={{ fontSize: 'var(--p-text-lg)', color: 'var(--p-text-muted)', lineHeight: 'var(--p-leading-relaxed)', marginBottom: 'var(--p-space-10)', maxWidth: '600px', margin: '0 auto var(--p-space-10)' }}>
-          PULSAR analyse les encéphalopathies inflammatoires pédiatriques avec 5 moteurs cerveau qui lisent l&apos;intention, le contexte, les règles métier et la trajectoire — pas juste des seuils.
+          5 moteurs IA analysent en temps réel chaque signal, chaque interaction, chaque trajectoire — pour que le médecin prenne la bonne décision, au bon moment, à chaque fois.
         </p>
 
         <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -163,7 +163,7 @@ export default function LandingPage() {
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 'var(--p-space-6)' }}>
           {features.map((f, i) => (
             <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-8)' }}>
-              <div style={{ marginBottom: 'var(--p-space-4)' }}><img src={f.icon} alt={f.title} width={48} height={48} style={{ borderRadius: 8, filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.4))' }} /></div>
+              <div style={{ marginBottom: 'var(--p-space-4)', width: '64px', height: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(108,124,255,0.06)', borderRadius: 'var(--p-radius-lg)', border: '1px solid rgba(108,124,255,0.1)' }}><img src={f.icon} alt={f.title} width={40} height={40} style={{ objectFit: 'contain', filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.5))' }} /></div>
               <h3 style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700, marginBottom: 'var(--p-space-3)', color: 'var(--p-text)' }}>{f.title}</h3>
               <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-muted)', lineHeight: 'var(--p-leading-relaxed)' }}>{f.desc}</p>
             </div>
@@ -205,9 +205,6 @@ export default function LandingPage() {
 
       {/* Memorial */}
       <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-4)', position: 'relative', zIndex: 1 }}>
-        <p style={{ fontSize: 'var(--p-text-sm)', color: 'var(--p-text-dim)', fontStyle: 'italic', maxWidth: '500px', margin: '0 auto', lineHeight: 'var(--p-leading-relaxed)' }}>
-          « Pour Gabriel, et pour tous les enfants que le temps n&apos;a pas attendus. »
-        </p>
         <p style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', marginTop: 'var(--p-space-2)' }}>
           In memory of Alejandro R. (2019–2025)
         </p>
