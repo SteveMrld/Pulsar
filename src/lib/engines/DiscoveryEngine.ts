@@ -1,10 +1,10 @@
 // ============================================================
 // PULSAR V18 — Discovery Engine (7ème moteur)
-// Orchestrateur des 4 niveaux
+// Orchestrateur des 4 niveaux — COMPLET
 // Phase A : Niveau 1 (PatternMiner) ✓ actif
 // Phase B : Niveau 2 (LiteratureScanner) ✓ actif
 // Phase C : Niveau 3 (HypothesisEngine) ✓ actif
-// Phase D : Niveau 4 (TreatmentPathfinder) — à venir
+// Phase D : Niveau 4 (TreatmentPathfinder) ✓ actif
 //
 // LECTURE SEULE sur PatientState + 5 moteurs existants
 // ============================================================
@@ -12,6 +12,7 @@
 import { patternMiner, type PatientDataRow } from './PatternMiner'
 import { literatureScanner, type LiteratureArticle, type ScanResult } from './LiteratureScanner'
 import { hypothesisEngine, type Hypothesis } from './HypothesisEngine'
+import { treatmentPathfinder, type PatientProfile, type PathfinderResult } from './TreatmentPathfinder'
 import type {
   SignalCard, CorrelationMatrix, PatientCluster,
   TemporalPattern, DiscoveryRunResult,
@@ -23,45 +24,48 @@ export interface DiscoveryStatus {
   level1_patternMiner: 'active' | 'disabled'
   level2_literatureScanner: 'active' | 'disabled'
   level3_hypothesisEngine: 'active' | 'disabled'
-  level4_treatmentPathfinder: 'coming_soon' | 'active' | 'disabled'
+  level4_treatmentPathfinder: 'active' | 'disabled'
   lastRun: string | null
   totalSignals: number
 }
 
-// ── Extended result with literature + hypotheses ──
+// ── Full result with all 4 levels ──
 
 export interface DiscoveryRunResultV2 extends DiscoveryRunResult {
   literature: ScanResult
   hypotheses: Hypothesis[]
+  pathfinder: PathfinderResult
 }
 
 // ══════════════════════════════════════════════════════════════
-// DISCOVERY ENGINE
+// DISCOVERY ENGINE — VERSION FINALE
 // ══════════════════════════════════════════════════════════════
 
 export class DiscoveryEngine {
   name = 'Discovery Engine'
-  version = '3.0.0-beta'
-  phase = 'C'
+  version = '4.0.0'
+  phase = 'D'
 
   private status: DiscoveryStatus = {
     level1_patternMiner: 'active',
     level2_literatureScanner: 'active',
     level3_hypothesisEngine: 'active',
-    level4_treatmentPathfinder: 'coming_soon',
+    level4_treatmentPathfinder: 'active',
     lastRun: null,
     totalSignals: 0,
   }
-
-  // ── Get engine status ──
 
   getStatus(): DiscoveryStatus {
     return { ...this.status }
   }
 
-  // ── Run discovery pipeline (sync — hypotheses use fallback) ──
+  // ── Run full discovery pipeline (sync) ──
 
-  run(patients: PatientDataRow[], articles?: LiteratureArticle[]): DiscoveryRunResultV2 {
+  run(
+    patients: PatientDataRow[],
+    articles?: LiteratureArticle[],
+    profiles?: PatientProfile[],
+  ): DiscoveryRunResultV2 {
     const timestamp = new Date().toISOString()
 
     // ── Level 1: Pattern Mining ──
@@ -76,12 +80,13 @@ export class DiscoveryEngine {
     // ── Level 3: Hypothesis Engine (fallback — sync) ──
     const hypotheses = hypothesisEngine.getFallbackHypotheses(minerSignals, literature)
 
-    // ── Level 4: Treatment Pathfinder (Phase D — placeholder) ──
+    // ── Level 4: Treatment Pathfinder ──
+    const pathfinder = profiles
+      ? treatmentPathfinder.findPathways(profiles, minerSignals, hypotheses)
+      : { pathways: [], stats: { totalPathways: 0, eligiblePatients: 0, activeTrials: 0, compassionateOptions: 0 } }
 
-    // ── Aggregate all signals ──
+    // ── Aggregate ──
     const allSignals = [...minerSignals]
-
-    // ── Update status ──
     this.status.lastRun = timestamp
     this.status.totalSignals = allSignals.length
 
@@ -93,6 +98,7 @@ export class DiscoveryEngine {
       temporalPatterns: [],
       literature,
       hypotheses,
+      pathfinder,
       summary: {
         totalSignals: allSignals.length,
         newSignals: allSignals.filter(s => s.status === 'new').length,
@@ -107,23 +113,22 @@ export class DiscoveryEngine {
 
   // ── Run with live Claude API (async) ──
 
-  async runAsync(patients: PatientDataRow[], articles?: LiteratureArticle[]): Promise<DiscoveryRunResultV2> {
-    const syncResult = this.run(patients, articles)
-
-    // Replace fallback hypotheses with Claude API generated ones
+  async runAsync(
+    patients: PatientDataRow[],
+    articles?: LiteratureArticle[],
+    profiles?: PatientProfile[],
+  ): Promise<DiscoveryRunResultV2> {
+    const syncResult = this.run(patients, articles, profiles)
     try {
       const liveHypotheses = await hypothesisEngine.generate(syncResult.signals, syncResult.literature)
-      if (liveHypotheses.length > 0) {
-        syncResult.hypotheses = liveHypotheses
-      }
+      if (liveHypotheses.length > 0) syncResult.hypotheses = liveHypotheses
     } catch (err) {
-      console.error('[DiscoveryEngine] Async hypothesis generation failed, using fallback:', err)
+      console.error('[DiscoveryEngine] Async hypothesis generation failed:', err)
     }
-
     return syncResult
   }
 
-  // ── Run on a single patient (for Cockpit integration) ──
+  // ── Run on a single patient ──
 
   runForPatient(
     patient: PatientDataRow,
@@ -136,42 +141,22 @@ export class DiscoveryEngine {
     )
   }
 
-  // ── Get sub-engines ──
+  // ── Sub-engines ──
 
   getLiteratureScanner() { return literatureScanner }
   getHypothesisEngine() { return hypothesisEngine }
+  getTreatmentPathfinder() { return treatmentPathfinder }
 
-  // ── Get roadmap info ──
+  // ── Roadmap ──
 
   getRoadmap(): { phase: string; level: string; status: string; description: string }[] {
     return [
-      {
-        phase: 'A',
-        level: 'Niveau 1 — Pattern Mining',
-        status: '✓ Actif',
-        description: 'Corrélation interne, clustering, détection d\'anomalies sur les données patients.',
-      },
-      {
-        phase: 'B',
-        level: 'Niveau 2 — Literature Scanner',
-        status: '✓ Actif',
-        description: 'Veille scientifique PubMed/Cochrane. Croisement publications ↔ signaux internes. Détection de contradictions et opportunités.',
-      },
-      {
-        phase: 'C',
-        level: 'Niveau 3 — Hypothesis Engine',
-        status: '✓ Actif',
-        description: 'Génération d\'hypothèses de recherche via Claude API. Croisement signaux + littérature. Workflow de validation clinique.',
-      },
-      {
-        phase: 'D',
-        level: 'Niveau 4 — Treatment Pathfinder',
-        status: '◌ Phase D',
-        description: 'Matching patient ↔ essais cliniques. Pistes thérapeutiques émergentes.',
-      },
+      { phase: 'A', level: 'Niveau 1 — Pattern Mining', status: '✓ Actif', description: 'Corrélation interne, clustering, détection d\'anomalies sur les données patients.' },
+      { phase: 'B', level: 'Niveau 2 — Literature Scanner', status: '✓ Actif', description: 'Veille scientifique PubMed. Croisement publications ↔ signaux. Détection de contradictions et opportunités.' },
+      { phase: 'C', level: 'Niveau 3 — Hypothesis Engine', status: '✓ Actif', description: 'Génération d\'hypothèses via Claude API. Croisement N1×N2. Workflow de validation clinique.' },
+      { phase: 'D', level: 'Niveau 4 — Treatment Pathfinder', status: '✓ Actif', description: 'Matching patient ↔ essais cliniques. Pistes thérapeutiques émergentes. Scoring d\'éligibilité.' },
     ]
   }
 }
 
-// ── Export singleton ──
 export const discoveryEngine = new DiscoveryEngine()

@@ -13,10 +13,13 @@ import type {
 import type { LiteratureArticle, LiteratureAlert, ScanResult } from '@/lib/engines/LiteratureScanner'
 import type { Hypothesis, HypothesisStatus } from '@/lib/engines/HypothesisEngine'
 import { HYPOTHESIS_TYPE_LABELS, HYPOTHESIS_STATUS_LABELS } from '@/lib/engines/HypothesisEngine'
+import type { TherapeuticPathway, PathwayStatus, PathfinderResult } from '@/lib/engines/TreatmentPathfinder'
+import { EVIDENCE_LABELS, STATUS_LABELS as PATH_STATUS_LABELS } from '@/lib/engines/TreatmentPathfinder'
+import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
 
 /* ══════════════════════════════════════════════════════════════
-   RESEARCH DASHBOARD — Discovery Engine Phase C
-   Signal Feed · Corrélations · Clusters · Veille · Hypothèses · Roadmap
+   RESEARCH DASHBOARD — Discovery Engine v4.0 (4 niveaux actifs)
+   Signals · Corrélations · Clusters · Veille · Hypothèses · Pathfinder · Roadmap
    ══════════════════════════════════════════════════════════════ */
 
 // ── Design tokens ──
@@ -24,14 +27,15 @@ const DISC = '#10B981'
 const DISC_DIM = 'rgba(16, 185, 129, 0.12)'
 const DISC_GLOW = 'rgba(16, 185, 129, 0.30)'
 
-type Tab = 'signals' | 'correlations' | 'clusters' | 'literature' | 'hypotheses' | 'roadmap'
+type Tab = 'signals' | 'correlations' | 'clusters' | 'literature' | 'hypotheses' | 'pathfinder' | 'roadmap'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'signals', label: 'Signal Feed', icon: 'alert' },
   { id: 'correlations', label: 'Corrélations', icon: 'chart' },
   { id: 'clusters', label: 'Clusters', icon: 'dna' },
-  { id: 'literature', label: 'Veille scientifique', icon: 'books' },
+  { id: 'literature', label: 'Veille', icon: 'books' },
   { id: 'hypotheses', label: 'Hypothèses', icon: 'brain' },
+  { id: 'pathfinder', label: 'Pathfinder', icon: 'target' },
   { id: 'roadmap', label: 'Roadmap', icon: 'clipboard' },
 ]
 
@@ -76,7 +80,7 @@ export default function ResearchPage() {
 
   // Run Discovery Engine on demo data
   const discoveryResult = useMemo(() => {
-    return discoveryEngine.run(DEMO_PATIENTS, SEED_ARTICLES)
+    return discoveryEngine.run(DEMO_PATIENTS, SEED_ARTICLES, PATIENT_PROFILES)
   }, [])
 
   // Merge seed signals with mined signals (seed first for showcase)
@@ -130,6 +134,7 @@ export default function ResearchPage() {
 
   const summary = discoveryResult.summary
   const litStats = discoveryResult.literature.stats
+  const pathStats = discoveryResult.pathfinder.stats
   const status = discoveryEngine.getStatus()
 
   // ── Helpers ──
@@ -171,7 +176,7 @@ export default function ResearchPage() {
               fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)',
               letterSpacing: '1px',
             }}>
-              PHASE C · 3 NIVEAUX ACTIFS · {summary.patientsAnalyzed} PATIENTS · {litStats.articlesScanned} PUBLICATIONS
+              v4.0 · 4 NIVEAUX ACTIFS · {summary.patientsAnalyzed} PATIENTS · {litStats.articlesScanned} PUBLICATIONS · {pathStats.totalPathways} PISTES
             </span>
           </div>
         </div>
@@ -244,6 +249,8 @@ export default function ResearchPage() {
             { label: 'Contradictions', value: litStats.contradictions, color: '#FFA502' },
             { label: 'Essais cliniques', value: litStats.clinicalTrials, color: '#2FD1C8' },
             { label: 'Hypothèses', value: discoveryResult.hypotheses.length, color: '#B96BFF' },
+            { label: 'Pistes thérap.', value: pathStats.totalPathways, color: '#FFB347' },
+            { label: 'Patients éligibles', value: pathStats.eligiblePatients, color: '#2ED573' },
           ].map((kpi, i) => (
             <div key={i} style={{
               ...glass({ padding: '14px', borderTop: `3px solid ${kpi.color}`, textAlign: 'center' }),
@@ -367,6 +374,13 @@ export default function ResearchPage() {
           </div>
         )}
 
+        {/* ════════════════════ PATHFINDER ════════════════════ */}
+        {tab === 'pathfinder' && (
+          <div className="page-enter-stagger">
+            <PathfinderView pathfinder={discoveryResult.pathfinder} />
+          </div>
+        )}
+
         {/* ════════════════════ ROADMAP ════════════════════ */}
         {tab === 'roadmap' && (
           <div className="page-enter-stagger">
@@ -380,7 +394,7 @@ export default function ResearchPage() {
           fontSize: '10px', fontFamily: 'var(--p-font-mono)',
           borderTop: '1px solid var(--p-border)', marginTop: '24px',
         }}>
-          ⚠ PULSAR Discovery Engine · Phase C · Tous les signaux et hypothèses sont générés par IA et nécessitent validation clinique
+          ⚠ PULSAR Discovery Engine v4.0 · 4 niveaux actifs · Tous les résultats sont générés par IA et nécessitent validation clinique
           <br />Ne se substitue pas au jugement médical · Données illustratives
         </div>
       </div>
@@ -874,6 +888,208 @@ function RoadmapView() {
             </div>
           )
         })}
+      </div>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════
+// PATHFINDER VIEW
+// ══════════════════════════════════════════════════════════════
+
+function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
+  const [expanded, setExpanded] = useState<string | null>(null)
+  const [statusFilter, setStatusFilter] = useState<'all' | PathwayStatus>('all')
+  const [patientFilter, setPatientFilter] = useState<string>('all')
+
+  const patients = useMemo(() => {
+    const names = new Set(pathfinder.pathways.map(p => p.patientName))
+    return ['all', ...names]
+  }, [pathfinder])
+
+  const filtered = useMemo(() => {
+    let result = pathfinder.pathways
+    if (statusFilter !== 'all') result = result.filter(p => p.status === statusFilter)
+    if (patientFilter !== 'all') result = result.filter(p => p.patientName === patientFilter)
+    return result
+  }, [pathfinder, statusFilter, patientFilter])
+
+  return (
+    <div>
+      {/* Stats banner */}
+      <div style={{
+        display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '16px',
+      }}>
+        {[
+          { label: 'Pistes identifiées', value: pathfinder.stats.totalPathways, color: '#FFB347' },
+          { label: 'Patients éligibles', value: pathfinder.stats.eligiblePatients, color: '#2ED573' },
+          { label: 'Essais actifs', value: pathfinder.stats.activeTrials, color: '#3B82F6' },
+          { label: 'Usage compassionnel', value: pathfinder.stats.compassionateOptions, color: '#B96BFF' },
+        ].map((s, i) => (
+          <div key={i} style={{
+            background: 'var(--p-bg-card)', border: '1px solid var(--p-border)',
+            borderRadius: 'var(--p-radius-lg)', padding: '12px', textAlign: 'center',
+          }}>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '22px', fontWeight: 900, color: s.color }}>{s.value}</div>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '0.5px' }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
+        <div style={{ display: 'flex', gap: '4px' }}>
+          {['all', 'eligible', 'potential', 'to_evaluate'].map(s => {
+            const info = s === 'all' ? { label: 'Toutes', color: '#FFB347' } : PATH_STATUS_LABELS[s as PathwayStatus]
+            return (
+              <button key={s} onClick={() => setStatusFilter(s as any)} style={{
+                padding: '4px 10px', borderRadius: 'var(--p-radius-full)',
+                background: statusFilter === s ? `${info.color}15` : 'var(--p-bg)',
+                border: `1px solid ${statusFilter === s ? info.color + '40' : 'var(--p-border)'}`,
+                fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+                color: statusFilter === s ? info.color : 'var(--p-text-dim)', cursor: 'pointer',
+              }}>{info.label}</button>
+            )
+          })}
+        </div>
+        <select
+          value={patientFilter}
+          onChange={(e) => setPatientFilter(e.target.value)}
+          style={{
+            padding: '4px 8px', borderRadius: 'var(--p-radius-md)',
+            background: 'var(--p-bg)', border: '1px solid var(--p-border)',
+            fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text)',
+          }}
+        >
+          {patients.map(p => (
+            <option key={p} value={p}>{p === 'all' ? 'Tous les patients' : p}</option>
+          ))}
+        </select>
+      </div>
+
+      {/* Pathway cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {filtered.map(pw => {
+          const isOpen = expanded === pw.id
+          const statusInfo = PATH_STATUS_LABELS[pw.status]
+          const evidenceInfo = EVIDENCE_LABELS[pw.evidenceLevel] || { label: pw.evidenceLevel, color: '#8E8EA3' }
+          const scorePercent = Math.round(pw.eligibilityScore * 100)
+          const scoreColor = scorePercent >= 80 ? '#2ED573' : scorePercent >= 60 ? '#FFA502' : '#FF6B8A'
+
+          return (
+            <div key={pw.id}
+              onClick={() => setExpanded(isOpen ? null : pw.id)}
+              style={{
+                background: 'var(--p-bg-card)',
+                border: `1px solid ${isOpen ? '#FFB34740' : 'var(--p-border)'}`,
+                borderLeft: `4px solid ${statusInfo.color}`,
+                borderRadius: 'var(--p-radius-xl)', padding: '16px 20px',
+                cursor: 'pointer', transition: 'all 0.25s var(--p-ease)',
+              }}
+            >
+              {/* Header */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '6px' }}>
+                    <span style={badgeStyle(statusInfo.color)}>{statusInfo.label}</span>
+                    <span style={badgeStyle(evidenceInfo.color)}>{evidenceInfo.label}</span>
+                    {pw.trialId && <span style={badgeStyle('#2FD1C8')}>{pw.trialId}</span>}
+                    {pw.source === 'hypothesis' && <span style={badgeStyle('#B96BFF')}>HYPOTHÈSE N3</span>}
+                  </div>
+                  <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--p-text)' }}>{pw.treatment}</div>
+                  <div style={{ fontSize: '11px', color: 'var(--p-text-dim)', marginTop: '2px' }}>
+                    Patient: <span style={{ color: '#6C7CFF', fontWeight: 600 }}>{pw.patientName}</span>
+                  </div>
+                </div>
+                {/* Score gauge */}
+                <div style={{
+                  textAlign: 'center', padding: '8px 14px', flexShrink: 0,
+                  background: 'var(--p-bg)', borderRadius: 'var(--p-radius-lg)', border: '1px solid var(--p-border)',
+                }}>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '20px', fontWeight: 900, color: scoreColor }}>
+                    {scorePercent}%
+                  </div>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)' }}>éligibilité</div>
+                </div>
+              </div>
+
+              {/* Expanded */}
+              {isOpen && (
+                <div style={{ marginTop: '14px', paddingTop: '14px', borderTop: '1px solid var(--p-border)' }}>
+                  {/* Mechanism */}
+                  <div style={{
+                    padding: '10px 14px', borderRadius: 'var(--p-radius-lg)',
+                    background: 'rgba(255,179,71,0.04)', border: '1px solid rgba(255,179,71,0.12)',
+                    marginBottom: '12px',
+                  }}>
+                    <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#FFB347', marginBottom: '4px' }}>MÉCANISME</div>
+                    <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6 }}>{pw.mechanism}</div>
+                  </div>
+
+                  {/* Eligibility criteria */}
+                  <div style={{ marginBottom: '12px' }}>
+                    <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--p-text-dim)', marginBottom: '6px' }}>CRITÈRES D'ÉLIGIBILITÉ</div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                      {pw.eligibilityCriteria.map((c, i) => (
+                        <div key={i} style={{
+                          display: 'flex', alignItems: 'center', gap: '8px', padding: '6px 10px',
+                          borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg)',
+                          border: `1px solid ${c.met ? '#2ED57320' : '#FF475720'}`,
+                        }}>
+                          <span style={{ fontSize: '12px' }}>{c.met ? '✓' : '✗'}</span>
+                          <span style={{ fontSize: '11px', color: c.met ? '#2ED573' : '#FF4757', flex: 1 }}>{c.criterion}</span>
+                          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)' }}>{c.detail}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Benefit & risks */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
+                    <div style={{ padding: '10px', borderRadius: 'var(--p-radius-lg)', background: 'rgba(46,213,115,0.04)', border: '1px solid rgba(46,213,115,0.12)' }}>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#2ED573', marginBottom: '4px' }}>BÉNÉFICE ATTENDU</div>
+                      <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.5 }}>{pw.expectedBenefit}</div>
+                    </div>
+                    <div style={{ padding: '10px', borderRadius: 'var(--p-radius-lg)', background: 'rgba(255,71,87,0.04)', border: '1px solid rgba(255,71,87,0.12)' }}>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#FF4757', marginBottom: '4px' }}>RISQUES</div>
+                      <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.5 }}>{pw.risks}</div>
+                    </div>
+                  </div>
+
+                  {/* Trial info */}
+                  {pw.trialId && (
+                    <div style={{
+                      padding: '8px 12px', borderRadius: 'var(--p-radius-lg)',
+                      background: 'rgba(47,209,200,0.04)', border: '1px solid rgba(47,209,200,0.12)',
+                      marginBottom: '12px', display: 'flex', gap: '16px',
+                    }}>
+                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#2FD1C8' }}>ESSAI</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialId}</span></div>
+                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#2FD1C8' }}>PHASE</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialPhase}</span></div>
+                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#2FD1C8' }}>STATUT</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialStatus}</span></div>
+                    </div>
+                  )}
+
+                  {/* Disclaimer */}
+                  <div style={{
+                    padding: '8px 12px', background: 'rgba(255,165,2,0.06)', border: '1px solid rgba(255,165,2,0.12)',
+                    borderRadius: 'var(--p-radius-md)', fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FFA502',
+                  }}>
+                    ⚠ {pw.disclaimer}
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+
+        {filtered.length === 0 && (
+          <div style={{
+            background: 'var(--p-bg-card)', border: '1px solid var(--p-border)',
+            borderRadius: 'var(--p-radius-xl)', padding: '40px', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '14px', color: 'var(--p-text-muted)' }}>Aucune piste avec ces filtres</div>
+          </div>
+        )}
       </div>
     </div>
   )
