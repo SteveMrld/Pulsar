@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import Picto from '@/components/Picto'
 import { discoveryEngine } from '@/lib/engines/DiscoveryEngine'
@@ -16,6 +16,7 @@ import { HYPOTHESIS_TYPE_LABELS, HYPOTHESIS_STATUS_LABELS } from '@/lib/engines/
 import type { TherapeuticPathway, PathwayStatus, PathfinderResult } from '@/lib/engines/TreatmentPathfinder'
 import { EVIDENCE_LABELS, STATUS_LABELS as PATH_STATUS_LABELS } from '@/lib/engines/TreatmentPathfinder'
 import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
+import { searchPubMed, searchTrials, runFullPubMedScan, runTrialScan } from '@/lib/services/liveScanner'
 
 /* ══════════════════════════════════════════════════════════════
    RESEARCH DASHBOARD — Discovery Engine v4.0 (4 niveaux actifs)
@@ -1307,19 +1308,97 @@ function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
 // ══════════════════════════════════════════════════════════════
 
 function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; articles: LiteratureArticle[] }) {
-  const [litFilter, setLitFilter] = useState<'all' | 'high' | 'medium' | 'trials'>('all')
+  const [litFilter, setLitFilter] = useState<'all' | 'high' | 'medium' | 'trials' | 'live'>('all')
   const [alertExpanded, setAlertExpanded] = useState<string | null>(null)
 
+  // Live scan state
+  const [liveArticles, setLiveArticles] = useState<LiteratureArticle[]>([])
+  const [liveTrials, setLiveTrials] = useState<LiteratureArticle[]>([])
+  const [scanning, setScanning] = useState<'idle' | 'pubmed' | 'trials' | 'both'>('idle')
+  const [scanStats, setScanStats] = useState<{ pubmed: number; trials: number; total: number } | null>(null)
+  const [customQuery, setCustomQuery] = useState('')
+
+  const allArticles = useMemo(() => {
+    const combined = [...(scanResult.articles.length > 0 ? scanResult.articles : articles), ...liveArticles, ...liveTrials]
+    // Deduplicate by title (fuzzy)
+    const seen = new Set<string>()
+    return combined.filter(a => {
+      const key = a.title.substring(0, 50).toLowerCase()
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+  }, [scanResult, articles, liveArticles, liveTrials])
+
   const filteredArticles = useMemo(() => {
-    let result = [...(scanResult.articles.length > 0 ? scanResult.articles : articles)]
+    let result = [...allArticles]
     switch (litFilter) {
       case 'high': result = result.filter(a => a.relevance === 'high'); break
       case 'medium': result = result.filter(a => a.relevance === 'medium' || a.relevance === 'high'); break
       case 'trials': result = result.filter(a => a.isClinicalTrial); break
+      case 'live': result = result.filter(a => a.source === 'pubmed' || a.source === 'clinicaltrials'); break
     }
     result.sort((a, b) => b.relevanceScore - a.relevanceScore)
     return result
-  }, [scanResult, articles, litFilter])
+  }, [allArticles, litFilter])
+
+  // ── Live scan handlers ──
+
+  const handlePubMedScan = useCallback(async () => {
+    setScanning('pubmed')
+    try {
+      const result = await runFullPubMedScan(5)
+      setLiveArticles(prev => {
+        const existing = new Set(prev.map(a => a.pmid))
+        const newOnes = result.articles.filter(a => !existing.has(a.pmid))
+        return [...prev, ...newOnes]
+      })
+      setScanStats(prev => ({
+        pubmed: result.articles.length,
+        trials: prev?.trials || 0,
+        total: result.articles.length + (prev?.trials || 0),
+      }))
+    } catch (err) {
+      console.error('[LiveScan] PubMed failed:', err)
+    }
+    setScanning('idle')
+  }, [])
+
+  const handleTrialScan = useCallback(async () => {
+    setScanning('trials')
+    try {
+      const result = await runTrialScan()
+      setLiveTrials(prev => {
+        const existing = new Set(prev.map(a => a.trialId))
+        const newOnes = result.trials.filter(a => !existing.has(a.trialId))
+        return [...prev, ...newOnes]
+      })
+      setScanStats(prev => ({
+        pubmed: prev?.pubmed || 0,
+        trials: result.trials.length,
+        total: (prev?.pubmed || 0) + result.trials.length,
+      }))
+    } catch (err) {
+      console.error('[LiveScan] Trials failed:', err)
+    }
+    setScanning('idle')
+  }, [])
+
+  const handleCustomSearch = useCallback(async () => {
+    if (!customQuery.trim()) return
+    setScanning('pubmed')
+    try {
+      const result = await searchPubMed(customQuery.trim(), 10)
+      setLiveArticles(prev => {
+        const existing = new Set(prev.map(a => a.pmid))
+        const newOnes = result.articles.filter(a => !existing.has(a.pmid))
+        return [...prev, ...newOnes]
+      })
+    } catch (err) {
+      console.error('[LiveScan] Custom search failed:', err)
+    }
+    setScanning('idle')
+  }, [customQuery])
 
   const ALERT_COLORS: Record<string, string> = {
     contradiction: '#FFA502',
@@ -1391,6 +1470,79 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
         </div>
       )}
 
+      {/* ── Live Scan Controls ── */}
+      <div style={{
+        marginBottom: '16px', padding: '14px 18px',
+        background: 'var(--p-bg-card)', border: `1px solid ${DISC}20`,
+        borderRadius: 'var(--p-radius-xl)',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+          <div style={{
+            width: '8px', height: '8px', borderRadius: '50%', background: DISC,
+            boxShadow: scanning !== 'idle' ? `0 0 12px ${DISC}` : 'none',
+            animation: scanning !== 'idle' ? 'pulse 1s infinite' : 'none',
+          }} />
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: DISC, letterSpacing: '1px' }}>
+            VEILLE LIVE {scanning !== 'idle' ? '— SCAN EN COURS...' : ''}
+          </span>
+          {scanStats && (
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)' }}>
+              {scanStats.pubmed} PubMed · {scanStats.trials} essais · {liveArticles.length + liveTrials.length} total live
+            </span>
+          )}
+        </div>
+
+        <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center' }}>
+          <button onClick={handlePubMedScan} disabled={scanning !== 'idle'}
+            style={{
+              padding: '7px 16px', borderRadius: 'var(--p-radius-md)',
+              background: scanning === 'pubmed' ? `${DISC}25` : `${DISC}10`,
+              border: `1px solid ${DISC}30`, fontFamily: 'var(--p-font-mono)',
+              fontSize: '10px', fontWeight: 700, color: DISC, cursor: scanning !== 'idle' ? 'wait' : 'pointer',
+              opacity: scanning !== 'idle' && scanning !== 'pubmed' ? 0.5 : 1,
+            }}
+          >
+            {scanning === 'pubmed' ? '⏳ Scan PubMed...' : '🔍 Scan PubMed (10 requêtes)'}
+          </button>
+
+          <button onClick={handleTrialScan} disabled={scanning !== 'idle'}
+            style={{
+              padding: '7px 16px', borderRadius: 'var(--p-radius-md)',
+              background: scanning === 'trials' ? 'rgba(47,209,200,0.15)' : 'rgba(47,209,200,0.06)',
+              border: '1px solid rgba(47,209,200,0.3)', fontFamily: 'var(--p-font-mono)',
+              fontSize: '10px', fontWeight: 700, color: '#2FD1C8', cursor: scanning !== 'idle' ? 'wait' : 'pointer',
+              opacity: scanning !== 'idle' && scanning !== 'trials' ? 0.5 : 1,
+            }}
+          >
+            {scanning === 'trials' ? '⏳ Scan Trials...' : '🧪 Scan ClinicalTrials.gov'}
+          </button>
+
+          <div style={{ flex: 1, minWidth: '200px', display: 'flex', gap: '4px' }}>
+            <input
+              type="text"
+              value={customQuery}
+              onChange={e => setCustomQuery(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' && handleCustomSearch()}
+              placeholder="Recherche PubMed personnalisée..."
+              style={{
+                flex: 1, padding: '6px 12px', borderRadius: 'var(--p-radius-md)',
+                background: 'var(--p-bg)', border: '1px solid var(--p-border)',
+                fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text)',
+                outline: 'none',
+              }}
+            />
+            <button onClick={handleCustomSearch} disabled={scanning !== 'idle' || !customQuery.trim()}
+              style={{
+                padding: '6px 12px', borderRadius: 'var(--p-radius-md)',
+                background: customQuery.trim() ? `${DISC}10` : 'var(--p-bg)',
+                border: '1px solid var(--p-border)', fontFamily: 'var(--p-font-mono)',
+                fontSize: '10px', fontWeight: 700, color: DISC, cursor: 'pointer',
+              }}
+            >→</button>
+          </div>
+        </div>
+      </div>
+
       {/* ── Filter bar ── */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
         <h2 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>
@@ -1402,6 +1554,7 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
             { id: 'high', label: 'Haute pertinence' },
             { id: 'medium', label: 'Moy. & haute' },
             { id: 'trials', label: 'Essais cliniques' },
+            { id: 'live', label: `Live (${liveArticles.length + liveTrials.length})` },
           ].map(f => (
             <button key={f.id}
               onClick={() => setLitFilter(f.id as any)}

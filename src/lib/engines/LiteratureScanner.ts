@@ -65,7 +65,7 @@ export interface ScanResult {
 
 // ── PubMed query builder ──
 
-const PUBMED_QUERIES: { topic: string; query: string; priority: number }[] = [
+export const PUBMED_QUERIES: { topic: string; query: string; priority: number }[] = [
   { topic: 'FIRES', query: 'FIRES febrile infection related epilepsy syndrome', priority: 1 },
   { topic: 'NORSE', query: 'new onset refractory status epilepticus', priority: 1 },
   { topic: 'Anti-NMDAR', query: 'anti-NMDA receptor encephalitis pediatric', priority: 1 },

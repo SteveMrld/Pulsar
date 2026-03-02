@@ -1,6 +1,14 @@
 'use client'
+import { useMemo, useState } from 'react'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
+import Link from 'next/link'
+import { discoveryEngine } from '@/lib/engines/DiscoveryEngine'
+import { DEMO_PATIENTS } from '@/lib/data/discoveryData'
+import { SEED_ARTICLES } from '@/lib/data/literatureData'
+import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
+import { generateTDEEnrichments, ENRICHMENT_COLORS, RECOMMENDATION_LABELS } from '@/lib/engines/TDEEnrichment'
+import type { TDEEnrichment } from '@/lib/engines/TDEEnrichment'
 
 /* ══════════════════════════════════════════════════════════════
    TRAITEMENT — TDE + PVE results
@@ -192,6 +200,114 @@ export default function TraitementPage() {
           </div>
         </>
       )}
+
+      {/* ═══ Discovery Engine → TDE Enrichments ═══ */}
+      <DiscoveryEnrichmentPanel syndrome={info.syndrome} />
+    </div>
+  )
+}
+
+// ── Discovery Enrichment Panel ──
+
+const DISC = '#10B981'
+
+function DiscoveryEnrichmentPanel({ syndrome }: { syndrome: string }) {
+  const [expanded, setExpanded] = useState<string | null>(null)
+
+  const enrichments = useMemo(() => {
+    const result = discoveryEngine.run(DEMO_PATIENTS, SEED_ARTICLES, PATIENT_PROFILES)
+    return generateTDEEnrichments(
+      result.signals,
+      result.hypotheses,
+      result.pathfinder.pathways,
+      syndrome,
+    )
+  }, [syndrome])
+
+  if (enrichments.length === 0) return null
+
+  return (
+    <div style={{ marginTop: '24px' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+        <div style={{
+          width: '8px', height: '8px', borderRadius: '50%', background: DISC,
+          boxShadow: `0 0 8px ${DISC}80`,
+        }} />
+        <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: DISC, letterSpacing: '0.5px' }}>
+          DISCOVERY ENGINE → TDE
+        </span>
+        <span style={{
+          padding: '2px 8px', borderRadius: 'var(--p-radius-full)',
+          background: `${DISC}12`, fontSize: '9px', fontFamily: 'var(--p-font-mono)',
+          fontWeight: 700, color: DISC,
+        }}>
+          {enrichments.length} enrichissements
+        </span>
+        <Link href="/research" style={{
+          marginLeft: 'auto', padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
+          background: `${DISC}10`, border: `1px solid ${DISC}25`,
+          fontSize: '9px', fontFamily: 'var(--p-font-mono)', fontWeight: 700,
+          color: DISC, textDecoration: 'none',
+        }}>EXPLORE →</Link>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {enrichments.map(enr => {
+          const color = ENRICHMENT_COLORS[enr.severity]
+          const rec = RECOMMENDATION_LABELS[enr.recommendation]
+          const isOpen = expanded === enr.id
+
+          return (
+            <div key={enr.id}
+              onClick={() => setExpanded(isOpen ? null : enr.id)}
+              style={{
+                background: 'var(--p-bg-card)',
+                border: `1px solid ${isOpen ? color + '40' : 'var(--p-border)'}`,
+                borderLeft: `4px solid ${color}`,
+                borderRadius: 'var(--p-radius-lg)',
+                padding: '12px 16px', cursor: 'pointer', transition: 'all 0.2s',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <span style={{
+                  padding: '2px 8px', borderRadius: 'var(--p-radius-full)',
+                  background: `${rec.color}15`, fontFamily: 'var(--p-font-mono)',
+                  fontSize: '8px', fontWeight: 800, color: rec.color,
+                }}>{rec.icon} {rec.label}</span>
+                {enr.affectedLine && enr.affectedLine !== 'general' && (
+                  <span style={{
+                    padding: '2px 8px', borderRadius: 'var(--p-radius-full)',
+                    background: '#FFB34715', fontFamily: 'var(--p-font-mono)',
+                    fontSize: '8px', fontWeight: 700, color: '#FFB347',
+                  }}>TDE {enr.affectedLine}</span>
+                )}
+                <span style={{
+                  padding: '2px 8px', borderRadius: 'var(--p-radius-full)',
+                  background: `${DISC}10`, fontFamily: 'var(--p-font-mono)',
+                  fontSize: '8px', fontWeight: 700, color: DISC,
+                }}>{Math.round(enr.confidence * 100)}% confiance</span>
+              </div>
+
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--p-text)' }}>{enr.title}</div>
+
+              {isOpen && (
+                <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid var(--p-border)' }}>
+                  <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: '8px' }}>{enr.description}</div>
+                  <div style={{
+                    padding: '8px 12px', borderRadius: 'var(--p-radius-md)',
+                    background: `${DISC}06`, border: `1px solid ${DISC}12`,
+                    marginBottom: '6px',
+                  }}>
+                    <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: DISC }}>ACTION : </span>
+                    <span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{enr.action}</span>
+                  </div>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: '#FFA502' }}>⚠ {enr.disclaimer}</div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
