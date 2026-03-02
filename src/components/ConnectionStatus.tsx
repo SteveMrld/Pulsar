@@ -20,6 +20,18 @@ export default function ConnectionStatus() {
     setOnline(navigator.onLine)
 
     // Supabase health check every 30s
+    // Skip if Supabase URL is not configured (placeholder or missing)
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || ''
+    const isConfigured = supabaseUrl.length > 10 && !supabaseUrl.includes('xxx')
+
+    if (!isConfigured) {
+      setSupabaseOk(true) // Don't show warning if not configured
+      return () => {
+        window.removeEventListener('online', goOnline)
+        window.removeEventListener('offline', goOffline)
+      }
+    }
+
     const check = async () => {
       try {
         const supabase = createClient()
