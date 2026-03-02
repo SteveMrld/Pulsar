@@ -1,8 +1,8 @@
 // ============================================================
 // PULSAR V18 — Discovery Engine (7ème moteur)
 // Orchestrateur des 4 niveaux
-// Phase A : Niveau 1 (PatternMiner) actif
-// Phase B : Niveau 2 (LiteratureScanner) — à venir
+// Phase A : Niveau 1 (PatternMiner) ✓ actif
+// Phase B : Niveau 2 (LiteratureScanner) ✓ actif
 // Phase C : Niveau 3 (HypothesisEngine) — à venir
 // Phase D : Niveau 4 (TreatmentPathfinder) — à venir
 //
@@ -10,6 +10,7 @@
 // ============================================================
 
 import { patternMiner, type PatientDataRow } from './PatternMiner'
+import { literatureScanner, type LiteratureArticle, type ScanResult } from './LiteratureScanner'
 import type {
   SignalCard, CorrelationMatrix, PatientCluster,
   TemporalPattern, DiscoveryRunResult,
@@ -19,11 +20,17 @@ import type {
 
 export interface DiscoveryStatus {
   level1_patternMiner: 'active' | 'disabled'
-  level2_literatureScanner: 'coming_soon' | 'active' | 'disabled'
+  level2_literatureScanner: 'active' | 'disabled'
   level3_hypothesisEngine: 'coming_soon' | 'active' | 'disabled'
   level4_treatmentPathfinder: 'coming_soon' | 'active' | 'disabled'
   lastRun: string | null
   totalSignals: number
+}
+
+// ── Extended result with literature ──
+
+export interface DiscoveryRunResultV2 extends DiscoveryRunResult {
+  literature: ScanResult
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -32,12 +39,12 @@ export interface DiscoveryStatus {
 
 export class DiscoveryEngine {
   name = 'Discovery Engine'
-  version = '1.0.0-alpha'
-  phase = 'A'
+  version = '2.0.0-beta'
+  phase = 'B'
 
   private status: DiscoveryStatus = {
     level1_patternMiner: 'active',
-    level2_literatureScanner: 'coming_soon',
+    level2_literatureScanner: 'active',
     level3_hypothesisEngine: 'coming_soon',
     level4_treatmentPathfinder: 'coming_soon',
     lastRun: null,
@@ -52,18 +59,20 @@ export class DiscoveryEngine {
 
   // ── Run discovery pipeline ──
 
-  run(patients: PatientDataRow[]): DiscoveryRunResult {
+  run(patients: PatientDataRow[], articles?: LiteratureArticle[]): DiscoveryRunResultV2 {
     const timestamp = new Date().toISOString()
 
     // ── Level 1: Pattern Mining ──
     const { signals: minerSignals, correlationMatrix, clusters } =
       patternMiner.mine(patients)
 
-    // ── Level 2: Literature Scanner (Phase B — placeholder) ──
-    // const literatureSignals = literatureScanner.scan(minerSignals)
+    // ── Level 2: Literature Scanner ──
+    const literature = articles
+      ? literatureScanner.scan(articles, minerSignals)
+      : { articles: [], alerts: [], stats: { articlesScanned: 0, matchesFound: 0, confirmations: 0, contradictions: 0, opportunities: 0, clinicalTrials: 0 }, scannedAt: timestamp }
 
     // ── Level 3: Hypothesis Engine (Phase C — placeholder) ──
-    // const hypotheses = hypothesisEngine.generate(minerSignals, literatureSignals)
+    // const hypotheses = hypothesisEngine.generate(minerSignals, literature)
 
     // ── Level 4: Treatment Pathfinder (Phase D — placeholder) ──
     // const pathways = treatmentPathfinder.find(patients, hypotheses)
@@ -76,12 +85,13 @@ export class DiscoveryEngine {
     this.status.totalSignals = allSignals.length
 
     // ── Build result ──
-    const result: DiscoveryRunResult = {
+    const result: DiscoveryRunResultV2 = {
       timestamp,
       signals: allSignals,
       correlationMatrix,
       clusters,
-      temporalPatterns: [], // Phase B+
+      temporalPatterns: [],
+      literature,
       summary: {
         totalSignals: allSignals.length,
         newSignals: allSignals.filter(s => s.status === 'new').length,
@@ -101,12 +111,18 @@ export class DiscoveryEngine {
   runForPatient(
     patient: PatientDataRow,
     allPatients: PatientDataRow[],
+    articles?: LiteratureArticle[],
   ): SignalCard[] {
-    // Find signals that involve this patient
-    const fullResult = this.run(allPatients)
+    const fullResult = this.run(allPatients, articles)
     return fullResult.signals.filter(s =>
       s.patients.ids.includes(patient.id)
     )
+  }
+
+  // ── Get literature scanner instance ──
+
+  getLiteratureScanner() {
+    return literatureScanner
   }
 
   // ── Get roadmap info ──
@@ -122,8 +138,8 @@ export class DiscoveryEngine {
       {
         phase: 'B',
         level: 'Niveau 2 — Literature Scanner',
-        status: '◌ Phase B',
-        description: 'Veille scientifique PubMed/Cochrane. Croisement publications ↔ signaux internes.',
+        status: '✓ Actif',
+        description: 'Veille scientifique PubMed/Cochrane. Croisement publications ↔ signaux internes. Détection de contradictions et opportunités.',
       },
       {
         phase: 'C',

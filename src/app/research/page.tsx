@@ -4,15 +4,17 @@ import Link from 'next/link'
 import Picto from '@/components/Picto'
 import { discoveryEngine } from '@/lib/engines/DiscoveryEngine'
 import { DEMO_PATIENTS, SEED_SIGNALS } from '@/lib/data/discoveryData'
+import { SEED_ARTICLES } from '@/lib/data/literatureData'
 import { PARAMETER_META, DISCOVERY_CONFIG } from '@/lib/types/discovery'
 import type {
   SignalCard, SignalFilters, SignalSortBy, SignalType, SignalStrength,
   CorrelationMatrix, PatientCluster,
 } from '@/lib/types/discovery'
+import type { LiteratureArticle, LiteratureAlert, ScanResult } from '@/lib/engines/LiteratureScanner'
 
 /* ══════════════════════════════════════════════════════════════
-   RESEARCH DASHBOARD — Discovery Engine Phase A
-   Signal Feed · Matrice de corrélation · Clusters · Roadmap
+   RESEARCH DASHBOARD — Discovery Engine Phase B
+   Signal Feed · Corrélations · Clusters · Veille scientifique · Roadmap
    ══════════════════════════════════════════════════════════════ */
 
 // ── Design tokens ──
@@ -20,12 +22,13 @@ const DISC = '#10B981'
 const DISC_DIM = 'rgba(16, 185, 129, 0.12)'
 const DISC_GLOW = 'rgba(16, 185, 129, 0.30)'
 
-type Tab = 'signals' | 'correlations' | 'clusters' | 'roadmap'
+type Tab = 'signals' | 'correlations' | 'clusters' | 'literature' | 'roadmap'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'signals', label: 'Signal Feed', icon: 'alert' },
   { id: 'correlations', label: 'Corrélations', icon: 'chart' },
   { id: 'clusters', label: 'Clusters', icon: 'dna' },
+  { id: 'literature', label: 'Veille scientifique', icon: 'books' },
   { id: 'roadmap', label: 'Roadmap', icon: 'clipboard' },
 ]
 
@@ -70,7 +73,7 @@ export default function ResearchPage() {
 
   // Run Discovery Engine on demo data
   const discoveryResult = useMemo(() => {
-    return discoveryEngine.run(DEMO_PATIENTS)
+    return discoveryEngine.run(DEMO_PATIENTS, SEED_ARTICLES)
   }, [])
 
   // Merge seed signals with mined signals (seed first for showcase)
@@ -123,6 +126,7 @@ export default function ResearchPage() {
   }, [allSignals, filters, sortBy])
 
   const summary = discoveryResult.summary
+  const litStats = discoveryResult.literature.stats
   const status = discoveryEngine.getStatus()
 
   // ── Helpers ──
@@ -164,7 +168,7 @@ export default function ResearchPage() {
               fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)',
               letterSpacing: '1px',
             }}>
-              PHASE A · PATTERN MINING · {summary.patientsAnalyzed} PATIENTS · {summary.parametersScanned} PARAMÈTRES
+              PHASE B · PATTERN MINING + VEILLE · {summary.patientsAnalyzed} PATIENTS · {litStats.articlesScanned} PUBLICATIONS
             </span>
           </div>
         </div>
@@ -232,8 +236,10 @@ export default function ResearchPage() {
             { label: 'Nouveaux', value: summary.newSignals, color: '#3B82F6' },
             { label: 'Signaux forts', value: summary.strongSignals, color: '#FF4757' },
             { label: 'Patients', value: summary.patientsAnalyzed, color: '#6C7CFF' },
-            { label: 'Paramètres', value: summary.parametersScanned, color: '#B96BFF' },
-            { label: 'Corrélations sig.', value: discoveryResult.correlationMatrix.significantPairs.length, color: '#FFB347' },
+            { label: 'Publications', value: litStats.articlesScanned, color: '#B96BFF' },
+            { label: 'Confirmations', value: litStats.confirmations, color: '#2ED573' },
+            { label: 'Contradictions', value: litStats.contradictions, color: '#FFA502' },
+            { label: 'Essais cliniques', value: litStats.clinicalTrials, color: '#2FD1C8' },
           ].map((kpi, i) => (
             <div key={i} style={{
               ...glass({ padding: '14px', borderTop: `3px solid ${kpi.color}`, textAlign: 'center' }),
@@ -340,6 +346,16 @@ export default function ResearchPage() {
           </div>
         )}
 
+        {/* ════════════════════ LITERATURE ════════════════════ */}
+        {tab === 'literature' && (
+          <div className="page-enter-stagger">
+            <LiteratureView
+              scanResult={discoveryResult.literature}
+              articles={SEED_ARTICLES}
+            />
+          </div>
+        )}
+
         {/* ════════════════════ ROADMAP ════════════════════ */}
         {tab === 'roadmap' && (
           <div className="page-enter-stagger">
@@ -353,7 +369,7 @@ export default function ResearchPage() {
           fontSize: '10px', fontFamily: 'var(--p-font-mono)',
           borderTop: '1px solid var(--p-border)', marginTop: '24px',
         }}>
-          ⚠ PULSAR Discovery Engine · Phase A · Tous les signaux sont générés par IA et nécessitent validation clinique
+          ⚠ PULSAR Discovery Engine · Phase B · Tous les signaux sont générés par IA et nécessitent validation clinique
           <br />Ne se substitue pas au jugement médical · Données illustratives
         </div>
       </div>
@@ -848,6 +864,238 @@ function RoadmapView() {
           )
         })}
       </div>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════
+// LITERATURE VIEW
+// ══════════════════════════════════════════════════════════════
+
+function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; articles: LiteratureArticle[] }) {
+  const [litFilter, setLitFilter] = useState<'all' | 'high' | 'medium' | 'trials'>('all')
+  const [alertExpanded, setAlertExpanded] = useState<string | null>(null)
+
+  const filteredArticles = useMemo(() => {
+    let result = [...(scanResult.articles.length > 0 ? scanResult.articles : articles)]
+    switch (litFilter) {
+      case 'high': result = result.filter(a => a.relevance === 'high'); break
+      case 'medium': result = result.filter(a => a.relevance === 'medium' || a.relevance === 'high'); break
+      case 'trials': result = result.filter(a => a.isClinicalTrial); break
+    }
+    result.sort((a, b) => b.relevanceScore - a.relevanceScore)
+    return result
+  }, [scanResult, articles, litFilter])
+
+  const ALERT_COLORS: Record<string, string> = {
+    contradiction: '#FFA502',
+    confirmation: '#2ED573',
+    opportunity: '#3B82F6',
+    update: '#8E8EA3',
+  }
+  const ALERT_ICONS: Record<string, string> = {
+    contradiction: '⚠',
+    confirmation: '✓',
+    opportunity: '🔬',
+    update: '↻',
+  }
+
+  return (
+    <div>
+      {/* ── Alerts section ── */}
+      {scanResult.alerts.length > 0 && (
+        <div style={{ marginBottom: '20px' }}>
+          <h2 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '10px' }}>
+            Alertes veille ({scanResult.alerts.length})
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {scanResult.alerts.map(alert => {
+              const color = ALERT_COLORS[alert.type] || '#8E8EA3'
+              const expanded = alertExpanded === alert.id
+              return (
+                <div key={alert.id}
+                  onClick={() => setAlertExpanded(expanded ? null : alert.id)}
+                  style={{
+                    background: 'var(--p-bg-card)', borderLeft: `4px solid ${color}`,
+                    border: `1px solid ${expanded ? color + '40' : 'var(--p-border)'}`,
+                    borderLeftWidth: '4px', borderLeftColor: color,
+                    borderRadius: 'var(--p-radius-lg)', padding: '12px 16px',
+                    cursor: 'pointer', transition: 'all 0.2s',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <span style={{ fontSize: '16px' }}>{ALERT_ICONS[alert.type]}</span>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={badgeStyle(color)}>{alert.type.toUpperCase()}</span>
+                        {alert.severity === 'critical' && <span style={badgeStyle('#FF4757')}>CRITIQUE</span>}
+                        {alert.protocolImpact && <span style={badgeStyle('#FFB347')}>TDE {alert.protocolImpact}</span>}
+                      </div>
+                      <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--p-text)', marginTop: '4px' }}>
+                        {alert.title}
+                      </div>
+                    </div>
+                  </div>
+                  {expanded && (
+                    <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px solid var(--p-border)' }}>
+                      <div style={{ fontSize: '12px', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: '10px' }}>
+                        {alert.description}
+                      </div>
+                      <div style={{
+                        padding: '8px 12px', background: `${color}08`, borderRadius: 'var(--p-radius-md)',
+                        border: `1px solid ${color}15`,
+                        fontFamily: 'var(--p-font-mono)', fontSize: '10px', color,
+                      }}>
+                        Action requise : {alert.actionRequired}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* ── Filter bar ── */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <h2 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>
+          Bibliothèque ({filteredArticles.length} publications)
+        </h2>
+        <div style={{ display: 'flex', gap: '4px' }}>
+          {[
+            { id: 'all', label: 'Toutes' },
+            { id: 'high', label: 'Haute pertinence' },
+            { id: 'medium', label: 'Moy. & haute' },
+            { id: 'trials', label: 'Essais cliniques' },
+          ].map(f => (
+            <button key={f.id}
+              onClick={() => setLitFilter(f.id as any)}
+              style={{
+                padding: '4px 10px', borderRadius: 'var(--p-radius-full)',
+                background: litFilter === f.id ? `${DISC}15` : 'var(--p-bg)',
+                border: `1px solid ${litFilter === f.id ? DISC + '40' : 'var(--p-border)'}`,
+                fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+                color: litFilter === f.id ? DISC : 'var(--p-text-dim)',
+                cursor: 'pointer', transition: 'all 0.2s',
+              }}
+            >{f.label}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Articles list ── */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        {filteredArticles.map(article => (
+          <ArticleCard key={article.id} article={article} />
+        ))}
+      </div>
+
+      {/* ── PubMed queries info ── */}
+      <div style={{
+        marginTop: '20px', background: 'var(--p-bg-card)',
+        border: '1px solid var(--p-border)', borderRadius: 'var(--p-radius-xl)',
+        padding: '16px',
+      }}>
+        <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--p-text)', marginBottom: '8px' }}>
+          Requêtes PubMed configurées
+        </div>
+        <div style={{ fontSize: '11px', color: 'var(--p-text-dim)', marginBottom: '10px' }}>
+          En production, ces requêtes interrogeront automatiquement PubMed E-utilities pour détecter de nouvelles publications.
+        </div>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+          {discoveryEngine.getLiteratureScanner().getQueries().map((q, i) => (
+            <span key={i} style={{
+              padding: '3px 10px', borderRadius: 'var(--p-radius-full)',
+              background: q.priority === 1 ? '#FF475710' : q.priority === 2 ? '#6C7CFF10' : 'var(--p-bg)',
+              border: `1px solid ${q.priority === 1 ? '#FF475720' : q.priority === 2 ? '#6C7CFF20' : 'var(--p-border)'}`,
+              fontFamily: 'var(--p-font-mono)', fontSize: '9px',
+              color: q.priority === 1 ? '#FF4757' : q.priority === 2 ? '#6C7CFF' : 'var(--p-text-dim)',
+            }}>
+              P{q.priority} · {q.topic}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════
+// ARTICLE CARD
+// ══════════════════════════════════════════════════════════════
+
+function ArticleCard({ article }: { article: LiteratureArticle }) {
+  const [open, setOpen] = useState(false)
+
+  const relColor = article.relevance === 'high' ? '#2ED573' :
+    article.relevance === 'medium' ? '#FFB347' : '#8E8EA3'
+
+  const actionColor = article.action === 'confirms' ? '#2ED573' :
+    article.action === 'contradicts' ? '#FF4757' :
+    article.action === 'extends' ? '#3B82F6' : '#8E8EA3'
+
+  const actionLabel = article.action === 'confirms' ? 'CONFIRME' :
+    article.action === 'contradicts' ? 'CONTREDIT' :
+    article.action === 'extends' ? 'ÉTEND' : 'NEUTRE'
+
+  return (
+    <div
+      onClick={() => setOpen(!open)}
+      style={{
+        background: 'var(--p-bg-card)', border: '1px solid var(--p-border)',
+        borderRadius: 'var(--p-radius-lg)', padding: '12px 16px',
+        cursor: 'pointer', transition: 'all 0.2s',
+        borderLeft: `3px solid ${relColor}`,
+      }}
+    >
+      {/* Top line: badges */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '6px' }}>
+        <span style={badgeStyle(relColor)}>
+          {(article.relevanceScore * 100).toFixed(0)}% pertinent
+        </span>
+        <span style={badgeStyle(actionColor)}>{actionLabel}</span>
+        {article.isClinicalTrial && (
+          <span style={badgeStyle('#2FD1C8')}>ESSAI · {article.trialPhase}</span>
+        )}
+        {article.source !== 'seed' && (
+          <span style={badgeStyle('#8E8EA3')}>{article.source.toUpperCase()}</span>
+        )}
+        <span style={badgeStyle('#8E8EA3')}>{article.year}</span>
+      </div>
+
+      {/* Title */}
+      <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--p-text)', lineHeight: 1.4 }}>
+        {article.title}
+      </div>
+
+      {/* Authors & journal */}
+      <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', marginTop: '4px', fontFamily: 'var(--p-font-mono)' }}>
+        {article.authors} · <span style={{ color: '#B96BFF' }}>{article.journal}</span>
+        {article.pmid && <span> · PMID:{article.pmid}</span>}
+        {article.trialId && <span> · {article.trialId}</span>}
+      </div>
+
+      {/* Expanded: abstract + matched keywords */}
+      {open && article.abstract && (
+        <div style={{ marginTop: '10px', paddingTop: '10px', borderTop: '1px solid var(--p-border)' }}>
+          <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6 }}>
+            {article.abstract}
+          </div>
+          {article.matchedKeywords.length > 0 && (
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '8px' }}>
+              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginRight: '4px' }}>MATCHED:</span>
+              {article.matchedKeywords.map((kw, i) => (
+                <span key={i} style={{
+                  padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
+                  background: `${DISC}10`, border: `1px solid ${DISC}20`,
+                  fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: DISC,
+                }}>{kw}</span>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
