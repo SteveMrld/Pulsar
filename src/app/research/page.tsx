@@ -11,10 +11,12 @@ import type {
   CorrelationMatrix, PatientCluster,
 } from '@/lib/types/discovery'
 import type { LiteratureArticle, LiteratureAlert, ScanResult } from '@/lib/engines/LiteratureScanner'
+import type { Hypothesis, HypothesisStatus } from '@/lib/engines/HypothesisEngine'
+import { HYPOTHESIS_TYPE_LABELS, HYPOTHESIS_STATUS_LABELS } from '@/lib/engines/HypothesisEngine'
 
 /* ══════════════════════════════════════════════════════════════
-   RESEARCH DASHBOARD — Discovery Engine Phase B
-   Signal Feed · Corrélations · Clusters · Veille scientifique · Roadmap
+   RESEARCH DASHBOARD — Discovery Engine Phase C
+   Signal Feed · Corrélations · Clusters · Veille · Hypothèses · Roadmap
    ══════════════════════════════════════════════════════════════ */
 
 // ── Design tokens ──
@@ -22,13 +24,14 @@ const DISC = '#10B981'
 const DISC_DIM = 'rgba(16, 185, 129, 0.12)'
 const DISC_GLOW = 'rgba(16, 185, 129, 0.30)'
 
-type Tab = 'signals' | 'correlations' | 'clusters' | 'literature' | 'roadmap'
+type Tab = 'signals' | 'correlations' | 'clusters' | 'literature' | 'hypotheses' | 'roadmap'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'signals', label: 'Signal Feed', icon: 'alert' },
   { id: 'correlations', label: 'Corrélations', icon: 'chart' },
   { id: 'clusters', label: 'Clusters', icon: 'dna' },
   { id: 'literature', label: 'Veille scientifique', icon: 'books' },
+  { id: 'hypotheses', label: 'Hypothèses', icon: 'brain' },
   { id: 'roadmap', label: 'Roadmap', icon: 'clipboard' },
 ]
 
@@ -168,7 +171,7 @@ export default function ResearchPage() {
               fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)',
               letterSpacing: '1px',
             }}>
-              PHASE B · PATTERN MINING + VEILLE · {summary.patientsAnalyzed} PATIENTS · {litStats.articlesScanned} PUBLICATIONS
+              PHASE C · 3 NIVEAUX ACTIFS · {summary.patientsAnalyzed} PATIENTS · {litStats.articlesScanned} PUBLICATIONS
             </span>
           </div>
         </div>
@@ -240,6 +243,7 @@ export default function ResearchPage() {
             { label: 'Confirmations', value: litStats.confirmations, color: '#2ED573' },
             { label: 'Contradictions', value: litStats.contradictions, color: '#FFA502' },
             { label: 'Essais cliniques', value: litStats.clinicalTrials, color: '#2FD1C8' },
+            { label: 'Hypothèses', value: discoveryResult.hypotheses.length, color: '#B96BFF' },
           ].map((kpi, i) => (
             <div key={i} style={{
               ...glass({ padding: '14px', borderTop: `3px solid ${kpi.color}`, textAlign: 'center' }),
@@ -356,6 +360,13 @@ export default function ResearchPage() {
           </div>
         )}
 
+        {/* ════════════════════ HYPOTHESES ════════════════════ */}
+        {tab === 'hypotheses' && (
+          <div className="page-enter-stagger">
+            <HypothesesView hypotheses={discoveryResult.hypotheses} />
+          </div>
+        )}
+
         {/* ════════════════════ ROADMAP ════════════════════ */}
         {tab === 'roadmap' && (
           <div className="page-enter-stagger">
@@ -369,7 +380,7 @@ export default function ResearchPage() {
           fontSize: '10px', fontFamily: 'var(--p-font-mono)',
           borderTop: '1px solid var(--p-border)', marginTop: '24px',
         }}>
-          ⚠ PULSAR Discovery Engine · Phase B · Tous les signaux sont générés par IA et nécessitent validation clinique
+          ⚠ PULSAR Discovery Engine · Phase C · Tous les signaux et hypothèses sont générés par IA et nécessitent validation clinique
           <br />Ne se substitue pas au jugement médical · Données illustratives
         </div>
       </div>
@@ -863,6 +874,213 @@ function RoadmapView() {
             </div>
           )
         })}
+      </div>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════
+// HYPOTHESES VIEW
+// ══════════════════════════════════════════════════════════════
+
+function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
+  const [expanded, setExpanded] = useState<string | null>(null)
+  const [statusFilter, setStatusFilter] = useState<'all' | HypothesisStatus>('all')
+
+  const filtered = statusFilter === 'all' ? hypotheses : hypotheses.filter(h => h.status === statusFilter)
+
+  const IMPACT_COLORS: Record<string, string> = {
+    transformative: '#FF4757',
+    high: '#FFA502',
+    medium: '#6C7CFF',
+    low: '#8E8EA3',
+  }
+  const IMPACT_LABELS: Record<string, string> = {
+    transformative: 'TRANSFORMATIF',
+    high: 'ÉLEVÉ',
+    medium: 'MOYEN',
+    low: 'FAIBLE',
+  }
+
+  return (
+    <div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', flexWrap: 'wrap', gap: '8px' }}>
+        <div>
+          <h2 style={{ fontSize: '15px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>
+            Hypothèses de recherche ({filtered.length})
+          </h2>
+          <p style={{ fontSize: '11px', color: 'var(--p-text-dim)', margin: '2px 0 0' }}>
+            Générées par croisement Pattern Mining (N1) × Literature Scanner (N2) via Claude API
+          </p>
+        </div>
+        <div style={{ display: 'flex', gap: '4px' }}>
+          {['all', 'generated', 'in_review', 'validated', 'published', 'rejected'].map(s => {
+            const info = s === 'all' ? { label: 'Toutes', color: DISC } : HYPOTHESIS_STATUS_LABELS[s as HypothesisStatus]
+            return (
+              <button key={s}
+                onClick={() => setStatusFilter(s as any)}
+                style={{
+                  padding: '4px 10px', borderRadius: 'var(--p-radius-full)',
+                  background: statusFilter === s ? `${info.color}15` : 'var(--p-bg)',
+                  border: `1px solid ${statusFilter === s ? info.color + '40' : 'var(--p-border)'}`,
+                  fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+                  color: statusFilter === s ? info.color : 'var(--p-text-dim)',
+                  cursor: 'pointer', transition: 'all 0.2s',
+                }}
+              >{info.label}</button>
+            )
+          })}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+        {filtered.map(hyp => {
+          const isOpen = expanded === hyp.id
+          const statusInfo = HYPOTHESIS_STATUS_LABELS[hyp.status]
+          const impactColor = IMPACT_COLORS[hyp.impactPotential] || '#8E8EA3'
+          const typeLabel = HYPOTHESIS_TYPE_LABELS[hyp.type] || hyp.type
+          const confPercent = Math.round(hyp.confidence * 100)
+          const confColor = confPercent >= 70 ? '#2ED573' : confPercent >= 50 ? '#FFA502' : '#FF6B8A'
+
+          return (
+            <div key={hyp.id}
+              onClick={() => setExpanded(isOpen ? null : hyp.id)}
+              style={{
+                background: 'var(--p-bg-card)',
+                border: `1px solid ${isOpen ? '#B96BFF40' : 'var(--p-border)'}`,
+                borderLeft: `4px solid #B96BFF`,
+                borderRadius: 'var(--p-radius-xl)',
+                padding: '18px 20px',
+                cursor: 'pointer', transition: 'all 0.25s var(--p-ease)',
+                boxShadow: isOpen ? '0 0 24px rgba(185,107,255,0.08)' : 'none',
+              }}
+            >
+              {/* Header */}
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '12px' }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '8px' }}>
+                    <span style={badgeStyle(statusInfo.color)}>{statusInfo.label}</span>
+                    <span style={badgeStyle('#B96BFF')}>{typeLabel}</span>
+                    <span style={badgeStyle(impactColor)}>Impact {IMPACT_LABELS[hyp.impactPotential]}</span>
+                  </div>
+                  <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--p-text)', lineHeight: 1.4 }}>
+                    {hyp.title}
+                  </div>
+                  <div style={{
+                    fontSize: '12px', color: 'var(--p-text-muted)', marginTop: '6px', lineHeight: 1.6,
+                    ...(isOpen ? {} : { display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' as const, overflow: 'hidden' }),
+                  }}>
+                    {hyp.description}
+                  </div>
+                </div>
+                {/* Confidence gauge */}
+                <div style={{
+                  textAlign: 'center', padding: '8px 12px', flexShrink: 0,
+                  background: 'var(--p-bg)', borderRadius: 'var(--p-radius-lg)',
+                  border: '1px solid var(--p-border)',
+                }}>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '20px', fontWeight: 900, color: confColor }}>
+                    {confPercent}%
+                  </div>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)' }}>confiance</div>
+                </div>
+              </div>
+
+              {/* Expanded */}
+              {isOpen && (
+                <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--p-border)' }}>
+                  {/* Evidence grid */}
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '14px' }}>
+                    <div style={{
+                      padding: '12px', borderRadius: 'var(--p-radius-lg)',
+                      background: 'var(--p-bg)', border: '1px solid var(--p-border)',
+                    }}>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: DISC, marginBottom: '6px', letterSpacing: '0.5px' }}>
+                        DONNÉES INTERNES (N1)
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6 }}>
+                        {hyp.internalEvidence}
+                      </div>
+                    </div>
+                    <div style={{
+                      padding: '12px', borderRadius: 'var(--p-radius-lg)',
+                      background: 'var(--p-bg)', border: '1px solid var(--p-border)',
+                    }}>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#6C7CFF', marginBottom: '6px', letterSpacing: '0.5px' }}>
+                        LITTÉRATURE (N2)
+                      </div>
+                      <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6 }}>
+                        {hyp.externalEvidence}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Reasoning */}
+                  <div style={{
+                    padding: '12px', borderRadius: 'var(--p-radius-lg)',
+                    background: 'rgba(185,107,255,0.04)', border: '1px solid rgba(185,107,255,0.12)',
+                    marginBottom: '12px',
+                  }}>
+                    <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#B96BFF', marginBottom: '6px', letterSpacing: '0.5px' }}>
+                      RAISONNEMENT
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.7 }}>
+                      {hyp.reasoning}
+                    </div>
+                  </div>
+
+                  {/* Suggested action */}
+                  <div style={{
+                    padding: '10px 14px', borderRadius: 'var(--p-radius-lg)',
+                    background: `${DISC}06`, border: `1px solid ${DISC}15`,
+                    marginBottom: '12px',
+                  }}>
+                    <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: DISC, marginBottom: '4px' }}>
+                      ACTION SUGGÉRÉE
+                    </div>
+                    <div style={{ fontSize: '11px', color: 'var(--p-text)', lineHeight: 1.5 }}>
+                      {hyp.suggestedAction}
+                    </div>
+                  </div>
+
+                  {/* Literature refs */}
+                  {hyp.literatureRefs.length > 0 && (
+                    <div style={{ marginBottom: '12px' }}>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginBottom: '4px' }}>RÉFÉRENCES</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                        {hyp.literatureRefs.map((ref, i) => (
+                          <div key={i} style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>
+                            {ref.pmid && <span style={{ color: '#6C7CFF' }}>PMID:{ref.pmid} · </span>}
+                            {ref.title} ({ref.year})
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Disclaimer */}
+                  <div style={{
+                    padding: '8px 12px',
+                    background: 'rgba(255,165,2,0.06)', border: '1px solid rgba(255,165,2,0.12)',
+                    borderRadius: 'var(--p-radius-md)',
+                    fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FFA502',
+                  }}>
+                    ⚠ {hyp.disclaimer}
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+
+        {filtered.length === 0 && (
+          <div style={{
+            background: 'var(--p-bg-card)', border: '1px solid var(--p-border)',
+            borderRadius: 'var(--p-radius-xl)', padding: '40px', textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '14px', color: 'var(--p-text-muted)' }}>Aucune hypothèse avec ce filtre</div>
+          </div>
+        )}
       </div>
     </div>
   )
