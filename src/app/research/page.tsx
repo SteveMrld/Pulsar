@@ -17,6 +17,7 @@ import type { TherapeuticPathway, PathwayStatus, PathfinderResult } from '@/lib/
 import { EVIDENCE_LABELS, STATUS_LABELS as PATH_STATUS_LABELS } from '@/lib/engines/TreatmentPathfinder'
 import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
 import { searchPubMed, searchTrials, runFullPubMedScan, runTrialScan } from '@/lib/services/liveScanner'
+import { exportMarkdown, exportJSON, exportBibTeX, triggerDownload } from '@/lib/services/exportService'
 
 /* ══════════════════════════════════════════════════════════════
    RESEARCH DASHBOARD — Discovery Engine v4.0 (4 niveaux actifs)
@@ -200,6 +201,46 @@ export default function ResearchPage() {
             {summary.strongSignals} fort{summary.strongSignals !== 1 ? 's' : ''}
           </div>
         </div>
+      </div>
+
+      {/* ══ EXPORT BUTTONS ══ */}
+      <div style={{
+        display: 'flex', gap: '6px', padding: '8px 24px',
+        background: 'var(--p-bg)', flexWrap: 'wrap', alignItems: 'center',
+      }}>
+        <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginRight: '4px' }}>EXPORT :</span>
+        <button onClick={() => {
+          const md = exportMarkdown(discoveryResult, { language: 'fr' })
+          triggerDownload(md, `pulsar-research-brief-${new Date().toISOString().slice(0,10)}.md`, 'text/markdown')
+        }} style={{
+          padding: '4px 12px', borderRadius: 'var(--p-radius-md)',
+          background: `${DISC}08`, border: `1px solid ${DISC}20`,
+          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: DISC, cursor: 'pointer',
+        }}>📄 Brief FR</button>
+        <button onClick={() => {
+          const md = exportMarkdown(discoveryResult, { language: 'en' })
+          triggerDownload(md, `pulsar-research-brief-${new Date().toISOString().slice(0,10)}.md`, 'text/markdown')
+        }} style={{
+          padding: '4px 12px', borderRadius: 'var(--p-radius-md)',
+          background: `${DISC}08`, border: `1px solid ${DISC}20`,
+          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: DISC, cursor: 'pointer',
+        }}>📄 Brief EN</button>
+        <button onClick={() => {
+          const json = exportJSON(discoveryResult)
+          triggerDownload(json, `pulsar-discovery-data-${new Date().toISOString().slice(0,10)}.json`, 'application/json')
+        }} style={{
+          padding: '4px 12px', borderRadius: 'var(--p-radius-md)',
+          background: 'rgba(108,124,255,0.06)', border: '1px solid rgba(108,124,255,0.15)',
+          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#6C7CFF', cursor: 'pointer',
+        }}>💾 JSON</button>
+        <button onClick={() => {
+          const bib = exportBibTeX(discoveryResult.literature.articles)
+          triggerDownload(bib, `pulsar-bibliography-${new Date().toISOString().slice(0,10)}.bib`, 'application/x-bibtex')
+        }} style={{
+          padding: '4px 12px', borderRadius: 'var(--p-radius-md)',
+          background: 'rgba(185,107,255,0.06)', border: '1px solid rgba(185,107,255,0.15)',
+          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#B96BFF', cursor: 'pointer',
+        }}>📚 BibTeX</button>
       </div>
 
       {/* ══ TABS ══ */}
