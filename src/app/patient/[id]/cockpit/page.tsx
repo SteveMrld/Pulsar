@@ -1,12 +1,17 @@
 'use client'
 import Link from 'next/link'
-import { useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { usePatient } from '@/contexts/PatientContext'
 import { computeDiagnosticContext } from '@/lib/data/epidemioContext'
 import Picto from '@/components/Picto'
 import SilhouetteNeon from '@/components/SilhouetteNeon'
 import BrainMonitor from '@/components/BrainMonitor'
 import BrainHeatmap from '@/components/BrainHeatmap'
+import { discoveryEngine } from '@/lib/engines/DiscoveryEngine'
+import { DEMO_PATIENTS, SEED_SIGNALS } from '@/lib/data/discoveryData'
+import { SEED_ARTICLES } from '@/lib/data/literatureData'
+import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
+import type { SignalCard } from '@/lib/types/discovery'
 
 /* ══════════════════════════════════════════════════════════════
    COCKPIT — Patient-centric
@@ -24,6 +29,161 @@ function MiniGauge({ score, color, size = 48 }: { score: number; color: string; 
       <text x={size/2} y={size/2 + 4} textAnchor="middle" fill={color}
         fontSize="13" fontWeight="800" fontFamily="var(--p-font-mono)">{score}</text>
     </svg>
+  )
+}
+
+// ── Discovery Engine Panel (signals relevant to current patient) ──
+
+const DISC = '#10B981'
+const STRENGTH_COLORS: Record<string, string> = { very_strong: '#FF4757', strong: '#FFA502', moderate: '#6C7CFF', weak: '#8E8EA3' }
+const STRENGTH_LABELS: Record<string, string> = { very_strong: 'TRÈS FORT', strong: 'FORT', moderate: 'MODÉRÉ', weak: 'FAIBLE' }
+
+function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; syndrome: string; base: string }) {
+  const [expanded, setExpanded] = useState<string | null>(null)
+
+  const discovery = useMemo(() => {
+    const result = discoveryEngine.run(DEMO_PATIENTS, SEED_ARTICLES, PATIENT_PROFILES)
+
+    // Find signals relevant to this patient (by id match or syndrome match)
+    const patientSignals = [...SEED_SIGNALS, ...result.signals]
+      .filter(s =>
+        s.patients.ids.includes(patientId) ||
+        s.patients.syndromes.some(syn => syndrome?.toLowerCase().includes(syn.toLowerCase()))
+      )
+      .reduce((unique, s) => {
+        if (!unique.find(u => u.title === s.title)) unique.push(s)
+        return unique
+      }, [] as SignalCard[])
+      .slice(0, 4)
+
+    // Find relevant treatment pathways
+    const pathways = result.pathfinder.pathways
+      .filter(p => p.patientName.toLowerCase().includes(patientId.replace('demo-', '').toLowerCase()) || p.eligibilityScore >= 0.6)
+      .slice(0, 3)
+
+    // Find relevant hypotheses
+    const hypotheses = result.hypotheses.filter(h =>
+      h.signalIds.some(sid => patientSignals.some(ps => ps.id === sid)) ||
+      (syndrome === 'FIRES' && h.title.toLowerCase().includes('fires'))
+    ).slice(0, 2)
+
+    return { signals: patientSignals, pathways, hypotheses, totalSignals: result.signals.length }
+  }, [patientId, syndrome])
+
+  if (discovery.signals.length === 0 && discovery.pathways.length === 0) return null
+
+  return (
+    <div style={{ marginBottom: 'var(--p-space-4)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 'var(--p-space-3)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{
+            width: '8px', height: '8px', borderRadius: '50%', background: DISC,
+            boxShadow: `0 0 8px ${DISC}80`, animation: 'pulse 2s infinite',
+          }} />
+          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', fontWeight: 800, color: DISC, letterSpacing: '1.5px' }}>
+            DISCOVERY ENGINE
+          </span>
+          <span style={{
+            padding: '2px 8px', borderRadius: 'var(--p-radius-full)',
+            background: `${DISC}12`, fontSize: '9px', fontFamily: 'var(--p-font-mono)',
+            fontWeight: 700, color: DISC,
+          }}>
+            {discovery.signals.length} signaux patient
+          </span>
+        </div>
+        <Link href="/research" style={{
+          padding: '5px 14px', borderRadius: 'var(--p-radius-full)',
+          background: `${DISC}12`, border: `1px solid ${DISC}30`,
+          fontSize: '10px', fontFamily: 'var(--p-font-mono)', fontWeight: 700,
+          color: DISC, textDecoration: 'none', transition: 'all 0.2s',
+        }}>
+          EXPLORE →
+        </Link>
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: 'var(--p-space-3)' }}>
+        {/* Signal cards */}
+        {discovery.signals.map((s) => {
+          const color = STRENGTH_COLORS[s.strength] || '#8E8EA3'
+          const isOpen = expanded === s.id
+          return (
+            <div key={s.id}
+              onClick={() => setExpanded(isOpen ? null : s.id)}
+              className="glass-card" style={{
+                padding: 'var(--p-space-3)', borderRadius: 'var(--p-radius-lg)',
+                borderLeft: `3px solid ${color}`, cursor: 'pointer', transition: 'all 0.2s',
+              }}
+            >
+              <div style={{ display: 'flex', gap: '5px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                <span style={{
+                  padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
+                  background: `${color}15`, fontSize: '8px', fontFamily: 'var(--p-font-mono)',
+                  fontWeight: 700, color,
+                }}>{STRENGTH_LABELS[s.strength] || s.strength}</span>
+                <span style={{
+                  padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
+                  background: 'var(--p-bg)', fontSize: '8px', fontFamily: 'var(--p-font-mono)',
+                  fontWeight: 600, color: 'var(--p-text-dim)', border: '1px solid var(--p-border)',
+                }}>{s.type}</span>
+                {s.statistics.correlation && (
+                  <span style={{
+                    padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
+                    background: `${DISC}10`, fontSize: '8px', fontFamily: 'var(--p-font-mono)',
+                    fontWeight: 700, color: DISC,
+                  }}>r={s.statistics.correlation.toFixed(2)}</span>
+                )}
+              </div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--p-text)', lineHeight: 1.3 }}>{s.title}</div>
+              {isOpen && (
+                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--p-border)' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--p-text-muted)', lineHeight: 1.5 }}>{s.description}</div>
+                  <div style={{ marginTop: '6px', fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: '#FFA502' }}>
+                    ⚠ Signal IA — validation clinique requise
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+
+        {/* Treatment pathways (compact) */}
+        {discovery.pathways.map((pw) => {
+          const scorePercent = Math.round(pw.eligibilityScore * 100)
+          const scoreColor = scorePercent >= 80 ? '#2ED573' : scorePercent >= 60 ? '#FFA502' : '#6C7CFF'
+          return (
+            <div key={pw.id} className="glass-card" style={{
+              padding: 'var(--p-space-3)', borderRadius: 'var(--p-radius-lg)',
+              borderLeft: `3px solid ${scoreColor}`, cursor: 'pointer',
+            }}
+              onClick={() => setExpanded(expanded === pw.id ? null : pw.id)}
+            >
+              <div style={{ display: 'flex', gap: '5px', marginBottom: '6px' }}>
+                <span style={{
+                  padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
+                  background: `${scoreColor}15`, fontSize: '8px', fontFamily: 'var(--p-font-mono)',
+                  fontWeight: 700, color: scoreColor,
+                }}>{scorePercent}% ÉLIGIBLE</span>
+                {pw.trialId && <span style={{
+                  padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
+                  background: 'rgba(47,209,200,0.1)', fontSize: '8px', fontFamily: 'var(--p-font-mono)',
+                  fontWeight: 700, color: '#2FD1C8',
+                }}>{pw.trialId}</span>}
+              </div>
+              <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--p-text)', lineHeight: 1.3 }}>{pw.treatment}</div>
+              <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{pw.patientName}</div>
+              {expanded === pw.id && (
+                <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--p-border)' }}>
+                  <div style={{ fontSize: '10px', color: 'var(--p-text-muted)', lineHeight: 1.5, marginBottom: '4px' }}>{pw.mechanism}</div>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: '#FFA502' }}>
+                    ⚠ Piste IA — validation médicale obligatoire
+                  </div>
+                </div>
+              )}
+            </div>
+          )
+        })}
+      </div>
+    </div>
   )
 }
 
@@ -239,6 +399,9 @@ export default function PatientCockpit() {
         ))}
       </div>
 
+      {/* ═══ Discovery Engine — Signals for this patient ═══ */}
+      <DiscoveryPanel patientId={info.id} syndrome={info.syndrome} base={base} />
+
       {/* ═══ Quick Access ═══ */}
       <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: 'var(--p-space-3)' }}>ACCÈS RAPIDES</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 'var(--p-space-3)' }}>
@@ -249,6 +412,7 @@ export default function PatientCockpit() {
           { href: `${base}/suivi`, icon: 'chart', label: 'Timeline', color: '#2FD1C8' },
           { href: `${base}/synthese`, icon: 'clipboard', label: 'Synthèse', color: '#B96BFF' },
           { href: `${base}/synthese`, icon: 'export', label: 'Export PDF', color: '#2ED573' },
+          { href: '/research', icon: 'target', label: 'Discovery', color: '#10B981' },
         ].map((q, i) => (
           <Link key={i} href={q.href} style={{ textDecoration: 'none' }}>
             <div className="glass-card card-interactive" style={{
