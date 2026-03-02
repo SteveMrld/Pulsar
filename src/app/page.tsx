@@ -41,7 +41,7 @@ export default function LandingPage() {
         position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
-          <img src="/assets/logo-pulsar.png" alt="PULSAR" width={36} height={36} style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.3))', display: 'block' }} />
+          <img src="/assets/logo-pulsar.png" alt="PULSAR" width={40} height={40} style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.5))', display: 'block', objectFit: 'contain' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
         </div>
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
