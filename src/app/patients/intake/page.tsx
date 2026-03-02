@@ -3,7 +3,10 @@ import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import Picto from '@/components/Picto'
+import RoleGate from '@/components/RoleGate'
 import { analyzeIntake, DEFAULT_HISTORY, type IntakeData, type AdmissionMode, type ExistingExam, type MedicalHistory, type IntakeAnalysis, type HistoryAlert } from '@/lib/engines/IntakeAnalyzer'
+import { intakeToPatientState, formatAge } from '@/lib/engines/intakeToPatientState'
+import { intakePersistenceService } from '@/lib/services/intakePersistenceService'
 
 /* ══════════════════════════════════════════════════════════════
    INTAKE V17.1 — Module d'Analyse Intelligente de Dossier
@@ -78,6 +81,11 @@ export default function IntakePage() {
   const analysis = useMemo(() => analyzeIntake(data), [data])
   const h = data.history || DEFAULT_HISTORY
   const isTransfer = data.admissionMode === 'transfer'
+
+  // ── Patient identity (not part of analysis) ──
+  const [patientName, setPatientName] = useState('')
+  const [patientRoom, setPatientRoom] = useState('')
+  const [admitting, setAdmitting] = useState(false)
 
   const set = (key: keyof IntakeData, value: unknown) => setData(prev => ({ ...prev, [key]: value }))
   const num = (key: keyof IntakeData, v: string) => set(key, v===''?0:parseFloat(v))
@@ -172,11 +180,13 @@ export default function IntakePage() {
         {/* ── IDENTITY ── */}
         {tab==='identity' && (
           <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
+            <F label="NOM DU PATIENT" span={2}><input style={inputS} value={patientName} onChange={e=>setPatientName(e.target.value)} placeholder="ex: Sofia M."/></F>
             <F label="ÂGE (mois)"><input type="number" style={inputS} value={data.ageMonths||''} onChange={e=>num('ageMonths',e.target.value)} placeholder="ex: 48"/></F>
             <F label="SEXE"><select style={selS} value={data.sex} onChange={e=>set('sex',e.target.value)}><option value="">—</option><option value="female">Fille</option><option value="male">Garçon</option></select></F>
             <F label="POIDS (kg)"><input type="number" style={inputS} value={data.weight||''} onChange={e=>num('weight',e.target.value)}/></F>
+            <F label="CHAMBRE / LIT"><input style={inputS} value={patientRoom} onChange={e=>setPatientRoom(e.target.value)} placeholder="ex: Réa Neuro — Lit 8"/></F>
             <F label="CONSCIENCE"><select style={selS} value={data.consciousness} onChange={e=>set('consciousness',e.target.value)}><option value="alert">Alerte</option><option value="drowsy">Somnolent</option><option value="confused">Confus / Agité</option><option value="stupor">Stupeur</option><option value="coma">Coma</option></select></F>
-            <F label="DÉBUT DES SYMPTÔMES (jours)" span={2}><input type="number" style={inputS} value={data.symptomOnsetDays||''} onChange={e=>num('symptomOnsetDays',e.target.value)} placeholder="Nombre de jours depuis le début"/></F>
+            <F label="DÉBUT DES SYMPTÔMES (jours)"><input type="number" style={inputS} value={data.symptomOnsetDays||''} onChange={e=>num('symptomOnsetDays',e.target.value)} placeholder="Nombre de jours depuis le début"/></F>
           </div>
         )}
 
@@ -350,6 +360,51 @@ export default function IntakePage() {
 
           <div className="glass-card" style={{padding:'16px',borderRadius:'var(--p-radius-xl)'}}><UrgencyGauge score={analysis.urgencyScore} level={analysis.urgencyLevel}/></div>
 
+          {/* Triage Priority */}
+          <div style={{
+            padding:'14px 16px',borderRadius:'var(--p-radius-lg)',
+            background:`${analysis.triage.color}08`,
+            border:`1px solid ${analysis.triage.color}20`,
+            display:'flex',alignItems:'center',justifyContent:'space-between',
+          }}>
+            <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
+              <div style={{
+                width:'40px',height:'40px',borderRadius:'var(--p-radius-md)',
+                background:`${analysis.triage.color}15`,
+                border:`2px solid ${analysis.triage.color}40`,
+                display:'flex',alignItems:'center',justifyContent:'center',
+                fontFamily:'var(--p-font-mono)',fontSize:'16px',fontWeight:900,
+                color:analysis.triage.color,
+                boxShadow:`0 0 12px ${analysis.triage.color}20`,
+              }}>{analysis.triage.priority}</div>
+              <div>
+                <div style={{fontFamily:'var(--p-font-mono)',fontSize:'12px',fontWeight:800,color:analysis.triage.color}}>{analysis.triage.label}</div>
+                <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)',marginTop:'1px'}}>Prise en charge {analysis.triage.maxDelay}</div>
+              </div>
+            </div>
+            <div style={{textAlign:'right'}}>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'22px',fontWeight:900,color:analysis.triage.color,lineHeight:1}}>{analysis.triage.score}</div>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'7px',color:'var(--p-text-dim)',letterSpacing:'0.5px'}}>TRIAGE</div>
+            </div>
+          </div>
+
+          {/* Triage Factors */}
+          {analysis.triage.factors.length > 0 && (
+            <div style={{display:'flex',flexWrap:'wrap',gap:'4px'}}>
+              {analysis.triage.factors.map((f,i) => (
+                <div key={i} title={f.detail} style={{
+                  padding:'3px 8px',borderRadius:'var(--p-radius-full)',
+                  background:'var(--p-bg-elevated)',border:'1px solid rgba(108,124,255,0.06)',
+                  fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',
+                  display:'flex',alignItems:'center',gap:'4px',
+                }}>
+                  {f.factor}
+                  <span style={{fontWeight:800,color:f.points>=5?'#FFB347':'var(--p-text-muted)'}}>+{f.points}</span>
+                </div>
+              ))}
+            </div>
+          )}
+
           <div style={{padding:'12px 16px',borderRadius:'var(--p-radius-lg)',background:'rgba(108,124,255,0.04)',border:'1px solid rgba(108,124,255,0.1)',fontFamily:'var(--p-font-mono)',fontSize:'10px',color:'var(--p-text-muted)',lineHeight:1.6}}>
             <Picto name="brain" size={12}/> {analysis.clinicalSummary}
           </div>
@@ -464,9 +519,47 @@ export default function IntakePage() {
             </div>
           )}
 
-          <button onClick={()=>router.push('/patients')} style={{marginTop:'8px',padding:'14px',borderRadius:'var(--p-radius-lg)',border:'none',background:analysis.completeness>=30?'linear-gradient(135deg,#6C7CFF,#B96BFF)':'var(--p-bg-elevated)',color:analysis.completeness>=30?'#fff':'var(--p-text-dim)',fontFamily:'var(--p-font-mono)',fontSize:'12px',fontWeight:800,cursor:'pointer',letterSpacing:'0.5px',boxShadow:analysis.completeness>=30?'0 4px 20px rgba(108,124,255,0.3)':'none'}}>
-            Admettre et lancer les moteurs →
+          <button
+            disabled={admitting || analysis.completeness < 15 || !patientName.trim()}
+            onClick={async () => {
+              setAdmitting(true)
+              try {
+                const bridge = intakeToPatientState(data, analysis)
+                const result = await intakePersistenceService.admitFromIntake(
+                  patientName.trim() || 'Patient',
+                  patientRoom.trim() || 'Non assigné',
+                  data,
+                  analysis,
+                  bridge.patientData,
+                  analysis.triage,
+                )
+                router.push(`/patient/${result.patientId}/cockpit`)
+              } catch (err) {
+                console.error('[Intake] Erreur admission:', err)
+                setAdmitting(false)
+              }
+            }}
+            style={{
+              marginTop:'8px',padding:'14px',borderRadius:'var(--p-radius-lg)',border:'none',
+              background: admitting ? 'var(--p-bg-elevated)'
+                : (analysis.completeness >= 15 && patientName.trim())
+                  ? 'linear-gradient(135deg,#6C7CFF,#B96BFF)'
+                  : 'var(--p-bg-elevated)',
+              color: (analysis.completeness >= 15 && patientName.trim() && !admitting) ? '#fff' : 'var(--p-text-dim)',
+              fontFamily:'var(--p-font-mono)',fontSize:'12px',fontWeight:800,
+              cursor: (analysis.completeness >= 15 && patientName.trim() && !admitting) ? 'pointer' : 'not-allowed',
+              letterSpacing:'0.5px',
+              boxShadow: (analysis.completeness >= 15 && patientName.trim() && !admitting) ? '0 4px 20px rgba(108,124,255,0.3)' : 'none',
+              width: '100%',
+              transition: 'all 0.3s',
+            }}>
+            {admitting ? 'Création du dossier...' : !patientName.trim() ? 'Renseignez le nom du patient' : 'Admettre et lancer les moteurs →'}
           </button>
+          {!patientName.trim() && analysis.completeness >= 15 && (
+            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'#FFB347',textAlign:'center',padding:'2px 0'}}>
+              Onglet Identité → Nom du patient requis
+            </div>
+          )}
 
           <div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',textAlign:'center',padding:'4px 0'}}>
             PULSAR V17 · Ne se substitue pas au jugement clinique

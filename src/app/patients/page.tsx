@@ -1,5 +1,5 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import Picto from '@/components/Picto'
@@ -7,6 +7,9 @@ import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 import { PHASES, type ClinicalPhase } from '@/contexts/PatientContext'
+import { patientService } from '@/lib/services'
+import { intakePersistenceService } from '@/lib/services/intakePersistenceService'
+import { computeTriageFromPipeline } from '@/lib/engines/IntakeAnalyzer'
 
 /* ══════════════════════════════════════════════════════════════
    FILE ACTIVE — PULSAR V17
@@ -19,6 +22,7 @@ interface PatientCard {
   vps: number; gcs: number; critAlerts: number
   phase: ClinicalPhase; lastEvent: string; isDemo: boolean
   vpsHistory: number[]; avatar?: string
+  triageScore?: number; triagePriority?: string; triageColor?: string; triageLabel?: string
 }
 
 const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 'male' | 'female'; room: string; syndrome: string; avatar: string }> = {
@@ -44,6 +48,7 @@ function buildDemoPatients(): PatientCard[] {
     runPipeline(ps)
     const vps = ps.vpsResult?.synthesis.score ?? 0
     const vpsHistory = ps.vpsResult?.curve?.curveData?.slice(-6) ?? [vps]
+    const triage = computeTriageFromPipeline(ps)
     return {
       ...meta,
       hospDay: ps.hospDay,
@@ -57,6 +62,10 @@ function buildDemoPatients(): PatientCard[] {
         : 'Stable',
       isDemo: true,
       vpsHistory,
+      triageScore: triage.score,
+      triagePriority: triage.priority,
+      triageColor: triage.color,
+      triageLabel: triage.label,
     }
   }).filter(Boolean) as PatientCard[]
 }
@@ -116,13 +125,14 @@ function PhaseBar({ phase }: { phase: ClinicalPhase }) {
 /* ── Patient Card Row ── */
 function PatientRow({ p }: { p: PatientCard }) {
   const vpsColor = p.vps >= 70 ? '#FF4757' : p.vps >= 50 ? '#FFA502' : p.vps >= 30 ? '#FFB347' : '#2ED573'
+  const hasTriage = !!p.triagePriority
   return (
     <Link href={`/patient/${p.id}/cockpit`} style={{ textDecoration: 'none' }}>
       <div className="card-interactive" style={{
         padding: '14px 18px', borderRadius: 'var(--p-radius-lg)',
         background: 'var(--p-bg-card)',
         border: p.vps >= 70 ? '1px solid rgba(255,71,87,0.15)' : 'var(--p-border)',
-        display: 'grid', gridTemplateColumns: '44px 1fr auto auto auto auto auto',
+        display: 'grid', gridTemplateColumns: hasTriage ? '44px 1fr auto auto auto auto auto auto' : '44px 1fr auto auto auto auto auto',
         alignItems: 'center', gap: '14px',
         boxShadow: p.vps >= 70 ? '0 0 20px rgba(255,71,87,0.05)' : 'none',
         transition: 'all 0.2s',
@@ -147,6 +157,18 @@ function PatientRow({ p }: { p: PatientCard }) {
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{p.lastEvent}</div>
           <PhaseBar phase={p.phase} />
         </div>
+
+        {/* Triage badge */}
+        {hasTriage && (
+          <div style={{
+            textAlign: 'center', padding: '4px 10px', borderRadius: 'var(--p-radius-md)',
+            background: `${p.triageColor}12`, border: `1px solid ${p.triageColor}25`,
+            minWidth: '44px',
+          }}>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '14px', fontWeight: 900, color: p.triageColor, lineHeight: 1 }}>{p.triagePriority}</div>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: p.triageColor, opacity: 0.7, marginTop: '1px' }}>{p.triageLabel}</div>
+          </div>
+        )}
 
         {/* Syndrome */}
         <span style={{
@@ -282,14 +304,97 @@ export default function FileActivePage() {
   const router = useRouter()
   const [search, setSearch] = useState('')
   const [showDemo, setShowDemo] = useState(false)
+  const [sortMode, setSortMode] = useState<'triage' | 'vps' | 'jour' | 'phase' | 'gcs' | 'alertes'>('triage')
 
-  const realPatients: PatientCard[] = []
+  const [realPatients, setRealPatients] = useState<PatientCard[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    async function loadPatients() {
+      try {
+        const dbPatients = await patientService.getActive()
+        if (cancelled) return
+
+        const cards: PatientCard[] = []
+        for (const p of dbPatients) {
+          const loaded = await intakePersistenceService.loadForEngines(p.id)
+          if (!loaded || cancelled) continue
+
+          const ps = new PatientState(loaded.patientData)
+          runPipeline(ps)
+          const vps = ps.vpsResult?.synthesis.score ?? 0
+          const vpsHistory = ps.vpsResult?.curve?.curveData?.slice(-6) ?? [vps]
+          const triage = computeTriageFromPipeline(ps)
+
+          cards.push({
+            id: p.id,
+            name: p.display_name,
+            age: `${Math.floor(p.age_months / 12)} ans`,
+            sex: p.sex,
+            syndrome: p.syndrome || 'En évaluation',
+            hospDay: p.hosp_day,
+            room: p.room || 'Non assigné',
+            vps,
+            gcs: ps.neuro.gcs,
+            critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
+            phase: detectPhase(p.hosp_day, vps),
+            lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status réfractaire en cours'
+              : ps.neuro.seizures24h > 3 ? `${ps.neuro.seizures24h} crises/24h`
+              : ps.neuro.gcs <= 8 ? 'GCS critique'
+              : 'Admis via Analyse Intelligente',
+            isDemo: false,
+            vpsHistory,
+            triageScore: triage.score,
+            triagePriority: triage.priority,
+            triageColor: triage.color,
+            triageLabel: triage.label,
+          })
+        }
+
+        if (!cancelled) {
+          setRealPatients(cards)
+          setLoading(false)
+        }
+      } catch (err) {
+        console.error('[FileActive] Erreur chargement:', err)
+        if (!cancelled) setLoading(false)
+      }
+    }
+    loadPatients()
+
+    // Subscribe realtime
+    const channel = patientService.subscribeToChanges(() => { loadPatients() })
+    return () => { cancelled = true; if (channel && typeof channel === 'object' && 'unsubscribe' in channel) { (channel as { unsubscribe: () => void }).unsubscribe() } }
+  }, [])
   const demoPatients = useMemo(() => buildDemoPatients(), [])
   const activePatients = showDemo ? [...realPatients, ...demoPatients] : realPatients
 
+  const PHASE_ORDER: Record<ClinicalPhase, number> = { acute: 0, stabilization: 1, monitoring: 2, recovery: 3 }
+
   const filtered = activePatients
     .filter(p => !search || p.name.toLowerCase().includes(search.toLowerCase()) || p.syndrome.toLowerCase().includes(search.toLowerCase()))
-    .sort((a, b) => b.vps - a.vps)
+    .sort((a, b) => {
+      switch (sortMode) {
+        case 'triage': {
+          const ta = a.triageScore ?? 0
+          const tb = b.triageScore ?? 0
+          if (ta !== tb) return tb - ta
+          return b.vps - a.vps
+        }
+        case 'vps': return b.vps - a.vps
+        case 'jour': return b.hospDay - a.hospDay
+        case 'phase': {
+          const pa = PHASE_ORDER[a.phase]
+          const pb = PHASE_ORDER[b.phase]
+          if (pa !== pb) return pa - pb
+          return b.vps - a.vps
+        }
+        case 'gcs': return a.gcs - b.gcs  // lower GCS = more critical = first
+        case 'alertes': return b.critAlerts - a.critAlerts
+        default: return 0
+      }
+    })
 
   const criticalCount = activePatients.filter(p => p.vps >= 70).length
   const warningCount = activePatients.filter(p => p.vps >= 40 && p.vps < 70).length
@@ -385,6 +490,35 @@ export default function FileActivePage() {
               color: 'white', letterSpacing: '0.5px',
               boxShadow: '0 4px 16px rgba(108,124,255,0.3)',
             }}>+ Analyse intelligente</button>
+          </div>
+
+          {/* Sort options */}
+          <div style={{ display: 'flex', gap: '6px', marginBottom: '16px', flexWrap: 'wrap' }}>
+            {([
+              { mode: 'triage' as const, label: 'Triage', icon: 'alert', color: '#FF4757' },
+              { mode: 'vps' as const, label: 'VPS', icon: 'heart', color: '#6C7CFF' },
+              { mode: 'gcs' as const, label: 'GCS', icon: 'brain', color: '#B96BFF' },
+              { mode: 'alertes' as const, label: 'Alertes', icon: 'alert', color: '#FFA502' },
+              { mode: 'phase' as const, label: 'Phase', icon: 'eeg', color: '#2FD1C8' },
+              { mode: 'jour' as const, label: 'Jour', icon: 'clipboard', color: '#2ED573' },
+            ]).map(opt => {
+              const active = sortMode === opt.mode
+              return (
+                <button key={opt.mode} onClick={() => setSortMode(opt.mode)} style={{
+                  padding: '5px 12px', borderRadius: 'var(--p-radius-full)',
+                  background: active ? `${opt.color}15` : 'transparent',
+                  border: active ? `1px solid ${opt.color}30` : '1px solid var(--p-border)',
+                  cursor: 'pointer', transition: 'all 0.2s',
+                  fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: active ? 800 : 600,
+                  color: active ? opt.color : 'var(--p-text-dim)',
+                  display: 'flex', alignItems: 'center', gap: '5px',
+                }}>
+                  <Picto name={opt.icon} size={10} />
+                  {opt.label}
+                  {active && <span style={{ fontSize: '7px', opacity: 0.7 }}>▼</span>}
+                </button>
+              )
+            })}
           </div>
 
           {totalAlerts > 0 && (

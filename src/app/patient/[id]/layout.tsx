@@ -5,6 +5,7 @@ import { useState } from 'react'
 import { PatientProvider, usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 import PulsarAI from '@/components/PulsarAI'
+import { RoleBadge } from '@/components/RoleGate'
 
 /* ══════════════════════════════════════════════════════════════
    PATIENT LAYOUT V17
@@ -64,6 +65,7 @@ function PatientHeader() {
             color: info.phaseInfo.color,
             border: `1px solid ${info.phaseInfo.color}25`,
           }}>{info.phaseInfo.label}</span>
+          <RoleBadge />
           {info.allergies.length > 0 && (
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FF4757', fontWeight: 700 }}>
               ⚠ {info.allergies.join(', ')}

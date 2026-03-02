@@ -4,6 +4,9 @@ import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
 import ThemeToggle from './ThemeToggle'
+import { ProfileProvider } from '@/contexts/ProfileContext'
+import { RoleBadge } from './RoleGate'
+import ConnectionStatus from './ConnectionStatus'
 
 /* ══════════════════════════════════════════════════════════════
    APP SHELL — Header minimal hors-patient
@@ -65,11 +68,12 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
   // Patient pages: le layout patient gère tout, on fournit juste l'auth
   if (isPatient) {
-    return <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>{children}</div>
+    return <ProfileProvider><div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>{children}</div></ProfileProvider>
   }
 
   // Pages internes hors-patient : header minimal
   return (
+    <ProfileProvider>
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'flex', flexDirection: 'column' }}>
       <header className="glass" style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
@@ -93,11 +97,32 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </Link>
           <span style={{ color: 'var(--p-text-dim)', fontSize: '11px' }}>›</span>
           <span style={{ fontSize: '12px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>
-            {pathname === '/patients' ? 'File active' : pathname.replace('/', '')}
+            {pathname === '/patients' ? 'File active' : pathname === '/dashboard' ? 'Dashboard' : pathname === '/admin' ? 'Admin' : pathname === '/research' ? 'Discovery Engine' : pathname.replace('/', '')}
           </span>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <Link href="/dashboard" style={{
+            padding: '3px 8px', borderRadius: 'var(--p-radius-sm)', textDecoration: 'none',
+            fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+            color: pathname === '/dashboard' ? '#6C7CFF' : 'var(--p-text-dim)',
+            background: pathname === '/dashboard' ? '#6C7CFF15' : 'transparent',
+          }}>Dashboard</Link>
+          <Link href="/patients" style={{
+            padding: '3px 8px', borderRadius: 'var(--p-radius-sm)', textDecoration: 'none',
+            fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+            color: pathname === '/patients' ? '#6C7CFF' : 'var(--p-text-dim)',
+            background: pathname === '/patients' ? '#6C7CFF15' : 'transparent',
+          }}>File active</Link>
+          <Link href="/research" style={{
+            padding: '3px 8px', borderRadius: 'var(--p-radius-sm)', textDecoration: 'none',
+            fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+            color: pathname === '/research' ? '#10B981' : 'var(--p-text-dim)',
+            background: pathname === '/research' ? '#10B98115' : 'transparent',
+          }}>Discovery</Link>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
           <ThemeToggle />
+          <RoleBadge />
           <span style={{
             fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)',
             fontFamily: 'var(--p-font-mono)',
@@ -114,6 +139,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       <main className="bg-mesh" style={{ flex: 1, position: 'relative' }}>
         <div key={pathname} className="page-enter">{children}</div>
       </main>
+      <ConnectionStatus />
     </div>
+    </ProfileProvider>
   )
 }

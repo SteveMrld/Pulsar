@@ -37,6 +37,11 @@
   --p-tpe-dim:     rgba(255, 179, 71, 0.15);
   --p-tpe-glow:    rgba(255, 179, 71, 0.30);
 
+  /* ── Discovery Engine ── */
+  --p-disc:        #10B981;
+  --p-disc-dim:    rgba(16, 185, 129, 0.15);
+  --p-disc-glow:   rgba(16, 185, 129, 0.30);
+
   /* ── Sémantique alertes ── */
   --p-critical:    #FF4757;
   --p-critical-bg: rgba(255, 71, 87, 0.12);
@@ -96,6 +101,7 @@
   --p-shadow-glow-pve: 0 0 20px var(--p-pve-glow);
   --p-shadow-glow-ewe: 0 0 20px var(--p-ewe-glow);
   --p-shadow-glow-tpe: 0 0 20px var(--p-tpe-glow);
+  --p-shadow-glow-disc: 0 0 20px var(--p-disc-glow);
 
   /* ── Transitions ── */
   --p-ease:       cubic-bezier(0.4, 0, 0.2, 1);

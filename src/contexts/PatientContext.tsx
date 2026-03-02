@@ -1,8 +1,12 @@
 'use client'
-import { createContext, useContext, useMemo, type ReactNode } from 'react'
+import { createContext, useContext, useMemo, useState, useEffect, type ReactNode } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
+import { intakePersistenceService } from '@/lib/services/intakePersistenceService'
+
+import type { TriageResult } from '@/lib/engines/IntakeAnalyzer'
+import { computeTriageFromPipeline } from '@/lib/engines/IntakeAnalyzer'
 
 /* ══════════════════════════════════════════════════════════════
    PATIENT CONTEXT V17 — patient-centric architecture
@@ -51,6 +55,7 @@ export interface PatientInfo {
   allergies: string[]
   phase: ClinicalPhase
   phaseInfo: PhaseInfo
+  triage?: TriageResult
 }
 
 // ── Tab configuration ──
@@ -135,6 +140,14 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
     {
       id: 'ressources',  label: 'Ressources',  icon: 'books',      color: '#FFB347',
       available: true, priority: 8,
+    },
+    {
+      id: 'saisie',      label: 'Saisie',      icon: 'edit',       color: '#FF6B8A',
+      available: true, priority: 9,
+    },
+    {
+      id: 'historique',   label: 'Historique',  icon: 'clipboard',  color: '#6C7CFF',
+      available: true, priority: 10,
     },
   ]
 
@@ -243,11 +256,83 @@ const ID_TO_SCENARIO: Record<string, string> = {
 }
 
 export function PatientProvider({ id, children }: { id: string; children: ReactNode }) {
-  const scenarioKey = ID_TO_SCENARIO[id] || 'FIRES'
+  const scenarioKey = ID_TO_SCENARIO[id] || ''
+  const isDemo = !!scenarioKey
+  const [dbValue, setDbValue] = useState<PatientContextValue | null>(null)
+  const [dbLoading, setDbLoading] = useState(!isDemo)
 
-  const value = useMemo(() => {
-    const demo = DEMO_PATIENTS[scenarioKey]
-    const fallbackKey = demo ? scenarioKey : 'FIRES'
+  // ── Async load for DB patients ──
+  useEffect(() => {
+    if (isDemo) return
+
+    let cancelled = false
+    async function load() {
+      try {
+        const loaded = await intakePersistenceService.loadForEngines(id)
+        if (cancelled || !loaded || !loaded.patient) return
+
+        const ps = new PatientState(loaded.patientData)
+        runPipeline(ps)
+
+        const vps = ps.vpsResult?.synthesis.score ?? 0
+        const phase = detectPhase(loaded.patient.hosp_day, vps)
+        const triage = computeTriageFromPipeline(ps)
+
+        const info: PatientInfo = {
+          id: loaded.patient.id,
+          displayName: loaded.patient.display_name,
+          age: `${Math.floor(loaded.patient.age_months / 12)} ans`,
+          sex: loaded.patient.sex,
+          syndrome: loaded.patient.syndrome || 'En évaluation',
+          hospDay: loaded.patient.hosp_day,
+          room: loaded.patient.room || 'Non assigné',
+          weight: loaded.patient.weight_kg ? `${loaded.patient.weight_kg} kg` : '—',
+          allergies: loaded.patient.allergies || [],
+          phase,
+          phaseInfo: PHASES[phase],
+          triage,
+        }
+
+        const tabs = buildTabs(phase, ps)
+        const timeline = buildTimeline(ps, info)
+
+        const vpsColor = vps >= 70 ? '#FF4757' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
+        const vpsLevel = vps >= 70 ? 'CRITIQUE' : vps >= 50 ? 'SÉVÈRE' : vps >= 30 ? 'MODÉRÉ' : 'STABLE'
+
+        const allRecs = [
+          ...(ps.vpsResult?.synthesis.recommendations || []),
+          ...(ps.tdeResult?.synthesis.recommendations || []),
+          ...(ps.pveResult?.synthesis.recommendations || []),
+        ]
+
+        const engineSummary = {
+          vps, vpsLevel, vpsColor,
+          criticalAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
+          warningAlerts: ps.alerts.filter(a => a.severity === 'warning').length,
+          totalRecommendations: allRecs.length,
+          topRecommendation: allRecs.find(r => r.priority === 'urgent')?.title || null,
+        }
+
+        if (!cancelled) {
+          setDbValue({ ps, info, scenarioKey: 'DB', tabs, timeline, engineSummary })
+          setDbLoading(false)
+        }
+      } catch (err) {
+        console.error('[PatientContext] Erreur chargement DB:', err)
+        if (!cancelled) setDbLoading(false)
+      }
+    }
+    load()
+    return () => { cancelled = true }
+  }, [id, isDemo])
+
+  // ── Demo patient (synchronous) ──
+  const demoValue = useMemo(() => {
+    if (!isDemo) return null
+
+    const key = scenarioKey || 'FIRES'
+    const demo = DEMO_PATIENTS[key]
+    const fallbackKey = demo ? key : 'FIRES'
     const data = demo?.data || DEMO_PATIENTS.FIRES.data
 
     const ps = new PatientState(data)
@@ -262,6 +347,7 @@ export function PatientProvider({ id, children }: { id: string; children: ReactN
       hospDay: ps.hospDay,
       phase,
       phaseInfo: PHASES[phase],
+      triage: computeTriageFromPipeline(ps),
     }
 
     const tabs = buildTabs(phase, ps)
@@ -277,17 +363,38 @@ export function PatientProvider({ id, children }: { id: string; children: ReactN
     ]
 
     const engineSummary = {
-      vps,
-      vpsLevel,
-      vpsColor,
+      vps, vpsLevel, vpsColor,
       criticalAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
       warningAlerts: ps.alerts.filter(a => a.severity === 'warning').length,
       totalRecommendations: allRecs.length,
       topRecommendation: allRecs.find(r => r.priority === 'urgent')?.title || null,
     }
 
-    return { ps, info, scenarioKey, tabs, timeline, engineSummary }
-  }, [scenarioKey])
+    return { ps, info, scenarioKey: key, tabs, timeline, engineSummary }
+  }, [scenarioKey, isDemo])
+
+  const value = isDemo ? demoValue : dbValue
+
+  // Loading state
+  if (!isDemo && dbLoading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--p-bg)' }}>
+        <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', color: 'var(--p-text-dim)' }}>
+          Chargement du patient...
+        </div>
+      </div>
+    )
+  }
+
+  if (!value) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--p-bg)' }}>
+        <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', color: '#FF4757' }}>
+          Patient introuvable
+        </div>
+      </div>
+    )
+  }
 
   return (
     <PatientCtx.Provider value={value}>

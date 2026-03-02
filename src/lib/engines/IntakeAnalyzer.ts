@@ -175,6 +175,17 @@ export interface SimilarCase {
   ageDiff: number; severity: number; outcome: string
 }
 
+export type TriagePriority = 'P1' | 'P2' | 'P3' | 'P4'
+
+export interface TriageResult {
+  score: number                    // 0-100
+  priority: TriagePriority         // P1 (immédiat) → P4 (standard)
+  label: string                    // "Immédiat", "Urgent", etc.
+  color: string                    // couleur associée
+  maxDelay: string                 // délai max recommandé
+  factors: { factor: string; points: number; detail: string }[]  // décomposition
+}
+
 export interface IntakeAnalysis {
   urgencyScore: number
   urgencyLevel: 'critical' | 'high' | 'moderate' | 'low'
@@ -188,6 +199,7 @@ export interface IntakeAnalysis {
   clinicalSummary: string
   completeness: number
   isTransfer: boolean
+  triage: TriageResult
 }
 
 // ── Syndrome colors ──
@@ -389,10 +401,14 @@ export function analyzeIntake(data: Partial<IntakeData>): IntakeAnalysis {
     summary = parts.join(' ') || 'Analyse en cours — compléter les données.'
   }
 
+  // ── Triage Score ──
+  const triage = computeTriage(urgency, uniqueFlags, historyAlerts, examRecommendations, examGaps, differentials, completeness)
+
   return {
     urgencyScore: urgency, urgencyLevel, differentials, redFlags: uniqueFlags,
     historyAlerts, examRecommendations, examGaps, similarCases,
     engineReadiness, clinicalSummary: summary, completeness, isTransfer,
+    triage,
   }
 }
 
@@ -1014,6 +1030,176 @@ function analyzeExams(d: IntakeData, h: MedicalHistory, diffs: DiagnosisCandidat
   }
 
   return { recommendations: recs, gaps }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRIAGE SCORING — Score composite de priorité file d'attente
+// ═══════════════════════════════════════════════════════════════
+
+const TRIAGE_LEVELS: Record<TriagePriority, { label: string; color: string; maxDelay: string }> = {
+  P1: { label: 'Immédiat',     color: '#FF4757', maxDelay: '< 15 min' },
+  P2: { label: 'Urgent',       color: '#FFA502', maxDelay: '< 30 min' },
+  P3: { label: 'Semi-urgent',  color: '#FFB347', maxDelay: '< 1h' },
+  P4: { label: 'Standard',     color: '#2ED573', maxDelay: 'File normale' },
+}
+
+function computeTriage(
+  urgencyScore: number,
+  redFlags: RedFlagHit[],
+  historyAlerts: HistoryAlert[],
+  examRecommendations: ExamRecommendation[],
+  examGaps: ExamGap[],
+  differentials: DiagnosisCandidate[],
+  completeness: number,
+): TriageResult {
+  const factors: TriageResult['factors'] = []
+  let score = 0
+
+  // ── 1. Score d'urgence clinique (0-50 pts) ──
+  const urgencyPts = Math.round(urgencyScore * 0.50)
+  factors.push({ factor: 'Urgence clinique', points: urgencyPts, detail: `Score brut ${urgencyScore}/100 → ${urgencyPts} pts` })
+  score += urgencyPts
+
+  // ── 2. Red flags (0-15 pts) ──
+  const critFlags = redFlags.filter(r => r.severity === 'critical').length
+  const warnFlags = redFlags.filter(r => r.severity === 'warning').length
+  const flagPts = Math.min(15, critFlags * 4 + warnFlags * 2)
+  if (flagPts > 0) {
+    factors.push({ factor: 'Red flags', points: flagPts, detail: `${critFlags} critique(s), ${warnFlags} warning(s)` })
+  }
+  score += flagPts
+
+  // ── 3. Alertes ATCD (0-10 pts) ──
+  const critATCD = historyAlerts.filter(a => a.severity === 'critical').length
+  const warnATCD = historyAlerts.filter(a => a.severity === 'warning').length
+  const atcdPts = Math.min(10, critATCD * 4 + warnATCD * 1)
+  if (atcdPts > 0) {
+    factors.push({ factor: 'Antécédents', points: atcdPts, detail: `${critATCD} critique(s), ${warnATCD} vigilance(s)` })
+  }
+  score += atcdPts
+
+  // ── 4. Examens immédiats en attente (0-10 pts) ──
+  const immediateExams = examRecommendations.filter(e => e.urgency === 'immediate' && !e.alreadyDone).length
+  const urgentExams = examRecommendations.filter(e => e.urgency === 'urgent' && !e.alreadyDone).length
+  const examPts = Math.min(10, immediateExams * 3 + urgentExams * 1)
+  if (examPts > 0) {
+    factors.push({ factor: 'Examens en attente', points: examPts, detail: `${immediateExams} immédiat(s), ${urgentExams} urgent(s)` })
+  }
+  score += examPts
+
+  // ── 5. Gaps critiques (0-10 pts) ──
+  const critGaps = examGaps.filter(g => g.urgency === 'critical').length
+  const highGaps = examGaps.filter(g => g.urgency === 'high').length
+  const gapPts = Math.min(10, critGaps * 5 + highGaps * 2)
+  if (gapPts > 0) {
+    factors.push({ factor: 'Gaps diagnostiques', points: gapPts, detail: `${critGaps} critique(s), ${highGaps} élevé(s)` })
+  }
+  score += gapPts
+
+  // ── 6. Incertitude diagnostique (0-5 pts) ──
+  // Si les 2 premiers diagnostics sont proches en confiance → incertitude → priorité
+  if (differentials.length >= 2) {
+    const delta = differentials[0].confidence - differentials[1].confidence
+    if (delta <= 10 && differentials[0].confidence >= 30) {
+      factors.push({ factor: 'Incertitude diagnostique', points: 5, detail: `Top 2 proches : ${differentials[0].syndrome}(${differentials[0].confidence}%) vs ${differentials[1].syndrome}(${differentials[1].confidence}%)` })
+      score += 5
+    }
+  }
+
+  score = Math.min(100, score)
+
+  // ── Priority ──
+  const priority: TriagePriority = score >= 75 ? 'P1' : score >= 50 ? 'P2' : score >= 25 ? 'P3' : 'P4'
+  const level = TRIAGE_LEVELS[priority]
+
+  return {
+    score,
+    priority,
+    label: level.label,
+    color: level.color,
+    maxDelay: level.maxDelay,
+    factors,
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// TRIAGE FROM PIPELINE — Pour patients démo ou déjà admis
+// Même logique de scoring, données extraites du PatientState
+// ═══════════════════════════════════════════════════════════════
+
+export function computeTriageFromPipeline(ps: import('./PatientState').PatientState): TriageResult {
+  const factors: TriageResult['factors'] = []
+  let score = 0
+
+  // ── 1. Gravité clinique brute (0-50 pts) — depuis VPS ──
+  const vps = ps.vpsResult?.synthesis.score ?? 0
+  const urgencyFromVPS = Math.round(vps * 0.50)
+  factors.push({ factor: 'Gravité clinique', points: urgencyFromVPS, detail: `VPS ${vps}/100 → ${urgencyFromVPS} pts` })
+  score += urgencyFromVPS
+
+  // ── 2. Alertes critiques pipeline (0-15 pts) ──
+  const critAlerts = ps.alerts.filter(a => a.severity === 'critical').length
+  const warnAlerts = ps.alerts.filter(a => a.severity === 'warning').length
+  const alertPts = Math.min(15, critAlerts * 4 + warnAlerts * 2)
+  if (alertPts > 0) {
+    factors.push({ factor: 'Alertes moteurs', points: alertPts, detail: `${critAlerts} critique(s), ${warnAlerts} warning(s)` })
+  }
+  score += alertPts
+
+  // ── 3. Neuro critique (0-10 pts) ──
+  let neuroPts = 0
+  if (ps.neuro.gcs <= 8) neuroPts += 5
+  else if (ps.neuro.gcs <= 12) neuroPts += 2
+  if (ps.neuro.seizureType === 'refractory_status' || ps.neuro.seizureType === 'super_refractory') neuroPts += 5
+  else if (ps.neuro.seizureType === 'status') neuroPts += 3
+  else if (ps.neuro.seizures24h >= 5) neuroPts += 2
+  neuroPts = Math.min(10, neuroPts)
+  if (neuroPts > 0) {
+    factors.push({ factor: 'Neuro critique', points: neuroPts, detail: `GCS ${ps.neuro.gcs}, ${ps.neuro.seizures24h} crises/24h` })
+  }
+  score += neuroPts
+
+  // ── 4. Instabilité hémodynamique (0-10 pts) ──
+  let hemoPts = 0
+  if (ps.hemodynamics.spo2 < 92) hemoPts += 4
+  if (ps.hemodynamics.map < 60) hemoPts += 4
+  if (ps.hemodynamics.temp >= 39.5) hemoPts += 2
+  if (ps.biology.lactate > 4) hemoPts += 3
+  hemoPts = Math.min(10, hemoPts)
+  if (hemoPts > 0) {
+    factors.push({ factor: 'Instabilité hémo.', points: hemoPts, detail: `SpO₂ ${ps.hemodynamics.spo2}%, MAP ${ps.hemodynamics.map}, T° ${ps.hemodynamics.temp}°C` })
+  }
+  score += hemoPts
+
+  // ── 5. Score EWE — risque évolutif (0-10 pts) ──
+  const ewe = ps.eweResult?.synthesis.score ?? 0
+  const ewePts = Math.min(10, Math.round(ewe * 0.10))
+  if (ewePts > 0) {
+    factors.push({ factor: 'Risque évolutif', points: ewePts, detail: `EWE ${ewe}/100` })
+  }
+  score += ewePts
+
+  // ── 6. Recommandations urgentes (0-5 pts) ──
+  const urgentRecs = ps.recommendations.filter(r => r.priority === 'urgent').length
+  const recPts = Math.min(5, urgentRecs * 2)
+  if (recPts > 0) {
+    factors.push({ factor: 'Actions urgentes', points: recPts, detail: `${urgentRecs} recommandation(s) urgente(s)` })
+  }
+  score += recPts
+
+  score = Math.min(100, score)
+
+  const priority: TriagePriority = score >= 75 ? 'P1' : score >= 50 ? 'P2' : score >= 25 ? 'P3' : 'P4'
+  const level = TRIAGE_LEVELS[priority]
+
+  return {
+    score,
+    priority,
+    label: level.label,
+    color: level.color,
+    maxDelay: level.maxDelay,
+    factors,
+  }
 }
 
 // ═══════════════════════════════════════════════════════════════

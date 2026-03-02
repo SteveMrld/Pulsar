@@ -111,6 +111,39 @@ export default function PatientCockpit() {
               <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0, lineHeight: 1.2 }}>Cockpit Patient</h1>
               <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>Que faire maintenant ?</span>
             </div>
+            {info.triage && (
+              <div style={{
+                marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '10px',
+                padding: '8px 14px', borderRadius: 'var(--p-radius-lg)',
+                background: `${info.triage.color}08`,
+                border: `1px solid ${info.triage.color}20`,
+              }}>
+                <div style={{
+                  width: '36px', height: '36px', borderRadius: 'var(--p-radius-md)',
+                  background: `${info.triage.color}15`,
+                  border: `2px solid ${info.triage.color}40`,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontFamily: 'var(--p-font-mono)', fontSize: '15px', fontWeight: 900,
+                  color: info.triage.color,
+                  boxShadow: `0 0 10px ${info.triage.color}20`,
+                }}>{info.triage.priority}</div>
+                <div>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: info.triage.color }}>{info.triage.label}</div>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)' }}>Triage {info.triage.score}/100 · {info.triage.maxDelay}</div>
+                </div>
+                <div style={{ display: 'flex', gap: '3px', marginLeft: '6px' }}>
+                  {info.triage.factors.slice(0, 3).map((f, i) => (
+                    <div key={i} title={`${f.factor}: ${f.detail}`} style={{
+                      padding: '2px 6px', borderRadius: 'var(--p-radius-full)',
+                      background: 'var(--p-bg-elevated)', border: '1px solid rgba(108,124,255,0.06)',
+                      fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: 'var(--p-text-dim)',
+                    }}>
+                      {f.factor.split(' ')[0]} <span style={{ fontWeight: 800, color: f.points >= 5 ? '#FFB347' : 'var(--p-text-muted)' }}>+{f.points}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--p-space-3)' }}>

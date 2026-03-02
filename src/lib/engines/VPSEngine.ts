@@ -261,12 +261,14 @@ export class VPSEngine extends BrainCore {
 
   // ── Synthèse ──
   synthesize(ps: PatientState, intention: IntentionResult, context: ContextResult, rules: RuleResult[], curve: CurveResult): SynthesisResult {
-    const weights: Record<string, number> = { neuro: 3, inflammatory: 1.5, hemodynamic: 2, pims: 1.5 }
+    const weights: Record<string, number> = { neuro: 3, inflammatory: 1.5, hemodynamic: 2, pims: 1.5, neuro_monitoring: 2 }
     let raw = 0, tw = 0
 
     for (const f of intention.fields) {
       // Skip PIMS field if no PIMS data
       if (f.category === 'pims' && !ps.pims.confirmed && !ps.pims.covidExposure) continue
+      // Skip neuro-monitoring field if no EEG/biomarker data available
+      if (f.category === 'neuro_monitoring' && !ps.eeg && !ps.neuroBiomarkers && !ps.pupillometry) continue
       const w = weights[f.category] || 1
       raw += f.intensity * w
       tw += w
