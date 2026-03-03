@@ -1,10 +1,12 @@
 'use client'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 
 /* Synth\u00e8se Clinique \u2014 Staff & Transmission */
 
 export default function SynthesePage() {
+  const { t } = useLang()
   const { ps, info, engineSummary, timeline } = usePatient()
   const { vps, vpsColor, vpsLevel, criticalAlerts, warningAlerts, totalRecommendations, topRecommendation } = engineSummary
 

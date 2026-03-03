@@ -1,5 +1,6 @@
 "use client"
 import { useState, useMemo } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -83,6 +84,7 @@ const statusConfig: Record<Status, { label: string; color: string; bg: string; d
 }
 
 export default function BilanPage() {
+  const { t } = useLang()
   const total = categories.reduce((s, c) => s + c.exams.length, 0)
   const [statuses, setStatuses] = useState<Record<string, Status>>({})
   const [expanded, setExpanded] = useState<string | null>(null)

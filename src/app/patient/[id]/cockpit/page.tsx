@@ -1,6 +1,7 @@
 'use client'
 import Link from 'next/link'
 import { useState, useMemo } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import { computeDiagnosticContext } from '@/lib/data/epidemioContext'
 import Picto from '@/components/Picto'
@@ -188,6 +189,7 @@ function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; synd
 }
 
 export default function PatientCockpit() {
+  const { t } = useLang()
   const { ps, info, scenarioKey } = usePatient()
   const base = `/patient/${info.id}`
 

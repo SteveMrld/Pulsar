@@ -1,4 +1,5 @@
 'use client'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 
@@ -81,6 +82,7 @@ const KB_SECTIONS = [
 ]
 
 export default function RessourcesPage() {
+  const { t } = useLang()
   const { info } = usePatient()
   const guidelines = SYNDROME_GUIDELINES[info.syndrome]
 

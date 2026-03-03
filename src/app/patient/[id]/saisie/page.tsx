@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import { vitalsService, labService } from '@/lib/services'
 import Picto from '@/components/Picto'
@@ -149,6 +150,7 @@ function LabHistory({ patientId }: { patientId: string }) {
 }
 
 export default function SaisiePage() {
+  const { t } = useLang()
   const { info } = usePatient()
   const [refreshKey, setRefreshKey] = useState(0)
   const refresh = () => setRefreshKey(k => k + 1)

@@ -1,4 +1,5 @@
 'use client'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 
@@ -23,6 +24,7 @@ function BioValue({ label, value, unit, status }: { label: string; value: number
 }
 
 export default function ExamensPage() {
+  const { t } = useLang()
   const { ps, info } = usePatient()
   const nc = ps.neuroCoreResult
 

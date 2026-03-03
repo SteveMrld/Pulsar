@@ -1,5 +1,6 @@
 'use client'
 import { useState, useMemo, useEffect } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -70,6 +71,7 @@ const pathologies = [
 ]
 
 export default function CrossPathologiePage() {
+  const { t } = useLang()
   const [selected, setSelected] = useState<string[]>([])
   const [scenario, setScenario] = useState('FIRES')
   const [mounted, setMounted] = useState(false)

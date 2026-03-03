@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import { createClient } from '@/lib/supabase/client'
 import Picto from '@/components/Picto'
@@ -38,6 +39,7 @@ const ACTION_COLORS: Record<string, string> = {
 }
 
 export default function AuditPage() {
+  const { t } = useLang()
   const { info } = usePatient()
   const [entries, setEntries] = useState<AuditEntry[]>([])
   const [loading, setLoading] = useState(true)

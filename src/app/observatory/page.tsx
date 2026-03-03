@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import Link from 'next/link'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import SignalPanel from './components/SignalPanel'
 import ClinicalAnalytics from './components/ClinicalAnalytics'
@@ -26,6 +27,7 @@ const TABS: { id: Tab; label: string; icon: string; color: string }[] = [
 ]
 
 export default function ObservatoryPage() {
+  const { t } = useLang()
   const [tab, setTab] = useState<Tab>('overview')
   const activeTab = TABS.find(t => t.id === tab) || TABS[0]
 

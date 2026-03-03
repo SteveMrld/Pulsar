@@ -7,18 +7,14 @@ import ThemeToggle from './ThemeToggle'
 import { ProfileProvider } from '@/contexts/ProfileContext'
 import { RoleBadge } from './RoleGate'
 import ConnectionStatus from './ConnectionStatus'
+import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
 
-/* ══════════════════════════════════════════════════════════════
-   APP SHELL — Header minimal hors-patient
-   Plus de sidebar, plus de PatientBanner global.
-   Le patient layout gère son propre header + tabs + PulsarAI.
-   ══════════════════════════════════════════════════════════════ */
-
-export default function AppShell({ children }: { children: React.ReactNode }) {
+function AppShellInner({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const router = useRouter()
   const pathname = usePathname()
+  const { t } = useLang()
 
   const isPublic = ['/', '/login', '/signup'].includes(pathname)
   const isPatient = pathname.startsWith('/patient/')
@@ -47,12 +43,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         background: 'var(--p-bg)', color: 'var(--p-vps)',
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{
-            fontSize: '2rem', fontWeight: 800,
-            fontFamily: 'var(--p-font-mono)', marginBottom: '8px',
-            letterSpacing: '0.1em',
-          }}>PULSAR</div>
-          <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>Chargement…</div>
+          <div style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'var(--p-font-mono)', marginBottom: '8px', letterSpacing: '0.1em' }}>PULSAR</div>
+          <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>{t('Chargement…', 'Loading…')}</div>
         </div>
       </div>
     )
@@ -66,12 +58,23 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     router.push('/')
   }
 
-  // Patient pages: le layout patient gère tout, on fournit juste l'auth
   if (isPatient) {
     return <ProfileProvider><div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>{children}</div></ProfileProvider>
   }
 
-  // Pages internes hors-patient : header minimal
+  const breadcrumb = pathname === '/patients' ? t('File active', 'Active Patients')
+    : pathname === '/dashboard' ? 'Dashboard'
+    : pathname === '/admin' ? 'Admin'
+    : pathname === '/research' ? 'Discovery Engine'
+    : pathname === '/staff' ? t('Équipe', 'Staff')
+    : pathname === '/observatory' ? t('Observatoire', 'Observatory')
+    : pathname === '/neurocore' ? 'NeuroCore'
+    : pathname === '/export' ? 'Export'
+    : pathname === '/bilan' ? t('Bilan', 'Assessment')
+    : pathname === '/case-matching' ? 'Case Matching'
+    : pathname === '/cross-pathologie' ? t('Cross-Pathologie', 'Cross-Pathology')
+    : pathname.replace('/', '')
+
   return (
     <ProfileProvider>
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'flex', flexDirection: 'column' }}>
@@ -82,23 +85,13 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         height: '52px', position: 'sticky', top: 0, zIndex: 50,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
-          <Link href="/patients" style={{
-            textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px',
-          }}>
-            <img
-              src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR"
-              width={32} height={32}
-              style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.4))', display: 'block', objectFit: 'contain' }}
-            />
-            <span style={{
-              fontSize: '15px', fontWeight: 800, color: 'var(--p-vps)',
-              letterSpacing: '0.1em', fontFamily: 'var(--p-font-mono)',
-            }}>PULSAR</span>
+          <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={32} height={32}
+              style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.4))', display: 'block', objectFit: 'contain' }} />
+            <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--p-vps)', letterSpacing: '0.1em', fontFamily: 'var(--p-font-mono)' }}>PULSAR</span>
           </Link>
           <span style={{ color: 'var(--p-text-dim)', fontSize: '11px' }}>›</span>
-          <span style={{ fontSize: '12px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>
-            {pathname === '/patients' ? 'File active' : pathname === '/dashboard' ? 'Dashboard' : pathname === '/admin' ? 'Admin' : pathname === '/research' ? 'Discovery Engine' : pathname.replace('/', '')}
-          </span>
+          <span style={{ fontSize: '12px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>{breadcrumb}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <Link href="/dashboard" style={{
@@ -112,7 +105,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
             color: pathname === '/patients' ? '#6C7CFF' : 'var(--p-text-dim)',
             background: pathname === '/patients' ? '#6C7CFF15' : 'transparent',
-          }}>File active</Link>
+          }}>{t('File active', 'Patients')}</Link>
           <Link href="/research" style={{
             padding: '3px 8px', borderRadius: 'var(--p-radius-sm)', textDecoration: 'none',
             fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
@@ -121,26 +114,31 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           }}>Discovery</Link>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
+          <LangToggle />
           <ThemeToggle />
           <RoleBadge />
-          <span style={{
-            fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)',
-            fontFamily: 'var(--p-font-mono)',
-          }}>{user}</span>
+          <span style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>{user}</span>
           <button onClick={handleLogout} style={{
             padding: 'var(--p-space-1) var(--p-space-3)',
             background: 'var(--p-bg-elevated)', border: 'var(--p-border)',
             borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)',
             cursor: 'pointer', fontSize: 'var(--p-text-xs)', transition: 'all 0.2s',
-          }}>Déconnexion</button>
+          }}>{t('Déconnexion', 'Sign out')}</button>
         </div>
       </header>
-
       <main className="bg-mesh" style={{ flex: 1, position: 'relative' }}>
         <div key={pathname} className="page-enter">{children}</div>
       </main>
       <ConnectionStatus />
     </div>
     </ProfileProvider>
+  )
+}
+
+export default function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <LanguageProvider>
+      <AppShellInner>{children}</AppShellInner>
+    </LanguageProvider>
   )
 }

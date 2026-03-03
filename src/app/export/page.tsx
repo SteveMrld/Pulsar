@@ -1,5 +1,6 @@
 'use client'
 import dynamic from 'next/dynamic'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
@@ -16,6 +17,7 @@ const ResponsiveContainer = dynamic(() => import('recharts').then(m => m.Respons
 const Cell = dynamic(() => import('recharts').then(m => m.Cell), { ssr: false })
 
 export default function ExportPage() {
+  const { t } = useLang()
   const [mounted, setMounted] = useState(false)
   const [scenario, setScenario] = useState('FIRES')
   const [sections, setSections] = useState({ identity: true, scores: true, diagnostic: true, treatments: true, pharmacovigilance: true, alerts: true, recommendations: true, timeline: true })

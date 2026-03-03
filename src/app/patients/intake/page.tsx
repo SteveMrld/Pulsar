@@ -2,6 +2,7 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import RoleGate from '@/components/RoleGate'
 import { analyzeIntake, DEFAULT_HISTORY, type IntakeData, type AdmissionMode, type ExistingExam, type MedicalHistory, type IntakeAnalysis, type HistoryAlert } from '@/lib/engines/IntakeAnalyzer'
@@ -66,6 +67,7 @@ function Badge({ label,color }:{ label:string;color:string }) {
 
 /* ══════ MAIN PAGE ══════ */
 export default function IntakePage() {
+  const { t } = useLang()
   const router = useRouter()
   const [data, setData] = useState<Partial<IntakeData>>({
     admissionMode: 'first_admission', transferHospital: '', transferReason: '',

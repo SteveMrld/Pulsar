@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import { historyService, type HistoryEvent } from '@/lib/services/historyService'
 import Picto from '@/components/Picto'
@@ -161,6 +162,7 @@ function EventCard({ event, expanded, onToggle }: { event: HistoryEvent; expande
 }
 
 export default function HistoriquePage() {
+  const { t } = useLang()
   const { info } = usePatient()
   const [events, setEvents] = useState<HistoryEvent[]>([])
   const [scores, setScores] = useState<{ engine: string; points: { score: number; day: number }[] }[]>([])

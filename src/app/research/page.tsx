@@ -1,6 +1,7 @@
 'use client'
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import Link from 'next/link'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import { discoveryEngine } from '@/lib/engines/DiscoveryEngine'
 import { DEMO_PATIENTS, SEED_SIGNALS } from '@/lib/data/discoveryData'
@@ -33,10 +34,10 @@ type Tab = 'signals' | 'correlations' | 'clusters' | 'literature' | 'hypotheses'
 
 const TABS: { id: Tab; label: string; icon: string }[] = [
   { id: 'signals', label: 'Signal Feed', icon: 'alert' },
-  { id: 'correlations', label: 'Corrélations', icon: 'chart' },
+  { id: 'correlations', label: 'Corrélations', labelEn: 'Correlations', icon: 'chart' },
   { id: 'clusters', label: 'Clusters', icon: 'dna' },
-  { id: 'literature', label: 'Veille', icon: 'books' },
-  { id: 'hypotheses', label: 'Hypothèses', icon: 'brain' },
+  { id: 'literature', label: 'Veille', labelEn: 'Literature', icon: 'books' },
+  { id: 'hypotheses', label: 'Hypothèses', labelEn: 'Hypotheses', icon: 'brain' },
   { id: 'pathfinder', label: 'Pathfinder', icon: 'target' },
   { id: 'roadmap', label: 'Roadmap', icon: 'clipboard' },
 ]
@@ -66,14 +67,15 @@ const TYPE_LABELS: Record<SignalType, string> = {
 }
 
 const STATUS_LABELS: Record<string, { label: string; color: string }> = {
-  new: { label: 'NOUVEAU', color: '#3B82F6' },
-  confirmed: { label: 'CONFIRMÉ', color: '#2ED573' },
-  monitoring: { label: 'SURVEILLANCE', color: '#FFA502' },
-  archived: { label: 'ARCHIVÉ', color: '#8E8EA3' },
-  rejected: { label: 'REJETÉ', color: '#FF4757' },
+  new: { label: 'NOUVEAU', labelEn: 'NEW', color: '#3B82F6' },
+  confirmed: { label: 'CONFIRMÉ', labelEn: 'CONFIRMED', color: '#2ED573' },
+  monitoring: { label: 'SURVEILLANCE', labelEn: 'MONITORING', color: '#FFA502' },
+  archived: { label: 'ARCHIVÉ', labelEn: 'ARCHIVED', color: '#8E8EA3' },
+  rejected: { label: 'REJETÉ', labelEn: 'REJECTED', color: '#FF4757' },
 }
 
 export default function ResearchPage() {
+  const { t } = useLang()
   const [tab, setTab] = useState<Tab>('signals')
   const [filters, setFilters] = useState<SignalFilters>({ type: 'all', strength: 'all', status: 'all', search: '' })
   const [sortBy, setSortBy] = useState<SignalSortBy>('strength')

@@ -1,5 +1,6 @@
 'use client'
 import { useMemo, useState } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 import Link from 'next/link'
@@ -25,6 +26,7 @@ function SectionTitle({ title, color, icon }: { title: string; color: string; ic
 }
 
 export default function TraitementPage() {
+  const { t } = useLang()
   const { ps, info } = usePatient()
   const tde = ps.tdeResult
   const pve = ps.pveResult

@@ -1,4 +1,5 @@
 'use client'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto';
 import { useState, useEffect, useMemo } from 'react'
 import { PatientState } from '@/lib/engines/PatientState'
@@ -111,6 +112,7 @@ function MiniRadar({ data, labels, color, size = 120 }: { data: number[]; labels
 }
 
 export default function CaseMatchingPage() {
+  const { t } = useLang()
   const [mounted, setMounted] = useState(false)
   const [scenario, setScenario] = useState('FIRES')
   const [expanded, setExpanded] = useState<string | null>(null)

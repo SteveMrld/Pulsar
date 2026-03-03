@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useLang } from '@/contexts/LanguageContext'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function SignupPage() {
+  const { t } = useLang()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')

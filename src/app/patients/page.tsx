@@ -2,6 +2,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -56,9 +57,9 @@ function buildDemoPatients(): PatientCard[] {
       gcs: ps.neuro.gcs,
       critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
       phase: detectPhase(ps.hospDay, vps),
-      lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status réfractaire en cours'
+      lastEvent: ps.neuro.seizureType.includes('refractory') ? t('Status réfractaire en cours', 'Refractory status ongoing')
         : ps.neuro.seizures24h > 3 ? `${ps.neuro.seizures24h} crises/24h`
-        : ps.neuro.gcs <= 8 ? 'GCS critique'
+        : ps.neuro.gcs <= 8 ? t('GCS critique', 'Critical GCS')
         : 'Stable',
       isDemo: true,
       vpsHistory,
@@ -124,6 +125,7 @@ function PhaseBar({ phase }: { phase: ClinicalPhase }) {
 
 /* ── Patient Card Row ── */
 function PatientRow({ p }: { p: PatientCard }) {
+  const { t } = useLang()
   const vpsColor = p.vps >= 70 ? '#FF4757' : p.vps >= 50 ? '#FFA502' : p.vps >= 30 ? '#FFB347' : '#2ED573'
   const hasTriage = !!p.triagePriority
   return (
@@ -151,7 +153,7 @@ function PatientRow({ p }: { p: PatientCard }) {
                 padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
                 background: 'rgba(108,124,255,0.08)', color: 'var(--p-text-dim)',
                 border: '1px solid rgba(108,124,255,0.1)',
-              }}>DÉMO</span>
+              }}>{t('DÉMO', 'DEMO')}</span>
             )}
           </div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{p.lastEvent}</div>
@@ -301,6 +303,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
 
 /* ── Main ── */
 export default function FileActivePage() {
+  const { t } = useLang()
   const router = useRouter()
   const [search, setSearch] = useState('')
   const [showDemo, setShowDemo] = useState(false)
@@ -332,9 +335,9 @@ export default function FileActivePage() {
             name: p.display_name,
             age: `${Math.floor(p.age_months / 12)} ans`,
             sex: p.sex,
-            syndrome: p.syndrome || 'En évaluation',
+            syndrome: p.syndrome || t('En évaluation', 'Under evaluation'),
             hospDay: p.hosp_day,
-            room: p.room || 'Non assigné',
+            room: p.room || t('Non assigné', 'Unassigned'),
             vps,
             gcs: ps.neuro.gcs,
             critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
@@ -477,7 +480,7 @@ export default function FileActivePage() {
             }}>
               <Picto name="microscope" size={14} />
               <input value={search} onChange={e => setSearch(e.target.value)}
-                placeholder="Rechercher un patient..."
+                placeholder={t('Rechercher un patient...', 'Search patients...')}
                 style={{ flex: 1, background: 'transparent', border: 'none', outline: 'none',
                   fontFamily: 'var(--p-font-body)', fontSize: '13px', color: 'var(--p-text)' }}
               />
@@ -489,7 +492,7 @@ export default function FileActivePage() {
               fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 700,
               color: 'white', letterSpacing: '0.5px',
               boxShadow: '0 4px 16px rgba(108,124,255,0.3)',
-            }}>+ Analyse intelligente</button>
+            }}>{t('+ Analyse intelligente', '+ Smart Analysis')}</button>
           </div>
 
           {/* Sort options */}
@@ -583,7 +586,7 @@ export default function FileActivePage() {
                 background: 'rgba(108,124,255,0.08)', border: '1px solid rgba(108,124,255,0.15)',
                 cursor: 'pointer', fontFamily: 'var(--p-font-mono)', fontSize: '9px',
                 color: '#6C7CFF', fontWeight: 600,
-              }}>Masquer la démo</button>
+              }}>{t('Masquer la démo', 'Hide demo')}</button>
             </div>
           )}
         </div>

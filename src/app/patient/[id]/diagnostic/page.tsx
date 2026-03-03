@@ -1,5 +1,6 @@
 'use client'
 import { useState, useMemo } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
@@ -40,6 +41,7 @@ function Gauge({ value, max, label, color, size = 100 }: { value: number; max: n
 }
 
 export default function DiagnosticPage() {
+  const { t } = useLang()
   const { ps, info, scenarioKey } = usePatient()
   const [expandedSection, setExpandedSection] = useState<string>('hypothesis')
 

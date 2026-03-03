@@ -25,10 +25,10 @@ export interface PhaseInfo {
 }
 
 export const PHASES: Record<ClinicalPhase, PhaseInfo> = {
-  acute:         { id: 'acute',         label: 'Phase aiguë',       color: '#FF4757', dayRange: 'J0–J3',  description: 'Urgence · Stabilisation · Bilan initial' },
-  stabilization: { id: 'stabilization', label: 'Stabilisation',     color: '#FFB347', dayRange: 'J3–J7',  description: 'Ajustement thérapeutique · Monitoring renforcé' },
-  monitoring:    { id: 'monitoring',    label: 'Monitoring',        color: '#6C7CFF', dayRange: 'J7–J14', description: 'Suivi évolutif · Réévaluation · Prospection' },
-  recovery:      { id: 'recovery',      label: 'Récupération',     color: '#2ED573', dayRange: 'J14+',   description: 'Consolidation · Préparation sortie · Suivi long' },
+  acute:         { id: 'acute',         label: 'Phase aiguë', labelEn: 'Acute Phase',       color: '#FF4757', dayRange: 'J0–J3',  description: 'Urgence · Stabilisation · Bilan initial' },
+  stabilization: { id: 'stabilization', label: 'Stabilisation', labelEn: 'Stabilization',     color: '#FFB347', dayRange: 'J3–J7',  description: 'Ajustement thérapeutique · Monitoring renforcé' },
+  monitoring:    { id: 'monitoring',    label: 'Monitoring', labelEn: 'Monitoring',        color: '#6C7CFF', dayRange: 'J7–J14', description: 'Suivi évolutif · Réévaluation · Prospection' },
+  recovery:      { id: 'recovery',      label: 'Récupération', labelEn: 'Recovery',     color: '#2ED573', dayRange: 'J14+',   description: 'Consolidation · Préparation sortie · Suivi long' },
 }
 
 // ── Timeline events ──
@@ -106,47 +106,47 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
 
   const allTabs: TabConfig[] = [
     {
-      id: 'cockpit',     label: 'Cockpit',     icon: 'heart',      color: '#FF4757',
+      id: 'cockpit',     label: 'Cockpit', labelEn: 'Cockpit',     icon: 'heart',      color: '#FF4757',
       available: true, priority: 1,
       pulsing: vps >= 70,
     },
     {
-      id: 'urgence',     label: 'Urgence',     icon: 'alert',      color: '#FF6B8A',
+      id: 'urgence',     label: 'Urgence', labelEn: 'Emergency',     icon: 'alert',      color: '#FF6B8A',
       available: phase === 'acute' || hasAlerts, priority: 2,
       badge: hasAlerts ? '!' : undefined,
       pulsing: hasAlerts,
     },
     {
-      id: 'diagnostic',  label: 'Diagnostic',  icon: 'brain',      color: '#6C7CFF',
+      id: 'diagnostic',  label: 'Diagnostic', labelEn: 'Diagnosis',  icon: 'brain',      color: '#6C7CFF',
       available: true, priority: 3,
     },
     {
-      id: 'traitement',  label: 'Traitement',  icon: 'pill',       color: '#2FD1C8',
+      id: 'traitement',  label: 'Traitement', labelEn: 'Treatment',  icon: 'pill',       color: '#2FD1C8',
       available: true, priority: 4,
       badge: ps.tdeResult ? undefined : 'NEW',
     },
     {
-      id: 'examens',     label: 'Examens',     icon: 'microscope', color: '#B96BFF',
+      id: 'examens',     label: 'Examens', labelEn: 'Tests',     icon: 'microscope', color: '#B96BFF',
       available: true, priority: 5,
     },
     {
-      id: 'suivi',       label: 'Suivi',       icon: 'chart',      color: '#FFB347',
+      id: 'suivi',       label: 'Suivi', labelEn: 'Follow-up',       icon: 'chart',      color: '#FFB347',
       available: phase !== 'acute', priority: 6,
     },
     {
-      id: 'synthese',    label: 'Synthèse',    icon: 'clipboard',  color: '#2ED573',
+      id: 'synthese',    label: 'Synthèse', labelEn: 'Summary',    icon: 'clipboard',  color: '#2ED573',
       available: true, priority: 7,
     },
     {
-      id: 'ressources',  label: 'Ressources',  icon: 'books',      color: '#FFB347',
+      id: 'ressources',  label: 'Ressources', labelEn: 'Resources',  icon: 'books',      color: '#FFB347',
       available: true, priority: 8,
     },
     {
-      id: 'saisie',      label: 'Saisie',      icon: 'edit',       color: '#FF6B8A',
+      id: 'saisie',      label: 'Saisie', labelEn: 'Data Entry',      icon: 'edit',       color: '#FF6B8A',
       available: true, priority: 9,
     },
     {
-      id: 'historique',   label: 'Historique',  icon: 'clipboard',  color: '#6C7CFF',
+      id: 'historique',   label: 'Historique', labelEn: 'History',  icon: 'clipboard',  color: '#6C7CFF',
       available: true, priority: 10,
     },
   ]

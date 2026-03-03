@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import { RoleBadge } from '@/components/RoleGate'
 import { patientService, alertService } from '@/lib/services'
@@ -102,6 +103,7 @@ function MiniBar({ data, colors, labels }: { data: Record<string, number>; color
 }
 
 export default function DashboardPage() {
+  const { t } = useLang()
   const router = useRouter()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [patients, setPatients] = useState<PatientSummary[]>([])

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 
 /* ══════════════════════════════════════════════════════════════
@@ -67,6 +68,7 @@ const inputStyle: React.CSSProperties = {
 const selectStyle: React.CSSProperties = { ...inputStyle, cursor: 'pointer' }
 
 export default function AdmissionPage() {
+  const { t } = useLang()
   const router = useRouter()
   const [step, setStep] = useState(1)
   const [form, setForm] = useState<FormData>(INITIAL)

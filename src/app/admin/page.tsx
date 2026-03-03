@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useProfile, ROLE_LABELS, ROLE_COLORS } from '@/contexts/ProfileContext'
 import { profileService } from '@/lib/services'
 import { AccessDenied } from '@/components/RoleGate'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import type { Profile, UserRole } from '@/lib/types/database'
 
@@ -13,6 +14,7 @@ import type { Profile, UserRole } from '@/lib/types/database'
 const ROLES: UserRole[] = ['admin', 'senior', 'intern', 'nurse', 'viewer']
 
 export default function AdminPage() {
+  const { t } = useLang()
   const { can, role: myRole, roleLabel } = useProfile()
   const [profiles, setProfiles] = useState<Profile[]>([])
   const [loading, setLoading] = useState(true)

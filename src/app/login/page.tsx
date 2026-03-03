@@ -1,10 +1,12 @@
 'use client'
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
+import { useLang } from '@/contexts/LanguageContext'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
+  const { t } = useLang()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -66,7 +68,7 @@ export default function LoginPage() {
             fontSize: 'var(--p-text-sm)',
             marginTop: 'var(--p-space-2)',
           }}>
-            Connexion à votre espace
+            {t('Connexion à votre espace', 'Sign in to your workspace')}
           </p>
         </div>
 
@@ -126,7 +128,7 @@ export default function LoginPage() {
               marginTop: 'var(--p-space-2)',
             }}
           >
-            {loading ? 'Connexion...' : 'Se connecter'}
+            {loading ? 't('Connexion...', 'Signing in...') : t('Se connecter', 'Sign in')}
           </button>
         </form>
 
@@ -136,7 +138,7 @@ export default function LoginPage() {
           fontSize: 'var(--p-text-sm)',
           color: 'var(--p-text-dim)',
         }}>
-          Pas encore de compte ?{' '}
+          {t('Pas encore de compte ?', "Don't have an account?")}{' '}
           <Link href="/signup" style={{ color: 'var(--p-vps)', textDecoration: 'none', fontWeight: 600 }}>
             Créer un compte
           </Link>

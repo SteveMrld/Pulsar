@@ -1,5 +1,6 @@
 'use client'
 import { useState, useMemo } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import BrainHeatmap from '@/components/BrainHeatmap'
 import { PatientState } from '@/lib/engines/PatientState'
@@ -443,6 +444,7 @@ function KnowledgeTab({ syndrome, phase }: { syndrome: SyndromeKey; phase: Phase
 
 // ── Main Page ──
 export default function NeuroCorePage() {
+  const { t } = useLang()
   const [tab, setTab] = useState<Tab>('eeg')
   const [syndrome, setSyndrome] = useState<SyndromeKey>('FIRES')
   const [hospDay, setHospDay] = useState(4)

@@ -1,10 +1,12 @@
 'use client'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 
 /* Suivi & Monitoring — EWE predictions + VPS trajectory + GCS history */
 
 export default function SuiviPage() {
+  const { t } = useLang()
   const { ps, info, timeline, engineSummary } = usePatient()
   const ewe = ps.eweResult
   const vpsData = ps.vpsResult?.curve

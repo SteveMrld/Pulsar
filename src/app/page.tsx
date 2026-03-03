@@ -1,3 +1,5 @@
+'use client'
+import { useLang, LangToggle } from '@/contexts/LanguageContext'
 import Link from 'next/link'
 
 // ══════════════════════════════════════════════════════════════
@@ -49,6 +51,7 @@ const workflow = [
 ]
 
 export default function LandingPage() {
+  const { t } = useLang()
   return (
     <div className="page-enter" style={{ minHeight: '100vh', background: 'var(--p-bg)', position: 'relative' }}>
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, background: 'radial-gradient(ellipse 80% 60% at 20% 30%, rgba(108,124,255,0.06) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 80% 70%, rgba(16,185,129,0.04) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 50% 50%, rgba(47,209,200,0.03) 0%, transparent 50%)' }} />
@@ -61,16 +64,17 @@ export default function LandingPage() {
           <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#10B981', background: '#10B98115', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #10B98125' }}>V19</span>
         </div>
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
-          <Link href="/login" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)', textDecoration: 'none', fontSize: 'var(--p-text-sm)' }}>Connexion</Link>
-          <Link href="/patients" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontSize: 'var(--p-text-sm)', fontWeight: 600, boxShadow: '0 0 16px rgba(108,124,255,0.3)' }}>Commencer</Link>
+          <LangToggle />
+          <Link href="/login" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)', textDecoration: 'none', fontSize: 'var(--p-text-sm)' }}>{t('Connexion', 'Sign in')}</Link>
+          <Link href="/patients" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontSize: 'var(--p-text-sm)', fontWeight: 600, boxShadow: '0 0 16px rgba(108,124,255,0.3)' }}>{t('Commencer', 'Get started')}</Link>
         </div>
       </nav>
 
       {/* ═══════════ HERO ═══════════ */}
       <section className="page-enter" style={{ textAlign: 'center', padding: 'var(--p-space-24) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'inline-flex', gap: '8px', marginBottom: 'var(--p-space-6)', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: 'var(--p-vps-dim)', color: 'var(--p-vps)', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)' }}>INTELLIGENCE CLINIQUE</span>
-          <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: '#10B98112', color: '#10B981', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)', border: '1px solid #10B98120' }}>RECHERCHE TRANSLATIONNELLE</span>
+          <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: 'var(--p-vps-dim)', color: 'var(--p-vps)', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)' }}>{t('INTELLIGENCE CLINIQUE', 'CLINICAL INTELLIGENCE')}</span>
+          <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: '#10B98112', color: '#10B981', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)', border: '1px solid #10B98120' }}>{t('RECHERCHE TRANSLATIONNELLE', 'TRANSLATIONAL RESEARCH')}</span>
         </div>
 
         <h1 style={{ fontSize: 'var(--p-text-5xl)', fontWeight: 800, lineHeight: 'var(--p-leading-tight)', marginBottom: 'var(--p-space-6)', color: 'var(--p-text)' }}>
@@ -86,7 +90,7 @@ export default function LandingPage() {
         </p>
 
         <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/patients" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', boxShadow: 'var(--p-shadow-glow-vps)' }}>Accéder à PULSAR</Link>
+          <Link href="/patients" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Accéder à PULSAR', 'Access PULSAR')}</Link>
           <Link href="/research" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98130', color: '#10B981', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '18px' }}>🔬</span> Discovery Engine</Link>
         </div>
       </section>
@@ -97,7 +101,7 @@ export default function LandingPage() {
 
           {/* CÔTÉ CLINIQUE */}
           <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.06) 0%, rgba(47,209,200,0.03) 100%)', border: '1px solid rgba(108,124,255,0.12)' }}>
-            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#6C7CFF', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>CÔTÉ CLINIQUE</div>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#6C7CFF', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ CLINIQUE', 'CLINICAL SIDE')}</div>
             <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>Comprimer le temps entre<br />le premier signal et<br /><span style={{ color: '#6C7CFF' }}>la bonne décision</span></h3>
             <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
               Dans ces maladies, la différence entre séquelles et récupération se joue en heures. Le médecin isolé à 3h du matin ne peut pas connaître les 59 protocoles, les 25 publications récentes, les interactions entre 5 traitements simultanés.
@@ -114,7 +118,7 @@ export default function LandingPage() {
 
           {/* CÔTÉ RECHERCHE */}
           <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(139,92,246,0.03) 100%)', border: '1px solid rgba(16,185,129,0.12)' }}>
-            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#10B981', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>CÔTÉ RECHERCHE</div>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#10B981', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ RECHERCHE', 'RESEARCH SIDE')}</div>
             <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>Chaque enfant qui passe dans<br />PULSAR rend le système<br /><span style={{ color: '#10B981' }}>plus intelligent pour le suivant</span></h3>
             <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
               Le Discovery Engine fait ce que personne ne fait aujourd&apos;hui. Il prend les données cliniques d&apos;un enfant malade, les croise avec toute la littérature mondiale, et génère des hypothèses de recherche. Chaque cas enrichit les corrélations, affine les hypothèses, identifie les essais cliniques.
@@ -134,7 +138,7 @@ export default function LandingPage() {
       {/* ═══════════ ÉPIDÉMIOLOGIE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES</div>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES', 'PEDIATRIC NEUROINFLAMMATORY DISEASES')}</div>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>Quand le cerveau d&apos;un enfant s&apos;enflamme</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--p-space-4)' }}>
@@ -245,7 +249,7 @@ export default function LandingPage() {
       {/* ═══════════ INGÉNIERIE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>CE QUI REND PULSAR UNIQUE</div>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('CE QUI REND PULSAR UNIQUE', 'WHAT MAKES PULSAR UNIQUE')}</div>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>Un vrai système.<br /><span className="text-gradient-brand">Pas un chatbot.</span></h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginBottom: 'var(--p-space-6)' }}>

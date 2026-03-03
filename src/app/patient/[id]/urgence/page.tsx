@@ -1,5 +1,6 @@
 'use client'
 import { useState } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 
@@ -23,6 +24,7 @@ const BUNDLES = [
 ]
 
 export default function UrgencePage() {
+  const { t } = useLang()
   const { ps, info } = usePatient()
   const [checks, setChecks] = useState<boolean[]>(ABCDE.map(() => false))
   const [bundles, setBundles] = useState(BUNDLES.map(b => ({ ...b })))

@@ -1,5 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
+import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import { vitalsService, labService, medicationService, alertService } from '@/lib/services'
 import { noteService, examService } from '@/lib/services/noteExamService'
@@ -26,6 +27,7 @@ interface ExportData {
 }
 
 export default function ExportPage() {
+  const { t } = useLang()
   const { info, ps, engineSummary } = usePatient()
   const [data, setData] = useState<ExportData | null>(null)
   const [loading, setLoading] = useState(true)
