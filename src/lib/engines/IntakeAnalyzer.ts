@@ -886,10 +886,18 @@ function analyzeExams(d: IntakeData, h: MedicalHistory, diffs: DiagnosisCandidat
     recs.push({ name: 'Ponction lombaire', urgency: d.gcs <= 8 ? 'immediate' : 'urgent', rationale: 'Analyse LCR — cellularité, protéines, anticorps, cultures', forSyndromes: ['FIRES', 'NMDAR', 'NORSE'], alreadyDone: false, needsRepeat: false, repeatReason: '' })
   }
 
-  // ── Anticorps ──
+  // ── Anticorps (NORSE Institute Section 2 — Panel complet auto-immun/paranéoplasique) ──
   const abDone = hasExam('antibodies') || (d.csfDone && d.csfAntibodies !== 'negative' && d.csfAntibodies !== '')
   if (!abDone && (topSyndromes.includes('NMDAR') || topSyndromes.includes('MOGAD') || d.csfDone)) {
-    recs.push({ name: 'Panel anticorps étendu (sérum + LCR)', urgency: 'urgent', rationale: 'Anti-NMDAR, anti-MOG, anti-LGI1, anti-CASPR2, anti-GABA-B — sérum ET LCR', forSyndromes: ['NMDAR', 'MOGAD'], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+    recs.push({ name: 'Panel anticorps complet NORSE (sérum + LCR)', urgency: 'urgent', rationale: 'NORSE Institute Section 2 — Panel surface (sérum+LCR) : anti-NMDAR, anti-LGI1, anti-CASPR2, anti-GABA-B, anti-GABA-A, anti-AMPA, anti-DPPX, anti-IgLON5, anti-D2R, anti-MOG, anti-AQP4, anti-GlyR. Panel intracellulaire (sérum) : anti-GAD65, anti-Hu, anti-Yo, anti-Ri, anti-CV2, anti-Ma2, anti-amphiphysine, anti-VGCC. LCR OBLIGATOIRE pour Ac de surface (sensibilité >sérum pour NMDAR).', forSyndromes: ['NMDAR', 'MOGAD', 'NORSE', 'FIRES'], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+  // V20 — Panel anticorps paranéoplasique spécifique si suspicion tumorale
+  if (d.csfAntibodies === 'nmdar' || topSyndromes.includes('NMDAR')) {
+    recs.push({ name: 'Recherche tératome ovarien (écho + IRM pelvienne)', urgency: 'urgent', rationale: 'Anti-NMDAR confirmés ou suspectés — tératome ovarien associé dans 40% chez la jeune fille >12 ans. Ablation = traitement étiologique', forSyndromes: ['NMDAR'], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+  }
+  // V20 — Dosage cytokines LCR si cryptogénique (NORSE Institute Section 7)
+  if (!abDone || d.csfAntibodies === 'negative' || d.csfAntibodies === 'pending') {
+    recs.push({ name: 'Dosage cytokines LCR (IL-1β, IL-6, IL-1Ra, CXCL10, HMGB1)', urgency: 'standard', rationale: 'NORSE Institute Section 7 + Hanin 2023 — Si panel Ac négatif/pending : dosage cytokines pour orientation thérapeutique (IL-1β↑↑ = anakinra, IL-6↑↑ = tocilizumab, CXCL10 = marqueur spécifique FIRES). Déficit IL-1Ra endogène rapporté dans FIRES (Clarkson, Ann Neurol 2019)', forSyndromes: ['FIRES', 'NORSE'], alreadyDone: false, needsRepeat: false, repeatReason: '' })
   }
 
   // ── Bilan inflammatoire ──
@@ -945,10 +953,24 @@ function analyzeExams(d: IntakeData, h: MedicalHistory, diffs: DiagnosisCandidat
     recs.push({ name: 'PCR BK LCR + QuantiFERON + culture BK', urgency: 'urgent', rationale: 'ATCD TB — méningite tuberculeuse à éliminer', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
   }
 
-  // ── Voyage tropical ──
+  // ── Voyage tropical / Facteurs géographiques (NORSE Institute Table 2 — Sept. 2020) ──
   if (h.recentTropicalTravel) {
     recs.push({ name: 'Frottis + goutte épaisse (paludisme)', urgency: 'immediate', rationale: 'Retour de zone tropicale — paludisme cérébral à exclure en urgence', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
     recs.push({ name: 'Sérologies arboviroses (dengue, chik, Zika)', urgency: 'urgent', rationale: 'Arboviroses endémiques selon destination', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+    // V20 — NORSE Institute Table 2: Region-specific infections
+    const dest = (h.travelDestination || '').toLowerCase()
+    if (dest.includes('afri')) {
+      recs.push({ name: 'Sérologies : trypanosomiase + cysticercose + rage', urgency: 'urgent', rationale: 'NORSE Institute Table 2 — Afrique : Trypanosoma, neurocysticercose, rage endémiques. PCR Plasmodium si négatif initial', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+    }
+    if (dest.includes('asie') || dest.includes('asia') || dest.includes('inde') || dest.includes('india') || dest.includes('japon') || dest.includes('japan')) {
+      recs.push({ name: 'Sérologies : encéphalite japonaise + Nipah + tuberculose SNC', urgency: 'urgent', rationale: 'NORSE Institute Table 2 — Asie : encéphalite japonaise endémique, Nipah émergent. Neurocysticercose en Inde/Asie du Sud-Est', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+    }
+    if (dest.includes('amérique') || dest.includes('america') || dest.includes('brésil') || dest.includes('brazil') || dest.includes('caraïbe') || dest.includes('caribbean') || dest.includes('guadeloupe') || dest.includes('martinique') || dest.includes('guyane')) {
+      recs.push({ name: 'Sérologies : Zika PCR sang+urines + HTLV-1 + histoplasme', urgency: 'urgent', rationale: 'NORSE Institute Table 2 — Amériques/Caraïbes : Zika neurotrope (microcéphalie, GBS, myélite), HTLV-1 en Guyane/Martinique/Guadeloupe, histoplasmose en zones humides', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+    }
+    if (dest.includes('australi') || dest.includes('pacifi')) {
+      recs.push({ name: 'Sérologies : Murray Valley + Hendra + Kunjin', urgency: 'urgent', rationale: 'NORSE Institute Table 2 — Australie/Pacifique : encéphalites endémiques spécifiques', forSyndromes: [], alreadyDone: false, needsRepeat: false, repeatReason: '' })
+    }
   }
 
   // ── Tique ──

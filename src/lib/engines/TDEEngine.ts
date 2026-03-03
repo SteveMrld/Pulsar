@@ -43,6 +43,11 @@ export class TDEEngine extends BrainCore {
         { name: 'IRM lésionnelle', weight: 2, extract: ps => ps.mri?.t2FlairAbnormal, normalize: v => v === true ? 65 : 0 },
         { name: 'Anticorps LCR', weight: 2.5, extract: ps => ps.csf.antibodies, normalize: v => v === 'negative' || v === 'pending' ? 0 : 80 },
         { name: 'Cytokines IL-6 LCR', weight: 2, unit: 'pg/mL', extract: ps => ps.neuroBiomarkers?.il6Csf, normalize: v => v == null ? 0 : (v as number) > 100 ? 100 : (v as number) > 50 ? 65 : (v as number) > 10 ? 30 : 0 },
+        // V20 — Biomarqueurs FIRES-spécifiques (Hanin 2023, Sakuma 2015, Clarkson 2019)
+        { name: 'IL-1β LCR', weight: 2.5, unit: 'pg/mL', extract: ps => ps.neuroBiomarkers?.il1bCsf, normalize: v => v == null ? 0 : (v as number) > 100 ? 100 : (v as number) > 50 ? 70 : (v as number) > 10 ? 35 : 0 },
+        { name: 'CXCL10/IP-10 LCR', weight: 2, unit: 'pg/mL', extract: ps => ps.neuroBiomarkers?.cxcl10Csf, normalize: v => v == null ? 0 : (v as number) > 500 ? 100 : (v as number) > 200 ? 65 : (v as number) > 50 ? 30 : 0 },
+        { name: 'Déficit IL-1Ra', weight: 1.5, unit: 'pg/mL', extract: ps => ps.neuroBiomarkers?.il1raCsf, normalize: v => v == null ? 0 : (v as number) < 50 ? 80 : (v as number) < 100 ? 40 : 0 },
+        { name: 'BHB sérique (KD)', weight: 1.5, unit: 'mmol/L', extract: ps => ps.neuroBiomarkers?.bhb, normalize: v => v == null ? 0 : (v as number) >= 4.0 ? 0 : (v as number) >= 2.0 ? 30 : (v as number) > 0 ? 60 : 0 },
         { name: 'Réponse traitement', weight: 2, extract: ps => ps.treatmentHistory[ps.treatmentHistory.length - 1]?.response, normalize: v => ({ none: 90, partial: 45, good: 15, complete: 0 }[v as string] || 0) },
       ],
     }))
@@ -101,6 +106,29 @@ export class TDEEngine extends BrainCore {
       match: (ps) => {
         const failures = ps.treatmentHistory.filter(t => ['Méthylprednisolone IV', 'IVIg'].includes(t.treatment) && t.response === 'none')
         if (failures.length >= 1) return { confidence: 0.9, description: `${failures.length} échec(s) 1ère ligne`, implications: 'Escalade 2ème ligne — Sheikh 2023' }
+        return { confidence: 0, description: '', implications: '' }
+      },
+    })
+
+    // V20 — Pattern anti-GABA-A (SE réfractaire + IRM multifocale — NORSE Institute)
+    this.patterns.push({
+      name: 'Pattern Encéphalite anti-GABA-A',
+      match: (ps) => {
+        if (ps.csf.antibodies === 'gaba_a') return { confidence: 0.90, description: 'Anti-GABA-A confirmés — SE réfractaire + IRM multifocale', implications: 'Immunothérapie agressive urgente. IRM souvent multifocale T2/FLAIR. Pronostic réservé — Petit-Pedrol 2014' }
+        // Pattern clinique compatible : SE réfractaire + IRM multifocale + jeune
+        if ((ps.neuro.seizureType === 'refractory_status' || ps.neuro.seizureType === 'super_refractory') &&
+            ps.mri?.t2FlairAbnormal && ps.csf.antibodies === 'pending') {
+          return { confidence: 0.40, description: 'SE réfractaire + IRM multifocale — anti-GABA-A à rechercher', implications: 'Pattern compatible anti-GABA-A — résultats Ac prioritaires' }
+        }
+        return { confidence: 0, description: '', implications: '' }
+      },
+    })
+
+    // V20 — Pattern anti-LGI1 (encéphalite limbique + FBDS — NORSE Institute Table 3)
+    this.patterns.push({
+      name: 'Pattern Encéphalite anti-LGI1',
+      match: (ps) => {
+        if (ps.csf.antibodies === 'lgi1') return { confidence: 0.90, description: 'Anti-LGI1 confirmés — encéphalite limbique', implications: 'Corticoïdes haute dose en priorité (meilleure réponse que IgIV). Rechercher FBDS (Faciobrachial Dystonic Seizures). Hyponatrémie fréquente — NORSE Institute Table 3' }
         return { confidence: 0, description: '', implications: '' }
       },
     })
@@ -246,9 +274,9 @@ export class TDEEngine extends BrainCore {
     const line = (curve as any).therapeuticLine || (curve.curveData.length >= 2 ? 3 : curve.curveData.length >= 1 ? 2 : 1)
     const w = ps.weightKg
 
-    if (line === 1 && score > 50) recs.push({ priority: 'urgent', title: 'Immunothérapie 1ère ligne', body: `Méthylprednisolone ${Math.round(w * 30)}mg/j ×3-5j + IVIg ${Math.round(w * 0.4 * 10) / 10}g/j ×5j (total ${Math.round(w * 2)}g)`, reference: 'Wickström 2022 / Nosadini 2021' })
-    else if (line === 2) recs.push({ priority: 'urgent', title: 'Escalade 2ème ligne', body: `Rituximab 375mg/m²/sem ×4 | Cyclophosphamide | Plasmaphérèse`, reference: 'Sheikh 2023' })
-    else if (line === 3) recs.push({ priority: 'urgent', title: '3ème ligne expérimentale', body: `Tocilizumab 8mg/kg | Anakinra 2-4mg/kg/j SC | Bortezomib`, reference: 'Costagliola 2022 / Shrestha 2023' })
+    if (line === 1 && score > 50) recs.push({ priority: 'urgent', title: 'Immunothérapie 1ère ligne', body: `Méthylprednisolone ${Math.round(w * 30)}mg/j IV ×3-5j + IVIg ${Math.round(w * 0.4 * 10) / 10}g/j ×5j (total ${Math.round(w * 2)}g). Alternative : Plasmaphérèse 5-7 séances si CI corticoïdes.`, reference: 'Wickström 2022 / Nosadini 2021' })
+    else if (line === 2) recs.push({ priority: 'urgent', title: 'Escalade 2ème ligne', body: `Rituximab 375mg/m²/sem ×4 séances (dose totale ~${Math.round(w * 15)}mg/cycle) | Cyclophosphamide 750mg/m² IV (CI si MOGAD — Banwell 2023) | Plasmaphérèse si non faite en L1. Consensus : initier dans les 7 jours (Wickström 2022).`, reference: 'Sheikh 2023 / Wickström 2022 / NORSE Institute flowchart' })
+    else if (line === 3) recs.push({ priority: 'urgent', title: '3ème ligne — ciblée cytokines', body: `Tocilizumab 8mg/kg IV q4sem (si IL-6 ↑↑ — Jun, Ann Neurol 2018) | Anakinra ${Math.round(w * 5)}mg SC ×2/j (si IL-1β ↑↑ ou FIRES — Costagliola 2022, 60-65% réponse) | Bortezomib 1.3mg/m² J1/J4/J8/J11 (si plasmocytes — Shrestha 2023). Ajouter KD ratio 4:1 si non initié (objectif BHB >4.0 mmol/L).`, reference: 'Jun 2018 / Costagliola 2022 / Shrestha 2023 / NORSE Institute' })
 
     // V20 — Protocole couplé Anakinra + KD si FIRES + échec L1
     const isFires = intention.patterns.some(p => p.name === 'Pattern FIRES' && p.confidence > 0.5)

@@ -10,7 +10,33 @@ import type { EEGData, MRIData, NeuroBiomarkers, TCDData, EvokedPotentials, Pupi
 export type AgeGroup = 'neonate' | 'infant' | 'toddler' | 'child' | 'adolescent'
 export type PupilStatus = 'reactive' | 'sluggish' | 'fixed_one' | 'fixed_both'
 export type SeizureType = 'none' | 'focal_aware' | 'focal_impaired' | 'generalized_tonic_clonic' | 'status' | 'refractory_status' | 'super_refractory'
-export type AntibodyStatus = 'negative' | 'pending' | 'nmdar' | 'mog' | 'lgi1' | 'caspr2' | 'gaba_b' | 'other_positive'
+// V20 — Panel anticorps élargi (NORSE Institute Diagnostic Evaluation — Section 2)
+// "Comprehensive autoimmune/paraneoplastic panel" — 25+ anticorps
+export type AntibodyStatus =
+  | 'negative' | 'pending'
+  // Surface antibodies (Serum + CSF)
+  | 'nmdar'     // Anti-NMDA Receptor (encéphalite anti-NMDAR)
+  | 'mog'       // Anti-MOG (MOGAD/ADEM)
+  | 'lgi1'      // Anti-LGI1 (encéphalite limbique, FBD)
+  | 'caspr2'    // Anti-CASPR2 (Morvan, encéphalite limbique)
+  | 'gaba_b'    // Anti-GABA-B (encéphalite limbique + crises)
+  | 'gaba_a'    // Anti-GABA-A (SE réfractaire, IRM multifocale)
+  | 'ampa'      // Anti-AMPA (encéphalite limbique)
+  | 'dppx'      // Anti-DPPX (encéphalopathie + hyperexcitabilité)
+  | 'iglon5'    // Anti-IgLON5 (parasomnie, dysautonomie)
+  | 'd2r'       // Anti-D2R (ganglions de la base, dyskinésies)
+  | 'aqp4'      // Anti-AQP4/NMO (NMOSD)
+  | 'glyr'      // Anti-GlyR (PERM, hyperekplexie)
+  // Intracellular antibodies (Serum)
+  | 'gad65'     // Anti-GAD65 (SPS, épilepsie temporale, cérébellite)
+  | 'amphiphysin' // Anti-Amphiphysin (SPS paranéoplasique)
+  | 'cv2'       // Anti-CV2/CRMP5 (multinévrite, chorée)
+  | 'hu'        // Anti-Hu/ANNA-1 (PNS paranéoplasique)
+  | 'yo'        // Anti-Yo/PCA-1 (dégénérescence cérébelleuse)
+  | 'ri'        // Anti-Ri/ANNA-2 (opsoclonus-myoclonus)
+  | 'ma2'       // Anti-Ma2 (encéphalite limbique, narcolepsie)
+  | 'vgcc'      // Anti-VGCC (Lambert-Eaton, dégénérescence cérébelleuse)
+  | 'other_positive'
 export type TreatmentResponse = 'none' | 'partial' | 'good' | 'complete'
 export type AlertSeverity = 'critical' | 'warning' | 'info'
 
@@ -142,10 +168,20 @@ export class PatientState {
   pims: PIMSData
   mogad: MOGADData
 
-  // Cytokines (for TPE hypothesis generation)
+  // V20 — Cytokines panel élargi (NORSE Institute Section 7 + Hanin et al. Epilepsia 2023)
+  // "Cytokine dosing: IL-1β, IL-1Ra, IL-6, IL-10, IL-17, TNF-α, HMGB1, CXCL8-11"
   cytokines?: {
-    il1b?: number; il6?: number; il10?: number; tnfa?: number
-    ccl2?: number; cxcl1?: number
+    il1b?: number       // IL-1β (pg/mL) — Élévation massive >10× norme = cible Anakinra
+    il1ra?: number      // IL-1Ra (pg/mL) — Antagoniste endogène, déficient dans FIRES (Clarkson 2019)
+    il6?: number        // IL-6 (pg/mL) — Corrélation sévérité SE + rupture BHE → cible Tocilizumab
+    il10?: number       // IL-10 (pg/mL) — Anti-inflammatoire, ratio IL-6/IL-10 pronostique
+    il17?: number       // IL-17 (pg/mL) — Activation Th17, neuroinflammation auto-immune
+    tnfa?: number       // TNF-α (pg/mL) — Pro-inflammatoire systémique
+    hmgb1?: number      // HMGB1 (ng/mL) — Alarmine nucléaire, amplifie TLR4/NLRP3 inflammasome
+    cxcl1?: number      // CXCL1/GRO-α (pg/mL) — Recrutement neutrophiles
+    cxcl8?: number      // CXCL8/IL-8 (pg/mL) — Chimioattractant neutrophiles
+    cxcl10?: number     // CXCL10/IP-10 (pg/mL) — MARQUEUR SPÉCIFIQUE FIRES (Sakuma 2015 / Consortium GNC)
+    ccl2?: number       // CCL2/MCP-1 (pg/mL) — Recrutement monocytes
   }
 
   // V16 — NeuroCore

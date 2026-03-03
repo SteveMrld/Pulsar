@@ -71,6 +71,12 @@ export interface NeuroBiomarkers {
   neopterin: number | null     // Néoptérine LCR (nmol/L) — >30 = activation immunitaire SNC
   oligoclonalBands: boolean | null  // Bandes oligoclonales
   iggIndex: number | null  // Index IgG — >0.7 = synthèse intrathécale
+  // V20 — Biomarqueurs additionnels (Hanin et al. Epilepsia 2023 / NORSE Institute SOPs)
+  il1bCsf: number | null   // IL-1β dans LCR (pg/mL) — >10× norme = FIRES actif
+  il1raCsf: number | null  // IL-1Ra dans LCR — déficient dans FIRES (Clarkson Ann Neurol 2019)
+  cxcl10Csf: number | null // CXCL10/IP-10 dans LCR — marqueur spécifique FIRES (Sakuma 2015)
+  hmgb1Csf: number | null  // HMGB1 dans LCR — alarmine, activation inflammasome
+  bhb: number | null       // β-Hydroxybutyrate sérique (mmol/L) — >4.0 = seuil efficacité KD
 }
 
 // ── Doppler transcrânien ──
@@ -997,6 +1003,13 @@ export function checkBiomarkerRedFlags(markers: NeuroBiomarkers): string[] {
   if (markers.nse !== null && markers.nse > 50) flags.push(`NSE très élevé (${markers.nse} µg/L) — dommage neuronal étendu`)
   if (markers.s100b !== null && markers.s100b > 0.3) flags.push(`S100B élevé (${markers.s100b} µg/L) — œdème cérébral`)
   if (markers.il6Csf !== null && markers.il6Csf > 100) flags.push(`IL-6 LCR très élevé (${markers.il6Csf} pg/mL) — cible thérapeutique tocilizumab`)
+
+  // V20 — Biomarqueurs FIRES-spécifiques (Hanin 2023 / Sakuma 2015 / Clarkson 2019)
+  if (markers.il1bCsf !== null && markers.il1bCsf > 50) flags.push(`IL-1β LCR élevé (${markers.il1bCsf} pg/mL) — activation inflammasome NLRP3, cible Anakinra (Costagliola 2022)`)
+  if (markers.il1raCsf !== null && markers.il1raCsf < 50) flags.push(`IL-1Ra LCR bas (${markers.il1raCsf} pg/mL) — déficit antagoniste endogène, FIRES probable (Clarkson, Ann Neurol 2019)`)
+  if (markers.cxcl10Csf !== null && markers.cxcl10Csf > 200) flags.push(`CXCL10/IP-10 LCR élevé (${markers.cxcl10Csf} pg/mL) — marqueur spécifique FIRES (Sakuma 2015 / Consortium GNC)`)
+  if (markers.hmgb1Csf !== null && markers.hmgb1Csf > 5) flags.push(`HMGB1 LCR élevé (${markers.hmgb1Csf} ng/mL) — alarmine nucléaire, amplification TLR4/NLRP3`)
+  if (markers.bhb !== null && markers.bhb > 0 && markers.bhb < 4.0) flags.push(`BHB sérique ${markers.bhb} mmol/L — sous seuil thérapeutique KD (objectif >4.0 mmol/L — J. Child Neurology)`)
 
   return flags
 }
