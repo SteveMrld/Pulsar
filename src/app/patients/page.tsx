@@ -2,7 +2,7 @@
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useLang } from '@/contexts/LanguageContext'
+import { useLang, LangToggle } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -420,6 +420,7 @@ export default function FileActivePage() {
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <LangToggle />
           <button onClick={() => setShowDemo(!showDemo)} style={{
             padding: '6px 14px', borderRadius: 'var(--p-radius-full)',
             background: showDemo ? 'rgba(108,124,255,0.12)' : 'transparent',

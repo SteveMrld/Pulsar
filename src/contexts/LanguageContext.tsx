@@ -75,7 +75,7 @@ export function LangToggle({ style }: { style?: React.CSSProperties }) {
         ...style,
       }}
     >
-      {lang === 'fr' ? 'EN' : 'FR'}
+      {lang === 'fr' ? '🇬🇧 EN' : '🇫🇷 FR'}
     </button>
   )
 }
