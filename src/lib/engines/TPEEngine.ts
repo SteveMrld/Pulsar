@@ -167,6 +167,54 @@ export class TPEEngine extends BrainCore {
         message: 'Les hypothèses TPE sont des pistes de recherche, PAS des prescriptions. Discussion obligatoire en RCP avant toute application.',
       }),
     })
+
+    // V20 — 8 domaines d'outcomes long-terme (Espino et al., Epilepsia 2025 — NORSE Institute LTO Working Group)
+    // "Outcomes classified into 8 main domains, measured at 6 months, 1 year, then annually"
+    this.rules.push({
+      name: 'Projection outcomes long-terme (8 domaines)', reference: 'Espino et al. Epilepsia 2025 (NORSE Institute LTO Working Group)',
+      evaluate: (ps) => {
+        const fails = ps.treatmentHistory.filter(t => t.response === 'none').length
+        const isRefractory = ps.neuro.seizureType === 'refractory_status' || ps.neuro.seizureType === 'super_refractory'
+        const severeGCS = ps.neuro.gcs <= 8
+        const prolongedStay = ps.hospDay >= 14
+
+        // Calcul du risque pronostique global
+        let riskScore = 0
+        if (fails >= 2) riskScore += 30
+        if (isRefractory) riskScore += 25
+        if (severeGCS) riskScore += 20
+        if (prolongedStay) riskScore += 15
+        if (ps.biology.ferritin > 500) riskScore += 10
+        riskScore = Math.min(100, riskScore)
+
+        const domains: string[] = []
+        // Domaine 1 — Neuropsychologique (QI, mémoire, attention)
+        if (riskScore >= 40) domains.push(`Neuropsychologique: risque QIT<70 ${riskScore >= 70 ? '70-90%' : '40-60%'} (évaluation M6/M12 recommandée)`)
+        // Domaine 2 — Neurologique (épilepsie post-NORSE, déficits moteurs)
+        if (isRefractory || fails >= 1) domains.push(`Neurologique: épilepsie pharmaco-résistante probable (évaluation M6)`)
+        // Domaine 3 — Psychiatrique (humeur, comportement)
+        if (riskScore >= 30) domains.push('Psychiatrique: dépression, anxiété, troubles comportementaux (screening M6/M12)')
+        // Domaine 4 — Qualité de vie
+        if (riskScore >= 50) domains.push('Qualité de vie: impact sévère attendu — orientation rééducation précoce')
+        // Domaine 5 — Social (scolarité, intégration)
+        if (riskScore >= 40 && ps.ageMonths >= 36) domains.push('Social: évaluation scolarité/insertion à M6 — PAI recommandé')
+        // Domaine 6 — Charge des aidants
+        if (riskScore >= 50) domains.push('Charge aidants: orientation assistance sociale et psychologique famille dès la sortie')
+        // Domaine 7 — Mortalité long-terme
+        if (riskScore >= 70) domains.push(`Mortalité: groupe à haut risque (10-42% intra-hospitalier). Suivi étroit post-sortie`)
+        // Domaine 8 — Impact système de santé
+        if (prolongedStay) domains.push('Système de santé: séjour prolongé — planifier transfert réadaptation/SSR dès J14')
+
+        if (domains.length > 0) {
+          return {
+            triggered: true,
+            type: 'guard' as const,
+            message: `PROJECTION LTO (${domains.length}/8 domaines à risque) — ${domains.join(' | ')}. Timing évaluation : M6, M12, puis annuel jusqu'à stabilisation (Espino 2025).`,
+          }
+        }
+        return { triggered: false, type: 'validation' as const, message: '' }
+      },
+    })
   }
 
   // ── Couche 2 : Contexte TPE ──

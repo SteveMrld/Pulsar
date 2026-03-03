@@ -24,14 +24,31 @@ export class PVEEngine extends BrainCore {
 
     // ── Base d'interactions documentées ──
     this.interactions = [
+      // === Interactions existantes V15 ===
       { drugs: ['valproate', 'méropénème'], severity: 'critical', mechanism: 'Chute VPA -66 à -88% en 24h — inhibition acylpeptide hydrolase', action: 'Switch LEV, dosage sérique VPA urgent', reference: 'Spriet 2007 / Al-Quteimat 2020 / Park et al.' },
       { drugs: ['midazolam', 'fluconazole'], severity: 'warning', mechanism: 'Inhibition CYP3A4 → midazolam ×200-400%', action: 'Réduire midazolam 50-75%', reference: 'Pharmacopée internationale' },
-      { drugs: ['propofol'], severity: 'warning', mechanism: 'PRIS (rhabdomyolyse, acidose, hyperkaliémie)', action: 'CPK/lactates/TG q12h, limiter durée', reference: 'Bray 1998', conditionCheck: ps => ps.hospDay > 2 },
+      { drugs: ['propofol'], severity: 'warning', mechanism: 'PRIS (rhabdomyolyse, acidose, hyperkaliémie)', action: 'CPK/lactates/TG q12h, limiter durée', reference: 'Bray 1998 / Yale SE Algorithm 2023', conditionCheck: ps => ps.hospDay > 2 },
       { drugs: ['cyclophosphamide'], severity: 'warning', mechanism: 'Myélosuppression dose-dépendante', action: 'NFS J7-J14, MESNA systématique', reference: 'Guidelines NMDARE' },
       { drugs: ['aminoside', 'vancomycine'], also: ['amikacine', 'gentamicine'], severity: 'warning', mechanism: 'Néphrotoxicité additive', action: 'Dosage sérique, éviter >5j combiné', reference: 'Consensus réanimation pédiatrique' },
-      // V15 — PIMS-specific
       { drugs: ['tocilizumab', 'héparine'], also: ['enoxaparine'], severity: 'warning', mechanism: 'Tocilizumab normalise CRP → masque infection + risque hémorragique', action: 'Surveillance clinique renforcée, fibrinogène q24h', reference: 'Guidelines PIMS/MIS-C' },
       { drugs: ['ivIg'], severity: 'info', mechanism: 'Surcharge volumique chez patient avec dysfonction cardiaque', action: 'Débit lent, monitoring FEVG si PIMS cardiaque', reference: 'Feldstein NEJM 2020', conditionCheck: ps => ps.pims.cardiacInvolvement },
+
+      // === V20 — Yale New Haven Health SE Algorithm (Juillet 2023) ===
+      { drugs: ['phénytoïne'], also: ['fosphénytoïne'], severity: 'warning', mechanism: 'Propylène glycol → acidose métabolique. Extravasation → Purple Glove Syndrome. Arythmie cardiaque (bradycardie, hypotension)', action: 'Perfusion max 50mg/min adulte, 1-3mg/kg/min pédiatrique. Monitoring cardiaque continu. Éviter voie périphérique si possible', reference: 'Yale SE Algorithm 2023 / Glauser 2016' },
+      { drugs: ['valproate'], severity: 'warning', mechanism: 'Encéphalopathie hyperammoniémique — risque même à taux thérapeutique. Tératogène absolu', action: 'Dosage ammoniémie si confusion. CI grossesse. Hépatotoxicité : bilan hépatique J1/J3/J7', reference: 'Yale SE Algorithm 2023 / Trinka 2015' },
+      { drugs: ['carbamazépine'], also: ['oxcarbazépine'], severity: 'critical', mechanism: 'HLA-B*1502 → syndrome de Stevens-Johnson / nécrolyse épidermique toxique (population asiatique ++)', action: 'Typage HLA-B*1502 OBLIGATOIRE avant initiation chez patients d\'origine asiatique', reference: 'Yale SE Algorithm 2023 / PharmGKB', conditionCheck: () => true },
+      { drugs: ['kétamine'], severity: 'info', mechanism: 'Propriétés sympathomimétiques → ↑FC, ↑TA. Possible ↑PIC (controversé). Accumulation en perfusion continue prolongée', action: 'Monitoring hémodynamique. Bolus 1.5mg/kg puis 0.5-5mg/kg/h. Attention association avec autres sédatifs', reference: 'Yale SE Algorithm 2023 / Kapur NEJM 2019' },
+      { drugs: ['pentobarbital'], also: ['thiopental'], severity: 'critical', mechanism: 'Dépression cardiovasculaire majeure. Iléus paralytique. Immunosuppression profonde. Sevrage prolongé difficile', action: 'USI obligatoire. Vasopresseurs disponibles. Nutrition parentérale anticipée. EEG continu pour titration', reference: 'Yale SE Algorithm 2023 / Brophy 2012' },
+      { drugs: ['propofol'], severity: 'critical', mechanism: 'Syndrome de perfusion du propofol : acidose lactique, rhabdomyolyse, hyperkaliémie, bradycardie → arrêt cardiaque', action: 'Dose max 80mcg/kg/min. Durée max 48h à haute dose. CPK/lactates/TG q12h. Arrêt immédiat si PRIS suspecté', reference: 'Yale SE Algorithm 2023 / Bray 1998', conditionCheck: ps => ps.drugs.some(d => d.name.toLowerCase().includes('propofol')) },
+      { drugs: ['lacosamide'], severity: 'info', mechanism: 'Allongement PR. Risque BAV chez patient avec anomalie de conduction préexistante', action: 'ECG avant initiation et à J1. CI si BAV 2ème/3ème degré', reference: 'Yale SE Algorithm 2023' },
+      { drugs: ['levetiracetam'], severity: 'info', mechanism: 'Ajustement rénal nécessaire. Agressivité/agitation paradoxale chez l\'enfant (5-10%)', action: 'Adapter dose si ClCr <50mL/min. Surveiller comportement J1-J7', reference: 'Yale SE Algorithm 2023 / Glauser 2016' },
+
+      // === V20 — Interaction critique Corticoïdes + Anakinra (Rapport technique 2026) ===
+      { drugs: ['méthylprednisolone', 'anakinra'], also: ['prednisolone', 'dexaméthasone'], severity: 'critical', mechanism: 'Double immunosuppression → risque infectieux +40%. Pneumonies et sepsis dans 20-25% des cas', action: 'NFS quotidienne (arrêt si neutrophiles <1000/mm³). Hémocultures hebdomadaires. CRP/PCT quotidiennes. Sérologies EBV/CMV à l\'initiation. Réduire corticoïdes dès que possible', reference: 'Rapport technique 2026 / Registre NORSE Institute' },
+
+      // === V20 — Médicaments proconvulsivants (NORSE Institute Table 4) ===
+      { drugs: ['imipénème'], severity: 'warning', mechanism: 'Proconvulsivant direct — abaissement du seuil épileptogène', action: 'Contre-indiqué en contexte SE. Switch méropénème ou autre carbapénème', reference: 'NORSE Institute 2020 — Table 4' },
+      { drugs: ['cefépime'], severity: 'warning', mechanism: 'Neurotoxicité dose-dépendante : confusion, myoclonies, état de mal non-convulsif, surtout si insuffisance rénale', action: 'Dosage sérique si IR. EEG si confusion sous traitement. Ajuster dose selon ClCr', reference: 'NORSE Institute 2020 — Table 4' },
     ]
 
     // ── Champ 1 : Charge médicamenteuse ──

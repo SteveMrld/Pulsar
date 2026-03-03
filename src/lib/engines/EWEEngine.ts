@@ -202,6 +202,31 @@ export class EWEEngine extends BrainCore {
         return { triggered: false, type: 'validation' as const, message: '' }
       },
     })
+
+    // V20 — Burst Suppression >48h = risque atrophie cérébrale +35% (Neurology / Rapport technique 2026)
+    this.rules.push({
+      name: 'Burst Suppression prolongé', reference: 'Neurology / Rapport technique 2026',
+      evaluate: (ps) => {
+        if (ps.eeg?.background === 'burst_suppression' && ps.hospDay >= 2) {
+          return { triggered: true, type: 'correction' as const, message: `⚠️ Burst Suppression actif J${ps.hospDay} — EBS >48h augmente le risque d'atrophie cérébrale de 35%. Réévaluer sédation, envisager sevrage progressif si possible. Objectif : sortir du BS dès que contrôle des crises atteint.` }
+        }
+        if (ps.eeg?.background === 'burst_suppression') {
+          return { triggered: true, type: 'guard' as const, message: 'Burst Suppression actif — Surveiller durée. Deadline critique : 48h (risque atrophie +35%).' }
+        }
+        return { triggered: false, type: 'validation' as const, message: '' }
+      },
+    })
+
+    // V20 — Extreme Delta Brush = marqueur spécifique anti-NMDAR/FIRES (30% des cas)
+    this.rules.push({
+      name: 'Extreme Delta Brush détecté', reference: 'Journal of Clinical Neurophysiology / Rapport technique 2026',
+      evaluate: (ps) => {
+        if (ps.eeg?.signaturePattern === 'extreme_delta_brush') {
+          return { triggered: true, type: 'guard' as const, message: 'Extreme Delta Brush détecté (30% des cas anti-NMDAR et FIRES). Corrélé à la sévérité du SE. Rechercher anticorps anti-NMDAR en urgence si non fait. Immunothérapie agressive recommandée.' }
+        }
+        return { triggered: false, type: 'validation' as const, message: '' }
+      },
+    })
   }
 
   // ── Couche 2 : Contexte EWE ──

@@ -152,6 +152,47 @@ export class TDEEngine extends BrainCore {
         return { triggered: false, type: 'validation', message: '' }
       },
     })
+
+    // V20 — Timing H72 immunothérapie (Wickström 2022 — Consensus Delphi, 85 recommandations, 48 experts)
+    // "First-line immunotherapy should be considered within 72 hours of seizure onset in cryptogenic cases"
+    this.rules.push({
+      name: 'Alerte H72 — Immunothérapie L1', reference: 'Wickström 2022 (Delphi consensus, 48 experts)',
+      evaluate: (ps) => {
+        const hasImmuno = ps.treatmentHistory.some(t =>
+          ['Méthylprednisolone IV', 'IVIg', 'Rituximab', 'Cyclophosphamide', 'Plasmaphérèse', 'Tocilizumab', 'Anakinra'].includes(t.treatment)
+        )
+        // Si J3+ sans immunothérapie et crises actives → alerte critique
+        if (ps.hospDay >= 3 && !hasImmuno && ps.neuro.seizures24h > 0) {
+          return { triggered: true, type: 'guard', message: `⚠️ J${ps.hospDay} SANS immunothérapie — Consensus international : initier L1 (corticoïdes + IgIV) DANS LES 72h si cryptogénique. Chaque heure de retard aggrave les séquelles neurologiques.` }
+        }
+        // Alerte modérée si J2 et crises
+        if (ps.hospDay >= 2 && !hasImmuno && (ps.neuro.seizureType === 'refractory_status' || ps.neuro.seizureType === 'super_refractory')) {
+          return { triggered: true, type: 'guard', message: `J${ps.hospDay} + SE réfractaire sans immunothérapie — Préparer L1. Deadline H72 (Wickström 2022).` }
+        }
+        return { triggered: false, type: 'validation', message: '' }
+      },
+    })
+
+    // V20 — Timing J7 escalade L2 + KD (Wickström 2022)
+    // "Second-line immunotherapy and ketogenic diet should be considered within 7 days of seizure onset"
+    this.rules.push({
+      name: 'Alerte J7 — Escalade L2 + Régime cétogène', reference: 'Wickström 2022 / Rapport technique 2026',
+      evaluate: (ps) => {
+        const l1Fail = ps.treatmentHistory.some(t =>
+          ['Méthylprednisolone IV', 'IVIg'].includes(t.treatment) && t.response === 'none'
+        )
+        const hasL2 = ps.treatmentHistory.some(t =>
+          ['Rituximab', 'Cyclophosphamide', 'Plasmaphérèse', 'Anakinra', 'Tocilizumab'].includes(t.treatment)
+        )
+        if (ps.hospDay >= 7 && l1Fail && !hasL2) {
+          return { triggered: true, type: 'correction', message: `⚠️ J${ps.hospDay} + ÉCHEC L1 sans escalade — Consensus : L2 + régime cétogène DANS LES 7 JOURS. Protocole couplé Anakinra + KD ratio 4:1 = 85% sevrage anesthésiques (vs 40% sans — Rapport technique 2026).` }
+        }
+        if (ps.hospDay >= 5 && l1Fail && !hasL2) {
+          return { triggered: true, type: 'guard', message: `J${ps.hospDay} + échec L1 — Deadline J7 approche. Préparer escalade L2 + KD.` }
+        }
+        return { triggered: false, type: 'validation', message: '' }
+      },
+    })
   }
 
   // ── Couche 2 : Contexte ──
@@ -208,6 +249,13 @@ export class TDEEngine extends BrainCore {
     if (line === 1 && score > 50) recs.push({ priority: 'urgent', title: 'Immunothérapie 1ère ligne', body: `Méthylprednisolone ${Math.round(w * 30)}mg/j ×3-5j + IVIg ${Math.round(w * 0.4 * 10) / 10}g/j ×5j (total ${Math.round(w * 2)}g)`, reference: 'Wickström 2022 / Nosadini 2021' })
     else if (line === 2) recs.push({ priority: 'urgent', title: 'Escalade 2ème ligne', body: `Rituximab 375mg/m²/sem ×4 | Cyclophosphamide | Plasmaphérèse`, reference: 'Sheikh 2023' })
     else if (line === 3) recs.push({ priority: 'urgent', title: '3ème ligne expérimentale', body: `Tocilizumab 8mg/kg | Anakinra 2-4mg/kg/j SC | Bortezomib`, reference: 'Costagliola 2022 / Shrestha 2023' })
+
+    // V20 — Protocole couplé Anakinra + KD si FIRES + échec L1
+    const isFires = intention.patterns.some(p => p.name === 'Pattern FIRES' && p.confidence > 0.5)
+    const l1Failed = ps.treatmentHistory.some(t => ['Méthylprednisolone IV', 'IVIg'].includes(t.treatment) && t.response === 'none')
+    if (isFires && l1Failed) {
+      recs.push({ priority: 'urgent', title: 'Protocole couplé Anakinra + Régime cétogène', body: `Anakinra ${Math.round(w * 5)}mg SC ×2/j + KD ratio 4:1. Sevrage sédation J4-J7 SEULEMENT si BHB >4.0 mmol/L ET IL-6 LCR en baisse. Taux de succès sevrage anesthésiques : 85% (vs 40% sans couplage). Wickström 2018 : réduction 50% crises en <7j si débuté avant J14.`, reference: 'Rapport technique 2026 / Wickström 2018 / Costagliola 2022' })
+    }
 
     intention.patterns.filter(p => p.confidence > 0.5).forEach(p =>
       alerts.push({ severity: p.confidence > 0.8 ? 'critical' : 'warning', title: p.name, body: p.description, source: 'TDE' })

@@ -138,8 +138,8 @@ const TREATMENT_OPTIONS: TreatmentOption[] = [
       const score = criteria.filter(c => c.met).length / criteria.length
       return { score, criteria }
     },
-    expectedBenefit: 'Réduction de la fréquence des crises dans >50% des cas (Costagliola 2022). Possible cessation complète du SE.',
-    risks: 'Neutropénie, infections, réaction au point d\'injection. Surveillance NFS bihebdomadaire requise.',
+    expectedBenefit: 'Taux de réponse ~60-65% dans le FIRES (Rapport technique 2026). Réduit la charge de crises de 50% en <7 jours si débuté avant J14 (Wickström 2018). Délai critique : chaque jour de retard au-delà de J14 réduit significativement l\'efficacité.',
+    risks: 'Neutropénie, infections sévères (20-25% : pneumonies, sepsis — Registre NORSE Institute). Interaction corticoïdes : risque infectieux +40%. Surveillance : NFS quotidienne (arrêt si neutrophiles <1000/mm³), hémocultures hebdomadaires, CRP/PCT quotidiennes, sérologies EBV/CMV à l\'initiation.',
   },
   {
     id: 'tx-tocilizumab',
@@ -185,8 +185,8 @@ const TREATMENT_OPTIONS: TreatmentOption[] = [
       const score = criteria.filter(c => c.met).length / criteria.length
       return { score, criteria }
     },
-    expectedBenefit: 'Premier RCT sur KD précoce dans FIRES. Potentiel de réduction du délai de résolution du SE si initié ≤48h vs ≥5j.',
-    risks: 'Hypoglycémie, acidose, dyslipidémie transitoire. Monitoring métabolique strict.',
+    expectedBenefit: 'Seuil critique : BHB >4.0 mmol/L nécessaire pour arrêt des crises (>75% de réduction — J. Child Neurology). Augmentation Akkermansia muciniphila + AGCC anti-inflammatoires → réduction 60% cytokines pro-inflammatoires (Human Microbiome Project). Premier RCT sur KD précoce dans FIRES.',
+    risks: 'Hypoglycémie, acidose, dyslipidémie transitoire. Monitoring métabolique strict : BHB q8h (objectif >4.0 mmol/L), glycémie q4h.',
   },
   {
     id: 'tx-combo-anakinra-kd',
@@ -209,8 +209,8 @@ const TREATMENT_OPTIONS: TreatmentOption[] = [
       const score = criteria.filter(c => c.met).length / criteria.length
       return { score, criteria }
     },
-    expectedBenefit: 'Hypothèse de synergie anakinra+KD pour court-circuiter les lignes inefficaces. Impact potentiellement transformatif si validé.',
-    risks: 'Protocole non testé en combinaison. Risques cumulés de chaque traitement. Usage compassionnel uniquement.',
+    expectedBenefit: 'Protocole couplé "Standard de soin 2026" : Induction J1-J3 Anakinra SC + KD ratio 4:1. Sevrage sédation J4-J7 seulement si BHB >4.0 mmol/L ET IL-6 LCR en baisse. Résultat : 85% de succès de sevrage des anesthésiques (vs 40% sans couplage). Impact potentiellement transformatif.',
+    risks: 'Risques cumulés : infections sévères 20-25% (anakinra) + hypoglycémie/acidose (KD). Double immunosuppression si corticoïdes associés (+40% risque infectieux). Usage compassionnel — protocole non validé par RCT en combinaison. Monitoring intensif requis : NFS + BHB + glycémie + CRP/PCT quotidiens.',
   },
   {
     id: 'tx-rituximab',
@@ -231,8 +231,8 @@ const TREATMENT_OPTIONS: TreatmentOption[] = [
       const score = criteria.filter(c => c.met).length / criteria.length
       return { score, criteria }
     },
-    expectedBenefit: 'Consensus Nosadini 2021: escalation rituximab recommandée si non-réponse L1-L2 dans anti-NMDAR.',
-    risks: 'Réactivation virale (JC, HBV), hypogammaglobulinémie, réactions perfusion. Vaccination pré-traitement recommandée.',
+    expectedBenefit: 'Efficacité >75% dans les EAIS séropositives anti-NMDAR (Graus, Lancet Neurology). Consensus Nosadini 2021 : escalade rituximab recommandée si non-réponse L1-L2. Faible efficacité dans le FIRES pur — préférer anakinra.',
+    risks: 'Réactivation virale (JC → LEMP, HBV), hypogammaglobulinémie prolongée, réactions perfusion sévères. Vaccination pré-traitement recommandée. Surveillance immunoglobulines sériques mensuelle.',
   },
 ]
 
