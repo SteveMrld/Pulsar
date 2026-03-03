@@ -40,15 +40,6 @@ const epidemioStats = [
   { value: '5', label: 'syndromes', sub: 'FIRES · Anti-NMDAR · NORSE · PIMS · MOGAD/ADEM', color: '#6C7CFF' },
 ]
 
-const techStats = [
-  { value: '25 322', label: 'lignes de code', color: '#6C7CFF' },
-  { value: '6+1', label: 'moteurs IA', color: '#2FD1C8' },
-  { value: '4', label: 'niveaux Discovery', color: '#10B981' },
-  { value: '95/95', label: 'tests passés', color: '#B96BFF' },
-  { value: '109', label: 'fichiers', color: '#FF6B8A' },
-  { value: '15', label: 'tables SQL', color: '#FFB347' },
-]
-
 const workflow = [
   { step: '1', label: 'Admission', desc: 'Intake + Triage P1-P4', color: '#FF4757' },
   { step: '2', label: 'Pipeline', desc: '5 moteurs activés', color: '#6C7CFF' },
@@ -91,7 +82,7 @@ export default function LandingPage() {
         </p>
 
         <p style={{ fontSize: 'var(--p-text-base)', color: 'var(--p-text)', lineHeight: 'var(--p-leading-relaxed)', maxWidth: '720px', margin: '0 auto var(--p-space-10)', fontWeight: 600 }}>
-          PULSAR est le premier système d&apos;intelligence artificielle entièrement dédié à ces pathologies. 6+1 moteurs IA, un Discovery Engine de recherche translationnelle, 25 000 lignes de code. Un outil unique au monde, construit pour que chaque enfant qui entre dans le système rende le système plus intelligent pour le suivant.
+          PULSAR est le premier système d&apos;intelligence artificielle entièrement dédié à ces pathologies. 7 moteurs qui pensent ensemble, un Discovery Engine qui croise chaque patient avec la recherche mondiale, et un principe fondateur : chaque enfant qui entre dans le système rend le système plus intelligent pour le suivant. Rien de tel n&apos;existe aujourd&apos;hui.
         </p>
 
         <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -211,20 +202,25 @@ export default function LandingPage() {
       {/* ═══════════ INGÉNIERIE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>INGÉNIERIE</div>
-          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>25 000 lignes de code.<br /><span className="text-gradient-brand">Pas un gadget.</span></h2>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>CE QUI REND PULSAR UNIQUE</div>
+          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>Un vrai système.<br /><span className="text-gradient-brand">Pas un chatbot.</span></h2>
         </div>
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 'var(--p-space-6)' }}>
-          {techStats.map((s, i) => (
-            <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-lg)', padding: '14px 20px', textAlign: 'center', minWidth: '130px' }}>
-              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '22px', fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: '9px', color: 'var(--p-text-muted)', marginTop: '4px', fontWeight: 600, fontFamily: 'var(--p-font-mono)' }}>{s.label}</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginBottom: 'var(--p-space-6)' }}>
+          {[
+            { icon: '🧠', title: '7 moteurs qui pensent ensemble', desc: 'Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', color: '#6C7CFF' },
+            { icon: '🔬', title: 'De la donnée brute à l\'hypothèse publiable', desc: 'Le Discovery Engine fait ce que personne ne fait : il prend les constantes d\'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.', color: '#10B981' },
+            { icon: '⚡', title: '95 scénarios cliniques validés', desc: 'FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', color: '#FF6B8A' },
+            { icon: '🌍', title: 'Connecté à la science mondiale', desc: 'Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', color: '#3B82F6' },
+          ].map((item, i) => (
+            <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', borderLeft: `3px solid ${item.color}` }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+                <span style={{ fontSize: '20px' }}>{item.icon}</span>
+                <span style={{ fontSize: '13px', fontWeight: 700, color: item.color }}>{item.title}</span>
+              </div>
+              <p style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
             </div>
           ))}
         </div>
-        <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', textAlign: 'center', maxWidth: '700px', margin: '0 auto', lineHeight: 1.8 }}>
-          PULSAR n&apos;est pas un prototype. C&apos;est un système complet : <strong style={{ color: 'var(--p-text)' }}>Next.js 14, TypeScript strict, Supabase, 15 tables relationnelles, authentification, tests automatisés, déploiement continu Vercel</strong>. Chaque moteur a été construit, testé et validé contre des scénarios cliniques réels. 59 références médicales intégrées. 0 erreur TypeScript. Production depuis mars 2026.
-        </p>
       </section>
 
       {/* ═══════════ WORKFLOW ═══════════ */}
