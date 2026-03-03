@@ -215,7 +215,8 @@ function PulsingBrain() {
       margin: '0 auto 24px',
       boxShadow: '0 0 40px rgba(108,124,255,0.1), inset 0 0 30px rgba(108,124,255,0.05)',
     }}>
-      <Picto name="brain" size={44} glow glowColor="rgba(108,124,255,0.6)" />
+      <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={52} height={52}
+        style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.6))', objectFit: 'contain' }} />
     </div>
   )
 }
@@ -244,7 +245,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
           boxShadow: '0 4px 20px rgba(108,124,255,0.3)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
         }}>
-          <Picto name="brain" size={16} /> Analyse intelligente
+          <img src="/assets/pictos-v17/brain-hero-128.png" alt="" width={16} height={16} style={{ objectFit: 'contain' }} /> {t('Analyse intelligente', 'Smart Analysis')}
         </button>
         <button onClick={onDemo} style={{
           padding: '12px 32px', borderRadius: 'var(--p-radius-lg)',
@@ -412,7 +413,7 @@ export default function FileActivePage() {
         borderBottom: '1px solid var(--p-border)', background: 'var(--p-bg-card)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Picto name="brain" size={28} glow glowColor="rgba(108,124,255,0.5)" />
+          <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={28} height={28} style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.5))', objectFit: 'contain' }} />
           <div>
             <h1 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--p-text)', margin: 0, lineHeight: 1.2 }}>PULSAR</h1>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '1px' }}>FILE ACTIVE</span>

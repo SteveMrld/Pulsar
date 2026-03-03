@@ -3,44 +3,10 @@ import { useLang, LangToggle } from '@/contexts/LanguageContext'
 import Link from 'next/link'
 
 // ══════════════════════════════════════════════════════════════
-// PULSAR V19 — Landing
+// PULSAR V20 — Landing
 // La promesse : plus aucun enfant perdu par manque d'intelligence
 // ══════════════════════════════════════════════════════════════
 
-const engines = [
-  { name: 'VPS', full: 'Vital Prognosis Score', color: '#6C7CFF',
-    desc: "Score de sévérité global via 4 champs sémantiques. Lit les signaux vitaux comme un cerveau clinique." },
-  { name: 'TDE', full: 'Therapeutic Decision Engine', color: '#2FD1C8',
-    desc: "Escalade thérapeutique adaptée à chaque pathologie. FIRES, anti-NMDAR, MOGAD — chaque pattern, sa logique." },
-  { name: 'PVE', full: 'Pharmacovigilance Engine', color: '#B96BFF',
-    desc: 'Interactions critiques en temps réel. Croise traitements, pathologie et terrain.' },
-  { name: 'EWE', full: 'Early Warning Engine', color: '#FF6B8A',
-    desc: "Détection précoce des détériorations. Analyse les tendances vitales avant la décompensation." },
-  { name: 'TPE', full: 'Therapeutic Prospection Engine', color: '#FFB347',
-    desc: "Projection J+7/J+14. Recommandations thérapeutiques anticipées." },
-]
-
-const discoveryLevels = [
-  { name: 'N1', label: 'Pattern Mining', color: '#10B981', icon: '📊',
-    desc: 'Corrélation de Pearson sur 34 paramètres cliniques. Clustering k-means. Détection d\'anomalies z-score (2.5σ). Chaque patient génère des signaux qui enrichissent le système.',
-    detail: '34 paramètres × 8 patients' },
-  { name: 'N2', label: 'Literature Scanner', color: '#3B82F6', icon: '📡',
-    desc: 'Veille PubMed live (10 requêtes). ClinicalTrials.gov temps réel. Détection automatique de contradictions avec le protocole thérapeutique en cours.',
-    detail: '25 publications + 3 essais NCT actifs' },
-  { name: 'N3', label: 'Hypothesis Engine', color: '#8B5CF6', icon: '💡',
-    desc: 'Croisement N1×N2 via Claude API. Génération d\'hypothèses de recherche. Workflow de validation : Générée → En revue → Validée → Publiée.',
-    detail: '3 hypothèses calibrées + scoring' },
-  { name: 'N4', label: 'Treatment Pathfinder', color: '#EC4899', icon: '🧬',
-    desc: 'Matching patient↔essais cliniques mondiaux. Scoring d\'éligibilité multicritères. Chaque enfant est connecté aux traitements qui pourraient changer sa trajectoire.',
-    detail: 'anakinra · tocilizumab · KD · combo · rituximab' },
-]
-
-const epidemioStats = [
-  { value: '~30 000', label: 'enfants/an', sub: 'touchés par des maladies neuro-inflammatoires dans le monde', color: '#FF4757' },
-  { value: '12–30%', label: 'mortalité', sub: 'dans les formes réfractaires (FIRES, NORSE, encéphalites sévères)', color: '#FF6B8A' },
-  { value: '90%', label: 'séquelles', sub: 'des survivants gardent des déficits cognitifs ou une épilepsie chronique', color: '#FFB347' },
-  { value: '5', label: 'syndromes', sub: 'FIRES · Anti-NMDAR · NORSE · PIMS · MOGAD/ADEM', color: '#6C7CFF' },
-]
 
 const workflow = [
   { step: '1', label: 'Admission', desc: 'Intake + Triage P1-P4', color: '#FF4757' },
@@ -52,6 +18,42 @@ const workflow = [
 
 export default function LandingPage() {
   const { t } = useLang()
+
+  const engines = [
+    { name: 'VPS', full: 'Vital Prognosis Score', color: '#6C7CFF',
+      desc: "Score de sévérité global via 4 champs sémantiques. Lit les signaux vitaux comme un cerveau clinique." },
+    { name: 'TDE', full: 'Therapeutic Decision Engine', color: '#2FD1C8',
+      desc: "Escalade thérapeutique adaptée à chaque pathologie. FIRES, anti-NMDAR, MOGAD — chaque pattern, sa logique." },
+    { name: 'PVE', full: 'Pharmacovigilance Engine', color: '#B96BFF',
+      desc: 'Interactions critiques en temps réel. Croise traitements, pathologie et terrain.' },
+    { name: 'EWE', full: 'Early Warning Engine', color: '#FF6B8A',
+      desc: "Détection précoce des détériorations. Analyse les tendances vitales avant la décompensation." },
+    { name: 'TPE', full: 'Therapeutic Prospection Engine', color: '#FFB347',
+      desc: "Projection J+7/J+14. Recommandations thérapeutiques anticipées." },
+  ]
+  
+  const discoveryLevels = [
+    { name: 'N1', label: 'Pattern Mining', color: '#10B981', icon: '📊',
+      desc: 'Corrélation de Pearson sur 34 paramètres cliniques. Clustering k-means. Détection d\'anomalies z-score (2.5σ). Chaque patient génère des signaux qui enrichissent le système.',
+      detail: '34 paramètres × 8 patients' },
+    { name: 'N2', label: 'Literature Scanner', color: '#3B82F6', icon: '📡',
+      desc: 'Veille PubMed live (10 requêtes). ClinicalTrials.gov temps réel. Détection automatique de contradictions avec le protocole thérapeutique en cours.',
+      detail: '25 publications + 3 essais NCT actifs' },
+    { name: 'N3', label: 'Hypothesis Engine', color: '#8B5CF6', icon: '💡',
+      desc: 'Croisement N1×N2 via Claude API. Génération d\'hypothèses de recherche. Workflow de validation : Générée → En revue → Validée → Publiée.',
+      detail: '3 hypothèses calibrées + scoring' },
+    { name: 'N4', label: 'Treatment Pathfinder', color: '#EC4899', icon: '🧬',
+      desc: 'Matching patient↔essais cliniques mondiaux. Scoring d\'éligibilité multicritères. Chaque enfant est connecté aux traitements qui pourraient changer sa trajectoire.',
+      detail: 'anakinra · tocilizumab · KD · combo · rituximab' },
+  ]
+  
+  const epidemioStats = [
+    { value: '~30 000', label: 'enfants/an', sub: 'touchés par des maladies neuro-inflammatoires dans le monde', color: '#FF4757' },
+    { value: '12–30%', label: 'mortalité', sub: 'dans les formes réfractaires (FIRES, NORSE, encéphalites sévères)', color: '#FF6B8A' },
+    { value: '90%', label: 'séquelles', sub: 'des survivants gardent des déficits cognitifs ou une épilepsie chronique', color: '#FFB347' },
+    { value: '5', label: 'syndromes', sub: 'FIRES · Anti-NMDAR · NORSE · PIMS · MOGAD/ADEM', color: '#6C7CFF' },
+  ]
+
   return (
     <div className="page-enter" style={{ minHeight: '100vh', background: 'var(--p-bg)', position: 'relative' }}>
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, background: 'radial-gradient(ellipse 80% 60% at 20% 30%, rgba(108,124,255,0.06) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 80% 70%, rgba(16,185,129,0.04) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 50% 50%, rgba(47,209,200,0.03) 0%, transparent 50%)' }} />
@@ -61,7 +63,7 @@ export default function LandingPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
           <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={40} height={40} style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.5))', display: 'block', objectFit: 'contain' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#10B981', background: '#10B98115', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #10B98125' }}>V19</span>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#10B981', background: '#10B98115', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #10B98125' }}>V20</span>
         </div>
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
           <LangToggle />
@@ -69,6 +71,15 @@ export default function LandingPage() {
           <Link href="/patients" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontSize: 'var(--p-text-sm)', fontWeight: 600, boxShadow: '0 0 16px rgba(108,124,255,0.3)' }}>{t('Commencer', 'Get started')}</Link>
         </div>
       </nav>
+
+      {/* ═══════════ MEMORIAL ═══════════ */}
+      <div style={{ textAlign: 'center', padding: 'var(--p-space-6) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
+        <div style={{ display: 'inline-block', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-full)', background: 'rgba(108,124,255,0.04)', border: '1px solid rgba(108,124,255,0.10)' }}>
+          <p style={{ fontSize: '13px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-muted)', margin: 0, fontWeight: 500, letterSpacing: '0.05em' }}>
+            {t('À la mémoire d\'Alejandro R. (2019–2025)', 'In memory of Alejandro R. (2019–2025)')}
+          </p>
+        </div>
+      </div>
 
       {/* ═══════════ HERO ═══════════ */}
       <section className="page-enter" style={{ textAlign: 'center', padding: 'var(--p-space-24) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
@@ -343,12 +354,10 @@ export default function LandingPage() {
       </section>
 
       {/* ═══════════ MÉMORIAL + FOOTER ═══════════ */}
-      <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-4)', position: 'relative', zIndex: 1 }}>
-        <p style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>In memory of Alejandro R. (2019–2025)</p>
-      </div>
+
 
       <footer style={{ borderTop: 'var(--p-border)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
-        PULSAR V19 · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel
+        PULSAR V20 · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel
       </footer>
     </div>
   )
