@@ -56,7 +56,7 @@ export default function LandingPage() {
       {/* NAV */}
       <nav className="glass" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--p-space-4) var(--p-space-8)', position: 'sticky', top: 0, zIndex: 50 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
-          <img src="/assets/logo-pulsar.png" alt="PULSAR" width={40} height={40} style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.5))', display: 'block', objectFit: 'contain' }} />
+          <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={40} height={40} style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.5))', display: 'block', objectFit: 'contain' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
           <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#10B981', background: '#10B98115', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #10B98125' }}>V19</span>
         </div>
@@ -199,6 +199,49 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* ═══════════ TREATMENT PATHFINDER — PROMESSE THÉRAPEUTIQUE ═══════════ */}
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+        <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(236,72,153,0.05) 0%, rgba(139,92,246,0.04) 50%, rgba(16,185,129,0.03) 100%)', border: '1px solid rgba(236,72,153,0.12)', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '160px', height: '160px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--p-space-6)', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 400px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-4)' }}>
+                <img src="/assets/organs/microscope.png" alt="" width={32} height={32} style={{ filter: 'drop-shadow(0 0 8px rgba(236,72,153,0.4))' }} />
+                <div>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#EC4899', letterSpacing: '2px', fontWeight: 800 }}>TREATMENT PATHFINDER</div>
+                  <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Discovery Engine · Niveau 4</div>
+                </div>
+              </div>
+              <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>Pour chaque enfant, PULSAR<br />cherche activement <span style={{ color: '#EC4899' }}>des pistes de traitement</span></h3>
+              <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
+                Le Treatment Pathfinder ne se contente pas d&apos;analyser — il agit. À partir du profil clinique de chaque patient, il interroge les essais cliniques mondiaux, évalue l&apos;éligibilité à des traitements ciblés, et remonte des pistes thérapeutiques directement dans les recommandations du clinicien.
+              </p>
+              <p style={{ fontSize: '13px', color: 'var(--p-text)', lineHeight: 1.8, fontWeight: 600 }}>
+                Quand un enfant ne répond plus aux traitements de première ligne, le Pathfinder cherche ce qui pourrait fonctionner — dans la littérature, dans les essais en cours, dans les combinaisons que personne n&apos;a encore testées sur ce profil précis.
+              </p>
+            </div>
+            <div style={{ flex: '0 0 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[
+                { mol: 'Anakinra', type: 'Anti-IL-1', usage: 'FIRES réfractaire', color: '#EC4899' },
+                { mol: 'Tocilizumab', type: 'Anti-IL-6', usage: 'Encéphalite auto-immune', color: '#8B5CF6' },
+                { mol: 'Régime cétogène', type: 'Métabolique', usage: 'FIRES / épilepsie réfractaire', color: '#10B981' },
+                { mol: 'Rituximab', type: 'Anti-CD20', usage: 'Anti-NMDAR réfractaire', color: '#3B82F6' },
+                { mol: 'Combinaisons', type: 'Multi-cibles', usage: 'Profils complexes', color: '#FFB347' },
+              ].map((t, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', borderRadius: 'var(--p-radius-lg)', background: `${t.color}08`, border: `1px solid ${t.color}15` }}>
+                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: t.color, flexShrink: 0, boxShadow: `0 0 6px ${t.color}60` }} />
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--p-text)' }}>{t.mol} <span style={{ fontWeight: 400, color: 'var(--p-text-dim)', fontSize: '10px' }}>({t.type})</span></div>
+                    <div style={{ fontSize: '9px', color: t.color, fontFamily: 'var(--p-font-mono)', fontWeight: 600 }}>{t.usage}</div>
+                  </div>
+                </div>
+              ))}
+              <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', textAlign: 'center', marginTop: '4px', fontFamily: 'var(--p-font-mono)' }}>Scoring d&apos;éligibilité multicritères · ClinicalTrials.gov live</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════ INGÉNIERIE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
@@ -207,14 +250,14 @@ export default function LandingPage() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginBottom: 'var(--p-space-6)' }}>
           {[
-            { icon: '🧠', title: '7 moteurs qui pensent ensemble', desc: 'Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', color: '#6C7CFF' },
-            { icon: '🔬', title: 'De la donnée brute à l\'hypothèse publiable', desc: 'Le Discovery Engine fait ce que personne ne fait : il prend les constantes d\'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.', color: '#10B981' },
-            { icon: '⚡', title: '95 scénarios cliniques validés', desc: 'FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', color: '#FF6B8A' },
-            { icon: '🌍', title: 'Connecté à la science mondiale', desc: 'Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', color: '#3B82F6' },
+            { icon: '/assets/pictos-v17/brain-hero-128.png', title: '7 moteurs qui pensent ensemble', desc: 'Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', color: '#6C7CFF' },
+            { icon: '/assets/organs/microscope.png', title: 'De la donnée brute à l\'hypothèse publiable', desc: 'Le Discovery Engine fait ce que personne ne fait : il prend les constantes d\'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.', color: '#10B981' },
+            { icon: '/assets/organs/shield.png', title: '95 scénarios cliniques validés', desc: 'FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', color: '#FF6B8A' },
+            { icon: '/assets/organs/books.png', title: 'Connecté à la science mondiale', desc: 'Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', color: '#3B82F6' },
           ].map((item, i) => (
             <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', borderLeft: `3px solid ${item.color}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                <span style={{ fontSize: '20px' }}>{item.icon}</span>
+                <img src={item.icon} alt="" width={24} height={24} style={{ filter: `drop-shadow(0 0 6px ${item.color}60)` }} />
                 <span style={{ fontSize: '13px', fontWeight: 700, color: item.color }}>{item.title}</span>
               </div>
               <p style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
