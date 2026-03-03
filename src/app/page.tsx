@@ -16,10 +16,10 @@ const discoveryLevels = [
 ]
 
 const epidemioStats = [
-  { value: '~10 000', label: 'nouveaux cas/an', sub: 'de maladies neuro-inflammatoires pédiatriques dans le monde', color: '#FF4757' },
-  { value: '12–30%', label: 'mortalité', sub: 'dans le FIRES et le NORSE réfractaire', color: '#FF6B8A' },
-  { value: '90%', label: 'séquelles', sub: 'des survivants gardent des déficits cognitifs permanents', color: '#FFB347' },
-  { value: '<18%', label: 'fonction normale', sub: "des enfants conservent une cognition normale après FIRES", color: '#B96BFF' },
+  { value: '~30 000', label: 'enfants/an', sub: 'touchés par des maladies neuro-inflammatoires dans le monde', color: '#FF4757' },
+  { value: '12–30%', label: 'mortalité', sub: 'dans les formes réfractaires (FIRES, NORSE, encéphalites sévères)', color: '#FF6B8A' },
+  { value: '90%', label: 'séquelles', sub: 'des survivants gardent des déficits cognitifs ou une épilepsie chronique', color: '#FFB347' },
+  { value: '5', label: 'syndromes', sub: 'FIRES · Anti-NMDAR · NORSE · PIMS · MOGAD/ADEM', color: '#6C7CFF' },
 ]
 
 const features = [
@@ -63,7 +63,7 @@ export default function LandingPage() {
           Chaque enfant mérite<br />que l&apos;IA se batte<br /><span className="text-gradient-vps">pour lui</span>
         </h1>
         <p style={{ fontSize: 'var(--p-text-lg)', color: 'var(--p-text-muted)', lineHeight: 'var(--p-leading-relaxed)', maxWidth: '680px', margin: '0 auto var(--p-space-10)' }}>
-          Chaque année, des milliers d&apos;enfants en parfaite santé sont foudroyés par des maladies neuro-inflammatoires — FIRES, NORSE, encéphalites auto-immunes. Pour la plupart, aucun traitement standard ne fonctionne. PULSAR est né pour changer cette équation.
+          Chaque année, environ 30 000 enfants dans le monde sont frappés par des maladies neuro-inflammatoires — FIRES, NORSE, encéphalites auto-immunes, ADEM, MOGAD. Des enfants en parfaite santé dont le cerveau s&apos;enflamme sans prévenir. Pour la plupart, aucun traitement standard ne fonctionne. PULSAR est né pour changer cette équation.
         </p>
         <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/patients" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', boxShadow: 'var(--p-shadow-glow-vps)' }}>Accéder à PULSAR</Link>
@@ -73,8 +73,8 @@ export default function LandingPage() {
 
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-12) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-8)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>LA RÉALITÉ</div>
-          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>Des maladies rares, des conséquences dévastatrices</h2>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES</div>
+          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>Quand le cerveau d&apos;un enfant s&apos;enflamme</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--p-space-4)' }}>
           {epidemioStats.map((s, i) => (
@@ -87,10 +87,10 @@ export default function LandingPage() {
         </div>
         <div className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6) var(--p-space-8)', marginTop: 'var(--p-space-6)', textAlign: 'center', borderLeft: '4px solid #FF4757' }}>
           <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, margin: 0 }}>
-            Le FIRES frappe <strong style={{ color: 'var(--p-text)' }}>1 enfant sur 1 million</strong> — des enfants en parfaite santé, âgés de 3 à 15 ans, foudroyés en quelques heures après un simple épisode grippal. L&apos;encéphalite auto-immune touche jusqu&apos;à <strong style={{ color: 'var(--p-text)' }}>4,2 enfants par million et par an</strong>. Le NORSE, dans sa forme réfractaire, atteint <strong style={{ color: 'var(--p-text)' }}>~3 200 cas par an rien qu&apos;aux États-Unis</strong>. Au total, ce sont des <strong style={{ color: 'var(--p-text)' }}>milliers d&apos;enfants chaque année dans le monde</strong> dont le cerveau s&apos;enflamme sans prévenir — et pour lesquels les traitements de première ligne échouent dans la majorité des cas.
+            Les maladies neuro-inflammatoires pédiatriques regroupent un spectre de pathologies dévastatrices : <strong style={{ color: 'var(--p-text)' }}>FIRES</strong> (1 enfant sur 1 million), <strong style={{ color: 'var(--p-text)' }}>encéphalites auto-immunes</strong> (jusqu&apos;à 4,2/million), <strong style={{ color: 'var(--p-text)' }}>NORSE</strong> (~3 200 cas/an aux États-Unis), <strong style={{ color: 'var(--p-text)' }}>ADEM</strong> (3 à 6/million), <strong style={{ color: 'var(--p-text)' }}>MOGAD</strong> et <strong style={{ color: 'var(--p-text)' }}>PIMS/MIS-C</strong>. Elles frappent des enfants en parfaite santé — souvent après un simple épisode infectieux. Les traitements de première ligne échouent dans la majorité des cas, et chaque heure perdue aggrave les séquelles neurologiques.
           </p>
         </div>
-        <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', textAlign: 'center', marginTop: '10px' }}>Sources : Epilepsia 2018, Frontiers in Neurology 2024, NORD, PMC 2021. Incidence FIRES ≈ 1/million, AE pédiatrique 1,5–4,2/million, NORSE ≈ 1/100 000.</div>
+        <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', textAlign: 'center', marginTop: '10px' }}>Sources : Epilepsia 2018, Frontiers in Neurology 2024, Frontiers in Pediatrics 2019, NORD, CHOP, PMC 2021. FIRES ≈ 1/million, AE 1,5–4,2/million, ADEM 3–6/million, NORSE ≈ 1/100 000.</div>
       </section>
 
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '860px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
