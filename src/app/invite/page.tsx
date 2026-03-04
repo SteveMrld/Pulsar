@@ -57,7 +57,7 @@ function InviteContent() {
             </div>
             {role && (
               <div style={{ display: 'inline-block', padding: '4px 12px', borderRadius: '20px', background: 'rgba(108,124,255,0.1)', border: '1px solid rgba(108,124,255,0.2)', marginBottom: '16px' }}>
-                <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#6C7CFF', letterSpacing: '1.5px' }}>{roleLabels[role] || role.toUpperCase()}</span>
+                <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#6C7CFF', letterSpacing: '1.5px' }}>EARLY ACCESS</span>
               </div>
             )}
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '12px' }}>
