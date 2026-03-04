@@ -103,7 +103,7 @@ const workflow = [
         </div>
 
         <h1 style={{ fontSize: 'var(--p-text-5xl)', fontWeight: 800, lineHeight: 'var(--p-leading-tight)', marginBottom: 'var(--p-space-6)', color: 'var(--p-text)' }}>
-          {t('Plus aucun enfant perdu', 'No child left behind')}<br />{t('parce que la bonne information', 'because the right information')}<br /><span className="text-gradient-vps">{t("n'était pas là à temps", "wasn't there in time")}</span>
+          {t("Quand le cerveau d'un enfant s'enflamme,", "When a child's brain ignites,")}<br /><span className="text-gradient-vps">{t('chaque seconde d\'avance sauve une vie.', 'every second ahead saves a life.')}</span>
         </h1>
 
         <p style={{ fontSize: 'var(--p-text-lg)', color: 'var(--p-text-muted)', lineHeight: 'var(--p-leading-relaxed)', maxWidth: '720px', margin: '0 auto var(--p-space-6)' }}>
