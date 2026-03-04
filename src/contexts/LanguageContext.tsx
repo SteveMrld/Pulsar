@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useState, useCallback, ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react'
 
 export type Lang = 'fr' | 'en'
 
@@ -18,12 +18,12 @@ const LanguageContext = createContext<LanguageContextType>({
 })
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLangState] = useState<Lang>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('pulsar-lang') as Lang) || 'fr'
-    }
-    return 'fr'
-  })
+  const [lang, setLangState] = useState<Lang>('fr')
+
+  useEffect(() => {
+    const saved = localStorage.getItem('pulsar-lang') as Lang
+    if (saved && saved !== lang) setLangState(saved)
+  }, [])
 
   const setLang = useCallback((l: Lang) => {
     setLangState(l)
@@ -58,20 +58,22 @@ export function LangToggle({ style }: { style?: React.CSSProperties }) {
   const { lang, toggleLang } = useLang()
   return (
     <button
-      onClick={toggleLang}
+      onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleLang(); }}
       title={lang === 'fr' ? 'Switch to English' : 'Passer en français'}
       style={{
-        padding: '3px 10px',
+        padding: '6px 14px',
         borderRadius: '9999px',
-        background: 'rgba(108,124,255,0.08)',
-        border: '1px solid rgba(108,124,255,0.15)',
-        color: '#6C7CFF',
+        background: lang === 'fr' ? 'rgba(108,124,255,0.12)' : 'rgba(16,185,129,0.12)',
+        border: lang === 'fr' ? '2px solid rgba(108,124,255,0.3)' : '2px solid rgba(16,185,129,0.3)',
+        color: lang === 'fr' ? '#6C7CFF' : '#10B981',
         cursor: 'pointer',
-        fontSize: '11px',
-        fontWeight: 700,
+        fontSize: '13px',
+        fontWeight: 800,
         fontFamily: 'var(--p-font-mono)',
         letterSpacing: '0.05em',
-        transition: 'all 0.2s',
+        transition: 'all 0.3s',
+        minWidth: '60px',
+        textAlign: 'center' as const,
         ...style,
       }}
     >

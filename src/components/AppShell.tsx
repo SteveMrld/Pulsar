@@ -59,7 +59,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   }
 
   if (isPatient) {
-    return <ProfileProvider><div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>{children}</div></ProfileProvider>
+    return <ProfileProvider><div style={{ minHeight: '100vh', background: 'var(--p-bg)', backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(108,124,255,0.03) 0%, transparent 70%)' }}>{children}</div></ProfileProvider>
   }
 
   const breadcrumb = pathname === '/patients' ? t('File active', 'Active Patients')
@@ -77,7 +77,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
 
   return (
     <ProfileProvider>
-    <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: 'var(--p-bg)', backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(108,124,255,0.03) 0%, transparent 70%)', display: 'flex', flexDirection: 'column' }}>
       <header className="glass" style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         padding: '0 var(--p-space-5)',
