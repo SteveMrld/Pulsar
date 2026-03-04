@@ -79,12 +79,12 @@ function MiniAvatar({ vpsColor, size = 36, name, avatar }: { vpsColor: string; s
       width: size, height: size, borderRadius: '50%',
       background: `${vpsColor}12`, border: `2px solid ${vpsColor}30`,
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flexShrink: 0, overflow: 'hidden',
+      flexShrink: 0, overflow: 'hidden', position: 'relative',
       boxShadow: `0 0 12px ${vpsColor}15`,
     }}>
       {avatar ? (
-        <img src={avatar} alt={name || ''} width={size} height={size}
-          style={{ objectFit: 'cover', display: 'block', filter: `drop-shadow(0 0 4px ${vpsColor})` }} />
+        <img src={avatar} alt={name || ''} 
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', top: 0, left: 0, filter: `drop-shadow(0 0 4px ${vpsColor})` }} />
       ) : (
         <span style={{
           fontFamily: 'var(--p-font-mono)', fontWeight: 900,
