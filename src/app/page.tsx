@@ -172,7 +172,7 @@ const workflow = [
         </div>
         <div className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5) var(--p-space-8)', marginTop: 'var(--p-space-4)', textAlign: 'center', borderLeft: '4px solid #8B5CF6' }}>
           <p style={{ fontSize: '12px', color: 'var(--p-text-muted)', lineHeight: 1.8, margin: 0 }}>
-            <strong style={{ color: 'var(--p-text)' }}>FIRES</strong> (1/million) · <strong style={{ color: 'var(--p-text)' }}>Encéphalites auto-immunes</strong> (jusqu&apos;à 4,2/million) · <strong style={{ color: 'var(--p-text)' }}>NORSE</strong> (~3 200 cas/an aux USA) · <strong style={{ color: 'var(--p-text)' }}>ADEM</strong> (3–6/million) · <strong style={{ color: 'var(--p-text)' }}>MOGAD</strong> · <strong style={{ color: 'var(--p-text)' }}>PIMS/MIS-C</strong> — des enfants en parfaite santé, foudroyés après un simple épisode infectieux. Les traitements de première ligne échouent dans la majorité des cas.
+            <strong style={{ color: 'var(--p-text)' }}>FIRES</strong> (1/million) · <strong style={{ color: 'var(--p-text)' }}>Encéphalites auto-immunes</strong> (jusqu&apos;à 4,2/million) · <strong style={{ color: 'var(--p-text)' }}>NORSE</strong> (~3 200 cas/an aux USA) · <strong style={{ color: 'var(--p-text)' }}>ADEM</strong> (3–6/million) · <strong style={{ color: 'var(--p-text)' }}>MOGAD</strong> · <strong style={{ color: 'var(--p-text)' }}>PIMS/MIS-C</strong> — {t('des enfants en parfaite santé, foudroyés après un simple épisode infectieux. Les traitements de première ligne échouent dans la majorité des cas.', 'perfectly healthy children, struck down after a simple infection. First-line treatments fail in the majority of cases.')}
           </p>
         </div>
         <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', textAlign: 'center', marginTop: '8px' }}>Sources : Epilepsia 2018, Frontiers in Neurology 2024, Frontiers in Pediatrics 2019, NORD, CHOP, PMC 2021.</div>
@@ -238,19 +238,19 @@ const workflow = [
               </div>
               <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Pour chaque enfant, PULSAR', 'For every child, PULSAR')}<br />{t('cherche activement', 'actively searches for')} <span style={{ color: '#EC4899' }}>{t('des pistes de traitement', 'treatment pathways')}</span></h3>
               <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
-                Le Treatment Pathfinder ne se contente pas d&apos;analyser — il agit. À partir du profil clinique de chaque patient, il interroge les essais cliniques mondiaux, évalue l&apos;éligibilité à des traitements ciblés, et remonte des pistes thérapeutiques directement dans les recommandations du clinicien.
+                {t("Le Treatment Pathfinder ne se contente pas d'analyser — il agit. À partir du profil clinique de chaque patient, il interroge les essais cliniques mondiaux, évalue l'éligibilité à des traitements ciblés, et remonte des pistes thérapeutiques directement dans les recommandations du clinicien.", "The Treatment Pathfinder doesn't just analyze — it acts. From each patient's clinical profile, it queries global clinical trials, evaluates eligibility for targeted treatments, and surfaces therapeutic leads directly in clinician recommendations.")}
               </p>
               <p style={{ fontSize: '13px', color: 'var(--p-text)', lineHeight: 1.8, fontWeight: 600 }}>
-                Quand un enfant ne répond plus aux traitements de première ligne, le Pathfinder cherche ce qui pourrait fonctionner — dans la littérature, dans les essais en cours, dans les combinaisons que personne n&apos;a encore testées sur ce profil précis.
+                {t("Quand un enfant ne répond plus aux traitements de première ligne, le Pathfinder cherche ce qui pourrait fonctionner — dans la littérature, dans les essais en cours, dans les combinaisons que personne n'a encore testées sur ce profil précis.", "When a child no longer responds to first-line treatments, the Pathfinder searches for what might work — in the literature, in ongoing trials, in combinations no one has yet tested on this specific profile.")}
               </p>
             </div>
             <div style={{ flex: '0 0 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {[
-                { mol: 'Anakinra', type: 'Anti-IL-1', usage: 'FIRES réfractaire', color: '#EC4899' },
-                { mol: 'Tocilizumab', type: 'Anti-IL-6', usage: 'Encéphalite auto-immune', color: '#8B5CF6' },
-                { mol: 'Régime cétogène', type: 'Métabolique', usage: 'FIRES / épilepsie réfractaire', color: '#10B981' },
-                { mol: 'Rituximab', type: 'Anti-CD20', usage: 'Anti-NMDAR réfractaire', color: '#3B82F6' },
-                { mol: 'Combinaisons', type: 'Multi-cibles', usage: 'Profils complexes', color: '#FFB347' },
+                { mol: 'Anakinra', type: 'Anti-IL-1', usage: t('FIRES réfractaire', 'Refractory FIRES'), color: '#EC4899' },
+                { mol: 'Tocilizumab', type: 'Anti-IL-6', usage: t('Encéphalite auto-immune', 'Autoimmune encephalitis'), color: '#8B5CF6' },
+                { mol: t('Régime cétogène', 'Ketogenic diet'), type: t('Métabolique', 'Metabolic'), usage: t('FIRES / épilepsie réfractaire', 'FIRES / refractory epilepsy'), color: '#10B981' },
+                { mol: 'Rituximab', type: 'Anti-CD20', usage: t('Anti-NMDAR réfractaire', 'Refractory anti-NMDAR'), color: '#3B82F6' },
+                { mol: t('Combinaisons', 'Combinations'), type: t('Multi-cibles', 'Multi-target'), usage: t('Profils complexes', 'Complex profiles'), color: '#FFB347' },
               ].map((t, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', borderRadius: 'var(--p-radius-lg)', background: `${t.color}08`, border: `1px solid ${t.color}15` }}>
                   <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: t.color, flexShrink: 0, boxShadow: `0 0 6px ${t.color}60` }} />
@@ -260,7 +260,7 @@ const workflow = [
                   </div>
                 </div>
               ))}
-              <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', textAlign: 'center', marginTop: '4px', fontFamily: 'var(--p-font-mono)' }}>Scoring d&apos;éligibilité multicritères · ClinicalTrials.gov live</div>
+              <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', textAlign: 'center', marginTop: '4px', fontFamily: 'var(--p-font-mono)' }}>{t("Scoring d'éligibilité multicritères · ClinicalTrials.gov live", 'Multi-criteria eligibility scoring · ClinicalTrials.gov live')}</div>
             </div>
           </div>
         </div>
@@ -274,10 +274,10 @@ const workflow = [
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginBottom: 'var(--p-space-6)' }}>
           {[
-            { icon: '/assets/pictos-v17/brain-hero-128.png', title: '7 moteurs qui pensent ensemble', desc: 'Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', color: '#6C7CFF' },
-            { icon: '/assets/organs/microscope.png', title: 'De la donnée brute à l\'hypothèse publiable', desc: 'Le Discovery Engine fait ce que personne ne fait : il prend les constantes d\'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.', color: '#10B981' },
-            { icon: '/assets/organs/shield.png', title: '95 scénarios cliniques validés', desc: 'FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', color: '#A78BFA' },
-            { icon: '/assets/organs/books.png', title: 'Connecté à la science mondiale', desc: 'Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', color: '#3B82F6' },
+            { icon: '/assets/pictos-v17/brain-hero-128.png', title: t('7 moteurs qui pensent ensemble', '7 engines that think together'), desc: t('Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', 'Not 7 separate tools. An integrated pipeline where each engine enriches the others: pharmacovigilance accounts for therapeutic escalation, early warning integrates the severity score, the Discovery Engine injects its signals into recommendations.'), color: '#6C7CFF' },
+            { icon: '/assets/organs/microscope.png', title: t("De la donnée brute à l'hypothèse publiable", 'From raw data to publishable hypothesis'), desc: t("Le Discovery Engine fait ce que personne ne fait : il prend les constantes d'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.", 'The Discovery Engine does what no one else does: it takes a sick child\'s vitals, cross-references them with PubMed and ClinicalTrials.gov in real time, detects contradictions with the current protocol, and generates research hypotheses ready for validation.'), color: '#10B981' },
+            { icon: '/assets/organs/shield.png', title: t('95 scénarios cliniques validés', '95 validated clinical scenarios'), desc: t('FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', 'FIRES with sickle cell disease. Anti-NMDAR in tropical-HIV context. Post-transfer NORSE. Each engine is tested against real cases, not theoretical examples. 95 tests, 0 errors. This system doesn\'t guess — it calculates.'), color: '#A78BFA' },
+            { icon: '/assets/organs/books.png', title: t('Connecté à la science mondiale', 'Connected to global science'), desc: t('Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', 'Automatic PubMed monitoring (10 queries). ClinicalTrials.gov in real time. 59 integrated clinical references. Publication export in 3 formats. Knowledge is no longer locked in PDFs that no one has time to read.'), color: '#3B82F6' },
           ].map((item, i) => (
             <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', borderLeft: `3px solid ${item.color}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
