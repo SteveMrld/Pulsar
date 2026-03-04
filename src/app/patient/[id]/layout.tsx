@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { PatientProvider, usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
-import PulsarAI from '@/components/PulsarAI'
+
 import { RoleBadge } from '@/components/RoleGate'
 import { LangToggle } from '@/contexts/LanguageContext'
 
@@ -257,7 +257,6 @@ function TimelineDrawer({ open, onClose }: { open: boolean; onClose: () => void 
 export default function PatientLayout({ children }: { children: React.ReactNode }) {
   const params = useParams()
   const id = (params?.id as string) || 'ines'
-  const [showAI, setShowAI] = useState(false)
   const [showTimeline, setShowTimeline] = useState(false)
 
   return (
@@ -289,37 +288,6 @@ export default function PatientLayout({ children }: { children: React.ReactNode 
         </button>
 
         <TimelineDrawer open={showTimeline} onClose={() => setShowTimeline(false)} />
-
-        {/* PulsarAI floating button */}
-        <button
-          onClick={() => setShowAI(!showAI)}
-          style={{
-            position: 'fixed', bottom: '24px', right: '24px', zIndex: 100,
-            width: '52px', height: '52px', borderRadius: '50%',
-            background: 'linear-gradient(135deg, #6C7CFF, #B96BFF)',
-            border: 'none', cursor: 'pointer',
-            boxShadow: '0 4px 20px rgba(108,124,255,0.4), 0 0 0 3px rgba(108,124,255,0.1)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            transition: 'all 0.3s',
-            transform: showAI ? 'rotate(45deg)' : 'none',
-          }}
-        >
-          <span style={{ fontSize: '22px', color: 'white', lineHeight: 1 }}>
-            {showAI ? '✕' : '✦'}
-          </span>
-        </button>
-
-        {showAI && (
-          <div style={{
-            position: 'fixed', bottom: '90px', right: '24px', zIndex: 99,
-            width: '380px', maxHeight: '500px',
-            borderRadius: 'var(--p-radius-2xl)',
-            boxShadow: '0 8px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(108,124,255,0.1)',
-            overflow: 'hidden',
-          }}>
-            <PulsarAI />
-          </div>
-        )}
       </div>
     </PatientProvider>
   )

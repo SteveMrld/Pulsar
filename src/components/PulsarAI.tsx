@@ -264,32 +264,6 @@ export default function PulsarAI() {
           </div>
         </div>
       )}
-
-      {/* FAB button */}
-      <button onClick={() => setOpen(!open)} style={{
-        position: 'fixed', bottom: '20px', right: '16px', zIndex: 999,
-        width: '52px', height: '52px', borderRadius: '50%',
-        background: open ? 'var(--p-bg-elevated)' : 'linear-gradient(135deg, #6C7CFF, #2FD1C8)',
-        border: open ? '2px solid rgba(108,124,255,0.3)' : 'none',
-        cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: open ? 'none' : '0 4px 20px rgba(108,124,255,0.4)',
-        transition: 'all 200ms',
-        animation: !open ? 'breathe 3s ease-in-out infinite' : 'none',
-      }}>
-        <span style={{ fontSize: '22px' }}>{open ? '✕' : '✦'}</span>
-        {/* Badge */}
-        {!open && totalBadge > 0 && (
-          <div style={{
-            position: 'absolute', top: '-2px', right: '-2px',
-            width: '18px', height: '18px', borderRadius: '50%',
-            background: badgeColor, display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '9px', fontWeight: 800, color: '#fff',
-            boxShadow: `0 0 8px ${badgeColor}80`,
-          }}>
-            {totalBadge}
-          </div>
-        )}
-      </button>
     </>
   )
 }

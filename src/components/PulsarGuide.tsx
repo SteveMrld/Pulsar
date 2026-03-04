@@ -31,13 +31,129 @@ function getContextualGuide(pathname: string, lang: 'fr' | 'en'): GuideStep {
     }
   }
 
-  // ── INTAKE: SOURCE ──
+  // ── INTAKE ──
   if (pathname === '/patients/intake') {
     return {
       message: "Commencez par choisir comment renseigner le patient. Si vous avez un document d'un autre hôpital, importez-le — l'IA extraira les données automatiquement.",
       messageEn: "Start by choosing how to enter patient data. If you have a document from another hospital, import it — AI will extract the data automatically.",
       tip: "La saisie manuelle prend environ 5 minutes pour un dossier complet. Chaque étape est validée avant de passer à la suivante.",
       tipEn: "Manual entry takes about 5 minutes for a complete record. Each step is validated before moving to the next.",
+    }
+  }
+
+  // ── PATIENT COCKPIT ──
+  if (pathname.match(/\/patient\/[^/]+\/cockpit/) || pathname.match(/\/patient\/[^/]+$/)) {
+    return {
+      message: "Le Cockpit est le tableau de bord principal du patient. Vous voyez en temps réel l'EEG, les constantes vitales, le score VPS et les crises.",
+      messageEn: "The Cockpit is the patient's main dashboard. You see real-time EEG, vital signs, VPS score and seizure activity.",
+      tip: "Surveillez le VPS : au-dessus de 70, la situation est critique. Le GCS et la fréquence des crises influencent directement le score.",
+      tipEn: "Watch the VPS: above 70, the situation is critical. GCS and seizure frequency directly impact the score.",
+      action: { label: 'Voir les Red Flags', labelEn: 'View Red Flags', href: '#redflags' },
+    }
+  }
+
+  // ── URGENCE ──
+  if (pathname.match(/\/patient\/[^/]+\/urgence/)) {
+    return {
+      message: "Module Urgence — les alertes critiques qui nécessitent une action immédiate. Chaque alerte est classée par gravité et accompagnée d'une recommandation.",
+      messageEn: "Emergency module — critical alerts requiring immediate action. Each alert is classified by severity with a recommended action.",
+      tip: "Les alertes rouges sont des urgences vitales. Ne les ignorez jamais sans les avoir validées.",
+      tipEn: "Red alerts are life-threatening emergencies. Never dismiss them without reviewing.",
+    }
+  }
+
+  // ── DIAGNOSTIC ──
+  if (pathname.match(/\/patient\/[^/]+\/diagnostic/)) {
+    return {
+      message: "Le module Diagnostic croise toutes les données pour proposer un diagnostic différentiel. Plus vous renseignez de données, plus il est précis.",
+      messageEn: "The Diagnostic module cross-references all data to propose a differential diagnosis. The more data you enter, the more precise it becomes.",
+      tip: "Le Discovery Engine peut identifier des diagnostics rares. Consultez l'onglet si le tableau clinique est atypique.",
+      tipEn: "The Discovery Engine can identify rare diagnoses. Check it if the clinical picture is atypical.",
+    }
+  }
+
+  // ── TRAITEMENT ──
+  if (pathname.match(/\/patient\/[^/]+\/traitement/)) {
+    return {
+      message: "Protocoles thérapeutiques adaptés au diagnostic et au profil du patient. Les interactions médicamenteuses sont vérifiées automatiquement.",
+      messageEn: "Treatment protocols adapted to the diagnosis and patient profile. Drug interactions are automatically checked.",
+      tip: "Chaque recommandation est sourcée. Cliquez sur la référence pour accéder à la publication.",
+      tipEn: "Each recommendation is sourced. Click the reference to access the publication.",
+    }
+  }
+
+  // ── EXAMENS ──
+  if (pathname.match(/\/patient\/[^/]+\/examens/)) {
+    return {
+      message: "Résultats d'examens : biologie, imagerie, EEG. Renseignez les résultats ici pour alimenter le moteur d'analyse.",
+      messageEn: "Exam results: biology, imaging, EEG. Enter results here to feed the analysis engine.",
+      tip: "Les valeurs anormales sont signalées automatiquement en couleur. Le moteur recalcule le VPS à chaque nouvelle donnée.",
+      tipEn: "Abnormal values are automatically flagged in color. The engine recalculates VPS with each new data point.",
+    }
+  }
+
+  // ── SYNTHÈSE ──
+  if (pathname.match(/\/patient\/[^/]+\/synthese/)) {
+    return {
+      message: "Synthèse complète du dossier patient — un résumé exportable pour les transmissions, les staffs ou les transferts.",
+      messageEn: "Complete patient summary — an exportable overview for handoffs, team meetings or transfers.",
+      action: { label: 'Exporter en PDF', labelEn: 'Export as PDF', href: '#export' },
+      tip: "Vous pouvez générer un brief médical en français ou en anglais pour les échanges internationaux.",
+      tipEn: "You can generate a medical brief in French or English for international exchanges.",
+    }
+  }
+
+  // ── RESSOURCES ──
+  if (pathname.match(/\/patient\/[^/]+\/ressources/)) {
+    return {
+      message: "Littérature médicale, protocoles de référence et publications liées au diagnostic de ce patient.",
+      messageEn: "Medical literature, reference protocols and publications related to this patient's diagnosis.",
+      tip: "Les sources sont classées par pertinence. Les plus récentes apparaissent en premier.",
+      tipEn: "Sources are ranked by relevance. The most recent appear first.",
+    }
+  }
+
+  // ── HISTORIQUE ──
+  if (pathname.match(/\/patient\/[^/]+\/historique/)) {
+    return {
+      message: "Chronologie complète : chaque événement clinique, examen, traitement et évolution du VPS dans le temps.",
+      messageEn: "Complete timeline: every clinical event, exam, treatment and VPS evolution over time.",
+      tip: "Cliquez sur un événement pour voir son impact sur le score VPS.",
+      tipEn: "Click an event to see its impact on the VPS score.",
+    }
+  }
+
+  // ── SAISIE ──
+  if (pathname.match(/\/patient\/[^/]+\/saisie/)) {
+    return {
+      message: "Saisie de nouvelles données cliniques. Chaque entrée met à jour le score VPS en temps réel.",
+      messageEn: "Enter new clinical data. Each entry updates the VPS score in real time.",
+      tip: "Renseignez le GCS, les crises, la biologie et l'imagerie pour un score VPS fiable.",
+      tipEn: "Enter GCS, seizures, biology and imaging for a reliable VPS score.",
+    }
+  }
+
+  // ── EXPORT ──
+  if (pathname.match(/\/patient\/[^/]+\/export/)) {
+    return {
+      message: "Exportez le dossier en PDF, JSON ou brief médical. Utile pour les transferts, les staffs et les publications.",
+      messageEn: "Export the record as PDF, JSON or medical brief. Useful for transfers, team meetings and publications.",
+    }
+  }
+
+  // ── AUDIT ──
+  if (pathname.match(/\/patient\/[^/]+\/audit/)) {
+    return {
+      message: "Journal d'audit — toutes les actions effectuées sur ce dossier, par qui et quand. Traçabilité complète.",
+      messageEn: "Audit log — all actions performed on this record, by whom and when. Full traceability.",
+    }
+  }
+
+  // ── SUIVI ──
+  if (pathname.match(/\/patient\/[^/]+\/suivi/)) {
+    return {
+      message: "Suivi longitudinal du patient. Courbes d'évolution, comparaison des scores et tendances.",
+      messageEn: "Longitudinal patient follow-up. Evolution curves, score comparisons and trends.",
     }
   }
 
@@ -62,74 +178,14 @@ function getContextualGuide(pathname: string, lang: 'fr' | 'en'): GuideStep {
     }
   }
 
-  // ── DISCOVERY ENGINE ──
-  if (pathname.startsWith('/discovery') || pathname.startsWith('/research')) {
-    return {
-      message: "Le Discovery Engine explore la littérature médicale et les cas similaires pour identifier des diagnostics rares que vous pourriez ne pas avoir envisagés.",
-      messageEn: "The Discovery Engine explores medical literature and similar cases to identify rare diagnoses you might not have considered.",
-      tip: "Il fonctionne en 4 niveaux : Pattern Mining → Literature Scan → Hypothesis → Treatment Pathfinder.",
-      tipEn: "It works in 4 levels: Pattern Mining → Literature Scan → Hypothesis → Treatment Pathfinder.",
-    }
-  }
-
-  // ── COCKPIT VPS ──
-  if (pathname.startsWith('/cockpit')) {
-    return {
-      message: "Le Cockpit VPS calcule en temps réel le score de vulnérabilité du patient. C'est votre indicateur principal de gravité.",
-      messageEn: "The VPS Cockpit calculates the patient's vulnerability score in real time. This is your main severity indicator.",
-      tip: "Un VPS > 70 = situation critique. Le score intègre les données neuro, bio, imagerie et les antécédents.",
-      tipEn: "A VPS > 70 = critical situation. The score integrates neuro, bio, imaging and history data.",
-    }
-  }
-
-  // ── TREATMENT / PHARMA ──
-  if (pathname.startsWith('/treatment') || pathname.startsWith('/pharma')) {
-    return {
-      message: "Ce module suggère des protocoles thérapeutiques adaptés au diagnostic et au profil du patient. Toutes les recommandations sont sourcées.",
-      messageEn: "This module suggests treatment protocols tailored to the diagnosis and patient profile. All recommendations are sourced.",
-      tip: "Les interactions médicamenteuses et contre-indications sont vérifiées automatiquement.",
-      tipEn: "Drug interactions and contraindications are automatically checked.",
-    }
-  }
-
-  // ── TIMELINE / SUIVI ──
-  if (pathname.startsWith('/timeline') || pathname.startsWith('/suivi')) {
-    return {
-      message: "La Timeline retrace chronologiquement tous les événements du patient : crises, examens, traitements, évolution du VPS.",
-      messageEn: "The Timeline chronologically traces all patient events: seizures, exams, treatments, VPS evolution.",
-      tip: "Cliquez sur un événement pour voir le détail et l'impact sur le score VPS.",
-      tipEn: "Click on an event to see the details and impact on the VPS score.",
-    }
-  }
-
-  // ── ADMISSION PAGE ──
-  if (pathname === '/patients/admission') {
-    return {
-      message: "Page d'admission rapide. Pour un parcours guidé complet avec validation par étape, utilisez plutôt la Nouvelle Admission.",
-      messageEn: "Quick admission page. For a complete guided pathway with step validation, use New Admission instead.",
-      action: { label: 'Admission guidée', labelEn: 'Guided admission', href: '/patients/intake' },
-    }
-  }
-
   // ── DEFAULT ──
   return {
-    message: "Je suis votre assistant PULSAR. Je vous guide dans le parcours clinique. Cliquez sur moi à tout moment pour comprendre où vous êtes et quoi faire ensuite.",
-    messageEn: "I'm your PULSAR assistant. I guide you through the clinical pathway. Click on me anytime to understand where you are and what to do next.",
+    message: "Je suis votre guide PULSAR. Je vous accompagne dans le parcours clinique. Cliquez sur moi à tout moment pour comprendre où vous êtes et quoi faire ensuite.",
+    messageEn: "I'm your PULSAR guide. I accompany you through the clinical pathway. Click me anytime to understand where you are and what to do next.",
     action: { label: 'File active', labelEn: 'Active caseload', href: '/patients' },
   }
 }
 
-// ── Workflow suggestions based on what's been done ──
-function getWorkflowSuggestion(pathname: string, lang: 'fr' | 'en'): GuideStep | null {
-  // After intake, suggest going to the patient
-  if (pathname === '/patients') {
-    return {
-      message: "Sélectionnez un patient pour accéder à son dossier, ou cliquez sur Nouvelle Admission pour un nouveau cas.",
-      messageEn: "Select a patient to access their record, or click New Admission for a new case.",
-    }
-  }
-  return null
-}
 
 // ── Pulsing Star SVG ──
 function PulsarStar({ size = 28, bright = false }: { size?: number; bright?: boolean }) {
@@ -245,7 +301,7 @@ export default function PulsarGuide() {
           {tip && (
             <div style={{ padding: '10px 12px', borderRadius: '10px', background: 'rgba(108,124,255,0.06)', border: '1px solid rgba(108,124,255,0.1)', marginBottom: '12px' }}>
               <p style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6, margin: 0 }}>
-                <strong style={{ color: '#6C7CFF' }}>💡</strong> {tip}
+                <strong style={{ color: '#6C7CFF' }}>TIP —</strong> {tip}
               </p>
             </div>
           )}
