@@ -1,6 +1,7 @@
 'use client'
 import { useLang, LangToggle } from '@/contexts/LanguageContext'
 import Link from 'next/link'
+import Picto from '@/components/Picto'
 
 // ══════════════════════════════════════════════════════════════
 // PULSAR V20 — Landing
@@ -235,7 +236,7 @@ const workflow = [
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--p-space-6)', flexWrap: 'wrap' }}>
             <div style={{ flex: '1 1 400px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-4)' }}>
-                <img src="/assets/organs/microscope.png" alt="" width={32} height={32} style={{ filter: 'drop-shadow(0 0 8px rgba(236,72,153,0.4))' }} />
+                <Picto name="microscope" size={32} glow glowColor="rgba(236,72,153,0.4)" />
                 <div>
                   <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#EC4899', letterSpacing: '2px', fontWeight: 800 }}>TREATMENT PATHFINDER</div>
                   <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Discovery Engine · Niveau 4</div>
@@ -279,14 +280,14 @@ const workflow = [
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginBottom: 'var(--p-space-6)' }}>
           {[
-            { icon: '/assets/pictos-v17/brain-hero-128.png', title: t('7 moteurs qui pensent ensemble', '7 engines that think together'), desc: t('Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', 'Not 7 separate tools. An integrated pipeline where each engine enriches the others: pharmacovigilance accounts for therapeutic escalation, early warning integrates the severity score, the Discovery Engine injects its signals into recommendations.'), color: '#6C7CFF' },
-            { icon: '/assets/organs/microscope.png', title: t("De la donnée brute à l'hypothèse publiable", 'From raw data to publishable hypothesis'), desc: t("Le Discovery Engine fait ce que personne ne fait : il prend les constantes d'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.", 'The Discovery Engine does what no one else does: it takes a sick child\'s vitals, cross-references them with PubMed and ClinicalTrials.gov in real time, detects contradictions with the current protocol, and generates research hypotheses ready for validation.'), color: '#10B981' },
-            { icon: '/assets/organs/shield.png', title: t('95 scénarios cliniques validés', '95 validated clinical scenarios'), desc: t('FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', 'FIRES with sickle cell disease. Anti-NMDAR in tropical-HIV context. Post-transfer NORSE. Each engine is tested against real cases, not theoretical examples. 95 tests, 0 errors. This system doesn\'t guess — it calculates.'), color: '#A78BFA' },
-            { icon: '/assets/organs/books.png', title: t('Connecté à la science mondiale', 'Connected to global science'), desc: t('Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', 'Automatic PubMed monitoring (10 queries). ClinicalTrials.gov in real time. 59 integrated clinical references. Publication export in 3 formats. Knowledge is no longer locked in PDFs that no one has time to read.'), color: '#3B82F6' },
+            { icon: 'brain', title: t('7 moteurs qui pensent ensemble', '7 engines that think together'), desc: t('Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', 'Not 7 separate tools. An integrated pipeline where each engine enriches the others: pharmacovigilance accounts for therapeutic escalation, early warning integrates the severity score, the Discovery Engine injects its signals into recommendations.'), color: '#6C7CFF' },
+            { icon: 'microscope', title: t("De la donnée brute à l'hypothèse publiable", 'From raw data to publishable hypothesis'), desc: t("Le Discovery Engine fait ce que personne ne fait : il prend les constantes d'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.", 'The Discovery Engine does what no one else does: it takes a sick child\'s vitals, cross-references them with PubMed and ClinicalTrials.gov in real time, detects contradictions with the current protocol, and generates research hypotheses ready for validation.'), color: '#10B981' },
+            { icon: 'shield', title: t('95 scénarios cliniques validés', '95 validated clinical scenarios'), desc: t('FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', 'FIRES with sickle cell disease. Anti-NMDAR in tropical-HIV context. Post-transfer NORSE. Each engine is tested against real cases, not theoretical examples. 95 tests, 0 errors. This system doesn\'t guess — it calculates.'), color: '#A78BFA' },
+            { icon: 'books', title: t('Connecté à la science mondiale', 'Connected to global science'), desc: t('Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', 'Automatic PubMed monitoring (10 queries). ClinicalTrials.gov in real time. 59 integrated clinical references. Publication export in 3 formats. Knowledge is no longer locked in PDFs that no one has time to read.'), color: '#3B82F6' },
           ].map((item, i) => (
             <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', borderLeft: `3px solid ${item.color}` }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                <img src={item.icon} alt="" width={24} height={24} style={{ filter: `drop-shadow(0 0 6px ${item.color}60)` }} />
+                <Picto name={item.icon} size={24} glow glowColor={item.color + '60'} />
                 <span style={{ fontSize: '13px', fontWeight: 700, color: item.color }}>{item.title}</span>
               </div>
               <p style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
