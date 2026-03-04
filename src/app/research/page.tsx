@@ -32,7 +32,7 @@ const DISC_GLOW = 'rgba(16, 185, 129, 0.30)'
 
 type Tab = 'signals' | 'correlations' | 'clusters' | 'literature' | 'hypotheses' | 'pathfinder' | 'roadmap'
 
-const TABS: { id: Tab; label: string; icon: string }[] = [
+const TABS: { id: Tab; label: string; labelEn?: string; icon: string }[] = [
   { id: 'signals', label: 'Signal Feed', icon: 'alert' },
   { id: 'correlations', label: 'Corrélations', labelEn: 'Correlations', icon: 'chart' },
   { id: 'clusters', label: 'Clusters', icon: 'dna' },
@@ -66,7 +66,7 @@ const TYPE_LABELS: Record<SignalType, string> = {
   biomarker_predictor: 'Biomarqueur prédictif',
 }
 
-const STATUS_LABELS: Record<string, { label: string; color: string }> = {
+const STATUS_LABELS: Record<string, { label: string; labelEn?: string; color: string }> = {
   new: { label: 'NOUVEAU', labelEn: 'NEW', color: '#3B82F6' },
   confirmed: { label: 'CONFIRMÉ', labelEn: 'CONFIRMED', color: '#2ED573' },
   monitoring: { label: 'SURVEILLANCE', labelEn: 'MONITORING', color: '#FFA502' },

@@ -63,7 +63,7 @@ export default function LandingPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
           <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={40} height={40} style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.5))', display: 'block', objectFit: 'contain' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#10B981', background: '#10B98115', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #10B98125' }}>V20</span>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#6C7CFF', background: '#6C7CFF15', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #6C7CFF25' }}>V20</span>
         </div>
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
           <LangToggle />

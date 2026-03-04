@@ -19,6 +19,7 @@ export type ClinicalPhase = 'acute' | 'stabilization' | 'monitoring' | 'recovery
 export interface PhaseInfo {
   id: ClinicalPhase
   label: string
+  labelEn?: string
   color: string
   dayRange: string
   description: string
@@ -62,6 +63,7 @@ export interface PatientInfo {
 export interface TabConfig {
   id: string
   label: string
+  labelEn?: string
   icon: string
   color: string
   available: boolean    // visible in nav

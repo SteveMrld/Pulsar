@@ -57,9 +57,9 @@ function buildDemoPatients(): PatientCard[] {
       gcs: ps.neuro.gcs,
       critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
       phase: detectPhase(ps.hospDay, vps),
-      lastEvent: ps.neuro.seizureType.includes('refractory') ? t('Status réfractaire en cours', 'Refractory status ongoing')
+      lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status réfractaire en cours'
         : ps.neuro.seizures24h > 3 ? `${ps.neuro.seizures24h} crises/24h`
-        : ps.neuro.gcs <= 8 ? t('GCS critique', 'Critical GCS')
+        : ps.neuro.gcs <= 8 ? 'GCS critique'
         : 'Stable',
       isDemo: true,
       vpsHistory,
@@ -223,6 +223,7 @@ function PulsingBrain() {
 
 /* ── Empty State ── */
 function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }) {
+  const { t } = useLang()
   return (
     <div style={{ textAlign: 'center', padding: '60px 20px', maxWidth: '600px', margin: '0 auto' }}>
       <PulsingBrain />
@@ -336,9 +337,9 @@ export default function FileActivePage() {
             name: p.display_name,
             age: `${Math.floor(p.age_months / 12)} ans`,
             sex: p.sex,
-            syndrome: p.syndrome || t('En évaluation', 'Under evaluation'),
+            syndrome: p.syndrome || 'En évaluation',
             hospDay: p.hosp_day,
-            room: p.room || t('Non assigné', 'Unassigned'),
+            room: p.room || 'Non assigné',
             vps,
             gcs: ps.neuro.gcs,
             critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
