@@ -104,11 +104,11 @@ export default function IntakePage() {
   }
   const removeExam = (idx: number) => { const exams = [...(data.existingExams||[])]; exams.splice(idx, 1); set('existingExams', exams) }
 
-  const [tab, setTab] = useState<string>('mode')
+  const [tab, setTab] = useState<string>('identity')
 
   const TABS = [
-    { id:'mode', label:'Mode', icon:'play', color:'#6C7CFF' },
     { id:'identity', label:'Identité', icon:'heart', color:'#6C7CFF' },
+    { id:'mode', label:'Mode', icon:'play', color:'#6C7CFF' },
     { id:'history', label:'Antécédents', icon:'clipboard', color:'#FFB347' },
     { id:'neuro', label:'Neuro', icon:'brain', color:'#8B5CF6' },
     { id:'bio', label:'Bio / LCR', icon:'blood', color:'#B96BFF' },
@@ -155,7 +155,7 @@ export default function IntakePage() {
               { mode:'first_admission' as AdmissionMode, label:'Première admission', desc:'Patient admis directement — aucun examen préalable', icon:'alert', color:'#8B5CF6' },
               { mode:'transfer' as AdmissionMode, label:'Transfert inter-hospitalier', desc:'Patient transféré avec dossier et examens existants', icon:'export', color:'#2ED573' },
             ].map(m=>(
-              <button key={m.mode} onClick={()=>{set('admissionMode',m.mode);setTab('identity')}} style={{
+              <button key={m.mode} onClick={()=>{set('admissionMode',m.mode);setTab('history')}} style={{
                 padding:'20px',borderRadius:'var(--p-radius-xl)',cursor:'pointer',textAlign:'left',
                 background:data.admissionMode===m.mode?`${m.color}08`:'var(--p-bg-elevated)',
                 border:data.admissionMode===m.mode?`2px solid ${m.color}25`:'2px solid rgba(108,124,255,0.06)',
