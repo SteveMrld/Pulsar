@@ -140,7 +140,7 @@ export default function LoginPage() {
         }}>
           {t('Pas encore de compte ?', "Don't have an account?")}{' '}
           <Link href="/signup" style={{ color: 'var(--p-vps)', textDecoration: 'none', fontWeight: 600 }}>
-            Créer un compte
+            {t('Créer un compte', 'Create account')}
           </Link>
         </p>
 
@@ -163,7 +163,7 @@ export default function LoginPage() {
               cursor: 'pointer',
             }}
           >
-            Accès Démo — Sans compte
+            {t('Accès Démo — Sans compte', 'Demo Access — No account')}
           </button>
         </div>
       </div>
