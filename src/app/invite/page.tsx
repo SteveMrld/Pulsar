@@ -10,6 +10,8 @@ function InviteContent() {
   const code = params.get('code') || ''
   const [status, setStatus] = useState<'checking' | 'valid' | 'invalid' | 'expired'>('checking')
   const [name, setName] = useState('')
+  const [welcomeMsg, setWelcomeMsg] = useState('')
+  const [role, setRole] = useState('')
 
   useEffect(() => {
     if (!code) { setStatus('invalid'); return }
@@ -18,12 +20,22 @@ function InviteContent() {
       setStatus('invalid')
     } else {
       setName(invite.name)
+      setRole(invite.role)
+      // Detect language from browser
+      const isEn = typeof navigator !== 'undefined' && navigator.language?.startsWith('en')
+      setWelcomeMsg((isEn && invite.welcomeMsgEn) ? invite.welcomeMsgEn : invite.welcomeMsg || '')
       setInviteCookie(invite.code, invite.name)
       setStatus('valid')
-      // Redirect after 2.5s
-      setTimeout(() => router.push('/patients'), 2500)
+      setTimeout(() => router.push('/patients'), 3500)
     }
   }, [code, router])
+
+  const roleLabels: Record<string, string> = {
+    tester: 'ALPHA TESTER',
+    advisor: 'STRATEGIC ADVISOR',
+    medical: 'CLINICAL EXPERT',
+    investor: 'INVESTOR PREVIEW',
+  }
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -43,12 +55,19 @@ function InviteContent() {
             <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(16,185,129,0.12)', border: '2px solid rgba(16,185,129,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px' }}>
               <span style={{ fontSize: '24px', color: '#10B981' }}>✓</span>
             </div>
-            <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '8px' }}>
+            {role && (
+              <div style={{ display: 'inline-block', padding: '4px 12px', borderRadius: '20px', background: 'rgba(108,124,255,0.1)', border: '1px solid rgba(108,124,255,0.2)', marginBottom: '16px' }}>
+                <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#6C7CFF', letterSpacing: '1.5px' }}>{roleLabels[role] || role.toUpperCase()}</span>
+              </div>
+            )}
+            <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '12px' }}>
               Bienvenue, {name}
             </h1>
-            <p style={{ color: 'var(--p-text-muted)', fontSize: '14px', marginBottom: '8px' }}>
-              Votre accès à PULSAR est activé.
-            </p>
+            {welcomeMsg && (
+              <p style={{ color: 'var(--p-text-muted)', fontSize: '15px', lineHeight: 1.7, marginBottom: '16px', fontStyle: 'italic' }}>
+                « {welcomeMsg} »
+              </p>
+            )}
             <p style={{ color: 'var(--p-text-dim)', fontSize: '12px', fontFamily: 'var(--p-font-mono)' }}>
               Redirection en cours...
             </p>
