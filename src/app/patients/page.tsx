@@ -414,10 +414,9 @@ export default function FileActivePage() {
         borderBottom: '1px solid var(--p-border)', background: 'var(--p-bg-card)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={28} height={28} style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.5))', objectFit: 'contain' }} />
           <div>
             <h1 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--p-text)', margin: 0, lineHeight: 1.2 }}>PULSAR</h1>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '1px' }}>FILE ACTIVE</span>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '1px' }}>{t('FILE ACTIVE', 'ACTIVE CASELOAD')}</span>
           </div>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
