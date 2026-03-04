@@ -73,11 +73,19 @@ export default function LandingPage() {
       </nav>
 
       {/* ═══════════ MEMORIAL ═══════════ */}
-      <div style={{ textAlign: 'center', padding: 'var(--p-space-6) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'inline-block', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-full)', background: 'rgba(108,124,255,0.04)', border: '1px solid rgba(108,124,255,0.10)' }}>
-          <p style={{ fontSize: '13px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-muted)', margin: 0, fontWeight: 500, letterSpacing: '0.05em' }}>
-            {t('À la mémoire d\'Alejandro R. (2019–2025)', 'In memory of Alejandro R. (2019–2025)')}
-          </p>
+      <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', maxWidth: '480px', margin: '0 auto' }}>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(139,92,246,0.3))' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+            <span style={{ fontSize: '16px', lineHeight: 1, filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }}>✦</span>
+            <p style={{ fontSize: '13px', color: 'rgba(139,92,246,0.8)', margin: 0, fontWeight: 300, letterSpacing: '0.08em', fontStyle: 'italic' }}>
+              {t('À la mémoire d\'Alejandro R.', 'In memory of Alejandro R.')}
+            </p>
+            <p style={{ fontSize: '11px', color: 'var(--p-text-dim)', margin: 0, fontFamily: 'var(--p-font-mono)', fontWeight: 500, letterSpacing: '0.15em' }}>
+              2019 – 2025
+            </p>
+          </div>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(139,92,246,0.3))' }} />
         </div>
       </div>
 
