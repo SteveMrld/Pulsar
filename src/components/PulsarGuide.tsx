@@ -131,6 +131,42 @@ function getWorkflowSuggestion(pathname: string, lang: 'fr' | 'en'): GuideStep |
   return null
 }
 
+// ── Pulsing Star SVG ──
+function PulsarStar({ size = 28, bright = false }: { size?: number; bright?: boolean }) {
+  const color = bright ? '#fff' : '#6C7CFF'
+  const glow = bright ? 'rgba(255,255,255,0.6)' : 'rgba(108,124,255,0.6)'
+  return (
+    <svg width={size} height={size} viewBox="0 0 100 100" style={{ display: 'block' }}>
+      <defs>
+        <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor={glow} stopOpacity="0.8" />
+          <stop offset="100%" stopColor={glow} stopOpacity="0" />
+        </radialGradient>
+      </defs>
+      {/* Outer glow */}
+      <circle cx="50" cy="50" r="40" fill="url(#starGlow)" opacity="0.4">
+        <animate attributeName="r" values="35;45;35" dur="2.5s" repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2.5s" repeatCount="indefinite" />
+      </circle>
+      {/* Star shape - 4 pointed */}
+      <path d={`M50 12 L56 40 L88 50 L56 60 L50 88 L44 60 L12 50 L44 40 Z`} fill={color} opacity="0.9">
+        <animate attributeName="opacity" values="0.7;1;0.7" dur="2s" repeatCount="indefinite" />
+      </path>
+      {/* Inner cross - thin rays */}
+      <line x1="50" y1="5" x2="50" y2="95" stroke={color} strokeWidth="1.5" opacity="0.3">
+        <animate attributeName="opacity" values="0.15;0.4;0.15" dur="3s" repeatCount="indefinite" />
+      </line>
+      <line x1="5" y1="50" x2="95" y2="50" stroke={color} strokeWidth="1.5" opacity="0.3">
+        <animate attributeName="opacity" values="0.15;0.4;0.15" dur="3s" repeatCount="indefinite" />
+      </line>
+      {/* Center bright dot */}
+      <circle cx="50" cy="50" r="4" fill="#fff" opacity="0.9">
+        <animate attributeName="r" values="3;5;3" dur="2s" repeatCount="indefinite" />
+      </circle>
+    </svg>
+  )
+}
+
 export default function PulsarGuide() {
   const { t, lang } = useLang()
   const pathname = usePathname()
@@ -191,11 +227,9 @@ export default function PulsarGuide() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
             <div style={{
               width: '28px', height: '28px', borderRadius: '50%',
-              background: 'rgba(108,124,255,0.12)', border: '1px solid rgba(108,124,255,0.25)',
               display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
             }}>
-              <img src="/assets/pictos-v17/brain-hero-128.png" alt="" width={18} height={18}
-                style={{ filter: 'drop-shadow(0 0 4px rgba(108,124,255,0.5))' }} />
+              <PulsarStar size={28} />
             </div>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#6C7CFF', letterSpacing: '1px' }}>
               PULSAR GUIDE
@@ -235,19 +269,13 @@ export default function PulsarGuide() {
       <button onClick={toggle} style={{
         position: 'fixed', bottom: '20px', right: '20px', zIndex: 9999,
         width: '52px', height: '52px', borderRadius: '50%',
-        background: open ? '#6C7CFF' : 'var(--p-bg-card, #171722)',
+        background: open ? 'rgba(108,124,255,0.2)' : 'var(--p-bg-card, #171722)',
         border: open ? '2px solid #6C7CFF' : '2px solid rgba(108,124,255,0.25)',
         cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
         boxShadow: '0 4px 20px rgba(0,0,0,0.3), 0 0 12px rgba(108,124,255,0.15)',
         transition: 'all 0.3s',
       }}>
-        <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR Guide" width={28} height={28}
-          style={{
-            filter: open
-              ? 'brightness(2) drop-shadow(0 0 6px rgba(255,255,255,0.5))'
-              : 'drop-shadow(0 0 6px rgba(108,124,255,0.5))',
-            transition: 'all 0.3s',
-          }} />
+        <PulsarStar size={30} bright={open} />
       </button>
 
       {/* Keyframe animation */}
