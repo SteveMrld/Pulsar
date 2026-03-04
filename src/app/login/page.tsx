@@ -128,7 +128,7 @@ export default function LoginPage() {
               marginTop: 'var(--p-space-2)',
             }}
           >
-            {loading ? 't('Connexion...', 'Signing in...') : t('Se connecter', 'Sign in')}
+            {loading ? t('Connexion...', 'Signing in...') : t('Se connecter', 'Sign in')}
           </button>
         </form>
 
