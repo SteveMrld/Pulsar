@@ -229,11 +229,11 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
       <PulsingBrain />
 
       <h2 style={{ fontSize: '22px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '8px' }}>
-        Aucun patient actif
+        {t('Aucun patient actif', 'No active patients')}
       </h2>
       <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: '32px' }}>
         Lancez l&apos;analyse intelligente pour un nouveau patient —
-        diagnostic différentiel, red flags et parcours clinique en temps réel.
+        {t('diagnostic différentiel, red flags et parcours clinique en', 'differential diagnosis, red flags and clinical pathway in')} {t('temps réel.', 'real time.')}
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
@@ -256,7 +256,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
           color: 'var(--p-text-muted)', letterSpacing: '0.3px', width: '300px',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
         }}>
-          <span style={{ fontSize: '14px' }}>▶</span> Explorer avec des cas fictifs
+          <span style={{ fontSize: '14px' }}>▶</span> {t('Explorer avec des cas fictifs', 'Explore with demo cases')}
         </button>
       </div>
 
@@ -266,10 +266,10 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
         padding: '16px 0', borderTop: '1px solid var(--p-border)',
       }}>
         {[
-          { value: '5', label: 'Moteurs IA' },
-          { value: '59', label: 'Références' },
-          { value: '5', label: 'Pathologies' },
-          { value: '15', label: 'Cas registre' },
+          { value: '5', label: t('Moteurs IA', 'AI Engines') },
+          { value: '59', label: t('Références', 'References') },
+          { value: '5', label: t('Pathologies', 'Pathologies') },
+          { value: '15', label: t('Cas registre', 'Registry cases') },
         ].map((s, i) => (
           <div key={i} style={{ textAlign: 'center' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '18px', fontWeight: 900, color: '#6C7CFF', lineHeight: 1 }}>{s.value}</div>
@@ -588,7 +588,7 @@ export default function FileActivePage() {
                 background: 'rgba(108,124,255,0.08)', border: '1px solid rgba(108,124,255,0.15)',
                 cursor: 'pointer', fontFamily: 'var(--p-font-mono)', fontSize: '9px',
                 color: '#6C7CFF', fontWeight: 600,
-              }}>{t('Masquer la démo', 'Hide demo')}</button>
+              }}>{t(t('Masquer la démo', 'Hide demo'), 'Hide demo')}</button>
             </div>
           )}
         </div>
