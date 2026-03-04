@@ -74,25 +74,17 @@ function buildDemoPatients(): PatientCard[] {
 /* ── Mini Avatar SVG ── */
 function MiniAvatar({ vpsColor, size = 36, name, avatar }: { vpsColor: string; size?: number; name?: string; avatar?: string }) {
   const initial = name ? name.charAt(0).toUpperCase() : '?'
-  const outer = size + 4 // account for border
   return (
     <div style={{
-      width: outer, height: outer, borderRadius: '50%',
+      width: size, height: size, borderRadius: '50%',
       background: `${vpsColor}12`, border: `2px solid ${vpsColor}30`,
-      boxSizing: 'border-box',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
       flexShrink: 0, overflow: 'hidden',
       boxShadow: `0 0 12px ${vpsColor}15`,
     }}>
       {avatar ? (
         <img src={avatar} alt={name || ''} 
-          width={size} height={size}
-          style={{ 
-            width: size, height: size, 
-            objectFit: 'cover', objectPosition: 'center center',
-            display: 'block', borderRadius: '50%',
-            filter: `drop-shadow(0 0 4px ${vpsColor})`,
-          }} />
+          style={{ width: '110%', height: '110%', objectFit: 'contain', display: 'block' }} />
       ) : (
         <span style={{
           fontFamily: 'var(--p-font-mono)', fontWeight: 900,
