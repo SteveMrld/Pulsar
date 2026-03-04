@@ -74,11 +74,16 @@ const workflow = [
       </nav>
 
       {/* ═══════════ MEMORIAL ═══════════ */}
+      <style>{`
+        @keyframes memorial-fade { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
+        @keyframes star-glow { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(139,92,246,0.3)); } 50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(139,92,246,0.6)); } }
+        @keyframes line-grow { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+      `}</style>
       <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', maxWidth: '480px', margin: '0 auto' }}>
-          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(139,92,246,0.3))' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
-            <span style={{ fontSize: '16px', lineHeight: 1, filter: 'drop-shadow(0 0 6px rgba(139,92,246,0.5))' }}>✦</span>
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(139,92,246,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'right' }} />
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', animation: 'memorial-fade 2s ease-out 0.5s both' }}>
+            <span style={{ fontSize: '16px', lineHeight: 1, animation: 'star-glow 3s ease-in-out 1.5s infinite' }}>✦</span>
             <p style={{ fontSize: '13px', color: 'rgba(139,92,246,0.8)', margin: 0, fontWeight: 300, letterSpacing: '0.08em', fontStyle: 'italic' }}>
               {t('À la mémoire d\'Alejandro R.', 'In memory of Alejandro R.')}
             </p>
@@ -86,7 +91,7 @@ const workflow = [
               2019 – 2025
             </p>
           </div>
-          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(139,92,246,0.3))' }} />
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(139,92,246,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'left' }} />
         </div>
       </div>
 
