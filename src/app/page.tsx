@@ -8,49 +8,50 @@ import Link from 'next/link'
 // ══════════════════════════════════════════════════════════════
 
 
-const workflow = [
-  { step: '1', label: 'Admission', desc: 'Intake + Triage P1-P4', color: '#8B5CF6' },
-  { step: '2', label: 'Pipeline', desc: '5 moteurs activés', color: '#6C7CFF' },
-  { step: '3', label: 'Cockpit', desc: 'Monitoring + alertes', color: '#2FD1C8' },
-  { step: '4', label: 'Discovery', desc: 'Signaux + hypothèses', color: '#10B981' },
-  { step: '5', label: 'Export', desc: 'Brief · JSON · BibTeX', color: '#B96BFF' },
-]
 
 export default function LandingPage() {
   const { t } = useLang()
 
+const workflow = [
+  { step: '1', label: 'Admission', desc: 'Intake + Triage P1-P4', color: '#8B5CF6' },
+  { step: '2', label: 'Pipeline', desc: t('5 moteurs activés', '5 engines activated'), color: '#6C7CFF' },
+  { step: '3', label: 'Cockpit', desc: t('Monitoring + alertes', 'Monitoring + alerts'), color: '#2FD1C8' },
+  { step: '4', label: 'Discovery', desc: t('Signaux + hypothèses', 'Signals + hypotheses'), color: '#10B981' },
+  { step: '5', label: 'Export', desc: 'Brief · JSON · BibTeX', color: '#B96BFF' },
+]
+
   const engines = [
     { name: 'VPS', full: 'Vital Prognosis Score', color: '#6C7CFF',
-      desc: "Score de sévérité global via 4 champs sémantiques. Lit les signaux vitaux comme un cerveau clinique." },
+      desc: t("Score de sévérité global via 4 champs sémantiques. Lit les signaux vitaux comme un cerveau clinique.", "Global severity score across 4 semantic fields. Reads vital signs like a clinical brain.") },
     { name: 'TDE', full: 'Therapeutic Decision Engine', color: '#2FD1C8',
-      desc: "Escalade thérapeutique adaptée à chaque pathologie. FIRES, anti-NMDAR, MOGAD — chaque pattern, sa logique." },
+      desc: t("Escalade thérapeutique adaptée à chaque pathologie. FIRES, anti-NMDAR, MOGAD — chaque pattern, sa logique.", "Therapeutic escalation adapted to each pathology. FIRES, anti-NMDAR, MOGAD — each pattern, its logic.") },
     { name: 'PVE', full: 'Pharmacovigilance Engine', color: '#B96BFF',
-      desc: 'Interactions critiques en temps réel. Croise traitements, pathologie et terrain.' },
+      desc: t('Interactions critiques en temps réel. Croise traitements, pathologie et terrain.', 'Critical interactions in real time. Cross-references treatments, pathology, and patient profile.') },
     { name: 'EWE', full: 'Early Warning Engine', color: '#A78BFA',
-      desc: "Détection précoce des détériorations. Analyse les tendances vitales avant la décompensation." },
+      desc: t("Détection précoce des détériorations. Analyse les tendances vitales avant la décompensation.", "Early detection of deterioration. Analyzes vital trends before decompensation.") },
     { name: 'TPE', full: 'Therapeutic Prospection Engine', color: '#FFB347',
-      desc: "Projection J+7/J+14. Recommandations thérapeutiques anticipées." },
+      desc: t("Projection J+7/J+14. Recommandations thérapeutiques anticipées.", "D+7/D+14 projection. Anticipated therapeutic recommendations.") },
   ]
   
   const discoveryLevels = [
     { name: 'N1', label: 'Pattern Mining', color: '#10B981', icon: '📊',
-      desc: 'Corrélation de Pearson sur 34 paramètres cliniques. Clustering k-means. Détection d\'anomalies z-score (2.5σ). Chaque patient génère des signaux qui enrichissent le système.',
-      detail: '34 paramètres × 8 patients' },
+      desc: t('Corrélation de Pearson sur 34 paramètres cliniques. Clustering k-means. Détection d\'anomalies z-score (2.5σ). Chaque patient génère des signaux qui enrichissent le système.', 'Pearson correlation on 34 clinical parameters. K-means clustering. Z-score anomaly detection (2.5σ). Each patient generates signals that enrich the system.'),
+      detail: t('34 paramètres × 8 patients', '34 parameters × 8 patients') },
     { name: 'N2', label: 'Literature Scanner', color: '#3B82F6', icon: '📡',
-      desc: 'Veille PubMed live (10 requêtes). ClinicalTrials.gov temps réel. Détection automatique de contradictions avec le protocole thérapeutique en cours.',
-      detail: '25 publications + 3 essais NCT actifs' },
+      desc: t('Veille PubMed live (10 requêtes). ClinicalTrials.gov temps réel. Détection automatique de contradictions avec le protocole thérapeutique en cours.', 'Live PubMed monitoring (10 queries). ClinicalTrials.gov real-time. Automatic detection of contradictions with the current therapeutic protocol.'),
+      detail: t('25 publications + 3 essais NCT actifs', '25 publications + 3 active NCT trials') },
     { name: 'N3', label: 'Hypothesis Engine', color: '#8B5CF6', icon: '💡',
-      desc: 'Croisement N1×N2 via Claude API. Génération d\'hypothèses de recherche. Workflow de validation : Générée → En revue → Validée → Publiée.',
-      detail: '3 hypothèses calibrées + scoring' },
+      desc: t('Croisement N1×N2 via Claude API. Génération d\'hypothèses de recherche. Workflow de validation : Générée → En revue → Validée → Publiée.', 'N1×N2 cross-analysis via Claude API. Research hypothesis generation. Validation workflow: Generated → Under review → Validated → Published.'),
+      detail: t('3 hypothèses calibrées + scoring', '3 calibrated hypotheses + scoring') },
     { name: 'N4', label: 'Treatment Pathfinder', color: '#EC4899', icon: '🧬',
-      desc: 'Matching patient↔essais cliniques mondiaux. Scoring d\'éligibilité multicritères. Chaque enfant est connecté aux traitements qui pourraient changer sa trajectoire.',
+      desc: t('Matching patient↔essais cliniques mondiaux. Scoring d\'éligibilité multicritères. Chaque enfant est connecté aux traitements qui pourraient changer sa trajectoire.', 'Patient↔global clinical trial matching. Multi-criteria eligibility scoring. Every child is connected to treatments that could change their trajectory.'),
       detail: 'anakinra · tocilizumab · KD · combo · rituximab' },
   ]
   
   const epidemioStats = [
-    { value: '~30 000', label: 'enfants/an', sub: 'touchés par des maladies neuro-inflammatoires dans le monde', color: '#8B5CF6' },
-    { value: '12–30%', label: 'mortalité', sub: 'dans les formes réfractaires (FIRES, NORSE, encéphalites sévères)', color: '#A78BFA' },
-    { value: '90%', label: 'séquelles', sub: 'des survivants gardent des déficits cognitifs ou une épilepsie chronique', color: '#FFB347' },
+    { value: '~30 000', label: t('enfants/an', 'children/year'), sub: t('touchés par des maladies neuro-inflammatoires dans le monde', 'affected by neuroinflammatory diseases worldwide'), color: '#8B5CF6' },
+    { value: '12–30%', label: t('mortalité', 'mortality'), sub: t('dans les formes réfractaires (FIRES, NORSE, encéphalites sévères)', 'in refractory forms (FIRES, NORSE, severe encephalitis)'), color: '#A78BFA' },
+    { value: '90%', label: t('séquelles', 'sequelae'), sub: t('des survivants gardent des déficits cognitifs ou une épilepsie chronique', 'of survivors retain cognitive deficits or chronic epilepsy'), color: '#FFB347' },
     { value: '5', label: 'syndromes', sub: 'FIRES · Anti-NMDAR · NORSE · PIMS · MOGAD/ADEM', color: '#6C7CFF' },
   ]
 
@@ -97,15 +98,15 @@ export default function LandingPage() {
         </div>
 
         <h1 style={{ fontSize: 'var(--p-text-5xl)', fontWeight: 800, lineHeight: 'var(--p-leading-tight)', marginBottom: 'var(--p-space-6)', color: 'var(--p-text)' }}>
-          Plus aucun enfant perdu<br />parce que la bonne information<br /><span className="text-gradient-vps">n&apos;était pas là à temps</span>
+          {t('Plus aucun enfant perdu', 'No child left behind')}<br />{t('parce que la bonne information', 'because the right information')}<br /><span className="text-gradient-vps">{t("n'était pas là à temps", "wasn't there in time")}</span>
         </h1>
 
         <p style={{ fontSize: 'var(--p-text-lg)', color: 'var(--p-text-muted)', lineHeight: 'var(--p-leading-relaxed)', maxWidth: '720px', margin: '0 auto var(--p-space-6)' }}>
-          Chaque année, environ 30 000 enfants dans le monde sont frappés par des maladies neuro-inflammatoires — FIRES, NORSE, encéphalites auto-immunes, ADEM, MOGAD. Des enfants en parfaite santé dont le cerveau s&apos;enflamme sans prévenir.
+          {t("Chaque année, environ 30 000 enfants dans le monde sont frappés par des maladies neuro-inflammatoires — FIRES, NORSE, encéphalites auto-immunes, ADEM, MOGAD. Des enfants en parfaite santé dont le cerveau s'enflamme sans prévenir.", "Every year, approximately 30,000 children worldwide are struck by neuroinflammatory diseases — FIRES, NORSE, autoimmune encephalitis, ADEM, MOGAD. Perfectly healthy children whose brains ignite without warning.")}
         </p>
 
         <p style={{ fontSize: 'var(--p-text-base)', color: 'var(--p-text)', lineHeight: 'var(--p-leading-relaxed)', maxWidth: '720px', margin: '0 auto var(--p-space-10)', fontWeight: 600 }}>
-          PULSAR est le premier système d&apos;intelligence artificielle entièrement dédié à ces pathologies. 7 moteurs qui pensent ensemble, un Discovery Engine qui croise chaque patient avec la recherche mondiale, et un principe fondateur : chaque enfant qui entre dans le système rend le système plus intelligent pour le suivant. Rien de tel n&apos;existe aujourd&apos;hui.
+          {t("PULSAR est le premier système d'intelligence artificielle entièrement dédié à ces pathologies. 7 moteurs qui pensent ensemble, un Discovery Engine qui croise chaque patient avec la recherche mondiale, et un principe fondateur : chaque enfant qui entre dans le système rend le système plus intelligent pour le suivant. Rien de tel n'existe aujourd'hui.", "PULSAR is the first AI system entirely dedicated to these conditions. 7 engines that think together, a Discovery Engine that cross-references each patient with global research, and a founding principle: every child who enters the system makes it smarter for the next one. Nothing like this exists today.")}
         </p>
 
         <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -121,12 +122,12 @@ export default function LandingPage() {
           {/* CÔTÉ CLINIQUE */}
           <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.06) 0%, rgba(47,209,200,0.03) 100%)', border: '1px solid rgba(108,124,255,0.12)' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#6C7CFF', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ CLINIQUE', 'CLINICAL SIDE')}</div>
-            <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>Comprimer le temps entre<br />le premier signal et<br /><span style={{ color: '#6C7CFF' }}>la bonne décision</span></h3>
+            <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Comprimer le temps entre', 'Compress the time between')}<br />{t('le premier signal et', 'the first signal and')}<br /><span style={{ color: '#6C7CFF' }}>{t('la bonne décision', 'the right decision')}</span></h3>
             <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
-              Dans ces maladies, la différence entre séquelles et récupération se joue en heures. Le médecin isolé à 3h du matin ne peut pas connaître les 59 protocoles, les 25 publications récentes, les interactions entre 5 traitements simultanés.
+              {t("Dans ces maladies, la différence entre séquelles et récupération se joue en heures. Le médecin isolé à 3h du matin ne peut pas connaître les 59 protocoles, les 25 publications récentes, les interactions entre 5 traitements simultanés.", "In these diseases, the difference between lasting damage and recovery is measured in hours. A doctor alone at 3 AM cannot know all 59 protocols, 25 recent publications, and interactions between 5 simultaneous treatments.")}
             </p>
             <p style={{ fontSize: '13px', color: 'var(--p-text)', lineHeight: 1.8, fontWeight: 600 }}>
-              PULSAR le peut. 5 moteurs d&apos;analyse qui pensent ensemble — sévérité, escalade thérapeutique, pharmacovigilance, alerte précoce, prospection — pour que chaque clinicien, où qu&apos;il soit, ait la puissance de décision du meilleur service de neuropédiatrie au monde.
+              {t("PULSAR le peut. 5 moteurs d'analyse qui pensent ensemble — sévérité, escalade thérapeutique, pharmacovigilance, alerte précoce, prospection — pour que chaque clinicien, où qu'il soit, ait la puissance de décision du meilleur service de neuropédiatrie au monde.", "PULSAR can. 5 analysis engines that think together — severity, therapeutic escalation, pharmacovigilance, early warning, prospection — so that every clinician, wherever they are, has the decision-making power of the world's best neuropediatrics unit.")}
             </p>
             <div style={{ display: 'flex', gap: '6px', marginTop: 'var(--p-space-4)', flexWrap: 'wrap' }}>
               {engines.map((e) => (
@@ -138,12 +139,12 @@ export default function LandingPage() {
           {/* CÔTÉ RECHERCHE */}
           <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(139,92,246,0.03) 100%)', border: '1px solid rgba(16,185,129,0.12)' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#10B981', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ RECHERCHE', 'RESEARCH SIDE')}</div>
-            <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>Chaque enfant qui passe dans<br />PULSAR rend le système<br /><span style={{ color: '#10B981' }}>plus intelligent pour le suivant</span></h3>
+            <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Chaque enfant qui passe dans', 'Every child who passes through')}<br />{t('PULSAR rend le système', 'PULSAR makes the system')}<br /><span style={{ color: '#10B981' }}>{t('plus intelligent pour le suivant', 'smarter for the next one')}</span></h3>
             <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
-              Le Discovery Engine fait ce que personne ne fait aujourd&apos;hui. Il prend les données cliniques d&apos;un enfant malade, les croise avec toute la littérature mondiale, et génère des hypothèses de recherche. Chaque cas enrichit les corrélations, affine les hypothèses, identifie les essais cliniques.
+              {t("Le Discovery Engine fait ce que personne ne fait aujourd'hui. Il prend les données cliniques d'un enfant malade, les croise avec toute la littérature mondiale, et génère des hypothèses de recherche. Chaque cas enrichit les corrélations, affine les hypothèses, identifie les essais cliniques.", "The Discovery Engine does what no one does today. It takes clinical data from a sick child, cross-references it with all global literature, and generates research hypotheses. Each case enriches correlations, refines hypotheses, identifies clinical trials.")}
             </p>
             <p style={{ fontSize: '13px', color: 'var(--p-text)', lineHeight: 1.8, fontWeight: 600 }}>
-              L&apos;enfant admis à Pointe-à-Pitre enrichit la décision pour l&apos;enfant qui sera admis demain à Lyon, à Dakar ou à Montréal. Chaque tragédie individuelle se transforme en intelligence collective.
+              {t("L'enfant admis à Pointe-à-Pitre enrichit la décision pour l'enfant qui sera admis demain à Lyon, à Dakar ou à Montréal. Chaque tragédie individuelle se transforme en intelligence collective.", "A child admitted in Pointe-à-Pitre enriches decisions for the child who will be admitted tomorrow in Lyon, Dakar, or Montreal. Every individual tragedy transforms into collective intelligence.")}
             </p>
             <div style={{ display: 'flex', gap: '6px', marginTop: 'var(--p-space-4)', flexWrap: 'wrap' }}>
               {discoveryLevels.map((d) => (
@@ -158,7 +159,7 @@ export default function LandingPage() {
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES', 'PEDIATRIC NEUROINFLAMMATORY DISEASES')}</div>
-          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>Quand le cerveau d&apos;un enfant s&apos;enflamme</h2>
+          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>{t("Quand le cerveau d'un enfant s'enflamme", "When a child's brain ignites")}</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--p-space-4)' }}>
           {epidemioStats.map((s, i) => (
@@ -183,9 +184,9 @@ export default function LandingPage() {
           <div style={{ display: 'inline-block', padding: '6px 20px', borderRadius: 'var(--p-radius-full)', background: '#10B98112', border: '1px solid #10B98125', marginBottom: 'var(--p-space-4)' }}>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#10B981', letterSpacing: '1.5px' }}>DISCOVERY ENGINE v4.0</span>
           </div>
-          <h2 style={{ fontSize: 'var(--p-text-3xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-3)' }}>De la donnée clinique<br />à <span style={{ color: '#10B981' }}>l&apos;hypothèse de recherche</span></h2>
+          <h2 style={{ fontSize: 'var(--p-text-3xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-3)' }}>{t('De la donnée clinique', 'From clinical data')}<br />{t('à', 'to')} <span style={{ color: '#10B981' }}>{t("l'hypothèse de recherche", 'the research hypothesis')}</span></h2>
           <p style={{ fontSize: '14px', color: 'var(--p-text-muted)', maxWidth: '660px', margin: '0 auto', lineHeight: 1.8 }}>
-            4 niveaux d&apos;analyse. PubMed et ClinicalTrials.gov en temps réel. Génération d&apos;hypothèses par intelligence artificielle. Un pipeline de recherche translationnelle complet — du chevet de l&apos;enfant à la publication scientifique.
+            {t("4 niveaux d'analyse. PubMed et ClinicalTrials.gov en temps réel. Génération d'hypothèses par intelligence artificielle. Un pipeline de recherche translationnelle complet — du chevet de l'enfant à la publication scientifique.", "4 levels of analysis. PubMed and ClinicalTrials.gov in real time. AI-powered hypothesis generation. A complete translational research pipeline — from the child's bedside to scientific publication.")}
           </p>
         </div>
 
@@ -218,7 +219,7 @@ export default function LandingPage() {
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 'var(--p-space-6)' }}>
-          <Link href="/research" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'linear-gradient(135deg, #10B981, #3B82F6)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', boxShadow: '0 4px 20px rgba(16,185,129,0.3)' }}>🔬 Explorer le Discovery Engine</Link>
+          <Link href="/research" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'linear-gradient(135deg, #10B981, #3B82F6)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', boxShadow: '0 4px 20px rgba(16,185,129,0.3)' }}>{t('🔬 Explorer le Discovery Engine', '🔬 Explore the Discovery Engine')}</Link>
         </div>
       </section>
 
@@ -235,7 +236,7 @@ export default function LandingPage() {
                   <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Discovery Engine · Niveau 4</div>
                 </div>
               </div>
-              <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>Pour chaque enfant, PULSAR<br />cherche activement <span style={{ color: '#EC4899' }}>des pistes de traitement</span></h3>
+              <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Pour chaque enfant, PULSAR', 'For every child, PULSAR')}<br />{t('cherche activement', 'actively searches for')} <span style={{ color: '#EC4899' }}>{t('des pistes de traitement', 'treatment pathways')}</span></h3>
               <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
                 Le Treatment Pathfinder ne se contente pas d&apos;analyser — il agit. À partir du profil clinique de chaque patient, il interroge les essais cliniques mondiaux, évalue l&apos;éligibilité à des traitements ciblés, et remonte des pistes thérapeutiques directement dans les recommandations du clinicien.
               </p>
@@ -269,7 +270,7 @@ export default function LandingPage() {
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('CE QUI REND PULSAR UNIQUE', 'WHAT MAKES PULSAR UNIQUE')}</div>
-          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>Un vrai système.<br /><span className="text-gradient-brand">Pas un chatbot.</span></h2>
+          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>{t('Un vrai système.', 'A real system.')}<br /><span className="text-gradient-brand">{t('Pas un chatbot.', 'Not a chatbot.')}</span></h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginBottom: 'var(--p-space-6)' }}>
           {[
@@ -292,7 +293,7 @@ export default function LandingPage() {
       {/* ═══════════ WORKFLOW ═══════════ */}
       <section style={{ padding: '0 var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-6)' }}>
-          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>PARCOURS PATIENT — DE L&apos;ADMISSION À LA PUBLICATION</div>
+          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>{t("PARCOURS PATIENT — DE L'ADMISSION À LA PUBLICATION", 'PATIENT PATHWAY — FROM ADMISSION TO PUBLICATION')}</div>
           <div style={{ display: 'flex', gap: '4px', alignItems: 'stretch', marginBottom: 'var(--p-space-4)' }}>
             {workflow.map((w, i) => (
               <div key={i} style={{ flex: 1 }}>
@@ -312,7 +313,7 @@ export default function LandingPage() {
       {/* ═══════════ PIPELINE MOTEURS ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-6)' }}>
-          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>PIPELINE — 6+1 MOTEURS × 4 COUCHES</div>
+          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>{t('PIPELINE — 6+1 MOTEURS × 4 COUCHES', 'PIPELINE — 6+1 ENGINES × 4 LAYERS')}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', flexWrap: 'wrap' }}>
             {engines.map((e) => (
               <div key={e.name} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
@@ -333,7 +334,7 @@ export default function LandingPage() {
 
       {/* ═══════════ MOTEURS DÉTAIL ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <h2 className="text-gradient-brand" style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>6+1 moteurs qui pensent ensemble</h2>
+        <h2 className="text-gradient-brand" style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>{t('6+1 moteurs qui pensent ensemble', '6+1 engines that think together')}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {engines.map((e) => (
             <div key={e.name} className="glass-card" style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--p-space-5)', borderLeft: `3px solid ${e.color}`, borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-5) var(--p-space-6)' }}>
@@ -350,12 +351,12 @@ export default function LandingPage() {
       {/* ═══════════ CTA FINAL ═══════════ */}
       <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-12) var(--p-space-8) var(--p-space-24)', position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-10) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.04) 0%, rgba(16,185,129,0.04) 50%, rgba(236,72,153,0.02) 100%)', border: '1px solid rgba(108,124,255,0.08)' }}>
-          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)', lineHeight: 1.3 }}>La bonne information.<br />Au bon endroit. <span className="text-gradient-vps">Au bon moment.</span></h2>
+          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)', lineHeight: 1.3 }}>{t('La bonne information.', 'The right information.')}<br />{t('Au bon endroit.', 'In the right place.')} <span className="text-gradient-vps">{t('Au bon moment.', 'At the right time.')}</span></h2>
           <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', maxWidth: '560px', margin: '0 auto var(--p-space-8)', lineHeight: 1.8 }}>
-            95/95 tests. 59 références cliniques. 25 publications Discovery. Veille PubMed live. 5 pathologies. 15 tables de données. Parce que chaque minute gagnée peut changer une vie.
+            {t('95/95 tests. 59 références cliniques. 25 publications Discovery. Veille PubMed live. 5 pathologies. 15 tables de données. Parce que chaque minute gagnée peut changer une vie.', '95/95 tests. 59 clinical references. 25 Discovery publications. Live PubMed monitoring. 5 pathologies. 15 data tables. Because every minute saved can change a life.')}
           </p>
           <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/patients" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>Commencer</Link>
+            <Link href="/patients" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Commencer', 'Get started')}</Link>
             <Link href="/research" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98125', color: '#10B981', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)', display: 'flex', alignItems: 'center', gap: '10px' }}>🔬 Discovery</Link>
           </div>
         </div>
@@ -365,7 +366,7 @@ export default function LandingPage() {
 
 
       <footer style={{ borderTop: 'var(--p-border)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
-        PULSAR V20 · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel
+        {t('PULSAR V20 · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel', 'PULSAR V20 · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
       </footer>
     </div>
   )
