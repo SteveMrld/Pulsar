@@ -10,29 +10,33 @@ export interface InviteCode {
   role: 'tester' | 'advisor' | 'medical' | 'investor'
   expiresAt: string // ISO date
   active: boolean
-  welcomeMsg?: string
-  welcomeMsgEn?: string
+  lang: 'fr' | 'en'
+  welcomeMsg: string
 }
 
 // ── Codes d'invitation actifs ──
 // Steve: ajoute/modifie les testeurs ici
 export const INVITE_CODES: InviteCode[] = [
-  { code: 'PULSAR-NW-2026',  name: 'Nora Wong',       email: 'nora.norse@gmail.com',  role: 'advisor',  expiresAt: '2026-04-04', active: true,
-    welcomeMsg: 'Merci pour votre soutien et votre engagement auprès des familles. Nous n\'oublierons jamais votre écoute et votre aide. Merci pour Alejandro.',
-    welcomeMsgEn: 'Thank you for your support and your commitment to families. We will never forget your kindness and your help. Thank you for Alejandro.' },
-  { code: 'PULSAR-T2-ALPHA', name: 'Testeur 2',       email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true,
-    welcomeMsg: 'Merci pour votre accompagnement et votre bienveillance. Nous n\'oublierons jamais votre écoute et votre aide. Votre regard sur PULSAR compte énormément.' },
-  { code: 'PULSAR-T3-ALPHA', name: 'Testeur 3',       email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true,
-    welcomeMsg: 'Merci pour votre accompagnement et votre bienveillance. Nous n\'oublierons jamais votre écoute et votre aide. Votre regard sur PULSAR compte énormément.' },
-  { code: 'PULSAR-T4-ALPHA', name: 'Testeur 4',       email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true,
-    welcomeMsg: 'Merci pour votre accompagnement et votre bienveillance. Nous n\'oublierons jamais votre écoute et votre aide. Votre regard sur PULSAR compte énormément.' },
-  { code: 'PULSAR-T5-ALPHA', name: 'Testeur 5',       email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true,
-    welcomeMsg: 'Merci pour votre accompagnement et votre bienveillance. Nous n\'oublierons jamais votre écoute et votre aide. Votre regard sur PULSAR compte énormément.' },
-  { code: 'PULSAR-MD-ALPHA', name: 'Médecin conseil',  email: '',                      role: 'medical',  expiresAt: '2026-04-04', active: true,
-    welcomeMsg: 'Merci pour votre écoute et votre expertise. Nous n\'oublierons jamais votre aide. Votre avis clinique est essentiel pour que cet outil serve vraiment.' },
-  { code: 'PULSAR-IV-ALPHA', name: 'Investisseur',     email: '',                      role: 'investor', expiresAt: '2026-04-04', active: true,
-    welcomeMsg: 'Merci de prendre le temps de découvrir PULSAR. Votre retour est précieux.' },
-  { code: 'PULSAR-SM-ADMIN', name: 'Steve Moradel',   email: 'steve.moradel@gmail.com', role: 'advisor', expiresAt: '2030-01-01', active: true,
+  // ── Nominatifs ──
+  { code: 'PULSAR-NW-2026',  name: 'Nora Wong',       email: 'nora.norse@gmail.com',  role: 'advisor',  expiresAt: '2026-04-04', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for your support and your commitment to families. We will never forget your kindness and your help. Thank you for Alejandro.' },
+  { code: 'PULSAR-PS-2026',  name: 'Pierre Sonigo',   email: '',                      role: 'advisor',  expiresAt: '2026-04-04', active: true, lang: 'fr',
+    welcomeMsg: 'Merci pour votre soutien et votre bienveillance. Nous n\'oublierons jamais votre écoute et votre aide. Merci pour Alejandro.' },
+  // ── Testeurs génériques (anglais) ──
+  { code: 'PULSAR-T2-ALPHA', name: 'Tester 2',        email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for your support and kindness. Your feedback on PULSAR means a great deal.' },
+  { code: 'PULSAR-T3-ALPHA', name: 'Tester 3',        email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for your support and kindness. Your feedback on PULSAR means a great deal.' },
+  { code: 'PULSAR-T4-ALPHA', name: 'Tester 4',        email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for your support and kindness. Your feedback on PULSAR means a great deal.' },
+  { code: 'PULSAR-T5-ALPHA', name: 'Tester 5',        email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for your support and kindness. Your feedback on PULSAR means a great deal.' },
+  { code: 'PULSAR-MD-ALPHA', name: 'Doctor',           email: '',                      role: 'medical',  expiresAt: '2026-04-04', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for your expertise and your time. Your clinical insight is essential for this tool to truly serve.' },
+  { code: 'PULSAR-IV-ALPHA', name: 'Investor',         email: '',                      role: 'investor', expiresAt: '2026-04-04', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for taking the time to discover PULSAR. Your feedback is invaluable.' },
+  // ── Admin ──
+  { code: 'PULSAR-SM-ADMIN', name: 'Steve Moradel',   email: 'steve.moradel@gmail.com', role: 'advisor', expiresAt: '2030-01-01', active: true, lang: 'fr',
     welcomeMsg: 'Bienvenue chez toi, Steve.' },
 ]
 

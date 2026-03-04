@@ -12,6 +12,7 @@ function InviteContent() {
   const [name, setName] = useState('')
   const [welcomeMsg, setWelcomeMsg] = useState('')
   const [role, setRole] = useState('')
+  const [inviteLang, setInviteLang] = useState<'fr'|'en'>('en')
 
   useEffect(() => {
     if (!code) { setStatus('invalid'); return }
@@ -21,9 +22,8 @@ function InviteContent() {
     } else {
       setName(invite.name)
       setRole(invite.role)
-      // Detect language from browser
-      const isEn = typeof navigator !== 'undefined' && navigator.language?.startsWith('en')
-      setWelcomeMsg((isEn && invite.welcomeMsgEn) ? invite.welcomeMsgEn : invite.welcomeMsg || '')
+      setInviteLang(invite.lang)
+      setWelcomeMsg(invite.welcomeMsg || '')
       setInviteCookie(invite.code, invite.name)
       setStatus('valid')
       setTimeout(() => router.push('/patients'), 3500)
@@ -61,7 +61,7 @@ function InviteContent() {
               </div>
             )}
             <h1 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '12px' }}>
-              Bienvenue, {name}
+              {inviteLang === 'fr' ? 'Bienvenue,' : 'Welcome,'} {name}
             </h1>
             {welcomeMsg && (
               <p style={{ color: 'var(--p-text-muted)', fontSize: '15px', lineHeight: 1.7, marginBottom: '16px', fontStyle: 'italic' }}>
@@ -69,12 +69,13 @@ function InviteContent() {
               </p>
             )}
             <p style={{ color: 'var(--p-text-dim)', fontSize: '12px', fontFamily: 'var(--p-font-mono)' }}>
-              Redirection en cours...
+              {inviteLang === 'fr' ? 'Redirection en cours...' : 'Redirecting...'}
             </p>
             <div style={{ marginTop: '20px', padding: '12px 20px', borderRadius: '12px', background: 'rgba(108,124,255,0.06)', border: '1px solid rgba(108,124,255,0.12)' }}>
               <p style={{ fontSize: '11px', color: 'var(--p-text-dim)', margin: 0, lineHeight: 1.6 }}>
-                <strong style={{ color: '#6C7CFF' }}>ALPHA PRIVÉE</strong> — Cette version est confidentielle.
-                Merci de ne pas partager votre lien d'accès.
+                <strong style={{ color: '#6C7CFF' }}>PRIVATE ALPHA</strong> — {inviteLang === 'fr'
+                  ? 'Cette version est confidentielle. Merci de ne pas partager votre lien d\'accès.'
+                  : 'This version is confidential. Please do not share your access link.'}
               </p>
             </div>
           </>
