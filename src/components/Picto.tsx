@@ -65,9 +65,9 @@ const PICTO_MAP: Record<string, string> = {
   'urgence-chrono': '/assets/pictos-v17/urgence-chrono-128.png',
   'pulsar-ai': '/assets/pictos-v17/pulsar-ai-icon-128.png',
   'brain-hero': '/assets/pictos-v17/brain-hero-128.png',
-  upload:      '/assets/organs/export.png',
-  search:      '/assets/organs/microscope.png',
-  pen:         '/assets/organs/clipboard.png',
+  upload:      '/assets/pictos-v17/pdf-export-128.png',
+  search:      '/assets/pictos-v17/pulsar-ai-icon-128.png',
+  pen:         '/assets/pictos-v17/file-active-128.png',
 };
 
 /* ── Emoji → Picto fallback mapping ──────────────────────── */

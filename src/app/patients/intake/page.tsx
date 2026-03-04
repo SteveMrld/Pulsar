@@ -102,20 +102,20 @@ export default function IntakePage(){
           <p style={{fontSize:'13px',color:'var(--p-text-muted)',marginBottom:'28px'}}>{t("Importez un document existant ou saisissez les informations manuellement.","Import an existing document or enter information manually.")}</p>
           <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))',gap:'16px'}}>
             <button onClick={()=>fileRef.current?.click()} style={{padding:'28px 20px',borderRadius:'16px',border:'2px dashed rgba(108,124,255,0.3)',background:'rgba(108,124,255,0.04)',cursor:'pointer',textAlign:'left',transition:'all 0.3s',display:'flex',flexDirection:'column',gap:'12px'}}>
-              <Picto name='file-active' size={36} glow glowColor='rgba(108,124,255,0.4)'/>
+              <div style={{width:'44px',height:'44px',borderRadius:'12px',background:'rgba(108,124,255,0.12)',border:'1px solid rgba(108,124,255,0.25)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px',fontWeight:900,color:'#6C7CFF',fontFamily:'var(--p-font-mono)'}}>↑</div>
               <div style={{fontSize:'15px',fontWeight:700,color:'#6C7CFF'}}>{t('Importer un document','Import a document')}</div>
               <div style={{fontSize:'12px',color:'var(--p-text-muted)',lineHeight:1.6}}>{t("PDF, scan, courrier d'un autre hôpital… L'IA extraira les données.","PDF, scan, letter from another hospital… AI will extract data.")}</div>
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>PDF · JPG · PNG · DOCX</div>
             </button>
             <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png,.docx" onChange={handleUpload} style={{display:'none'}}/>
             <button onClick={()=>setStep(1)} style={{padding:'28px 20px',borderRadius:'16px',border:'2px dashed rgba(16,185,129,0.3)',background:'rgba(16,185,129,0.04)',cursor:'pointer',textAlign:'left',transition:'all 0.3s',display:'flex',flexDirection:'column',gap:'12px'}}>
-              <Picto name='pen' size={36} glow glowColor='rgba(16,185,129,0.4)'/>
+              <div style={{width:'44px',height:'44px',borderRadius:'12px',background:'rgba(16,185,129,0.12)',border:'1px solid rgba(16,185,129,0.25)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px',fontWeight:900,color:'#10B981',fontFamily:'var(--p-font-mono)'}}>+</div>
               <div style={{fontSize:'15px',fontWeight:700,color:'#10B981'}}>{t('Saisie manuelle','Manual entry')}</div>
               <div style={{fontSize:'12px',color:'var(--p-text-muted)',lineHeight:1.6}}>{t("Renseignez les informations étape par étape.","Enter information step by step.")}</div>
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>{t('~5 min pour un dossier complet','~5 min for a complete record')}</div>
             </button>
             <button onClick={()=>router.push('/patients')} style={{padding:'28px 20px',borderRadius:'16px',border:'2px dashed rgba(185,107,255,0.3)',background:'rgba(185,107,255,0.04)',cursor:'pointer',textAlign:'left',transition:'all 0.3s',display:'flex',flexDirection:'column',gap:'12px'}}>
-              <Picto name='search' size={36} glow glowColor='rgba(185,107,255,0.4)'/>
+              <div style={{width:'44px',height:'44px',borderRadius:'12px',background:'rgba(185,107,255,0.12)',border:'1px solid rgba(185,107,255,0.25)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px',fontWeight:900,color:'#B96BFF',fontFamily:'var(--p-font-mono)'}}>⌕</div>
               <div style={{fontSize:'15px',fontWeight:700,color:'#B96BFF'}}>{t('Patient existant','Existing patient')}</div>
               <div style={{fontSize:'12px',color:'var(--p-text-muted)',lineHeight:1.6}}>{t("Rechercher un patient déjà enregistré.","Search for an existing patient.")}</div>
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>{t('Accès à la file active','Access active caseload')}</div>
