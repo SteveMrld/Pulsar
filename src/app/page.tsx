@@ -9,7 +9,7 @@ import Link from 'next/link'
 
 
 const workflow = [
-  { step: '1', label: 'Admission', desc: 'Intake + Triage P1-P4', color: '#FF4757' },
+  { step: '1', label: 'Admission', desc: 'Intake + Triage P1-P4', color: '#8B5CF6' },
   { step: '2', label: 'Pipeline', desc: '5 moteurs activés', color: '#6C7CFF' },
   { step: '3', label: 'Cockpit', desc: 'Monitoring + alertes', color: '#2FD1C8' },
   { step: '4', label: 'Discovery', desc: 'Signaux + hypothèses', color: '#10B981' },
@@ -26,7 +26,7 @@ export default function LandingPage() {
       desc: "Escalade thérapeutique adaptée à chaque pathologie. FIRES, anti-NMDAR, MOGAD — chaque pattern, sa logique." },
     { name: 'PVE', full: 'Pharmacovigilance Engine', color: '#B96BFF',
       desc: 'Interactions critiques en temps réel. Croise traitements, pathologie et terrain.' },
-    { name: 'EWE', full: 'Early Warning Engine', color: '#FF6B8A',
+    { name: 'EWE', full: 'Early Warning Engine', color: '#A78BFA',
       desc: "Détection précoce des détériorations. Analyse les tendances vitales avant la décompensation." },
     { name: 'TPE', full: 'Therapeutic Prospection Engine', color: '#FFB347',
       desc: "Projection J+7/J+14. Recommandations thérapeutiques anticipées." },
@@ -48,8 +48,8 @@ export default function LandingPage() {
   ]
   
   const epidemioStats = [
-    { value: '~30 000', label: 'enfants/an', sub: 'touchés par des maladies neuro-inflammatoires dans le monde', color: '#FF4757' },
-    { value: '12–30%', label: 'mortalité', sub: 'dans les formes réfractaires (FIRES, NORSE, encéphalites sévères)', color: '#FF6B8A' },
+    { value: '~30 000', label: 'enfants/an', sub: 'touchés par des maladies neuro-inflammatoires dans le monde', color: '#8B5CF6' },
+    { value: '12–30%', label: 'mortalité', sub: 'dans les formes réfractaires (FIRES, NORSE, encéphalites sévères)', color: '#A78BFA' },
     { value: '90%', label: 'séquelles', sub: 'des survivants gardent des déficits cognitifs ou une épilepsie chronique', color: '#FFB347' },
     { value: '5', label: 'syndromes', sub: 'FIRES · Anti-NMDAR · NORSE · PIMS · MOGAD/ADEM', color: '#6C7CFF' },
   ]
@@ -149,7 +149,7 @@ export default function LandingPage() {
       {/* ═══════════ ÉPIDÉMIOLOGIE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES', 'PEDIATRIC NEUROINFLAMMATORY DISEASES')}</div>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES', 'PEDIATRIC NEUROINFLAMMATORY DISEASES')}</div>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>Quand le cerveau d&apos;un enfant s&apos;enflamme</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--p-space-4)' }}>
@@ -161,7 +161,7 @@ export default function LandingPage() {
             </div>
           ))}
         </div>
-        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5) var(--p-space-8)', marginTop: 'var(--p-space-4)', textAlign: 'center', borderLeft: '4px solid #FF4757' }}>
+        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5) var(--p-space-8)', marginTop: 'var(--p-space-4)', textAlign: 'center', borderLeft: '4px solid #8B5CF6' }}>
           <p style={{ fontSize: '12px', color: 'var(--p-text-muted)', lineHeight: 1.8, margin: 0 }}>
             <strong style={{ color: 'var(--p-text)' }}>FIRES</strong> (1/million) · <strong style={{ color: 'var(--p-text)' }}>Encéphalites auto-immunes</strong> (jusqu&apos;à 4,2/million) · <strong style={{ color: 'var(--p-text)' }}>NORSE</strong> (~3 200 cas/an aux USA) · <strong style={{ color: 'var(--p-text)' }}>ADEM</strong> (3–6/million) · <strong style={{ color: 'var(--p-text)' }}>MOGAD</strong> · <strong style={{ color: 'var(--p-text)' }}>PIMS/MIS-C</strong> — des enfants en parfaite santé, foudroyés après un simple épisode infectieux. Les traitements de première ligne échouent dans la majorité des cas.
           </p>
@@ -267,7 +267,7 @@ export default function LandingPage() {
           {[
             { icon: '/assets/pictos-v17/brain-hero-128.png', title: '7 moteurs qui pensent ensemble', desc: 'Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', color: '#6C7CFF' },
             { icon: '/assets/organs/microscope.png', title: 'De la donnée brute à l\'hypothèse publiable', desc: 'Le Discovery Engine fait ce que personne ne fait : il prend les constantes d\'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.', color: '#10B981' },
-            { icon: '/assets/organs/shield.png', title: '95 scénarios cliniques validés', desc: 'FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', color: '#FF6B8A' },
+            { icon: '/assets/organs/shield.png', title: '95 scénarios cliniques validés', desc: 'FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', color: '#A78BFA' },
             { icon: '/assets/organs/books.png', title: 'Connecté à la science mondiale', desc: 'Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', color: '#3B82F6' },
           ].map((item, i) => (
             <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', borderLeft: `3px solid ${item.color}` }}>
