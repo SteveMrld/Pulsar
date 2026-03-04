@@ -56,6 +56,18 @@ const PICTO_MAP: Record<string, string> = {
   admission:   '/assets/organs/clipboard.png',
   // Logo
   logo:        '/assets/logo-pulsar.png',
+  // ── V17 pictos ──
+  stethoscope: '/assets/pictos-v17/stethoscope-128.png',
+  'file-active': '/assets/pictos-v17/file-active-128.png',
+  'bed-patient': '/assets/pictos-v17/bed-patient-128.png',
+  'pdf-export': '/assets/pictos-v17/pdf-export-128.png',
+  'staff-group': '/assets/pictos-v17/staff-group-128.png',
+  'urgence-chrono': '/assets/pictos-v17/urgence-chrono-128.png',
+  'pulsar-ai': '/assets/pictos-v17/pulsar-ai-icon-128.png',
+  'brain-hero': '/assets/pictos-v17/brain-hero-128.png',
+  upload:      '/assets/organs/export.png',
+  search:      '/assets/organs/microscope.png',
+  pen:         '/assets/organs/clipboard.png',
 };
 
 /* ── Emoji → Picto fallback mapping ──────────────────────── */
