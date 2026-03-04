@@ -16,11 +16,21 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { t } = useLang()
 
-  const isPublic = ['/', '/login', '/signup'].includes(pathname)
+  const isPublic = ['/', '/login', '/signup', '/invite'].includes(pathname)
   const isPatient = pathname.startsWith('/patient/')
 
   useEffect(() => {
     if (isPublic) { setLoading(false); return }
+    // Check invite cookie first
+    if (typeof window !== 'undefined') {
+      const inviteMatch = document.cookie.match(/pulsar-invite=([^;]+)/)
+      if (inviteMatch) {
+        const nameMatch = document.cookie.match(/pulsar-invite-name=([^;]+)/)
+        setUser(nameMatch ? decodeURIComponent(nameMatch[1]) : 'Invité')
+        setLoading(false)
+        return
+      }
+    }
     if (typeof window !== 'undefined' && localStorage.getItem('pulsar-demo') === 'true') {
       setUser('demo@pulsar.app')
       setLoading(false)

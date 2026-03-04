@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useLang } from '@/contexts/LanguageContext'
+import { validateInvite, setInviteCookie } from '@/lib/invites'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
@@ -11,6 +12,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [inviteCode, setInviteCode] = useState('')
   const router = useRouter()
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -145,6 +147,39 @@ export default function LoginPage() {
         </p>
 
         <div style={{ marginTop: 'var(--p-space-4)', paddingTop: 'var(--p-space-4)', borderTop: 'var(--p-border)' }}>
+          {/* Invite code */}
+          <div style={{ marginBottom: 'var(--p-space-3)' }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="text"
+                value={inviteCode}
+                onChange={(e) => setInviteCode(e.target.value.toUpperCase())}
+                placeholder={t('Code d\'invitation', 'Invite code')}
+                style={{ ...inputStyle, flex: 1, fontSize: '13px', fontFamily: 'var(--p-font-mono, monospace)', letterSpacing: '0.5px' }}
+              />
+              <button
+                onClick={() => {
+                  const invite = validateInvite(inviteCode)
+                  if (invite) {
+                    setInviteCookie(invite.code, invite.name)
+                    router.push('/patients')
+                  } else {
+                    setError(t('Code d\'invitation invalide', 'Invalid invite code'))
+                  }
+                }}
+                disabled={!inviteCode}
+                style={{
+                  padding: '0 16px', borderRadius: 'var(--p-radius-md)',
+                  background: inviteCode ? '#6C7CFF' : 'var(--p-gray-2)',
+                  color: '#fff', border: 'none', fontWeight: 700, fontSize: '13px',
+                  cursor: inviteCode ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap',
+                }}
+              >
+                {t('Entrer', 'Enter')}
+              </button>
+            </div>
+          </div>
+
           <button
             onClick={() => {
               document.cookie = 'pulsar-demo=true; path=/; max-age=86400'
