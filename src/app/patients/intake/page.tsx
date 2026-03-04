@@ -1,575 +1,337 @@
 'use client'
-import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { useLang } from '@/contexts/LanguageContext'
+import { useState, useCallback, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import Picto from '@/components/Picto'
-import RoleGate from '@/components/RoleGate'
-import { analyzeIntake, DEFAULT_HISTORY, type IntakeData, type AdmissionMode, type ExistingExam, type MedicalHistory, type IntakeAnalysis, type HistoryAlert } from '@/lib/engines/IntakeAnalyzer'
-import { intakeToPatientState, formatAge } from '@/lib/engines/intakeToPatientState'
-import { intakePersistenceService } from '@/lib/services/intakePersistenceService'
 
-/* ══════════════════════════════════════════════════════════════
-   INTAKE V17.1 — Module d'Analyse Intelligente de Dossier
-   2 modes : Transfert / Première admission
-   Split-screen : Saisie ← | → Analyse IA live
-   ══════════════════════════════════════════════════════════════ */
-
-const SEI_TYPES = [
-  { value: '', label: 'Aucune crise' }, { value: 'focal_aware', label: 'Focale simple' },
-  { value: 'focal_impaired', label: 'Focale avec alt. conscience' }, { value: 'generalized_tonic_clonic', label: 'TC généralisée' },
-  { value: 'status', label: 'Status epilepticus' }, { value: 'refractory_status', label: 'Status réfractaire' },
-  { value: 'super_refractory', label: 'Status super-réfractaire' },
-]
-const FOCAL_SIGNS = [
-  { value: 'hemiparesis', label: 'Hémiparésie' }, { value: 'aphasia', label: 'Aphasie' },
-  { value: 'dyskinesia', label: 'Dyskinésie' }, { value: 'chorea', label: 'Chorée' },
-  { value: 'optic_neuritis', label: 'Névrite optique' }, { value: 'cranial_nerve', label: 'Paire crânienne' },
-]
-const MRI_FINDS = [
-  { value: 'normal', label: 'Normal' }, { value: 'limbic_temporal', label: 'Hypersignal limbique' },
-  { value: 'cortical_diffusion', label: 'Restriction diffusion' }, { value: 'demyelination_large', label: 'Démyélinisation (ADEM)' },
-  { value: 'demyelination_periventricular', label: 'Démyélinisation périV' }, { value: 'basal_ganglia', label: 'Noyaux gris' },
-  { value: 'meningeal_enhancement', label: 'Rehaussement méningé' }, { value: 'vasculitis_pattern', label: 'Vasculite' },
-]
-const CSF_AB = [
-  { value: 'negative', label: 'Négatif' }, { value: 'pending', label: 'En attente' },
-  { value: 'nmdar', label: 'Anti-NMDAR +' }, { value: 'mog', label: 'Anti-MOG +' },
-  { value: 'lgi1', label: 'Anti-LGI1 +' }, { value: 'caspr2', label: 'Anti-CASPR2 +' },
-  { value: 'other_positive', label: 'Autre +' },
+const STEPS = [
+  { id: 'source', icon: 'file-active', label: 'Source', labelEn: 'Source' },
+  { id: 'identity', icon: 'heart', label: 'Identité', labelEn: 'Identity' },
+  { id: 'admission', icon: 'urgence', label: 'Admission', labelEn: 'Admission' },
+  { id: 'history', icon: 'clipboard', label: 'Antécédents', labelEn: 'History' },
+  { id: 'neuro', icon: 'brain', label: 'Neuro', labelEn: 'Neuro' },
+  { id: 'bio', icon: 'blood', label: 'Bio / LCR', labelEn: 'Bio / CSF' },
+  { id: 'imaging', icon: 'eeg', label: 'Imagerie', labelEn: 'Imaging' },
+  { id: 'summary', icon: 'chart', label: 'Synthèse', labelEn: 'Summary' },
 ]
 
-const inputS: React.CSSProperties = { width:'100%',padding:'8px 12px',borderRadius:'var(--p-radius-md)',background:'var(--p-bg-elevated)',border:'1px solid rgba(108,124,255,0.1)',color:'var(--p-text)',fontFamily:'var(--p-font-mono)',fontSize:'12px',outline:'none',boxSizing:'border-box' }
-const selS: React.CSSProperties = { ...inputS,cursor:'pointer',appearance:'auto' as React.CSSProperties['appearance'] }
+const inputS: React.CSSProperties = { width:'100%',padding:'10px 14px',borderRadius:'10px',background:'var(--p-input-bg)',border:'var(--p-border)',color:'var(--p-text)',fontFamily:'var(--p-font-mono)',fontSize:'13px',outline:'none' }
+const selS: React.CSSProperties = { ...inputS, appearance:'none' as const }
+const labelS: React.CSSProperties = { display:'block',fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'0.5px',marginBottom:'6px' }
+const secS = (c:string): React.CSSProperties => ({ fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:800,color:c,letterSpacing:'1.5px',marginBottom:'16px',marginTop:'8px' })
 
-function F({ label,children,tip,span }:{ label:string;children:React.ReactNode;tip?:string;span?:number }) {
-  return <div style={{gridColumn:span?`span ${span}`:undefined}}><label style={{display:'block',fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'0.5px',marginBottom:'4px'}}>{label}</label>{children}{tip&&<div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',marginTop:'2px',opacity:0.6}}>{tip}</div>}</div>
-}
-function Chip({ label,active,color,onClick }:{ label:string;active:boolean;color?:string;onClick:()=>void }) {
-  const c = color||'#6C7CFF'
-  return <button onClick={onClick} style={{padding:'5px 12px',borderRadius:'var(--p-radius-full)',background:active?`${c}12`:'var(--p-bg-elevated)',border:active?`1px solid ${c}30`:'1px solid rgba(108,124,255,0.1)',color:active?c:'var(--p-text-dim)',fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:active?700:500,cursor:'pointer'}}>{label}</button>
-}
-function Toggle({ label,sub,active,color,onClick }:{ label:string;sub:string;active:boolean;color?:string;onClick:()=>void }) {
-  const c = active ? (color||'#FFB347') : 'var(--p-text)'
-  return <button onClick={onClick} style={{padding:'12px 16px',borderRadius:'var(--p-radius-lg)',cursor:'pointer',background:active?`${color||'#FFB347'}10`:'var(--p-bg-elevated)',border:active?`1px solid ${color||'#FFB347'}25`:'1px solid rgba(108,124,255,0.1)',textAlign:'left',width:'100%'}}><div style={{fontFamily:'var(--p-font-mono)',fontSize:'11px',fontWeight:700,color:c}}>{label}</div><div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)',marginTop:'2px'}}>{sub}</div></button>
-}
-function ConfBar({ value,color }:{ value:number;color:string }) {
-  return <div style={{height:'4px',background:'rgba(255,255,255,0.06)',borderRadius:'2px',overflow:'hidden'}}><div style={{width:`${value}%`,height:'100%',background:color,borderRadius:'2px',transition:'width 0.4s',boxShadow:`0 0 8px ${color}40`}}/></div>
-}
-function UrgencyGauge({ score,level }:{ score:number;level:string }) {
-  const color = level==='critical'?'#8B5CF6':level==='high'?'#FFA502':level==='moderate'?'#FFB347':'#2ED573'
-  const r=38,c=2*Math.PI*r,pct=Math.min(score,100)/100
-  return <div style={{display:'flex',alignItems:'center',gap:'16px'}}><svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6"/><circle cx="45" cy="45" r={r} fill="none" stroke={color} strokeWidth="6" strokeDasharray={`${c*pct*0.75} ${c}`} strokeLinecap="round" transform="rotate(-225 45 45)" style={{transition:'stroke-dasharray 0.5s',filter:`drop-shadow(0 0 6px ${color})`}}/><text x="45" y="42" textAnchor="middle" fill={color} fontFamily="var(--p-font-mono)" fontWeight="900" fontSize="22">{score}</text><text x="45" y="56" textAnchor="middle" fill="var(--p-text-dim)" fontFamily="var(--p-font-mono)" fontSize="8" letterSpacing="0.5">URGENCE</text></svg><div><div style={{fontFamily:'var(--p-font-mono)',fontSize:'11px',fontWeight:800,color,textTransform:'uppercase',letterSpacing:'1px'}}>{level}</div><div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)',marginTop:'2px'}}>{level==='critical'?'Prise en charge immédiate':level==='high'?'Bilan urgent < 1h':level==='moderate'?'Bilan programmé':'Surveillance standard'}</div></div></div>
-}
-function Badge({ label,color }:{ label:string;color:string }) {
-  return <span style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',fontWeight:800,padding:'2px 8px',borderRadius:'var(--p-radius-full)',background:`${color}12`,color,border:`1px solid ${color}25`,textTransform:'uppercase',letterSpacing:'0.5px',flexShrink:0}}>{label}</span>
+function F({label,children,span,tip}:{label:string;children:React.ReactNode;span?:number;tip?:string}){
+  return <div style={{gridColumn:span?`span ${span}`:undefined}}><label style={labelS}>{label}</label>{children}{tip&&<div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',marginTop:'3px',opacity:0.6}}>{tip}</div>}</div>
 }
 
-/* ══════ MAIN PAGE ══════ */
-export default function IntakePage() {
-  const { t } = useLang()
-  const router = useRouter()
-  const [data, setData] = useState<Partial<IntakeData>>({
-    admissionMode: 'first_admission', transferHospital: '', transferReason: '',
-    gcs:15,temp:37,hr:80,spo2:98,rr:18,seizures24h:0,
-    wbc:8,platelets:250,lactate:1,crp:0,ferritin:0,pct:0,
-    csfDone:false,eegDone:false,mriDone:false,feverBefore:false,symptomOnsetDays:0,
-    focalSigns:[],mriFindings:[],currentDrugs:[],
-    sex:'',seizureType:'',consciousness:'alert',pupils:'reactive',csfAntibodies:'negative',eegStatus:'',
-    history: { ...DEFAULT_HISTORY },
-    existingExams: [],
-  })
+function Tog({label,sub,active,color,onClick}:{label:string;sub?:string;active:boolean;color:string;onClick:()=>void}){
+  return <button onClick={onClick} style={{display:'flex',alignItems:'center',gap:'10px',padding:'10px 14px',borderRadius:'10px',border:active?`2px solid ${color}`:'var(--p-border)',background:active?`${color}10`:'var(--p-bg-elevated)',cursor:'pointer',transition:'all 0.2s',textAlign:'left' as const,width:'100%'}}>
+    <div style={{width:'18px',height:'18px',borderRadius:'5px',flexShrink:0,background:active?color:'transparent',border:active?'none':'2px solid var(--p-text-dim)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'11px',color:'#fff'}}>{active?'✓':''}</div>
+    <div><div style={{fontSize:'12px',fontWeight:600,color:active?color:'var(--p-text)'}}>{label}</div>{sub&&<div style={{fontSize:'9px',color:'var(--p-text-dim)',fontFamily:'var(--p-font-mono)'}}>{sub}</div>}</div>
+  </button>
+}
 
-  const analysis = useMemo(() => analyzeIntake(data), [data])
-  const h = data.history || DEFAULT_HISTORY
-  const isTransfer = data.admissionMode === 'transfer'
+export default function IntakePage(){
+  const {t,lang}=useLang()
+  const router=useRouter()
+  const fileRef=useRef<HTMLInputElement>(null)
+  const [step,setStep]=useState(0)
+  const [uploading,setUploading]=useState(false)
+  const [uploadedFile,setUploadedFile]=useState<string|null>(null)
+  const [analyzing,setAnalyzing]=useState(false)
 
-  // ── Patient identity (not part of analysis) ──
-  const [patientName, setPatientName] = useState('')
-  const [patientRoom, setPatientRoom] = useState('')
-  const [admitting, setAdmitting] = useState(false)
+  const [id,setIdState]=useState({lastName:'',firstName:'',dob:'',ageMonths:'',sex:'',weight:'',height:'',room:'',fileNumber:'',contactName:'',contactPhone:''})
+  const [adm,setAdmState]=useState({mode:'' as string,chiefComplaint:'',symptomOnsetDays:'',consciousness:'alert',transferFrom:'',referringDoctor:''})
+  const [h,setHState]=useState({sickleCellDisease:false,epilepsyKnown:false,immunodeficiency:false,autoimmune:false,diabetesType1:false,cardiacDisease:false,cancer:false,cancerType:'',transplant:false,transplantOrgan:'',hivPositive:false,hydrocephalus:false,tsa:false,asthma:false,otherChronic:'',previousMeningitis:false,meningitisAge:'',previousEncephalitis:false,herpesHistory:false,recentCovid:false,covidWeeksAgo:0,recentEBVCMV:false,tuberculosis:false,recentTropicalTravel:false,travelDestination:'',tickBite:false,recentInfection:false,infectionType:'',otherInfection:'',febrileSeizuresHistory:false,developmentalDelay:false,previousADEM:false,previousOpticNeuritis:false,previousMyelitis:false,recentHeadTrauma:false,ovarianTeratoma:false,previousKawasaki:false,otherNeuro:'',prematurity:false,premWeeks:0,familyConsanguinity:false,familyEpilepsy:false,familyAutoimmune:false,otherFamily:'',allergies:'',currentMedications:''})
+  const [n,setNState]=useState({gcs:15,gcsEye:4,gcsVerbal:5,gcsMotor:6,pupils:'normal',seizureType:'none',seizureFreq:'',focalSigns:false,focalDetail:'',meningealSigns:false,abnormalMovements:false,movementDetail:'',otherNeuro:''})
+  const [bio,setBState]=useState({wbc:'',crp:'',pct:'',lactate:'',na:'',k:'',glucose:'',hb:'',platelets:'',inr:'',csfDone:false,csfWbc:'',csfProtein:'',csfGlucose:'',csfCulture:'',csfAppearance:'clear',csfPressure:'',otherBio:''})
+  const [img,setIState]=useState({eegDone:false,eegResult:'',eegDetail:'',mriDone:false,mriResult:'',mriDetail:'',ctDone:false,ctResult:'',ctDetail:'',otherImaging:''})
 
-  const set = (key: keyof IntakeData, value: unknown) => setData(prev => ({ ...prev, [key]: value }))
-  const num = (key: keyof IntakeData, v: string) => set(key, v===''?0:parseFloat(v))
-  const setH = (key: keyof MedicalHistory, value: unknown) => setData(prev => ({ ...prev, history: { ...DEFAULT_HISTORY, ...prev.history, [key]: value } }))
-  const toggleArr = (key: 'focalSigns'|'mriFindings', val: string) => {
-    const arr = (data[key] as string[])||[]; set(key, arr.includes(val)?arr.filter(x=>x!==val):[...arr,val])
-  }
-  const addExam = (type: ExistingExam['type'], name: string) => {
-    const exams = [...(data.existingExams||[]), { type, name, done: true, result: '', date: '', hospital: data.transferHospital||'', normal: null as boolean|null }]
-    set('existingExams', exams)
-  }
-  const updateExam = (idx: number, field: keyof ExistingExam, value: unknown) => {
-    const exams = [...(data.existingExams||[])]; const ex = { ...exams[idx], [field]: value }; exams[idx] = ex; set('existingExams', exams)
-  }
-  const removeExam = (idx: number) => { const exams = [...(data.existingExams||[])]; exams.splice(idx, 1); set('existingExams', exams) }
+  const sId=useCallback((k:string,v:string)=>setIdState(p=>({...p,[k]:v})),[])
+  const sAd=useCallback((k:string,v:string)=>setAdmState(p=>({...p,[k]:v})),[])
+  const sH=useCallback((k:string,v:any)=>setHState(p=>({...p,[k]:v})),[])
+  const sN=useCallback((k:string,v:any)=>setNState(p=>({...p,[k]:v})),[])
+  const sB=useCallback((k:string,v:any)=>setBState(p=>({...p,[k]:v})),[])
+  const sI=useCallback((k:string,v:any)=>setIState(p=>({...p,[k]:v})),[])
 
-  const [tab, setTab] = useState<string>('identity')
+  const handleUpload=useCallback(async(e:React.ChangeEvent<HTMLInputElement>)=>{
+    const file=e.target.files?.[0];if(!file)return
+    setUploading(true);setUploadedFile(file.name)
+    setTimeout(()=>{setUploading(false);setStep(1)},2000)
+  },[])
 
-  const TABS = [
-    { id:'identity', label:'Identité', icon:'heart', color:'#6C7CFF' },
-    { id:'mode', label:'Mode', icon:'play', color:'#6C7CFF' },
-    { id:'history', label:'Antécédents', icon:'clipboard', color:'#FFB347' },
-    { id:'neuro', label:'Neuro', icon:'brain', color:'#8B5CF6' },
-    { id:'bio', label:'Bio / LCR', icon:'blood', color:'#B96BFF' },
-    { id:'imaging', label:'EEG / IRM', icon:'eeg', color:'#2FD1C8' },
-    ...(isTransfer ? [{ id:'transfer', label:'Examens transf.', icon:'export', color:'#2ED573' }] : []),
-  ]
+  const canGo=useCallback((s:number)=>{
+    if(s===1)return id.lastName.trim()!==''&&id.ageMonths!==''&&id.sex!==''
+    if(s===2)return adm.mode!==''&&adm.chiefComplaint.trim()!==''
+    return true
+  },[id,adm])
+
+  const next=useCallback(()=>{if(step<STEPS.length-1)setStep(step+1)},[step])
+  const prev=useCallback(()=>{if(step>0)setStep(step-1)},[step])
+
+  const launch=useCallback(()=>{setAnalyzing(true);setTimeout(()=>router.push('/patients'),1500)},[router])
 
   return (
-    <div style={{minHeight:'100vh',background:'var(--p-bg)'}}>
-      {/* TOP BAR */}
-      <div style={{padding:'12px 24px',display:'flex',alignItems:'center',justifyContent:'space-between',borderBottom:'1px solid var(--p-border)',background:'var(--p-bg-card)'}}>
-        <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
-          <Link href="/patients" style={{display:'flex',alignItems:'center',padding:'6px',borderRadius:'var(--p-radius-md)',color:'var(--p-text-dim)',textDecoration:'none'}}><span style={{fontSize:'16px'}}>←</span></Link>
-          <Picto name="brain" size={24} glow glowColor="rgba(108,124,255,0.5)" />
-          <div>
-            <h1 style={{fontSize:'16px',fontWeight:800,color:'var(--p-text)',margin:0}}>Analyse Intelligente</h1>
-            <span style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',letterSpacing:'1px'}}>
-              {isTransfer ? 'MODE TRANSFERT' : 'PREMIÈRE ADMISSION'} · 5 MOTEURS · SCAN ATCD
-            </span>
-          </div>
-        </div>
-        <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-          {analysis.historyAlerts.filter(a=>a.severity==='critical').length > 0 && <Badge label={`${analysis.historyAlerts.filter(a=>a.severity==='critical').length} alerte ATCD`} color="#8B5CF6" />}
-          <Badge label={`${analysis.completeness}%`} color={analysis.completeness>=50?'#2ED573':'#6C7CFF'} />
+    <div style={{maxWidth:'900px',margin:'0 auto',padding:'24px 16px'}}>
+      {/* HEADER */}
+      <div style={{display:'flex',alignItems:'center',gap:'12px',marginBottom:'24px'}}>
+        <Picto name="stethoscope" size={28} glow glowColor="rgba(108,124,255,0.5)"/>
+        <div>
+          <h1 style={{fontSize:'20px',fontWeight:800,color:'var(--p-text)',margin:0}}>{t('Nouvelle Admission','New Admission')}</h1>
+          <span style={{fontFamily:'var(--p-font-mono)',fontSize:'10px',color:'var(--p-text-dim)'}}>{t('Analyse intelligente — Parcours clinique guidé','Smart Analysis — Guided clinical pathway')}</span>
         </div>
       </div>
 
-      {/* SPLIT */}
-      <div style={{display:'grid',gridTemplateColumns:'minmax(0,1fr) 420px',minHeight:'calc(100vh - 52px)'}} className="intake-split">
-      <style>{`@media(max-width:900px){.intake-split{grid-template-columns:1fr !important}}`}</style>
-
-      {/* ════ LEFT: FORM ════ */}
-      <div style={{borderRight:'1px solid var(--p-border)',overflow:'auto'}}>
-        <div style={{display:'flex',borderBottom:'1px solid var(--p-border)',padding:'0 12px',overflowX:'auto'}}>
-          {TABS.map(t=>{const a=tab===t.id;return <button key={t.id} onClick={()=>setTab(t.id)} style={{display:'flex',alignItems:'center',gap:'5px',padding:'10px 12px',background:'transparent',border:'none',borderBottom:a?`2px solid ${t.color}`:'2px solid transparent',cursor:'pointer',fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:a?800:600,color:a?t.color:'var(--p-text-dim)',whiteSpace:'nowrap'}}><Picto name={t.icon} size={13} glow={a} glowColor={`${t.color}40`}/>{t.label}</button>})}
-        </div>
-        <div style={{padding:'20px 24px',maxWidth:'700px'}}>
-
-        {/* ── MODE ── */}
-        {tab==='mode' && (
-          <div style={{display:'flex',flexDirection:'column',gap:'16px'}}>
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'11px',fontWeight:800,color:'var(--p-text)',marginBottom:'4px'}}>Comment arrive le patient ?</div>
-            {[
-              { mode:'first_admission' as AdmissionMode, label:'Première admission', desc:'Patient admis directement — aucun examen préalable', icon:'alert', color:'#8B5CF6' },
-              { mode:'transfer' as AdmissionMode, label:'Transfert inter-hospitalier', desc:'Patient transféré avec dossier et examens existants', icon:'export', color:'#2ED573' },
-            ].map(m=>(
-              <button key={m.mode} onClick={()=>{set('admissionMode',m.mode);setTab('history')}} style={{
-                padding:'20px',borderRadius:'var(--p-radius-xl)',cursor:'pointer',textAlign:'left',
-                background:data.admissionMode===m.mode?`${m.color}08`:'var(--p-bg-elevated)',
-                border:data.admissionMode===m.mode?`2px solid ${m.color}25`:'2px solid rgba(108,124,255,0.06)',
-                transition:'all 0.2s',
-              }}>
-                <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
-                  <Picto name={m.icon} size={28} glow={data.admissionMode===m.mode} glowColor={`${m.color}40`}/>
-                  <div>
-                    <div style={{fontFamily:'var(--p-font-mono)',fontSize:'14px',fontWeight:800,color:data.admissionMode===m.mode?m.color:'var(--p-text)'}}>{m.label}</div>
-                    <div style={{fontFamily:'var(--p-font-mono)',fontSize:'10px',color:'var(--p-text-dim)',marginTop:'2px'}}>{m.desc}</div>
-                  </div>
-                </div>
-              </button>
-            ))}
-            {isTransfer && (
-              <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px',marginTop:'8px'}}>
-                <F label="HÔPITAL D'ORIGINE"><input style={inputS} value={data.transferHospital} onChange={e=>set('transferHospital',e.target.value)} placeholder="ex: CHU Necker"/></F>
-                <F label="MOTIF DU TRANSFERT"><input style={inputS} value={data.transferReason} onChange={e=>set('transferReason',e.target.value)} placeholder="ex: Status réfractaire"/></F>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* ── IDENTITY ── */}
-        {tab==='identity' && (
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
-            <F label="NOM DU PATIENT" span={2}><input style={inputS} value={patientName} onChange={e=>setPatientName(e.target.value)} placeholder="ex: Sofia M."/></F>
-            <F label="ÂGE (mois)"><input type="number" style={inputS} value={data.ageMonths||''} onChange={e=>num('ageMonths',e.target.value)} placeholder="ex: 48"/></F>
-            <F label="SEXE"><select style={selS} value={data.sex} onChange={e=>set('sex',e.target.value)}><option value="">—</option><option value="female">Fille</option><option value="male">Garçon</option></select></F>
-            <F label="POIDS (kg)"><input type="number" style={inputS} value={data.weight||''} onChange={e=>num('weight',e.target.value)}/></F>
-            <F label="CHAMBRE / LIT"><input style={inputS} value={patientRoom} onChange={e=>setPatientRoom(e.target.value)} placeholder="ex: Réa Neuro — Lit 8"/></F>
-            <F label="CONSCIENCE"><select style={selS} value={data.consciousness} onChange={e=>set('consciousness',e.target.value)}><option value="alert">Alerte</option><option value="drowsy">Somnolent</option><option value="confused">Confus / Agité</option><option value="stupor">Stupeur</option><option value="coma">Coma</option></select></F>
-            <F label="DÉBUT DES SYMPTÔMES (jours)"><input type="number" style={inputS} value={data.symptomOnsetDays||''} onChange={e=>num('symptomOnsetDays',e.target.value)} placeholder="Nombre de jours depuis le début"/></F>
-          </div>
-        )}
-
-        {/* ── ANTÉCÉDENTS ── */}
-        {tab==='history' && (
-          <div style={{display:'flex',flexDirection:'column',gap:'16px'}}>
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#8B5CF6',letterSpacing:'1px'}}>CONDITIONS CHRONIQUES</div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
-              <Toggle label="Drépanocytose" sub="HbSS / HbSC" active={h.sickleCellDisease} color="#8B5CF6" onClick={()=>setH('sickleCellDisease',!h.sickleCellDisease)}/>
-              <Toggle label="Épilepsie connue" sub="Diagnostiquée avant admission" active={h.epilepsyKnown} color="#B96BFF" onClick={()=>setH('epilepsyKnown',!h.epilepsyKnown)}/>
-              <Toggle label="Immunodéficience" sub="Primaire ou acquise" active={h.immunodeficiency} color="#8B5CF6" onClick={()=>setH('immunodeficiency',!h.immunodeficiency)}/>
-              <Toggle label="Maladie auto-immune" sub="Lupus, SAPL, etc." active={h.autoimmune} color="#FFB347" onClick={()=>setH('autoimmune',!h.autoimmune)}/>
-              <Toggle label="Diabète type 1" sub="Terrain auto-immun" active={h.diabetesType1} color="#FFB347" onClick={()=>setH('diabetesType1',!h.diabetesType1)}/>
-              <Toggle label="Cardiopathie" sub="Congénitale ou acquise" active={h.cardiacDisease} color="#A78BFA" onClick={()=>setH('cardiacDisease',!h.cardiacDisease)}/>
-              <Toggle label="Cancer / Tumeur" sub="Active ou en rémission" active={h.cancer} color="#8B5CF6" onClick={()=>setH('cancer',!h.cancer)}/>
-              <Toggle label="Transplantation" sub="Organe solide ou moelle" active={h.transplant} color="#8B5CF6" onClick={()=>setH('transplant',!h.transplant)}/>
-              <Toggle label="VIH positif" sub="Charge virale / CD4" active={h.hivPositive} color="#8B5CF6" onClick={()=>setH('hivPositive',!h.hivPositive)}/>
-              <Toggle label="Hydrocéphalie / DVP" sub="Dérivation ventriculaire" active={h.hydrocephalus} color="#B96BFF" onClick={()=>setH('hydrocephalus',!h.hydrocephalus)}/>
-              <Toggle label="TSA" sub="Trouble spectre autistique" active={h.tsa} color="#6C7CFF" onClick={()=>setH('tsa',!h.tsa)}/>
-              <Toggle label="Asthme" sub="Traitement de fond" active={h.asthma} color="#6C7CFF" onClick={()=>setH('asthma',!h.asthma)}/>
-            </div>
-            {h.cancer && <F label="TYPE DE TUMEUR"><input style={inputS} value={h.cancerType} onChange={e=>setH('cancerType',e.target.value)} placeholder="ex: neuroblastome, lymphome"/></F>}
-            {h.transplant && <F label="ORGANE TRANSPLANTÉ"><input style={inputS} value={h.transplantOrgan} onChange={e=>setH('transplantOrgan',e.target.value)} placeholder="ex: rein, foie, moelle"/></F>}
-
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#FFB347',letterSpacing:'1px',marginTop:'8px'}}>ANTÉCÉDENTS INFECTIEUX & EXPOSITIONS</div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
-              <Toggle label="ATCD Méningite" sub="Âge et germe si connu" active={h.previousMeningitis} color="#FFB347" onClick={()=>setH('previousMeningitis',!h.previousMeningitis)}/>
-              <Toggle label="ATCD Encéphalite" sub="Épisode antérieur" active={h.previousEncephalitis} color="#8B5CF6" onClick={()=>setH('previousEncephalitis',!h.previousEncephalitis)}/>
-              <Toggle label="Herpès / HSV" sub="Encéphalite ou récidives" active={h.herpesHistory} color="#A78BFA" onClick={()=>setH('herpesHistory',!h.herpesHistory)}/>
-              <Toggle label="COVID récent" sub="< 6 semaines" active={h.recentCovid} color="#FFB347" onClick={()=>setH('recentCovid',!h.recentCovid)}/>
-              <Toggle label="EBV / CMV récent" sub="Mononucléose, CMV" active={h.recentEBVCMV} color="#FFB347" onClick={()=>setH('recentEBVCMV',!h.recentEBVCMV)}/>
-              <Toggle label="Tuberculose" sub="ATCD ou contage" active={h.tuberculosis} color="#8B5CF6" onClick={()=>setH('tuberculosis',!h.tuberculosis)}/>
-              <Toggle label="Voyage tropical" sub="Zone endémique récente" active={h.recentTropicalTravel} color="#FFB347" onClick={()=>setH('recentTropicalTravel',!h.recentTropicalTravel)}/>
-              <Toggle label="Piqûre de tique" sub="Documentée ou suspectée" active={h.tickBite} color="#FFB347" onClick={()=>setH('tickBite',!h.tickBite)}/>
-            </div>
-            {h.previousMeningitis && <F label="ÂGE MÉNINGITE"><input style={inputS} value={h.meningitisAge} onChange={e=>setH('meningitisAge',e.target.value)} placeholder="ex: 2 ans, pneumocoque"/></F>}
-            {h.recentCovid && <F label="SEMAINES DEPUIS COVID"><input type="number" style={inputS} value={h.covidWeeksAgo||''} onChange={e=>setH('covidWeeksAgo',parseInt(e.target.value)||0)}/></F>}
-            {h.recentTropicalTravel && <F label="DESTINATION"><input style={inputS} value={h.travelDestination} onChange={e=>setH('travelDestination',e.target.value)} placeholder="ex: Sénégal, Thaïlande"/></F>}
-            {h.recentInfection && <F label="TYPE D'INFECTION"><input style={inputS} value={h.infectionType} onChange={e=>setH('infectionType',e.target.value)}/></F>}
-            <Toggle label="Infection récente (autre)" sub="Virale / bactérienne" active={h.recentInfection} color="#FFB347" onClick={()=>setH('recentInfection',!h.recentInfection)}/>
-
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#B96BFF',letterSpacing:'1px',marginTop:'8px'}}>NEURODÉVELOPPEMENT & ATCD NEURO</div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
-              <Toggle label="Convulsions fébriles" sub="Épisodes antérieurs" active={h.febrileSeizuresHistory} color="#B96BFF" onClick={()=>setH('febrileSeizuresHistory',!h.febrileSeizuresHistory)}/>
-              <Toggle label="Retard développement" sub="Moteur / cognitif / langage" active={h.developmentalDelay} color="#B96BFF" onClick={()=>setH('developmentalDelay',!h.developmentalDelay)}/>
-              <Toggle label="ATCD ADEM" sub="Encéphalomyélite disséminée" active={h.previousADEM} color="#8B5CF6" onClick={()=>setH('previousADEM',!h.previousADEM)}/>
-              <Toggle label="Névrite optique" sub="Épisode antérieur" active={h.previousOpticNeuritis} color="#B96BFF" onClick={()=>setH('previousOpticNeuritis',!h.previousOpticNeuritis)}/>
-              <Toggle label="Myélite transverse" sub="Épisode antérieur" active={h.previousMyelitis} color="#B96BFF" onClick={()=>setH('previousMyelitis',!h.previousMyelitis)}/>
-              <Toggle label="TC récent" sub="Traumatisme crânien" active={h.recentHeadTrauma} color="#FFB347" onClick={()=>setH('recentHeadTrauma',!h.recentHeadTrauma)}/>
-              <Toggle label="Tératome ovarien" sub="Connu ou suspecté (NMDAR)" active={h.ovarianTeratoma} color="#8B5CF6" onClick={()=>setH('ovarianTeratoma',!h.ovarianTeratoma)}/>
-              <Toggle label="Kawasaki" sub="Épisode antérieur" active={h.previousKawasaki} color="#FFB347" onClick={()=>setH('previousKawasaki',!h.previousKawasaki)}/>
-            </div>
-
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#2FD1C8',letterSpacing:'1px',marginTop:'8px'}}>PÉRINATAL & FAMILLE</div>
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
-              <Toggle label="Prématurité" sub="< 37 SA" active={h.prematurity} color="#2FD1C8" onClick={()=>setH('prematurity',!h.prematurity)}/>
-              <Toggle label="Consanguinité" sub="Parents apparentés" active={h.familyConsanguinity} color="#2FD1C8" onClick={()=>setH('familyConsanguinity',!h.familyConsanguinity)}/>
-              <Toggle label="ATCD fam. épilepsie" sub="1er degré" active={h.familyEpilepsy} color="#6C7CFF" onClick={()=>setH('familyEpilepsy',!h.familyEpilepsy)}/>
-              <Toggle label="ATCD fam. auto-immun" sub="1er degré" active={h.familyAutoimmune} color="#6C7CFF" onClick={()=>setH('familyAutoimmune',!h.familyAutoimmune)}/>
-            </div>
-            {h.prematurity && <F label="TERME (SA)"><input type="number" style={inputS} value={h.premWeeks||''} onChange={e=>setH('premWeeks',parseInt(e.target.value)||0)}/></F>}
-          </div>
-        )}
-
-        {/* ── NEURO ── */}
-        {tab==='neuro' && (
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
-            <F label="GCS" tip="3-15"><input type="number" min={3} max={15} style={inputS} value={data.gcs} onChange={e=>num('gcs',e.target.value)}/></F>
-            <F label="PUPILLES"><select style={selS} value={data.pupils} onChange={e=>set('pupils',e.target.value)}><option value="reactive">Réactives</option><option value="sluggish">Paresseuses</option><option value="fixed_one">Fixée unilat.</option><option value="fixed_both">Fixes bilat.</option></select></F>
-            <F label="CRISES / 24H"><input type="number" style={inputS} value={data.seizures24h} onChange={e=>num('seizures24h',e.target.value)}/></F>
-            <F label="TYPE DE CRISE"><select style={selS} value={data.seizureType} onChange={e=>set('seizureType',e.target.value)}>{SEI_TYPES.map(t=><option key={t.value} value={t.value}>{t.label}</option>)}</select></F>
-            <F label="SIGNES FOCAUX" span={2}><div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>{FOCAL_SIGNS.map(f=><Chip key={f.value} label={f.label} active={(data.focalSigns||[]).includes(f.value)} color="#8B5CF6" onClick={()=>toggleArr('focalSigns',f.value)}/>)}</div></F>
-            <div style={{gridColumn:'span 2',borderTop:'1px solid var(--p-border)',paddingTop:'14px'}}>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'0.5px',marginBottom:'10px'}}>CONSTANTES</div>
-              <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'10px'}}>
-                <F label="T°C"><input type="number" step="0.1" style={inputS} value={data.temp} onChange={e=>num('temp',e.target.value)}/></F>
-                <F label="FC"><input type="number" style={inputS} value={data.hr} onChange={e=>num('hr',e.target.value)}/></F>
-                <F label="SpO₂"><input type="number" style={inputS} value={data.spo2} onChange={e=>num('spo2',e.target.value)}/></F>
-                <F label="FR"><input type="number" style={inputS} value={data.rr} onChange={e=>num('rr',e.target.value)}/></F>
-                <F label="Lactate"><input type="number" step="0.1" style={inputS} value={data.lactate} onChange={e=>num('lactate',e.target.value)}/></F>
-              </div>
-            </div>
-            <div style={{gridColumn:'span 2',borderTop:'1px solid var(--p-border)',paddingTop:'14px'}}>
-              <Toggle label="Fièvre prodromique" sub="Fièvre avant symptômes neuro" active={data.feverBefore||false} color="#FFB347" onClick={()=>set('feverBefore',!data.feverBefore)}/>
-              {data.feverBefore && <div style={{marginTop:'8px'}}><F label="JOURS DE FIÈVRE"><input type="number" style={inputS} value={data.feverDays||''} onChange={e=>num('feverDays',e.target.value)}/></F></div>}
-            </div>
-          </div>
-        )}
-
-        {/* ── BIO / LCR ── */}
-        {tab==='bio' && (
-          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'14px'}}>
-            <F label="CRP (mg/L)"><input type="number" style={inputS} value={data.crp||''} onChange={e=>num('crp',e.target.value)}/></F>
-            <F label="GB (G/L)"><input type="number" step="0.1" style={inputS} value={data.wbc} onChange={e=>num('wbc',e.target.value)}/></F>
-            <F label="PLAQUETTES (G/L)"><input type="number" style={inputS} value={data.platelets} onChange={e=>num('platelets',e.target.value)}/></F>
-            <F label="PCT (ng/mL)"><input type="number" step="0.01" style={inputS} value={data.pct||''} onChange={e=>num('pct',e.target.value)}/></F>
-            <F label="FERRITINE (µg/L)"><input type="number" style={inputS} value={data.ferritin||''} onChange={e=>num('ferritin',e.target.value)}/></F>
-            <F label="LACTATE (mmol/L)"><input type="number" step="0.1" style={inputS} value={data.lactate} onChange={e=>num('lactate',e.target.value)}/></F>
-            <div style={{gridColumn:'span 2',borderTop:'1px solid var(--p-border)',paddingTop:'14px'}}>
-              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'10px'}}>
-                <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'0.5px'}}>PONCTION LOMBAIRE</div>
-                <Chip label={data.csfDone?'Réalisée ✓':'Non réalisée'} active={data.csfDone||false} color="#B96BFF" onClick={()=>set('csfDone',!data.csfDone)}/>
-              </div>
-              {data.csfDone && (
-                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'10px'}}>
-                  <F label="CELLULES (/mm³)"><input type="number" style={inputS} value={data.csfCells||''} onChange={e=>num('csfCells',e.target.value)}/></F>
-                  <F label="PROTÉINES (g/L)"><input type="number" step="0.01" style={inputS} value={data.csfProtein||''} onChange={e=>num('csfProtein',e.target.value)}/></F>
-                  <F label="ANTICORPS"><select style={selS} value={data.csfAntibodies} onChange={e=>set('csfAntibodies',e.target.value)}>{CSF_AB.map(a=><option key={a.value} value={a.value}>{a.label}</option>)}</select></F>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* ── EEG / IRM ── */}
-        {tab==='imaging' && (
-          <div style={{display:'flex',flexDirection:'column',gap:'20px'}}>
-            <div>
-              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'10px'}}>
-                <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)'}}>EEG</div>
-                <Chip label={data.eegDone?'Réalisé ✓':'Non réalisé'} active={data.eegDone||false} color="#2FD1C8" onClick={()=>set('eegDone',!data.eegDone)}/>
-              </div>
-              {data.eegDone && <F label="RÉSULTAT"><select style={selS} value={data.eegStatus} onChange={e=>set('eegStatus',e.target.value)}><option value="">—</option><option value="normal">Normal</option><option value="slow">Ralentissement diffus</option><option value="epileptiform">Épileptiforme</option><option value="status">Status electrographicus</option><option value="ncse">NCSE suspecté</option></select></F>}
-            </div>
-            <div>
-              <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'10px'}}>
-                <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)'}}>IRM CÉRÉBRALE</div>
-                <Chip label={data.mriDone?'Réalisée ✓':'Non réalisée'} active={data.mriDone||false} color="#2FD1C8" onClick={()=>set('mriDone',!data.mriDone)}/>
-              </div>
-              {data.mriDone && <F label="RÉSULTATS"><div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>{MRI_FINDS.map(f=><Chip key={f.value} label={f.label} active={(data.mriFindings||[]).includes(f.value)} color="#2FD1C8" onClick={()=>toggleArr('mriFindings',f.value)}/>)}</div></F>}
-            </div>
-          </div>
-        )}
-
-        {/* ── TRANSFER EXAMS ── */}
-        {tab==='transfer' && isTransfer && (
-          <div style={{display:'flex',flexDirection:'column',gap:'16px'}}>
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'11px',fontWeight:800,color:'var(--p-text)'}}>Examens réalisés à {data.transferHospital || "l'hôpital source"}</div>
-            <div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>
-              {[
-                { type:'blood' as const, label:'Bilan sanguin' },{ type:'csf' as const, label:'PL / LCR' },
-                { type:'eeg' as const, label:'EEG' },{ type:'mri' as const, label:'IRM' },{ type:'ct' as const, label:'TDM / Scanner' },
-                { type:'antibodies' as const, label:'Anticorps' },{ type:'culture' as const, label:'Cultures / PCR' },
-                { type:'metabolic' as const, label:'Bilan métabolique' },{ type:'genetic' as const, label:'Bilan génétique' },
-              ].map(e=><button key={e.type} onClick={()=>addExam(e.type,e.label)} style={{padding:'6px 14px',borderRadius:'var(--p-radius-full)',background:'var(--p-bg-elevated)',border:'1px solid rgba(108,124,255,0.1)',color:'var(--p-text-muted)',fontFamily:'var(--p-font-mono)',fontSize:'10px',cursor:'pointer'}}>+ {e.label}</button>)}
-            </div>
-            {(data.existingExams||[]).map((ex,i)=>(
-              <div key={i} style={{padding:'12px 16px',borderRadius:'var(--p-radius-lg)',background:'var(--p-bg-elevated)',border:'1px solid rgba(108,124,255,0.06)'}}>
-                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'8px'}}>
-                  <span style={{fontFamily:'var(--p-font-mono)',fontSize:'11px',fontWeight:700,color:'var(--p-text)'}}>{ex.name}</span>
-                  <button onClick={()=>removeExam(i)} style={{background:'none',border:'none',color:'var(--p-text-dim)',cursor:'pointer',fontSize:'14px'}}>✕</button>
-                </div>
-                <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
-                  <F label="DATE"><input type="date" style={inputS} value={ex.date} onChange={e=>updateExam(i,'date',e.target.value)}/></F>
-                  <F label="RÉSULTAT"><select style={selS} value={ex.normal===null?'':ex.normal?'normal':'abnormal'} onChange={e=>updateExam(i,'normal',e.target.value===''?null:e.target.value==='normal')}>
-                    <option value="">—</option><option value="normal">Normal</option><option value="abnormal">Anormal</option>
-                  </select></F>
-                </div>
-                <div style={{marginTop:'6px'}}><F label="DÉTAILS"><input style={inputS} value={ex.result} onChange={e=>updateExam(i,'result',e.target.value)} placeholder="Résumé des résultats"/></F></div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        </div>
-      </div>
-
-      {/* ════ RIGHT: AI ANALYSIS ════ */}
-      <div style={{background:'var(--p-bg-card)',overflow:'auto',padding:'20px'}}>
-        <div style={{display:'flex',flexDirection:'column',gap:'14px'}}>
-
-          <div className="glass-card" style={{padding:'16px',borderRadius:'var(--p-radius-xl)'}}><UrgencyGauge score={analysis.urgencyScore} level={analysis.urgencyLevel}/></div>
-
-          {/* Triage Priority */}
-          <div style={{
-            padding:'14px 16px',borderRadius:'var(--p-radius-lg)',
-            background:`${analysis.triage.color}08`,
-            border:`1px solid ${analysis.triage.color}20`,
-            display:'flex',alignItems:'center',justifyContent:'space-between',
-          }}>
-            <div style={{display:'flex',alignItems:'center',gap:'12px'}}>
-              <div style={{
-                width:'40px',height:'40px',borderRadius:'var(--p-radius-md)',
-                background:`${analysis.triage.color}15`,
-                border:`2px solid ${analysis.triage.color}40`,
-                display:'flex',alignItems:'center',justifyContent:'center',
-                fontFamily:'var(--p-font-mono)',fontSize:'16px',fontWeight:900,
-                color:analysis.triage.color,
-                boxShadow:`0 0 12px ${analysis.triage.color}20`,
-              }}>{analysis.triage.priority}</div>
-              <div>
-                <div style={{fontFamily:'var(--p-font-mono)',fontSize:'12px',fontWeight:800,color:analysis.triage.color}}>{analysis.triage.label}</div>
-                <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)',marginTop:'1px'}}>Prise en charge {analysis.triage.maxDelay}</div>
-              </div>
-            </div>
-            <div style={{textAlign:'right'}}>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'22px',fontWeight:900,color:analysis.triage.color,lineHeight:1}}>{analysis.triage.score}</div>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'7px',color:'var(--p-text-dim)',letterSpacing:'0.5px'}}>TRIAGE</div>
-            </div>
-          </div>
-
-          {/* Triage Factors */}
-          {analysis.triage.factors.length > 0 && (
-            <div style={{display:'flex',flexWrap:'wrap',gap:'4px'}}>
-              {analysis.triage.factors.map((f,i) => (
-                <div key={i} title={f.detail} style={{
-                  padding:'3px 8px',borderRadius:'var(--p-radius-full)',
-                  background:'var(--p-bg-elevated)',border:'1px solid rgba(108,124,255,0.06)',
-                  fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',
-                  display:'flex',alignItems:'center',gap:'4px',
-                }}>
-                  {f.factor}
-                  <span style={{fontWeight:800,color:f.points>=5?'#FFB347':'var(--p-text-muted)'}}>+{f.points}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <div style={{padding:'12px 16px',borderRadius:'var(--p-radius-lg)',background:'rgba(108,124,255,0.04)',border:'1px solid rgba(108,124,255,0.1)',fontFamily:'var(--p-font-mono)',fontSize:'10px',color:'var(--p-text-muted)',lineHeight:1.6}}>
-            <Picto name="brain" size={12}/> {analysis.clinicalSummary}
-          </div>
-
-          {/* History Alerts */}
-          {analysis.historyAlerts.length > 0 && (
-            <div>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#FFB347',letterSpacing:'1px',marginBottom:'8px'}}>
-                <Picto name="clipboard" size={11}/> ALERTES ANTÉCÉDENTS ({analysis.historyAlerts.length})
-              </div>
-              {analysis.historyAlerts.map((a,i)=>(
-                <details key={i} style={{marginBottom:'4px'}}>
-                  <summary style={{padding:'8px 12px',borderRadius:'var(--p-radius-md)',background:a.severity==='critical'?'rgba(139,92,246,0.06)':a.severity==='warning'?'rgba(255,179,71,0.06)':'rgba(108,124,255,0.04)',border:`1px solid ${a.severity==='critical'?'rgba(139,92,246,0.15)':a.severity==='warning'?'rgba(255,179,71,0.15)':'rgba(108,124,255,0.1)'}`,cursor:'pointer',fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:a.severity==='critical'?'#8B5CF6':a.severity==='warning'?'#FFB347':'#6C7CFF',listStyle:'none',display:'flex',alignItems:'center',gap:'6px'}}>
-                    <Picto name={a.icon} size={12}/> {a.title}
-                    <Badge label={a.severity} color={a.severity==='critical'?'#8B5CF6':a.severity==='warning'?'#FFB347':'#6C7CFF'}/>
-                  </summary>
-                  <div style={{padding:'8px 12px',marginTop:'2px',fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)',lineHeight:1.7}}>
-                    <div style={{marginBottom:'6px',color:'var(--p-text-muted)'}}>{a.detail}</div>
-                    {a.implications.map((imp,j)=><div key={j} style={{paddingLeft:'8px',borderLeft:`2px solid ${a.severity==='critical'?'rgba(139,92,246,0.2)':'rgba(108,124,255,0.1)'}`,marginBottom:'4px'}}>→ {imp}</div>)}
-                  </div>
-                </details>
-              ))}
-            </div>
-          )}
-
-          {/* Differentials */}
-          <div>
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'1px',marginBottom:'8px'}}>DIAGNOSTIC DIFFÉRENTIEL</div>
-            {analysis.differentials.length===0?(
-              <div style={{padding:'16px',textAlign:'center',fontFamily:'var(--p-font-mono)',fontSize:'10px',color:'var(--p-text-dim)',background:'var(--p-bg-elevated)',borderRadius:'var(--p-radius-lg)'}}>Données insuffisantes</div>
-            ):(
-              <div style={{display:'flex',flexDirection:'column',gap:'6px'}}>
-                {analysis.differentials.slice(0,5).map((dd,i)=>(
-                  <div key={dd.syndrome} style={{padding:'10px 14px',borderRadius:'var(--p-radius-lg)',background:i===0?`${dd.color}08`:'var(--p-bg-elevated)',border:i===0?`1px solid ${dd.color}20`:'1px solid rgba(108,124,255,0.06)'}}>
-                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:'6px'}}>
-                      <span style={{fontFamily:'var(--p-font-mono)',fontSize:'12px',fontWeight:800,color:dd.color}}>{dd.syndrome}</span>
-                      <span style={{fontFamily:'var(--p-font-mono)',fontSize:'14px',fontWeight:900,color:dd.color}}>{dd.confidence}%</span>
-                    </div>
-                    <ConfBar value={dd.confidence} color={dd.color}/>
-                    <div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',marginTop:'4px'}}>{dd.matchedMajor}/{dd.totalMajor} majeurs · {dd.matchedCriteria.filter(c=>c.weight==='minor'&&c.matched).length} mineurs</div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Red Flags */}
-          {analysis.redFlags.length>0&&(
-            <div>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#8B5CF6',letterSpacing:'1px',marginBottom:'8px'}}><Picto name="alert" size={11}/> RED FLAGS ({analysis.redFlags.length})</div>
-              {analysis.redFlags.map((rf,i)=><div key={i} style={{padding:'8px 12px',marginBottom:'4px',borderRadius:'var(--p-radius-md)',background:rf.severity==='critical'?'rgba(139,92,246,0.06)':'rgba(255,179,71,0.06)',border:`1px solid ${rf.severity==='critical'?'rgba(139,92,246,0.15)':'rgba(255,179,71,0.15)'}`,fontFamily:'var(--p-font-mono)',fontSize:'10px',color:rf.severity==='critical'?'#8B5CF6':'#FFB347'}}>{rf.flag} <span style={{opacity:0.5,fontSize:'8px'}}>({rf.source})</span></div>)}
-            </div>
-          )}
-
-          {/* Exam Gaps */}
-          {analysis.examGaps.length>0&&(
-            <div>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#A78BFA',letterSpacing:'1px',marginBottom:'8px'}}><Picto name="microscope" size={11}/> GAPS IDENTIFIÉS</div>
-              {analysis.examGaps.map((g,i)=>(
-                <div key={i} style={{padding:'10px 14px',marginBottom:'4px',borderRadius:'var(--p-radius-lg)',background:`${g.urgency==='critical'?'rgba(139,92,246,0.04)':'rgba(108,124,255,0.04)'}`,border:`1px solid ${g.urgency==='critical'?'rgba(139,92,246,0.1)':'rgba(108,124,255,0.08)'}`}}>
-                  <div style={{fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:g.urgency==='critical'?'#8B5CF6':'var(--p-text)',marginBottom:'4px'}}>{g.category}</div>
-                  <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>
-                    {g.missing.map((m,j)=><span key={j}>• {m}<br/></span>)}
-                  </div>
-                  <div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',marginTop:'4px',fontStyle:'italic'}}>{g.reason}</div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* Exam Recommendations */}
-          {analysis.examRecommendations.length>0&&(
-            <div>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'1px',marginBottom:'8px'}}>EXAMENS RECOMMANDÉS</div>
-              {analysis.examRecommendations.map((ex,i)=>{
-                const col=ex.urgency==='immediate'?'#8B5CF6':ex.urgency==='urgent'?'#FFA502':'#6C7CFF'
-                return <div key={i} style={{padding:'8px 12px',marginBottom:'4px',borderRadius:'var(--p-radius-md)',background:'var(--p-bg-elevated)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
-                  <div>
-                    <div style={{fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:'var(--p-text)',display:'flex',alignItems:'center',gap:'6px'}}>
-                      {ex.name} {ex.needsRepeat&&<Badge label="Recontrôle" color="#FFA502"/>} {ex.alreadyDone&&!ex.needsRepeat&&<Badge label="Fait" color="#2ED573"/>}
-                    </div>
-                    <div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',marginTop:'2px'}}>{ex.rationale}</div>
-                  </div>
-                  <Badge label={ex.urgency==='immediate'?'Immédiat':ex.urgency==='urgent'?'Urgent':'Standard'} color={col}/>
-                </div>
-              })}
-            </div>
-          )}
-
-          {/* Engines */}
-          <div>
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'1px',marginBottom:'8px'}}>MOTEURS PULSAR</div>
-            <div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>
-              {analysis.engineReadiness.map(eng=>(
-                <div key={eng.engine} title={eng.reason} style={{padding:'6px 12px',borderRadius:'var(--p-radius-full)',background:eng.ready?'rgba(46,213,115,0.08)':'var(--p-bg-elevated)',border:eng.ready?'1px solid rgba(46,213,115,0.2)':'1px solid rgba(108,124,255,0.06)',fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:eng.ready?'#2ED573':'var(--p-text-dim)',display:'flex',alignItems:'center',gap:'5px'}}>
-                  <div style={{width:'5px',height:'5px',borderRadius:'50%',background:eng.ready?'#2ED573':'var(--p-text-dim)',boxShadow:eng.ready?'0 0 4px #2ED573':'none'}}/>{eng.engine}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Similar cases */}
-          {analysis.similarCases.length>0&&(
-            <div>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'1px',marginBottom:'8px'}}>CAS SIMILAIRES</div>
-              {analysis.similarCases.map(c=>(
-                <div key={c.caseId} style={{padding:'8px 12px',marginBottom:'4px',borderRadius:'var(--p-radius-md)',background:'var(--p-bg-elevated)',display:'flex',justifyContent:'space-between'}}>
-                  <div><div style={{fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:'var(--p-text)'}}>{c.caseId}</div><div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)'}}>{c.family} · {c.region}</div></div>
-                  <div style={{textAlign:'right'}}><div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:c.outcome.includes('Rémission')?'#2ED573':'#FFB347'}}>{c.outcome}</div></div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          <button
-            disabled={admitting || analysis.completeness < 15 || !patientName.trim()}
-            onClick={async () => {
-              setAdmitting(true)
-              try {
-                const bridge = intakeToPatientState(data, analysis)
-                const result = await intakePersistenceService.admitFromIntake(
-                  patientName.trim() || 'Patient',
-                  patientRoom.trim() || 'Non assigné',
-                  data,
-                  analysis,
-                  bridge.patientData,
-                  analysis.triage,
-                )
-                router.push(`/patient/${result.patientId}/cockpit`)
-              } catch (err) {
-                console.error('[Intake] Erreur admission:', err)
-                setAdmitting(false)
-              }
-            }}
-            style={{
-              marginTop:'8px',padding:'14px',borderRadius:'var(--p-radius-lg)',border:'none',
-              background: admitting ? 'var(--p-bg-elevated)'
-                : (analysis.completeness >= 15 && patientName.trim())
-                  ? 'linear-gradient(135deg,#6C7CFF,#B96BFF)'
-                  : 'var(--p-bg-elevated)',
-              color: (analysis.completeness >= 15 && patientName.trim() && !admitting) ? '#fff' : 'var(--p-text-dim)',
-              fontFamily:'var(--p-font-mono)',fontSize:'12px',fontWeight:800,
-              cursor: (analysis.completeness >= 15 && patientName.trim() && !admitting) ? 'pointer' : 'not-allowed',
-              letterSpacing:'0.5px',
-              boxShadow: (analysis.completeness >= 15 && patientName.trim() && !admitting) ? '0 4px 20px rgba(108,124,255,0.3)' : 'none',
-              width: '100%',
-              transition: 'all 0.3s',
-            }}>
-            {admitting ? 'Création du dossier...' : !patientName.trim() ? 'Renseignez le nom du patient' : 'Admettre et lancer les moteurs →'}
+      {/* PROGRESS */}
+      <div style={{display:'flex',gap:'2px',marginBottom:'24px'}}>
+        {STEPS.map((s,i)=>(
+          <button key={s.id} onClick={()=>i<=step?setStep(i):null} style={{flex:1,padding:'8px 4px',background:i<=step?'rgba(108,124,255,0.12)':'var(--p-bg-elevated)',border:i===step?'2px solid #6C7CFF':'1px solid rgba(255,255,255,0.06)',borderRadius:i===0?'10px 0 0 10px':i===STEPS.length-1?'0 10px 10px 0':'0',cursor:i<=step?'pointer':'default',transition:'all 0.3s',display:'flex',flexDirection:'column',alignItems:'center',gap:'2px'}}>
+            <Picto name={s.icon} size={14} glow={i===step} glowColor="#6C7CFF40"/>
+            <span style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',fontWeight:i===step?800:600,color:i===step?'#6C7CFF':i<step?'var(--p-text-muted)':'var(--p-text-dim)'}}>{lang==='en'&&s.labelEn?s.labelEn:s.label}</span>
+            {i<step&&<div style={{width:'6px',height:'6px',borderRadius:'50%',background:'#10B981'}}/>}
           </button>
-          {!patientName.trim() && analysis.completeness >= 15 && (
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'#FFB347',textAlign:'center',padding:'2px 0'}}>
-              Onglet Identité → Nom du patient requis
-            </div>
-          )}
+        ))}
+      </div>
 
-          <div style={{fontFamily:'var(--p-font-mono)',fontSize:'8px',color:'var(--p-text-dim)',textAlign:'center',padding:'4px 0'}}>
-            PULSAR V17 · Ne se substitue pas au jugement clinique
+      {/* CONTENT */}
+      <div className="glass-card" style={{borderRadius:'16px',padding:'28px',minHeight:'400px'}}>
+
+        {/* STEP 0: SOURCE */}
+        {step===0&&<div>
+          <h2 style={{fontSize:'18px',fontWeight:800,color:'var(--p-text)',marginBottom:'8px'}}>{t("Comment souhaitez-vous renseigner ce patient ?","How would you like to enter this patient's data?")}</h2>
+          <p style={{fontSize:'13px',color:'var(--p-text-muted)',marginBottom:'28px'}}>{t("Importez un document existant ou saisissez les informations manuellement.","Import an existing document or enter information manually.")}</p>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(auto-fit, minmax(240px, 1fr))',gap:'16px'}}>
+            <button onClick={()=>fileRef.current?.click()} style={{padding:'28px 20px',borderRadius:'16px',border:'2px dashed rgba(108,124,255,0.3)',background:'rgba(108,124,255,0.04)',cursor:'pointer',textAlign:'left',transition:'all 0.3s',display:'flex',flexDirection:'column',gap:'12px'}}>
+              <div style={{fontSize:'32px'}}>📄</div>
+              <div style={{fontSize:'15px',fontWeight:700,color:'#6C7CFF'}}>{t('Importer un document','Import a document')}</div>
+              <div style={{fontSize:'12px',color:'var(--p-text-muted)',lineHeight:1.6}}>{t("PDF, scan, courrier d'un autre hôpital… L'IA extraira les données.","PDF, scan, letter from another hospital… AI will extract data.")}</div>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>PDF · JPG · PNG · DOCX</div>
+            </button>
+            <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png,.docx" onChange={handleUpload} style={{display:'none'}}/>
+            <button onClick={()=>setStep(1)} style={{padding:'28px 20px',borderRadius:'16px',border:'2px dashed rgba(16,185,129,0.3)',background:'rgba(16,185,129,0.04)',cursor:'pointer',textAlign:'left',transition:'all 0.3s',display:'flex',flexDirection:'column',gap:'12px'}}>
+              <div style={{fontSize:'32px'}}>✍️</div>
+              <div style={{fontSize:'15px',fontWeight:700,color:'#10B981'}}>{t('Saisie manuelle','Manual entry')}</div>
+              <div style={{fontSize:'12px',color:'var(--p-text-muted)',lineHeight:1.6}}>{t("Renseignez les informations étape par étape.","Enter information step by step.")}</div>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>{t('~5 min pour un dossier complet','~5 min for a complete record')}</div>
+            </button>
+            <button onClick={()=>router.push('/patients')} style={{padding:'28px 20px',borderRadius:'16px',border:'2px dashed rgba(185,107,255,0.3)',background:'rgba(185,107,255,0.04)',cursor:'pointer',textAlign:'left',transition:'all 0.3s',display:'flex',flexDirection:'column',gap:'12px'}}>
+              <div style={{fontSize:'32px'}}>🔍</div>
+              <div style={{fontSize:'15px',fontWeight:700,color:'#B96BFF'}}>{t('Patient existant','Existing patient')}</div>
+              <div style={{fontSize:'12px',color:'var(--p-text-muted)',lineHeight:1.6}}>{t("Rechercher un patient déjà enregistré.","Search for an existing patient.")}</div>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>{t('Accès à la file active','Access active caseload')}</div>
+            </button>
           </div>
-        </div>
+          {uploading&&<div style={{marginTop:'20px',padding:'16px',borderRadius:'12px',background:'rgba(108,124,255,0.06)',border:'1px solid rgba(108,124,255,0.15)',display:'flex',alignItems:'center',gap:'12px'}}>
+            <div className="animate-breathe" style={{width:'20px',height:'20px',borderRadius:'50%',background:'#6C7CFF'}}/>
+            <div><div style={{fontSize:'13px',fontWeight:700,color:'#6C7CFF'}}>{t('Analyse du document...','Analyzing document...')}</div><div style={{fontSize:'11px',color:'var(--p-text-muted)'}}>{uploadedFile}</div></div>
+          </div>}
+        </div>}
+
+        {/* STEP 1: IDENTITY */}
+        {step===1&&<div>
+          <h2 style={{fontSize:'18px',fontWeight:800,color:'var(--p-text)',marginBottom:'20px'}}>{t('Identité du patient','Patient Identity')}</h2>
+          {uploadedFile&&<div style={{padding:'10px 14px',borderRadius:'10px',background:'rgba(16,185,129,0.08)',border:'1px solid rgba(16,185,129,0.2)',marginBottom:'20px',display:'flex',alignItems:'center',gap:'8px'}}><span style={{color:'#10B981',fontSize:'14px'}}>✓</span><span style={{fontSize:'12px',color:'#10B981',fontWeight:600}}>{t('Données extraites de','Data extracted from')} {uploadedFile}</span></div>}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
+            <F label={t("NOM *","LAST NAME *")}><input style={inputS} value={id.lastName} onChange={e=>sId('lastName',e.target.value)} placeholder={t("ex: Martin","e.g. Martin")}/></F>
+            <F label={t("PRÉNOM","FIRST NAME")}><input style={inputS} value={id.firstName} onChange={e=>sId('firstName',e.target.value)}/></F>
+            <F label={t("DATE DE NAISSANCE","DATE OF BIRTH")}><input type="date" style={inputS} value={id.dob} onChange={e=>sId('dob',e.target.value)}/></F>
+            <F label={t("ÂGE (mois) *","AGE (months) *")} tip={t("Requis pour les scores","Required for scores")}><input type="number" style={inputS} value={id.ageMonths} onChange={e=>sId('ageMonths',e.target.value)} placeholder="48"/></F>
+            <F label={t("SEXE *","SEX *")}><select style={selS} value={id.sex} onChange={e=>sId('sex',e.target.value)}><option value="">—</option><option value="female">{t("Fille","Female")}</option><option value="male">{t("Garçon","Male")}</option></select></F>
+            <F label={t("POIDS (kg)","WEIGHT (kg)")}><input type="number" style={inputS} value={id.weight} onChange={e=>sId('weight',e.target.value)}/></F>
+            <F label={t("N° DOSSIER","FILE NUMBER")}><input style={inputS} value={id.fileNumber} onChange={e=>sId('fileNumber',e.target.value)}/></F>
+            <F label={t("CHAMBRE / LIT","ROOM / BED")}><input style={inputS} value={id.room} onChange={e=>sId('room',e.target.value)} placeholder={t("Réa Neuro — Lit 8","Neuro ICU — Bed 8")}/></F>
+            <F label={t("PERSONNE DE CONFIANCE","EMERGENCY CONTACT")}><input style={inputS} value={id.contactName} onChange={e=>sId('contactName',e.target.value)}/></F>
+            <F label={t("TÉLÉPHONE","PHONE")}><input style={inputS} value={id.contactPhone} onChange={e=>sId('contactPhone',e.target.value)}/></F>
+          </div>
+        </div>}
+
+        {/* STEP 2: ADMISSION */}
+        {step===2&&<div>
+          <h2 style={{fontSize:'18px',fontWeight:800,color:'var(--p-text)',marginBottom:'20px'}}>{t("Mode d'admission & Motif","Admission Mode & Reason")}</h2>
+          <div style={secS('#6C7CFF')}>{t("MODE D'ADMISSION *","ADMISSION MODE *")}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'10px',marginBottom:'20px'}}>
+            {[{mode:'emergency',label:t('🚨 Urgence directe','🚨 Direct emergency')},{mode:'transfer',label:t('🏥 Transfert','🏥 Transfer')},{mode:'scheduled',label:t('📋 Programmé','📋 Scheduled')},{mode:'referral',label:t('👨‍⚕️ Adressé','👨‍⚕️ Referred')}].map(m=>
+              <Tog key={m.mode} label={m.label} active={adm.mode===m.mode} color="#6C7CFF" onClick={()=>sAd('mode',m.mode)}/>
+            )}
+          </div>
+          {adm.mode==='transfer'&&<div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px',marginBottom:'16px'}}>
+            <F label={t("HÔPITAL D'ORIGINE","ORIGINATING HOSPITAL")}><input style={inputS} value={adm.transferFrom} onChange={e=>sAd('transferFrom',e.target.value)}/></F>
+            <F label={t("MÉDECIN RÉFÉRENT","REFERRING DOCTOR")}><input style={inputS} value={adm.referringDoctor} onChange={e=>sAd('referringDoctor',e.target.value)}/></F>
+          </div>}
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
+            <F label={t("MOTIF PRINCIPAL *","CHIEF COMPLAINT *")} span={2}><textarea style={{...inputS,minHeight:'80px',resize:'vertical'}} value={adm.chiefComplaint} onChange={e=>sAd('chiefComplaint',e.target.value)} placeholder={t("Ex: Convulsions tonico-cloniques depuis 24h, fièvre 39.5°C","E.g.: Generalized tonic-clonic seizures for 24h, fever 39.5°C")}/></F>
+            <F label={t("DÉBUT SYMPTÔMES (jours)","SYMPTOM ONSET (days)")}><input type="number" style={inputS} value={adm.symptomOnsetDays} onChange={e=>sAd('symptomOnsetDays',e.target.value)}/></F>
+            <F label={t("CONSCIENCE","CONSCIOUSNESS")}><select style={selS} value={adm.consciousness} onChange={e=>sAd('consciousness',e.target.value)}><option value="alert">{t("Alerte","Alert")}</option><option value="drowsy">{t("Somnolent","Drowsy")}</option><option value="confused">{t("Confus","Confused")}</option><option value="stupor">{t("Stupeur","Stupor")}</option><option value="coma">Coma</option></select></F>
+          </div>
+        </div>}
+
+        {/* STEP 3: HISTORY */}
+        {step===3&&<div>
+          <h2 style={{fontSize:'18px',fontWeight:800,color:'var(--p-text)',marginBottom:'20px'}}>{t('Antécédents & Terrain','Medical History')}</h2>
+          <div style={secS('#8B5CF6')}>{t("CONDITIONS CHRONIQUES","CHRONIC CONDITIONS")}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px',marginBottom:'12px'}}>
+            <Tog label={t("Drépanocytose","Sickle cell")} sub="HbSS/HbSC" active={h.sickleCellDisease} color="#8B5CF6" onClick={()=>sH('sickleCellDisease',!h.sickleCellDisease)}/>
+            <Tog label={t("Épilepsie connue","Known epilepsy")} active={h.epilepsyKnown} color="#B96BFF" onClick={()=>sH('epilepsyKnown',!h.epilepsyKnown)}/>
+            <Tog label={t("Immunodéficience","Immunodeficiency")} active={h.immunodeficiency} color="#8B5CF6" onClick={()=>sH('immunodeficiency',!h.immunodeficiency)}/>
+            <Tog label={t("Auto-immune","Autoimmune")} sub={t("Lupus, SAPL…","Lupus, APS…")} active={h.autoimmune} color="#FFB347" onClick={()=>sH('autoimmune',!h.autoimmune)}/>
+            <Tog label={t("Diabète T1","Diabetes T1")} active={h.diabetesType1} color="#FFB347" onClick={()=>sH('diabetesType1',!h.diabetesType1)}/>
+            <Tog label={t("Cardiopathie","Heart disease")} active={h.cardiacDisease} color="#A78BFA" onClick={()=>sH('cardiacDisease',!h.cardiacDisease)}/>
+            <Tog label={t("Cancer/Tumeur","Cancer/Tumor")} active={h.cancer} color="#8B5CF6" onClick={()=>sH('cancer',!h.cancer)}/>
+            <Tog label={t("Transplantation","Transplant")} active={h.transplant} color="#8B5CF6" onClick={()=>sH('transplant',!h.transplant)}/>
+            <Tog label="VIH+" active={h.hivPositive} color="#8B5CF6" onClick={()=>sH('hivPositive',!h.hivPositive)}/>
+            <Tog label={t("Hydrocéphalie/DVP","Hydrocephalus/VP")} active={h.hydrocephalus} color="#B96BFF" onClick={()=>sH('hydrocephalus',!h.hydrocephalus)}/>
+            <Tog label="TSA" sub={t("Spectre autistique","Autism spectrum")} active={h.tsa} color="#6C7CFF" onClick={()=>sH('tsa',!h.tsa)}/>
+            <Tog label={t("Asthme","Asthma")} active={h.asthma} color="#6C7CFF" onClick={()=>sH('asthma',!h.asthma)}/>
+          </div>
+          {h.cancer&&<F label={t("TYPE TUMEUR","TUMOR TYPE")}><input style={inputS} value={h.cancerType} onChange={e=>sH('cancerType',e.target.value)}/></F>}
+          {h.transplant&&<F label={t("ORGANE","ORGAN")}><input style={inputS} value={h.transplantOrgan} onChange={e=>sH('transplantOrgan',e.target.value)}/></F>}
+          <div style={{marginTop:'8px'}}><F label={t("AUTRE CONDITION","OTHER CONDITION")}><input style={inputS} value={h.otherChronic} onChange={e=>sH('otherChronic',e.target.value)} placeholder={t("Préciser si non listé","Specify if not listed")}/></F></div>
+
+          <div style={secS('#FFB347')}>{t("ANTÉCÉDENTS INFECTIEUX","INFECTIOUS HISTORY")}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px',marginBottom:'12px'}}>
+            <Tog label={t("ATCD Méningite","Prior meningitis")} active={h.previousMeningitis} color="#FFB347" onClick={()=>sH('previousMeningitis',!h.previousMeningitis)}/>
+            <Tog label={t("ATCD Encéphalite","Prior encephalitis")} active={h.previousEncephalitis} color="#8B5CF6" onClick={()=>sH('previousEncephalitis',!h.previousEncephalitis)}/>
+            <Tog label="Herpès/HSV" active={h.herpesHistory} color="#A78BFA" onClick={()=>sH('herpesHistory',!h.herpesHistory)}/>
+            <Tog label={t("COVID récent","Recent COVID")} sub="<6 sem" active={h.recentCovid} color="#FFB347" onClick={()=>sH('recentCovid',!h.recentCovid)}/>
+            <Tog label="EBV/CMV" active={h.recentEBVCMV} color="#FFB347" onClick={()=>sH('recentEBVCMV',!h.recentEBVCMV)}/>
+            <Tog label={t("Tuberculose","Tuberculosis")} active={h.tuberculosis} color="#8B5CF6" onClick={()=>sH('tuberculosis',!h.tuberculosis)}/>
+            <Tog label={t("Voyage tropical","Tropical travel")} active={h.recentTropicalTravel} color="#FFB347" onClick={()=>sH('recentTropicalTravel',!h.recentTropicalTravel)}/>
+            <Tog label={t("Piqûre tique","Tick bite")} active={h.tickBite} color="#FFB347" onClick={()=>sH('tickBite',!h.tickBite)}/>
+          </div>
+          <F label={t("AUTRE INFECTIEUX","OTHER INFECTIOUS")}><input style={inputS} value={h.otherInfection} onChange={e=>sH('otherInfection',e.target.value)}/></F>
+
+          <div style={secS('#B96BFF')}>{t("NEURODÉVELOPPEMENT","NEURODEVELOPMENT")}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px',marginBottom:'12px'}}>
+            <Tog label={t("Convulsions fébriles","Febrile seizures")} active={h.febrileSeizuresHistory} color="#B96BFF" onClick={()=>sH('febrileSeizuresHistory',!h.febrileSeizuresHistory)}/>
+            <Tog label={t("Retard développement","Dev delay")} active={h.developmentalDelay} color="#B96BFF" onClick={()=>sH('developmentalDelay',!h.developmentalDelay)}/>
+            <Tog label="ATCD ADEM" active={h.previousADEM} color="#8B5CF6" onClick={()=>sH('previousADEM',!h.previousADEM)}/>
+            <Tog label={t("Névrite optique","Optic neuritis")} active={h.previousOpticNeuritis} color="#B96BFF" onClick={()=>sH('previousOpticNeuritis',!h.previousOpticNeuritis)}/>
+            <Tog label={t("Myélite transverse","Transverse myelitis")} active={h.previousMyelitis} color="#B96BFF" onClick={()=>sH('previousMyelitis',!h.previousMyelitis)}/>
+            <Tog label={t("Tératome ovarien","Ovarian teratoma")} sub="NMDAR" active={h.ovarianTeratoma} color="#8B5CF6" onClick={()=>sH('ovarianTeratoma',!h.ovarianTeratoma)}/>
+          </div>
+          <F label={t("AUTRE NEURO","OTHER NEURO")}><input style={inputS} value={h.otherNeuro} onChange={e=>sH('otherNeuro',e.target.value)}/></F>
+
+          <div style={secS('#2FD1C8')}>{t("ALLERGIES & TRAITEMENTS","ALLERGIES & MEDICATIONS")}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
+            <F label={t("ALLERGIES","ALLERGIES")}><textarea style={{...inputS,minHeight:'60px'}} value={h.allergies} onChange={e=>sH('allergies',e.target.value)} placeholder={t("Pénicilline, AINS…","Penicillin, NSAIDs…")}/></F>
+            <F label={t("TRAITEMENTS EN COURS","CURRENT MEDICATIONS")}><textarea style={{...inputS,minHeight:'60px'}} value={h.currentMedications} onChange={e=>sH('currentMedications',e.target.value)} placeholder={t("Molécule + posologie","Molecule + dosage")}/></F>
+          </div>
+        </div>}
+
+        {/* STEP 4: NEURO */}
+        {step===4&&<div>
+          <h2 style={{fontSize:'18px',fontWeight:800,color:'var(--p-text)',marginBottom:'20px'}}>{t('Examen neurologique','Neurological Examination')}</h2>
+          <div style={secS('#8B5CF6')}>GLASGOW COMA SCALE</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'16px',marginBottom:'16px'}}>
+            <F label={t("YEUX (E)","EYES (E)")}><select style={selS} value={n.gcsEye} onChange={e=>{const v=+e.target.value;sN('gcsEye',v);sN('gcs',v+n.gcsVerbal+n.gcsMotor)}}>{[1,2,3,4].map(x=><option key={x} value={x}>{x}</option>)}</select></F>
+            <F label={t("VERBAL (V)","VERBAL (V)")}><select style={selS} value={n.gcsVerbal} onChange={e=>{const v=+e.target.value;sN('gcsVerbal',v);sN('gcs',n.gcsEye+v+n.gcsMotor)}}>{[1,2,3,4,5].map(x=><option key={x} value={x}>{x}</option>)}</select></F>
+            <F label={t("MOTEUR (M)","MOTOR (M)")}><select style={selS} value={n.gcsMotor} onChange={e=>{const v=+e.target.value;sN('gcsMotor',v);sN('gcs',n.gcsEye+n.gcsVerbal+v)}}>{[1,2,3,4,5,6].map(x=><option key={x} value={x}>{x}</option>)}</select></F>
+          </div>
+          <div style={{padding:'10px 16px',borderRadius:'10px',background:n.gcs<=8?'rgba(139,92,246,0.12)':'rgba(16,185,129,0.08)',border:`1px solid ${n.gcs<=8?'rgba(139,92,246,0.3)':'rgba(16,185,129,0.2)'}`,marginBottom:'20px',display:'flex',alignItems:'center',gap:'12px'}}>
+            <span style={{fontFamily:'var(--p-font-mono)',fontSize:'24px',fontWeight:900,color:n.gcs<=8?'#8B5CF6':'#10B981'}}>{n.gcs}</span>
+            <span style={{fontSize:'12px',color:n.gcs<=8?'#8B5CF6':'#10B981',fontWeight:700}}>{n.gcs<=8?t('COMA','COMA'):n.gcs<=12?t('Altération modérée','Moderate impairment'):t('Normal','Normal')}</span>
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'16px'}}>
+            <F label={t("PUPILLES","PUPILS")}><select style={selS} value={n.pupils} onChange={e=>sN('pupils',e.target.value)}><option value="normal">{t("Normales","Normal")}</option><option value="anisocoria">{t("Anisocorie","Anisocoria")}</option><option value="mydriasis">{t("Mydriase","Mydriasis")}</option><option value="fixed">{t("Fixes","Fixed")}</option></select></F>
+            <F label={t("CONVULSIONS","SEIZURES")}><select style={selS} value={n.seizureType} onChange={e=>sN('seizureType',e.target.value)}><option value="none">{t("Aucune","None")}</option><option value="focal">{t("Focales","Focal")}</option><option value="generalized">{t("Généralisées","Generalized")}</option><option value="status">{t("État de mal","Status epilepticus")}</option></select></F>
+            <Tog label={t("Signes focaux","Focal signs")} active={n.focalSigns} color="#8B5CF6" onClick={()=>sN('focalSigns',!n.focalSigns)}/>
+            <Tog label={t("Signes méningés","Meningeal signs")} active={n.meningealSigns} color="#8B5CF6" onClick={()=>sN('meningealSigns',!n.meningealSigns)}/>
+            {n.focalSigns&&<F label={t("DÉTAIL FOCAUX","FOCAL DETAIL")} span={2}><input style={inputS} value={n.focalDetail} onChange={e=>sN('focalDetail',e.target.value)} placeholder={t("Hémiparésie, aphasie…","Hemiparesis, aphasia…")}/></F>}
+            <Tog label={t("Mouvements anormaux","Abnormal movements")} active={n.abnormalMovements} color="#B96BFF" onClick={()=>sN('abnormalMovements',!n.abnormalMovements)}/>
+            {n.abnormalMovements&&<F label={t("DÉTAIL","DETAIL")}><input style={inputS} value={n.movementDetail} onChange={e=>sN('movementDetail',e.target.value)}/></F>}
+            <F label={t("AUTRE OBSERVATION","OTHER OBSERVATION")} span={2}><input style={inputS} value={n.otherNeuro} onChange={e=>sN('otherNeuro',e.target.value)}/></F>
+          </div>
+        </div>}
+
+        {/* STEP 5: BIO */}
+        {step===5&&<div>
+          <h2 style={{fontSize:'18px',fontWeight:800,color:'var(--p-text)',marginBottom:'20px'}}>{t('Biologie & Ponction lombaire','Biology & Lumbar Puncture')}</h2>
+          <div style={secS('#B96BFF')}>{t("BIOLOGIE SANGUINE","BLOOD TESTS")}</div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'12px',marginBottom:'20px'}}>
+            <F label="GB (G/L)"><input type="number" step="0.1" style={inputS} value={bio.wbc} onChange={e=>sB('wbc',e.target.value)}/></F>
+            <F label="CRP (mg/L)"><input type="number" step="0.1" style={inputS} value={bio.crp} onChange={e=>sB('crp',e.target.value)}/></F>
+            <F label="PCT (ng/mL)"><input type="number" step="0.01" style={inputS} value={bio.pct} onChange={e=>sB('pct',e.target.value)}/></F>
+            <F label="Lactate"><input type="number" step="0.1" style={inputS} value={bio.lactate} onChange={e=>sB('lactate',e.target.value)}/></F>
+            <F label="Na+"><input type="number" style={inputS} value={bio.na} onChange={e=>sB('na',e.target.value)}/></F>
+            <F label="K+"><input type="number" step="0.1" style={inputS} value={bio.k} onChange={e=>sB('k',e.target.value)}/></F>
+            <F label={t("Glycémie","Glucose")}><input type="number" step="0.01" style={inputS} value={bio.glucose} onChange={e=>sB('glucose',e.target.value)}/></F>
+            <F label="Hb (g/dL)"><input type="number" step="0.1" style={inputS} value={bio.hb} onChange={e=>sB('hb',e.target.value)}/></F>
+            <F label={t("Plaquettes","Platelets")}><input type="number" style={inputS} value={bio.platelets} onChange={e=>sB('platelets',e.target.value)}/></F>
+            <F label="INR"><input type="number" step="0.1" style={inputS} value={bio.inr} onChange={e=>sB('inr',e.target.value)}/></F>
+          </div>
+          <div style={secS('#2FD1C8')}>{t("PONCTION LOMBAIRE / LCR","LUMBAR PUNCTURE / CSF")}</div>
+          <Tog label={t("PL réalisée","LP performed")} active={bio.csfDone} color="#2FD1C8" onClick={()=>sB('csfDone',!bio.csfDone)}/>
+          {bio.csfDone&&<div style={{display:'grid',gridTemplateColumns:'1fr 1fr 1fr',gap:'12px',marginTop:'12px'}}>
+            <F label={t("ASPECT","APPEARANCE")}><select style={selS} value={bio.csfAppearance} onChange={e=>sB('csfAppearance',e.target.value)}><option value="clear">{t("Clair","Clear")}</option><option value="turbid">{t("Trouble","Turbid")}</option><option value="bloody">{t("Hémorragique","Bloody")}</option></select></F>
+            <F label={t("GB LCR","CSF WBC")}><input type="number" style={inputS} value={bio.csfWbc} onChange={e=>sB('csfWbc',e.target.value)}/></F>
+            <F label={t("PROTÉINES","PROTEINS")}><input type="number" step="0.01" style={inputS} value={bio.csfProtein} onChange={e=>sB('csfProtein',e.target.value)}/></F>
+            <F label={t("GLUCOSE LCR","CSF GLUCOSE")}><input type="number" step="0.01" style={inputS} value={bio.csfGlucose} onChange={e=>sB('csfGlucose',e.target.value)}/></F>
+            <F label={t("PRESSION","PRESSURE")}><input type="number" style={inputS} value={bio.csfPressure} onChange={e=>sB('csfPressure',e.target.value)}/></F>
+            <F label={t("CULTURE/PCR","CULTURE/PCR")}><input style={inputS} value={bio.csfCulture} onChange={e=>sB('csfCulture',e.target.value)}/></F>
+          </div>}
+          <div style={{marginTop:'16px'}}><F label={t("AUTRE BIO","OTHER BIO")}><input style={inputS} value={bio.otherBio} onChange={e=>sB('otherBio',e.target.value)} placeholder={t("Anti-NMDAR, MOG, AQP4…","Anti-NMDAR, MOG, AQP4…")}/></F></div>
+        </div>}
+
+        {/* STEP 6: IMAGING */}
+        {step===6&&<div>
+          <h2 style={{fontSize:'18px',fontWeight:800,color:'var(--p-text)',marginBottom:'20px'}}>{t('Imagerie & Explorations','Imaging & Investigations')}</h2>
+          {[
+            {key:'eeg',label:'EEG',color:'#2FD1C8',done:img.eegDone,result:img.eegResult,detail:img.eegDetail,opts:[{v:'normal',l:t('Normal','Normal')},{v:'slowing',l:t('Ralentissement','Slowing')},{v:'epileptiform',l:t('Épileptiforme','Epileptiform')},{v:'status',l:t('État de mal','Status')}]},
+            {key:'mri',label:'IRM/MRI',color:'#6C7CFF',done:img.mriDone,result:img.mriResult,detail:img.mriDetail,opts:[{v:'normal',l:t('Normal','Normal')},{v:'temporal',l:t('Hypersignal temporal','Temporal hyperintensity')},{v:'multifocal',l:t('Multifocal','Multifocal')},{v:'demyelination',l:t('Démyélinisation','Demyelination')}]},
+            {key:'ct',label:t('Scanner','CT scan'),color:'#FFB347',done:img.ctDone,result:img.ctResult,detail:img.ctDetail,opts:[{v:'normal',l:t('Normal','Normal')},{v:'edema',l:t('Œdème','Edema')},{v:'hemorrhage',l:t('Hémorragie','Hemorrhage')}]}
+          ].map(ex=>(
+            <div key={ex.key} style={{marginBottom:'20px'}}>
+              <Tog label={`${ex.label} ${t('réalisé','performed')}`} active={ex.done} color={ex.color} onClick={()=>sI(`${ex.key}Done`,!ex.done)}/>
+              {ex.done&&<div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'12px',marginTop:'10px',paddingLeft:'28px'}}>
+                <F label={t("RÉSULTAT","RESULT")}><select style={selS} value={ex.result} onChange={e=>sI(`${ex.key}Result`,e.target.value)}><option value="">—</option>{ex.opts.map(o=><option key={o.v} value={o.v}>{o.l}</option>)}</select></F>
+                <F label={t("DÉTAIL","DETAIL")}><input style={inputS} value={ex.detail} onChange={e=>sI(`${ex.key}Detail`,e.target.value)}/></F>
+              </div>}
+            </div>
+          ))}
+          <F label={t("AUTRE EXAMEN","OTHER INVESTIGATION")}><input style={inputS} value={img.otherImaging} onChange={e=>sI('otherImaging',e.target.value)} placeholder={t("Angiographie, EMG…","Angiography, EMG…")}/></F>
+        </div>}
+
+        {/* STEP 7: SUMMARY */}
+        {step===7&&<div>
+          <h2 style={{fontSize:'18px',fontWeight:800,color:'var(--p-text)',marginBottom:'20px'}}>{t("Synthèse — Lancer l'analyse","Summary — Launch Analysis")}</h2>
+          <div style={{display:'grid',gap:'12px'}}>
+            <div style={{padding:'16px',borderRadius:'12px',background:'rgba(108,124,255,0.04)',border:'1px solid rgba(108,124,255,0.1)'}}>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'#6C7CFF',fontWeight:800,letterSpacing:'1px',marginBottom:'8px'}}>PATIENT</div>
+              <div style={{fontSize:'16px',fontWeight:800,color:'var(--p-text)'}}>{id.firstName} {id.lastName}</div>
+              <div style={{fontSize:'12px',color:'var(--p-text-muted)',marginTop:'4px'}}>{id.ageMonths&&`${id.ageMonths} ${t('mois','mo')}`} · {id.sex==='female'?t('F','F'):id.sex==='male'?t('M','M'):'—'} {id.weight&&`· ${id.weight}kg`} {id.room&&`· ${id.room}`}</div>
+            </div>
+            <div style={{padding:'16px',borderRadius:'12px',background:'rgba(139,92,246,0.04)',border:'1px solid rgba(139,92,246,0.1)'}}>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'#8B5CF6',fontWeight:800,letterSpacing:'1px',marginBottom:'8px'}}>ADMISSION</div>
+              <div style={{fontSize:'13px',color:'var(--p-text)'}}>{adm.chiefComplaint||'—'}</div>
+              <div style={{fontSize:'11px',color:'var(--p-text-muted)',marginTop:'4px'}}>{adm.mode} · {t('Conscience','Consciousness')}: {adm.consciousness} {adm.symptomOnsetDays&&`· J${adm.symptomOnsetDays}`}</div>
+            </div>
+            <div style={{padding:'16px',borderRadius:'12px',background:n.gcs<=8?'rgba(139,92,246,0.08)':'rgba(16,185,129,0.04)',border:`1px solid ${n.gcs<=8?'rgba(139,92,246,0.2)':'rgba(16,185,129,0.1)'}`}}>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:n.gcs<=8?'#8B5CF6':'#10B981',fontWeight:800,letterSpacing:'1px',marginBottom:'8px'}}>NEURO</div>
+              <div style={{display:'flex',gap:'16px',alignItems:'center'}}>
+                <span style={{fontFamily:'var(--p-font-mono)',fontSize:'28px',fontWeight:900,color:n.gcs<=8?'#8B5CF6':'#10B981'}}>GCS {n.gcs}</span>
+                <div style={{fontSize:'11px',color:'var(--p-text-muted)'}}>
+                  {n.seizureType!=='none'&&<div>⚡ {n.seizureType}</div>}
+                  {n.focalSigns&&<div>📍 {n.focalDetail}</div>}
+                  {n.meningealSigns&&<div>🔴 {t('Méningé','Meningeal')}</div>}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style={{textAlign:'center',marginTop:'28px'}}>
+            <button onClick={launch} disabled={analyzing} style={{padding:'16px 48px',borderRadius:'16px',border:'none',cursor:analyzing?'wait':'pointer',background:'linear-gradient(135deg, #6C7CFF, #2FD1C8)',color:'#fff',fontSize:'16px',fontWeight:800,boxShadow:'0 4px 24px rgba(108,124,255,0.4)',display:'inline-flex',alignItems:'center',gap:'12px',transition:'all 0.3s',opacity:analyzing?0.7:1}}>
+              {analyzing?<><div className="animate-breathe" style={{width:'16px',height:'16px',borderRadius:'50%',background:'#fff'}}/>{t('Analyse...','Analyzing...')}</>:<><Picto name="brain" size={20}/> {t("Lancer l'analyse PULSAR","Launch PULSAR Analysis")}</>}
+            </button>
+            <p style={{fontSize:'11px',color:'var(--p-text-dim)',marginTop:'12px'}}>{t('5 moteurs IA · Diagnostic différentiel · Red flags · Parcours clinique','5 AI engines · Differential diagnosis · Red flags · Clinical pathway')}</p>
+          </div>
+        </div>}
       </div>
 
-      </div>
+      {/* NAV BUTTONS */}
+      {step>0&&<div style={{display:'flex',justifyContent:'space-between',marginTop:'20px',gap:'12px'}}>
+        <button onClick={prev} style={{padding:'12px 28px',borderRadius:'12px',background:'var(--p-bg-elevated)',border:'var(--p-border)',color:'var(--p-text-muted)',cursor:'pointer',fontSize:'13px',fontWeight:600}}>← {t('Retour','Back')}</button>
+        {step<STEPS.length-1&&<button onClick={next} disabled={!canGo(step)} style={{padding:'12px 28px',borderRadius:'12px',border:'none',cursor:canGo(step)?'pointer':'not-allowed',background:canGo(step)?'#6C7CFF':'var(--p-bg-elevated)',color:canGo(step)?'#fff':'var(--p-text-dim)',fontSize:'13px',fontWeight:700,boxShadow:canGo(step)?'0 2px 12px rgba(108,124,255,0.3)':'none'}}>{t('Valider et continuer','Validate & continue')} →</button>}
+      </div>}
+      {step>=1&&step<=2&&<p style={{fontSize:'10px',color:'var(--p-text-dim)',textAlign:'center',marginTop:'12px',fontFamily:'var(--p-font-mono)'}}>{t('* Champs obligatoires','* Required fields')}</p>}
     </div>
   )
 }
