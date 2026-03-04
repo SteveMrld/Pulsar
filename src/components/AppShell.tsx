@@ -7,6 +7,7 @@ import ThemeToggle from './ThemeToggle'
 import { ProfileProvider } from '@/contexts/ProfileContext'
 import { RoleBadge } from './RoleGate'
 import ConnectionStatus from './ConnectionStatus'
+import PulsarGuide from './PulsarGuide'
 import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
 
 function AppShellInner({ children }: { children: React.ReactNode }) {
@@ -140,6 +141,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
         <div key={pathname} className="page-enter">{children}</div>
       </main>
       <ConnectionStatus />
+      <PulsarGuide />
     </div>
     </ProfileProvider>
   )
