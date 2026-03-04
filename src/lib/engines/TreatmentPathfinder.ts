@@ -94,7 +94,7 @@ export const EVIDENCE_LABELS: Record<string, { label: string; color: string }> =
 export const STATUS_LABELS: Record<PathwayStatus, { label: string; color: string }> = {
   eligible: { label: 'ÉLIGIBLE', color: '#2ED573' },
   potential: { label: 'POTENTIEL', color: '#FFA502' },
-  ineligible: { label: 'NON ÉLIGIBLE', color: '#FF4757' },
+  ineligible: { label: 'NON ÉLIGIBLE', color: '#8B5CF6' },
   to_evaluate: { label: 'À ÉVALUER', color: '#6C7CFF' },
 }
 

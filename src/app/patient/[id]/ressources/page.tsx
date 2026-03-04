@@ -69,7 +69,7 @@ const KB_SECTIONS = [
   },
   {
     title: 'Pathologies couvertes',
-    color: '#FF6B8A',
+    color: '#A78BFA',
     icon: 'alert',
     items: [
       { name: 'FIRES', desc: 'Febrile Infection-Related Epilepsy Syndrome \u2014 status r\u00e9fractaire post-infectieux.' },

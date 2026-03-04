@@ -12,7 +12,7 @@ export default function Error({ error, reset }: { error: Error & { digest?: stri
             width: '64px', height: '64px', borderRadius: '50%', margin: '0 auto var(--p-space-4)',
             background: 'var(--p-critical-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center',
             border: '2px solid var(--p-critical)',
-          }}><Picto name="warning" size={28} glow glowColor="rgba(255,71,87,0.5)" /></div>
+          }}><Picto name="warning" size={28} glow glowColor="rgba(139,92,246,0.5)" /></div>
           <h2 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 700, color: 'var(--p-critical)', marginBottom: 'var(--p-space-2)' }}>
             Erreur détectée
           </h2>

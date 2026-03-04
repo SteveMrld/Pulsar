@@ -126,17 +126,17 @@ function PhaseBar({ phase }: { phase: ClinicalPhase }) {
 /* ── Patient Card Row ── */
 function PatientRow({ p }: { p: PatientCard }) {
   const { t } = useLang()
-  const vpsColor = p.vps >= 70 ? '#FF4757' : p.vps >= 50 ? '#FFA502' : p.vps >= 30 ? '#FFB347' : '#2ED573'
+  const vpsColor = p.vps >= 70 ? '#8B5CF6' : p.vps >= 50 ? '#FFA502' : p.vps >= 30 ? '#FFB347' : '#2ED573'
   const hasTriage = !!p.triagePriority
   return (
     <Link href={`/patient/${p.id}/cockpit`} style={{ textDecoration: 'none' }}>
       <div className="card-interactive" style={{
         padding: '14px 18px', borderRadius: 'var(--p-radius-lg)',
         background: 'var(--p-bg-card)',
-        border: p.vps >= 70 ? '1px solid rgba(255,71,87,0.15)' : 'var(--p-border)',
+        border: p.vps >= 70 ? '1px solid rgba(139,92,246,0.15)' : 'var(--p-border)',
         display: 'grid', gridTemplateColumns: hasTriage ? '44px 1fr auto auto auto auto auto auto' : '44px 1fr auto auto auto auto auto',
         alignItems: 'center', gap: '14px',
-        boxShadow: p.vps >= 70 ? '0 0 20px rgba(255,71,87,0.05)' : 'none',
+        boxShadow: p.vps >= 70 ? '0 0 20px rgba(139,92,246,0.05)' : 'none',
         transition: 'all 0.2s',
       }}>
         {/* Avatar */}
@@ -187,7 +187,7 @@ function PatientRow({ p }: { p: PatientCard }) {
 
         {/* GCS */}
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '14px', fontWeight: 900, color: p.gcs <= 8 ? '#FF4757' : 'var(--p-text)', lineHeight: 1 }}>{p.gcs}</div>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '14px', fontWeight: 900, color: p.gcs <= 8 ? '#8B5CF6' : 'var(--p-text)', lineHeight: 1 }}>{p.gcs}</div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: 'var(--p-text-dim)' }}>GCS</div>
         </div>
 
@@ -285,7 +285,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
         {[
           { href: '/observatory', label: 'Observatory', icon: 'dna', color: '#2FD1C8' },
           { href: '/neurocore', label: 'NeuroCore', icon: 'brain', color: '#B96BFF' },
-          { href: '/cross-pathologie', label: 'Cross-Patho', icon: 'virus', color: '#FF6B8A' },
+          { href: '/cross-pathologie', label: 'Cross-Patho', icon: 'virus', color: '#A78BFA' },
         ].map((link, i) => (
           <Link key={i} href={link.href} style={{
             padding: '8px 16px', borderRadius: 'var(--p-radius-lg)',
@@ -450,8 +450,8 @@ export default function FileActivePage() {
           {hasPatients && criticalCount > 0 && (
             <div className="animate-breathe" style={{
               padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
-              background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.2)',
-              fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#FF4757',
+              background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)',
+              fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#8B5CF6',
             }}>{criticalCount} critique{criticalCount > 1 ? 's' : ''}</div>
           )}
           {hasPatients && warningCount > 0 && (
@@ -500,7 +500,7 @@ export default function FileActivePage() {
           {/* Sort options */}
           <div style={{ display: 'flex', gap: '6px', marginBottom: '16px', flexWrap: 'wrap' }}>
             {([
-              { mode: 'triage' as const, label: 'Triage', icon: 'alert', color: '#FF4757' },
+              { mode: 'triage' as const, label: 'Triage', icon: 'alert', color: '#8B5CF6' },
               { mode: 'vps' as const, label: 'VPS', icon: 'heart', color: '#6C7CFF' },
               { mode: 'gcs' as const, label: 'GCS', icon: 'brain', color: '#B96BFF' },
               { mode: 'alertes' as const, label: 'Alertes', icon: 'alert', color: '#FFA502' },
@@ -529,12 +529,12 @@ export default function FileActivePage() {
           {totalAlerts > 0 && (
             <div style={{
               padding: '12px 16px', borderRadius: 'var(--p-radius-lg)',
-              background: 'rgba(255,71,87,0.04)', border: '1px solid rgba(255,71,87,0.12)',
+              background: 'rgba(139,92,246,0.04)', border: '1px solid rgba(139,92,246,0.12)',
               marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px',
             }}>
-              <Picto name="alert" size={18} glow glowColor="rgba(255,71,87,0.4)" />
+              <Picto name="alert" size={18} glow glowColor="rgba(139,92,246,0.4)" />
               <div style={{ flex: 1 }}>
-                <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#FF4757', letterSpacing: '0.5px' }}>
+                <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '0.5px' }}>
                   {totalAlerts} ALERTE{totalAlerts > 1 ? 'S' : ''} CRITIQUE{totalAlerts > 1 ? 'S' : ''}
                 </div>
                 <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>
@@ -554,7 +554,7 @@ export default function FileActivePage() {
           }}>
             {[
               { href: '/neurocore', label: 'NeuroCore', icon: 'brain', color: '#B96BFF' },
-              { href: '/case-matching', label: 'Case Matching', icon: 'heart', color: '#FF6B8A' },
+              { href: '/case-matching', label: 'Case Matching', icon: 'heart', color: '#A78BFA' },
               { href: '/patients/intake', label: 'Analyse IA', icon: 'brain', color: '#6C7CFF' },
               { href: '/cross-pathologie', label: 'Cross-Patho', icon: 'virus', color: '#FFB347' },
               { href: '/bilan', label: 'Bilan', icon: 'clipboard', color: '#2FD1C8' },

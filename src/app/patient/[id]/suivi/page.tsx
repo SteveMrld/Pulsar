@@ -12,7 +12,7 @@ export default function SuiviPage() {
   const vpsData = ps.vpsResult?.curve
   const gcsHistory = ps.neuro.gcsHistory
 
-  const riskColor = (r: number) => r > 0.7 ? '#FF4757' : r > 0.4 ? '#FFB347' : '#2ED573'
+  const riskColor = (r: number) => r > 0.7 ? '#8B5CF6' : r > 0.4 ? '#FFB347' : '#2ED573'
 
   return (
     <div className="page-enter-stagger">
@@ -35,7 +35,7 @@ export default function SuiviPage() {
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '4px', height: '100px' }}>
             {vpsData.curveData.map((v: number, i: number) => {
               const h = Math.max(4, (v / 100) * 90)
-              const c = v >= 70 ? '#FF4757' : v >= 50 ? '#FFA502' : v >= 30 ? '#FFB347' : '#2ED573'
+              const c = v >= 70 ? '#8B5CF6' : v >= 50 ? '#FFA502' : v >= 30 ? '#FFB347' : '#2ED573'
               const isNow = i === vpsData.currentPosition
               return (
                 <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
@@ -54,7 +54,7 @@ export default function SuiviPage() {
             })}
           </div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '8px', textAlign: 'center' }}>
-            Tendance : <span style={{ color: vpsData.trend === 'worsening' ? '#FF4757' : vpsData.trend === 'improving' ? '#2ED573' : '#FFB347', fontWeight: 700 }}>
+            Tendance : <span style={{ color: vpsData.trend === 'worsening' ? '#8B5CF6' : vpsData.trend === 'improving' ? '#2ED573' : '#FFB347', fontWeight: 700 }}>
               {vpsData.trend === 'worsening' ? 'Aggravation' : vpsData.trend === 'improving' ? 'Am\u00e9lioration' : 'Stable'}
             </span>
           </div>
@@ -70,7 +70,7 @@ export default function SuiviPage() {
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '80px' }}>
             {gcsHistory.map((g: number, i: number) => {
               const h = Math.max(4, ((g - 3) / 12) * 70)
-              const c = g <= 8 ? '#FF4757' : g <= 12 ? '#FFB347' : '#2ED573'
+              const c = g <= 8 ? '#8B5CF6' : g <= 12 ? '#FFB347' : '#2ED573'
               return (
                 <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
                   <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: c }}>{g}</span>
@@ -85,7 +85,7 @@ export default function SuiviPage() {
       {/* EWE Risk Windows */}
       {ewe?.synthesis.riskWindows && ewe.synthesis.riskWindows.length > 0 && (
         <div className="glass-card" style={{ padding: '20px', borderRadius: 'var(--p-radius-xl)', marginBottom: '16px' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#FF6B8A', marginBottom: '12px', letterSpacing: '0.5px' }}>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#A78BFA', marginBottom: '12px', letterSpacing: '0.5px' }}>
             FEN\u00caTRES DE RISQUE (EWE)
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -120,7 +120,7 @@ export default function SuiviPage() {
           <div style={{ display: 'flex', alignItems: 'flex-end', gap: '6px', height: '80px' }}>
             {ewe.synthesis.predictedTrajectory.map((p, i) => {
               const h = Math.max(4, (p.estimatedVPS / 100) * 70)
-              const c = p.estimatedVPS >= 70 ? '#FF4757' : p.estimatedVPS >= 40 ? '#FFB347' : '#2ED573'
+              const c = p.estimatedVPS >= 70 ? '#8B5CF6' : p.estimatedVPS >= 40 ? '#FFB347' : '#2ED573'
               return (
                 <div key={i} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
                   <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: c }}>{p.estimatedVPS}</span>
@@ -149,7 +149,7 @@ export default function SuiviPage() {
           ].map((item, i) => (
             <div key={i} className="glass-card" style={{ padding: '10px', borderRadius: 'var(--p-radius-lg)', textAlign: 'center' }}>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)' }}>{item.l}</div>
-              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '16px', fontWeight: 900, color: item.s === 'critical' ? '#FF4757' : item.s === 'warning' ? '#FFB347' : 'var(--p-text)', lineHeight: 1, marginTop: '3px' }}>{item.v}</div>
+              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '16px', fontWeight: 900, color: item.s === 'critical' ? '#8B5CF6' : item.s === 'warning' ? '#FFB347' : 'var(--p-text)', lineHeight: 1, marginTop: '3px' }}>{item.v}</div>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{item.u}</div>
             </div>
           ))}
@@ -163,7 +163,7 @@ export default function SuiviPage() {
             \u00c9V\u00c9NEMENTS R\u00c9CENTS
           </div>
           {timeline.slice(0, 6).map((ev, i) => {
-            const c = ev.severity === 'critical' ? '#FF4757' : ev.severity === 'warning' ? '#FFB347' : ev.severity === 'success' ? '#2ED573' : '#6C7CFF'
+            const c = ev.severity === 'critical' ? '#8B5CF6' : ev.severity === 'warning' ? '#FFB347' : ev.severity === 'success' ? '#2ED573' : '#6C7CFF'
             return (
               <div key={i} style={{ display: 'flex', gap: '10px', marginBottom: '10px' }}>
                 <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: c, boxShadow: `0 0 4px ${c}50`, flexShrink: 0, marginTop: '4px' }} />

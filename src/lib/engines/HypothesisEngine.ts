@@ -68,7 +68,7 @@ export const HYPOTHESIS_STATUS_LABELS: Record<HypothesisStatus, { label: string;
   in_review: { label: 'EN REVUE', color: '#FFA502' },
   validated: { label: 'VALIDÉE', color: '#2ED573' },
   published: { label: 'PUBLIÉE', color: '#10B981' },
-  rejected: { label: 'REJETÉE', color: '#FF4757' },
+  rejected: { label: 'REJETÉE', color: '#8B5CF6' },
 }
 
 // ── Prompt builder ──

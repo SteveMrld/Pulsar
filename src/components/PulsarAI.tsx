@@ -32,7 +32,7 @@ function generateInsights(pathname: string, ps: PatientState): Insight[] {
       icon: 'alert', text: `${critAlerts.length} alerte${critAlerts.length > 1 ? 's' : ''} critique${critAlerts.length > 1 ? 's' : ''}`,
       detail: critAlerts[0].title,
       link: '/cockpit', linkLabel: 'Cockpit Vital',
-      severity: 'critical', color: '#FF4757',
+      severity: 'critical', color: '#8B5CF6',
     })
   }
 
@@ -82,7 +82,7 @@ function generateInsights(pathname: string, ps: PatientState): Insight[] {
         icon: 'thermo', text: `Alerte EWE active (${ewe})`,
         detail: 'Détérioration détectée — Consulter le moteur Early Warning',
         link: '/engines?tab=ewe', linkLabel: 'EWE Engine',
-        severity: 'warning', color: '#FF6B8A',
+        severity: 'warning', color: '#A78BFA',
       })
       insights.push({
         icon: 'chart', text: 'Voir la timeline complète',
@@ -175,7 +175,7 @@ export default function PulsarAI() {
 
   if (!visible) return null
 
-  const badgeColor = critCount > 0 ? '#FF4757' : warnCount > 0 ? '#FFA502' : '#6C7CFF'
+  const badgeColor = critCount > 0 ? '#8B5CF6' : warnCount > 0 ? '#FFA502' : '#6C7CFF'
   const totalBadge = critCount + warnCount
 
   return (
@@ -228,7 +228,7 @@ export default function PulsarAI() {
                 <div className="card-interactive" style={{
                   padding: '10px 12px', borderRadius: 'var(--p-radius-lg)',
                   borderLeft: `3px solid ${insight.color}`,
-                  background: insight.severity === 'critical' ? 'rgba(255,71,87,0.08)' : 'var(--p-bg-elevated)',
+                  background: insight.severity === 'critical' ? 'rgba(139,92,246,0.08)' : 'var(--p-bg-elevated)',
                   transition: 'all 150ms',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', gap: '10px' }}>

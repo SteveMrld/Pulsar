@@ -11,7 +11,7 @@ interface NoteFormProps {
 
 const NOTE_TYPES: { value: NoteType; label: string; icon: string; color: string }[] = [
   { value: 'observation', label: 'Observation', icon: 'eye', color: '#6C7CFF' },
-  { value: 'prescription', label: 'Prescription', icon: 'pill', color: '#FF6B8A' },
+  { value: 'prescription', label: 'Prescription', icon: 'pill', color: '#A78BFA' },
   { value: 'decision', label: 'Décision', icon: 'brain', color: '#B96BFF' },
   { value: 'handoff', label: 'Transmission', icon: 'transfer', color: '#FFB347' },
   { value: 'family', label: 'Entretien famille', icon: 'heart', color: '#2ED573' },

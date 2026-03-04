@@ -13,7 +13,7 @@ function SectionTitle({ title, color, icon }: { title: string; color: string; ic
 }
 
 function BioValue({ label, value, unit, status }: { label: string; value: number | string; unit: string; status?: 'critical' | 'warning' | 'normal' }) {
-  const color = status === 'critical' ? '#FF4757' : status === 'warning' ? '#FFB347' : 'var(--p-text)'
+  const color = status === 'critical' ? '#8B5CF6' : status === 'warning' ? '#FFB347' : 'var(--p-text)'
   return (
     <div className="glass-card" style={{ padding: '12px', borderRadius: 'var(--p-radius-lg)', textAlign: 'center' }}>
       <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '4px' }}>{label}</div>
@@ -68,19 +68,19 @@ export default function ExamensPage() {
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginBottom: '4px' }}>{`ACTIVIT\u00c9 \u00c9PILEPTIQUE`}</div>
-                <div style={{ fontSize: '13px', color: ps.eeg.ictalPatterns.length > 0 ? '#FF4757' : '#2ED573', fontWeight: 600 }}>
+                <div style={{ fontSize: '13px', color: ps.eeg.ictalPatterns.length > 0 ? '#8B5CF6' : '#2ED573', fontWeight: 600 }}>
                   {ps.eeg.ictalPatterns.length > 0 ? `${ps.eeg.ictalPatterns.length} pattern(s)` : 'Absente'}
                 </div>
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginBottom: '4px' }}>NCSE STATUS</div>
-                <div style={{ fontSize: '13px', color: ps.eeg.NCSEstatus ? '#FF4757' : '#2ED573', fontWeight: 600 }}>
+                <div style={{ fontSize: '13px', color: ps.eeg.NCSEstatus ? '#8B5CF6' : '#2ED573', fontWeight: 600 }}>
                   {ps.eeg.NCSEstatus ? 'Oui' : 'Non'}
                 </div>
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginBottom: '4px' }}>CRISES/HEURE</div>
-                <div style={{ fontSize: '13px', color: ps.eeg.seizuresPerHour > 3 ? '#FF4757' : 'var(--p-text)', fontWeight: 600 }}>
+                <div style={{ fontSize: '13px', color: ps.eeg.seizuresPerHour > 3 ? '#8B5CF6' : 'var(--p-text)', fontWeight: 600 }}>
                   {ps.eeg.seizuresPerHour}
                 </div>
               </div>
@@ -91,7 +91,7 @@ export default function ExamensPage() {
 
       {ps.mri && (
         <>
-          <SectionTitle title={'IRM C\u00c9R\u00c9BRALE'} color="#FF6B8A" icon="brain" />
+          <SectionTitle title={'IRM C\u00c9R\u00c9BRALE'} color="#A78BFA" icon="brain" />
           <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)' }}>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
               <div>
@@ -102,7 +102,7 @@ export default function ExamensPage() {
               </div>
               <div>
                 <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginBottom: '4px' }}>RESTRICTION DIFFUSION</div>
-                <div style={{ fontSize: '13px', color: ps.mri.diffusionRestriction ? '#FF4757' : '#2ED573', fontWeight: 600 }}>
+                <div style={{ fontSize: '13px', color: ps.mri.diffusionRestriction ? '#8B5CF6' : '#2ED573', fontWeight: 600 }}>
                   {ps.mri.diffusionRestriction ? 'Pr\u00e9sente' : 'Absente'}
                 </div>
               </div>
@@ -125,7 +125,7 @@ export default function ExamensPage() {
                     {ps.mri.t2FlairLocations.map((r: string, i: number) => (
                       <span key={i} style={{
                         padding: '2px 8px', borderRadius: 'var(--p-radius-full)',
-                        background: 'rgba(255,107,138,0.1)', color: '#FF6B8A',
+                        background: 'rgba(167,139,250,0.1)', color: '#A78BFA',
                         fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 600,
                       }}>{r}</span>
                     ))}
@@ -139,10 +139,10 @@ export default function ExamensPage() {
 
       {nc && (
         <>
-          <SectionTitle title="ANALYSE NEUROCORE" color="#FF4757" icon="alert" />
+          <SectionTitle title="ANALYSE NEUROCORE" color="#8B5CF6" icon="alert" />
           {nc.redFlags.length > 0 && (
-            <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-lg)', borderLeft: '3px solid #FF4757', marginBottom: '8px' }}>
-              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#FF4757', marginBottom: '6px' }}>RED FLAGS</div>
+            <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-lg)', borderLeft: '3px solid #8B5CF6', marginBottom: '8px' }}>
+              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#8B5CF6', marginBottom: '6px' }}>RED FLAGS</div>
               {nc.redFlags.map((f: string, i: number) => (
                 <div key={i} style={{ fontSize: '11px', color: 'var(--p-text-muted)', marginBottom: '3px' }}>{'\u2022'} {f}</div>
               ))}

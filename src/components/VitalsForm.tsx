@@ -90,8 +90,8 @@ export default function VitalsForm({ patientId, onSaved, compact }: VitalsFormPr
   return (
     <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-        <Picto name="heart" size={16} glow glowColor="rgba(255,107,138,0.5)" />
-        <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#FF6B8A' }}>
+        <Picto name="heart" size={16} glow glowColor="rgba(167,139,250,0.5)" />
+        <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#A78BFA' }}>
           SAISIE CONSTANTES
         </span>
       </div>
@@ -127,7 +127,7 @@ export default function VitalsForm({ patientId, onSaved, compact }: VitalsFormPr
 
       {/* Hémodynamique */}
       <div style={{ marginBottom: '14px' }}>
-        <div style={{ ...labelStyle, color: '#FF6B8A', fontSize: '8px', marginBottom: '8px' }}>HÉMODYNAMIQUE</div>
+        <div style={{ ...labelStyle, color: '#A78BFA', fontSize: '8px', marginBottom: '8px' }}>HÉMODYNAMIQUE</div>
         <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
           <div style={groupStyle}>
             <label style={labelStyle}>FC (bpm)</label>
@@ -166,15 +166,15 @@ export default function VitalsForm({ patientId, onSaved, compact }: VitalsFormPr
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
         <button onClick={handleSave} disabled={saving} style={{
           padding: '10px 24px', borderRadius: 'var(--p-radius-lg)', border: 'none', cursor: saving ? 'wait' : 'pointer',
-          background: saved ? '#2ED573' : 'linear-gradient(135deg, #FF6B8A, #FF4757)',
+          background: saved ? '#2ED573' : 'linear-gradient(135deg, #A78BFA, #8B5CF6)',
           fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#fff',
           letterSpacing: '0.5px', transition: 'all 0.3s',
-          boxShadow: saved ? '0 4px 16px rgba(46,213,115,0.3)' : '0 4px 16px rgba(255,71,87,0.3)',
+          boxShadow: saved ? '0 4px 16px rgba(46,213,115,0.3)' : '0 4px 16px rgba(139,92,246,0.3)',
         }}>
           {saving ? 'Enregistrement...' : saved ? '✓ Enregistré' : 'Enregistrer les constantes'}
         </button>
         {error && (
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757' }}>{error}</span>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6' }}>{error}</span>
         )}
       </div>
     </div>

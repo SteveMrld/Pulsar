@@ -49,7 +49,7 @@ export default function AdminPage() {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-        <Picto name="shield" size={28} glow glowColor="rgba(255,71,87,0.5)" />
+        <Picto name="shield" size={28} glow glowColor="rgba(139,92,246,0.5)" />
         <div>
           <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Administration</h1>
           <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>

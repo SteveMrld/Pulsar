@@ -50,7 +50,7 @@ export default function ConnectionStatus() {
       position: 'fixed', bottom: '16px', left: '50%', transform: 'translateX(-50%)',
       zIndex: 9999,
       padding: '8px 20px', borderRadius: 'var(--p-radius-lg)',
-      background: online ? 'rgba(255,165,2,0.95)' : 'rgba(255,71,87,0.95)',
+      background: online ? 'rgba(255,165,2,0.95)' : 'rgba(139,92,246,0.95)',
       backdropFilter: 'blur(8px)',
       fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 700, color: '#fff',
       boxShadow: '0 4px 20px rgba(0,0,0,0.3)',

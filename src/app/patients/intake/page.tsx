@@ -57,7 +57,7 @@ function ConfBar({ value,color }:{ value:number;color:string }) {
   return <div style={{height:'4px',background:'rgba(255,255,255,0.06)',borderRadius:'2px',overflow:'hidden'}}><div style={{width:`${value}%`,height:'100%',background:color,borderRadius:'2px',transition:'width 0.4s',boxShadow:`0 0 8px ${color}40`}}/></div>
 }
 function UrgencyGauge({ score,level }:{ score:number;level:string }) {
-  const color = level==='critical'?'#FF4757':level==='high'?'#FFA502':level==='moderate'?'#FFB347':'#2ED573'
+  const color = level==='critical'?'#8B5CF6':level==='high'?'#FFA502':level==='moderate'?'#FFB347':'#2ED573'
   const r=38,c=2*Math.PI*r,pct=Math.min(score,100)/100
   return <div style={{display:'flex',alignItems:'center',gap:'16px'}}><svg width="90" height="90" viewBox="0 0 90 90"><circle cx="45" cy="45" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="6"/><circle cx="45" cy="45" r={r} fill="none" stroke={color} strokeWidth="6" strokeDasharray={`${c*pct*0.75} ${c}`} strokeLinecap="round" transform="rotate(-225 45 45)" style={{transition:'stroke-dasharray 0.5s',filter:`drop-shadow(0 0 6px ${color})`}}/><text x="45" y="42" textAnchor="middle" fill={color} fontFamily="var(--p-font-mono)" fontWeight="900" fontSize="22">{score}</text><text x="45" y="56" textAnchor="middle" fill="var(--p-text-dim)" fontFamily="var(--p-font-mono)" fontSize="8" letterSpacing="0.5">URGENCE</text></svg><div><div style={{fontFamily:'var(--p-font-mono)',fontSize:'11px',fontWeight:800,color,textTransform:'uppercase',letterSpacing:'1px'}}>{level}</div><div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)',marginTop:'2px'}}>{level==='critical'?'Prise en charge immédiate':level==='high'?'Bilan urgent < 1h':level==='moderate'?'Bilan programmé':'Surveillance standard'}</div></div></div>
 }
@@ -110,7 +110,7 @@ export default function IntakePage() {
     { id:'mode', label:'Mode', icon:'play', color:'#6C7CFF' },
     { id:'identity', label:'Identité', icon:'heart', color:'#6C7CFF' },
     { id:'history', label:'Antécédents', icon:'clipboard', color:'#FFB347' },
-    { id:'neuro', label:'Neuro', icon:'brain', color:'#FF4757' },
+    { id:'neuro', label:'Neuro', icon:'brain', color:'#8B5CF6' },
     { id:'bio', label:'Bio / LCR', icon:'blood', color:'#B96BFF' },
     { id:'imaging', label:'EEG / IRM', icon:'eeg', color:'#2FD1C8' },
     ...(isTransfer ? [{ id:'transfer', label:'Examens transf.', icon:'export', color:'#2ED573' }] : []),
@@ -131,7 +131,7 @@ export default function IntakePage() {
           </div>
         </div>
         <div style={{display:'flex',alignItems:'center',gap:'8px'}}>
-          {analysis.historyAlerts.filter(a=>a.severity==='critical').length > 0 && <Badge label={`${analysis.historyAlerts.filter(a=>a.severity==='critical').length} alerte ATCD`} color="#FF4757" />}
+          {analysis.historyAlerts.filter(a=>a.severity==='critical').length > 0 && <Badge label={`${analysis.historyAlerts.filter(a=>a.severity==='critical').length} alerte ATCD`} color="#8B5CF6" />}
           <Badge label={`${analysis.completeness}%`} color={analysis.completeness>=50?'#2ED573':'#6C7CFF'} />
         </div>
       </div>
@@ -152,7 +152,7 @@ export default function IntakePage() {
           <div style={{display:'flex',flexDirection:'column',gap:'16px'}}>
             <div style={{fontFamily:'var(--p-font-mono)',fontSize:'11px',fontWeight:800,color:'var(--p-text)',marginBottom:'4px'}}>Comment arrive le patient ?</div>
             {[
-              { mode:'first_admission' as AdmissionMode, label:'Première admission', desc:'Patient admis directement — aucun examen préalable', icon:'alert', color:'#FF4757' },
+              { mode:'first_admission' as AdmissionMode, label:'Première admission', desc:'Patient admis directement — aucun examen préalable', icon:'alert', color:'#8B5CF6' },
               { mode:'transfer' as AdmissionMode, label:'Transfert inter-hospitalier', desc:'Patient transféré avec dossier et examens existants', icon:'export', color:'#2ED573' },
             ].map(m=>(
               <button key={m.mode} onClick={()=>{set('admissionMode',m.mode);setTab('identity')}} style={{
@@ -195,17 +195,17 @@ export default function IntakePage() {
         {/* ── ANTÉCÉDENTS ── */}
         {tab==='history' && (
           <div style={{display:'flex',flexDirection:'column',gap:'16px'}}>
-            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#FF4757',letterSpacing:'1px'}}>CONDITIONS CHRONIQUES</div>
+            <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#8B5CF6',letterSpacing:'1px'}}>CONDITIONS CHRONIQUES</div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
-              <Toggle label="Drépanocytose" sub="HbSS / HbSC" active={h.sickleCellDisease} color="#FF4757" onClick={()=>setH('sickleCellDisease',!h.sickleCellDisease)}/>
+              <Toggle label="Drépanocytose" sub="HbSS / HbSC" active={h.sickleCellDisease} color="#8B5CF6" onClick={()=>setH('sickleCellDisease',!h.sickleCellDisease)}/>
               <Toggle label="Épilepsie connue" sub="Diagnostiquée avant admission" active={h.epilepsyKnown} color="#B96BFF" onClick={()=>setH('epilepsyKnown',!h.epilepsyKnown)}/>
-              <Toggle label="Immunodéficience" sub="Primaire ou acquise" active={h.immunodeficiency} color="#FF4757" onClick={()=>setH('immunodeficiency',!h.immunodeficiency)}/>
+              <Toggle label="Immunodéficience" sub="Primaire ou acquise" active={h.immunodeficiency} color="#8B5CF6" onClick={()=>setH('immunodeficiency',!h.immunodeficiency)}/>
               <Toggle label="Maladie auto-immune" sub="Lupus, SAPL, etc." active={h.autoimmune} color="#FFB347" onClick={()=>setH('autoimmune',!h.autoimmune)}/>
               <Toggle label="Diabète type 1" sub="Terrain auto-immun" active={h.diabetesType1} color="#FFB347" onClick={()=>setH('diabetesType1',!h.diabetesType1)}/>
-              <Toggle label="Cardiopathie" sub="Congénitale ou acquise" active={h.cardiacDisease} color="#FF6B8A" onClick={()=>setH('cardiacDisease',!h.cardiacDisease)}/>
-              <Toggle label="Cancer / Tumeur" sub="Active ou en rémission" active={h.cancer} color="#FF4757" onClick={()=>setH('cancer',!h.cancer)}/>
-              <Toggle label="Transplantation" sub="Organe solide ou moelle" active={h.transplant} color="#FF4757" onClick={()=>setH('transplant',!h.transplant)}/>
-              <Toggle label="VIH positif" sub="Charge virale / CD4" active={h.hivPositive} color="#FF4757" onClick={()=>setH('hivPositive',!h.hivPositive)}/>
+              <Toggle label="Cardiopathie" sub="Congénitale ou acquise" active={h.cardiacDisease} color="#A78BFA" onClick={()=>setH('cardiacDisease',!h.cardiacDisease)}/>
+              <Toggle label="Cancer / Tumeur" sub="Active ou en rémission" active={h.cancer} color="#8B5CF6" onClick={()=>setH('cancer',!h.cancer)}/>
+              <Toggle label="Transplantation" sub="Organe solide ou moelle" active={h.transplant} color="#8B5CF6" onClick={()=>setH('transplant',!h.transplant)}/>
+              <Toggle label="VIH positif" sub="Charge virale / CD4" active={h.hivPositive} color="#8B5CF6" onClick={()=>setH('hivPositive',!h.hivPositive)}/>
               <Toggle label="Hydrocéphalie / DVP" sub="Dérivation ventriculaire" active={h.hydrocephalus} color="#B96BFF" onClick={()=>setH('hydrocephalus',!h.hydrocephalus)}/>
               <Toggle label="TSA" sub="Trouble spectre autistique" active={h.tsa} color="#6C7CFF" onClick={()=>setH('tsa',!h.tsa)}/>
               <Toggle label="Asthme" sub="Traitement de fond" active={h.asthma} color="#6C7CFF" onClick={()=>setH('asthma',!h.asthma)}/>
@@ -216,11 +216,11 @@ export default function IntakePage() {
             <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#FFB347',letterSpacing:'1px',marginTop:'8px'}}>ANTÉCÉDENTS INFECTIEUX & EXPOSITIONS</div>
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
               <Toggle label="ATCD Méningite" sub="Âge et germe si connu" active={h.previousMeningitis} color="#FFB347" onClick={()=>setH('previousMeningitis',!h.previousMeningitis)}/>
-              <Toggle label="ATCD Encéphalite" sub="Épisode antérieur" active={h.previousEncephalitis} color="#FF4757" onClick={()=>setH('previousEncephalitis',!h.previousEncephalitis)}/>
-              <Toggle label="Herpès / HSV" sub="Encéphalite ou récidives" active={h.herpesHistory} color="#FF6B8A" onClick={()=>setH('herpesHistory',!h.herpesHistory)}/>
+              <Toggle label="ATCD Encéphalite" sub="Épisode antérieur" active={h.previousEncephalitis} color="#8B5CF6" onClick={()=>setH('previousEncephalitis',!h.previousEncephalitis)}/>
+              <Toggle label="Herpès / HSV" sub="Encéphalite ou récidives" active={h.herpesHistory} color="#A78BFA" onClick={()=>setH('herpesHistory',!h.herpesHistory)}/>
               <Toggle label="COVID récent" sub="< 6 semaines" active={h.recentCovid} color="#FFB347" onClick={()=>setH('recentCovid',!h.recentCovid)}/>
               <Toggle label="EBV / CMV récent" sub="Mononucléose, CMV" active={h.recentEBVCMV} color="#FFB347" onClick={()=>setH('recentEBVCMV',!h.recentEBVCMV)}/>
-              <Toggle label="Tuberculose" sub="ATCD ou contage" active={h.tuberculosis} color="#FF4757" onClick={()=>setH('tuberculosis',!h.tuberculosis)}/>
+              <Toggle label="Tuberculose" sub="ATCD ou contage" active={h.tuberculosis} color="#8B5CF6" onClick={()=>setH('tuberculosis',!h.tuberculosis)}/>
               <Toggle label="Voyage tropical" sub="Zone endémique récente" active={h.recentTropicalTravel} color="#FFB347" onClick={()=>setH('recentTropicalTravel',!h.recentTropicalTravel)}/>
               <Toggle label="Piqûre de tique" sub="Documentée ou suspectée" active={h.tickBite} color="#FFB347" onClick={()=>setH('tickBite',!h.tickBite)}/>
             </div>
@@ -234,11 +234,11 @@ export default function IntakePage() {
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:'8px'}}>
               <Toggle label="Convulsions fébriles" sub="Épisodes antérieurs" active={h.febrileSeizuresHistory} color="#B96BFF" onClick={()=>setH('febrileSeizuresHistory',!h.febrileSeizuresHistory)}/>
               <Toggle label="Retard développement" sub="Moteur / cognitif / langage" active={h.developmentalDelay} color="#B96BFF" onClick={()=>setH('developmentalDelay',!h.developmentalDelay)}/>
-              <Toggle label="ATCD ADEM" sub="Encéphalomyélite disséminée" active={h.previousADEM} color="#FF4757" onClick={()=>setH('previousADEM',!h.previousADEM)}/>
+              <Toggle label="ATCD ADEM" sub="Encéphalomyélite disséminée" active={h.previousADEM} color="#8B5CF6" onClick={()=>setH('previousADEM',!h.previousADEM)}/>
               <Toggle label="Névrite optique" sub="Épisode antérieur" active={h.previousOpticNeuritis} color="#B96BFF" onClick={()=>setH('previousOpticNeuritis',!h.previousOpticNeuritis)}/>
               <Toggle label="Myélite transverse" sub="Épisode antérieur" active={h.previousMyelitis} color="#B96BFF" onClick={()=>setH('previousMyelitis',!h.previousMyelitis)}/>
               <Toggle label="TC récent" sub="Traumatisme crânien" active={h.recentHeadTrauma} color="#FFB347" onClick={()=>setH('recentHeadTrauma',!h.recentHeadTrauma)}/>
-              <Toggle label="Tératome ovarien" sub="Connu ou suspecté (NMDAR)" active={h.ovarianTeratoma} color="#FF4757" onClick={()=>setH('ovarianTeratoma',!h.ovarianTeratoma)}/>
+              <Toggle label="Tératome ovarien" sub="Connu ou suspecté (NMDAR)" active={h.ovarianTeratoma} color="#8B5CF6" onClick={()=>setH('ovarianTeratoma',!h.ovarianTeratoma)}/>
               <Toggle label="Kawasaki" sub="Épisode antérieur" active={h.previousKawasaki} color="#FFB347" onClick={()=>setH('previousKawasaki',!h.previousKawasaki)}/>
             </div>
 
@@ -260,7 +260,7 @@ export default function IntakePage() {
             <F label="PUPILLES"><select style={selS} value={data.pupils} onChange={e=>set('pupils',e.target.value)}><option value="reactive">Réactives</option><option value="sluggish">Paresseuses</option><option value="fixed_one">Fixée unilat.</option><option value="fixed_both">Fixes bilat.</option></select></F>
             <F label="CRISES / 24H"><input type="number" style={inputS} value={data.seizures24h} onChange={e=>num('seizures24h',e.target.value)}/></F>
             <F label="TYPE DE CRISE"><select style={selS} value={data.seizureType} onChange={e=>set('seizureType',e.target.value)}>{SEI_TYPES.map(t=><option key={t.value} value={t.value}>{t.label}</option>)}</select></F>
-            <F label="SIGNES FOCAUX" span={2}><div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>{FOCAL_SIGNS.map(f=><Chip key={f.value} label={f.label} active={(data.focalSigns||[]).includes(f.value)} color="#FF4757" onClick={()=>toggleArr('focalSigns',f.value)}/>)}</div></F>
+            <F label="SIGNES FOCAUX" span={2}><div style={{display:'flex',flexWrap:'wrap',gap:'6px'}}>{FOCAL_SIGNS.map(f=><Chip key={f.value} label={f.label} active={(data.focalSigns||[]).includes(f.value)} color="#8B5CF6" onClick={()=>toggleArr('focalSigns',f.value)}/>)}</div></F>
             <div style={{gridColumn:'span 2',borderTop:'1px solid var(--p-border)',paddingTop:'14px'}}>
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'0.5px',marginBottom:'10px'}}>CONSTANTES</div>
               <div style={{display:'grid',gridTemplateColumns:'repeat(5,1fr)',gap:'10px'}}>
@@ -419,13 +419,13 @@ export default function IntakePage() {
               </div>
               {analysis.historyAlerts.map((a,i)=>(
                 <details key={i} style={{marginBottom:'4px'}}>
-                  <summary style={{padding:'8px 12px',borderRadius:'var(--p-radius-md)',background:a.severity==='critical'?'rgba(255,71,87,0.06)':a.severity==='warning'?'rgba(255,179,71,0.06)':'rgba(108,124,255,0.04)',border:`1px solid ${a.severity==='critical'?'rgba(255,71,87,0.15)':a.severity==='warning'?'rgba(255,179,71,0.15)':'rgba(108,124,255,0.1)'}`,cursor:'pointer',fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:a.severity==='critical'?'#FF4757':a.severity==='warning'?'#FFB347':'#6C7CFF',listStyle:'none',display:'flex',alignItems:'center',gap:'6px'}}>
+                  <summary style={{padding:'8px 12px',borderRadius:'var(--p-radius-md)',background:a.severity==='critical'?'rgba(139,92,246,0.06)':a.severity==='warning'?'rgba(255,179,71,0.06)':'rgba(108,124,255,0.04)',border:`1px solid ${a.severity==='critical'?'rgba(139,92,246,0.15)':a.severity==='warning'?'rgba(255,179,71,0.15)':'rgba(108,124,255,0.1)'}`,cursor:'pointer',fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:a.severity==='critical'?'#8B5CF6':a.severity==='warning'?'#FFB347':'#6C7CFF',listStyle:'none',display:'flex',alignItems:'center',gap:'6px'}}>
                     <Picto name={a.icon} size={12}/> {a.title}
-                    <Badge label={a.severity} color={a.severity==='critical'?'#FF4757':a.severity==='warning'?'#FFB347':'#6C7CFF'}/>
+                    <Badge label={a.severity} color={a.severity==='critical'?'#8B5CF6':a.severity==='warning'?'#FFB347':'#6C7CFF'}/>
                   </summary>
                   <div style={{padding:'8px 12px',marginTop:'2px',fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)',lineHeight:1.7}}>
                     <div style={{marginBottom:'6px',color:'var(--p-text-muted)'}}>{a.detail}</div>
-                    {a.implications.map((imp,j)=><div key={j} style={{paddingLeft:'8px',borderLeft:`2px solid ${a.severity==='critical'?'rgba(255,71,87,0.2)':'rgba(108,124,255,0.1)'}`,marginBottom:'4px'}}>→ {imp}</div>)}
+                    {a.implications.map((imp,j)=><div key={j} style={{paddingLeft:'8px',borderLeft:`2px solid ${a.severity==='critical'?'rgba(139,92,246,0.2)':'rgba(108,124,255,0.1)'}`,marginBottom:'4px'}}>→ {imp}</div>)}
                   </div>
                 </details>
               ))}
@@ -456,18 +456,18 @@ export default function IntakePage() {
           {/* Red Flags */}
           {analysis.redFlags.length>0&&(
             <div>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#FF4757',letterSpacing:'1px',marginBottom:'8px'}}><Picto name="alert" size={11}/> RED FLAGS ({analysis.redFlags.length})</div>
-              {analysis.redFlags.map((rf,i)=><div key={i} style={{padding:'8px 12px',marginBottom:'4px',borderRadius:'var(--p-radius-md)',background:rf.severity==='critical'?'rgba(255,71,87,0.06)':'rgba(255,179,71,0.06)',border:`1px solid ${rf.severity==='critical'?'rgba(255,71,87,0.15)':'rgba(255,179,71,0.15)'}`,fontFamily:'var(--p-font-mono)',fontSize:'10px',color:rf.severity==='critical'?'#FF4757':'#FFB347'}}>{rf.flag} <span style={{opacity:0.5,fontSize:'8px'}}>({rf.source})</span></div>)}
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#8B5CF6',letterSpacing:'1px',marginBottom:'8px'}}><Picto name="alert" size={11}/> RED FLAGS ({analysis.redFlags.length})</div>
+              {analysis.redFlags.map((rf,i)=><div key={i} style={{padding:'8px 12px',marginBottom:'4px',borderRadius:'var(--p-radius-md)',background:rf.severity==='critical'?'rgba(139,92,246,0.06)':'rgba(255,179,71,0.06)',border:`1px solid ${rf.severity==='critical'?'rgba(139,92,246,0.15)':'rgba(255,179,71,0.15)'}`,fontFamily:'var(--p-font-mono)',fontSize:'10px',color:rf.severity==='critical'?'#8B5CF6':'#FFB347'}}>{rf.flag} <span style={{opacity:0.5,fontSize:'8px'}}>({rf.source})</span></div>)}
             </div>
           )}
 
           {/* Exam Gaps */}
           {analysis.examGaps.length>0&&(
             <div>
-              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#FF6B8A',letterSpacing:'1px',marginBottom:'8px'}}><Picto name="microscope" size={11}/> GAPS IDENTIFIÉS</div>
+              <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'#A78BFA',letterSpacing:'1px',marginBottom:'8px'}}><Picto name="microscope" size={11}/> GAPS IDENTIFIÉS</div>
               {analysis.examGaps.map((g,i)=>(
-                <div key={i} style={{padding:'10px 14px',marginBottom:'4px',borderRadius:'var(--p-radius-lg)',background:`${g.urgency==='critical'?'rgba(255,71,87,0.04)':'rgba(108,124,255,0.04)'}`,border:`1px solid ${g.urgency==='critical'?'rgba(255,71,87,0.1)':'rgba(108,124,255,0.08)'}`}}>
-                  <div style={{fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:g.urgency==='critical'?'#FF4757':'var(--p-text)',marginBottom:'4px'}}>{g.category}</div>
+                <div key={i} style={{padding:'10px 14px',marginBottom:'4px',borderRadius:'var(--p-radius-lg)',background:`${g.urgency==='critical'?'rgba(139,92,246,0.04)':'rgba(108,124,255,0.04)'}`,border:`1px solid ${g.urgency==='critical'?'rgba(139,92,246,0.1)':'rgba(108,124,255,0.08)'}`}}>
+                  <div style={{fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:g.urgency==='critical'?'#8B5CF6':'var(--p-text)',marginBottom:'4px'}}>{g.category}</div>
                   <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>
                     {g.missing.map((m,j)=><span key={j}>• {m}<br/></span>)}
                   </div>
@@ -482,7 +482,7 @@ export default function IntakePage() {
             <div>
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',fontWeight:700,color:'var(--p-text-dim)',letterSpacing:'1px',marginBottom:'8px'}}>EXAMENS RECOMMANDÉS</div>
               {analysis.examRecommendations.map((ex,i)=>{
-                const col=ex.urgency==='immediate'?'#FF4757':ex.urgency==='urgent'?'#FFA502':'#6C7CFF'
+                const col=ex.urgency==='immediate'?'#8B5CF6':ex.urgency==='urgent'?'#FFA502':'#6C7CFF'
                 return <div key={i} style={{padding:'8px 12px',marginBottom:'4px',borderRadius:'var(--p-radius-md)',background:'var(--p-bg-elevated)',display:'flex',justifyContent:'space-between',alignItems:'center'}}>
                   <div>
                     <div style={{fontFamily:'var(--p-font-mono)',fontSize:'10px',fontWeight:700,color:'var(--p-text)',display:'flex',alignItems:'center',gap:'6px'}}>

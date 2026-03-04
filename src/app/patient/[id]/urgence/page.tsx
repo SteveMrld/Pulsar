@@ -5,8 +5,8 @@ import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 
 const ABCDE = [
-  { step: 'A', label: 'Airway', desc: 'Voies aériennes libres ? Intubation nécessaire ?', color: '#FF4757' },
-  { step: 'B', label: 'Breathing', desc: 'FR, SpO₂, tirage, auscultation', color: '#FF6B8A' },
+  { step: 'A', label: 'Airway', desc: 'Voies aériennes libres ? Intubation nécessaire ?', color: '#8B5CF6' },
+  { step: 'B', label: 'Breathing', desc: 'FR, SpO₂, tirage, auscultation', color: '#A78BFA' },
   { step: 'C', label: 'Circulation', desc: 'FC, PA, TRC, accès veineux ×2', color: '#FFB347' },
   { step: 'D', label: 'Disability', desc: 'GCS, pupilles, glycémie, convulsions', color: '#6C7CFF' },
   { step: 'E', label: 'Exposure', desc: 'Température, éruption, signes méningés', color: '#B96BFF' },
@@ -41,7 +41,7 @@ export default function UrgencePage() {
     <div className="page-enter-stagger">
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
-        <Picto name="alert" size={28} glow glowColor="rgba(255,71,87,0.5)" />
+        <Picto name="alert" size={28} glow glowColor="rgba(139,92,246,0.5)" />
         <div style={{ flex: 1 }}>
           <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Mode Urgence</h1>
           <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
@@ -51,18 +51,18 @@ export default function UrgencePage() {
         {isEmergency && (
           <div className="animate-breathe" style={{
             padding: '6px 16px', borderRadius: 'var(--p-radius-full)',
-            background: 'rgba(255,71,87,0.12)', border: '1px solid rgba(255,71,87,0.25)',
-            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#FF4757',
-          }}><Picto name="alert" size={14} glow glowColor="rgba(255,71,87,0.5)" /> URGENCE ACTIVE</div>
+            background: 'rgba(139,92,246,0.12)', border: '1px solid rgba(139,92,246,0.25)',
+            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#8B5CF6',
+          }}><Picto name="alert" size={14} glow glowColor="rgba(139,92,246,0.5)" /> URGENCE ACTIVE</div>
         )}
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
 
         {/* LEFT: ABCDE Checklist */}
-        <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderTop: '3px solid #FF4757' }}>
+        <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderTop: '3px solid #8B5CF6' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#FF4757', letterSpacing: '1px' }}>STABILISATION ABCDE</span>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '1px' }}>STABILISATION ABCDE</span>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{done}/5</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -95,16 +95,16 @@ export default function UrgencePage() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
 
           {/* Current status */}
-          <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderLeft: `3px solid ${vps >= 70 ? '#FF4757' : '#6C7CFF'}` }}>
+          <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderLeft: `3px solid ${vps >= 70 ? '#8B5CF6' : '#6C7CFF'}` }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>ÉTAT PATIENT À L&apos;ARRIVÉE</div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '8px' }}>
               {[
-                { label: 'GCS', value: `${ps.neuro.gcs}/15`, color: ps.neuro.gcs <= 8 ? '#FF4757' : '#6C7CFF' },
-                { label: 'Crises/24h', value: `${ps.neuro.seizures24h}`, color: ps.neuro.seizures24h > 6 ? '#FF4757' : '#FFB347' },
-                { label: 'VPS', value: `${vps}`, color: vps >= 70 ? '#FF4757' : '#6C7CFF' },
-                { label: 'FC', value: `${ps.hemodynamics.heartRate}`, color: ps.hemodynamics.heartRate > 140 ? '#FF4757' : '#2ED573' },
-                { label: 'SpO₂', value: `${ps.hemodynamics.spo2}%`, color: ps.hemodynamics.spo2 < 95 ? '#FF4757' : '#2FD1C8' },
-                { label: 'Temp', value: `${ps.hemodynamics.temp}°C`, color: ps.hemodynamics.temp >= 38.5 ? '#FF4757' : '#B96BFF' },
+                { label: 'GCS', value: `${ps.neuro.gcs}/15`, color: ps.neuro.gcs <= 8 ? '#8B5CF6' : '#6C7CFF' },
+                { label: 'Crises/24h', value: `${ps.neuro.seizures24h}`, color: ps.neuro.seizures24h > 6 ? '#8B5CF6' : '#FFB347' },
+                { label: 'VPS', value: `${vps}`, color: vps >= 70 ? '#8B5CF6' : '#6C7CFF' },
+                { label: 'FC', value: `${ps.hemodynamics.heartRate}`, color: ps.hemodynamics.heartRate > 140 ? '#8B5CF6' : '#2ED573' },
+                { label: 'SpO₂', value: `${ps.hemodynamics.spo2}%`, color: ps.hemodynamics.spo2 < 95 ? '#8B5CF6' : '#2FD1C8' },
+                { label: 'Temp', value: `${ps.hemodynamics.temp}°C`, color: ps.hemodynamics.temp >= 38.5 ? '#8B5CF6' : '#B96BFF' },
               ].map(m => (
                 <div key={m.label} style={{ textAlign: 'center', padding: '8px', borderRadius: '8px', background: `${m.color}08` }}>
                   <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: 'var(--p-text-dim)', letterSpacing: '1px' }}>{m.label}</div>
@@ -147,16 +147,16 @@ export default function UrgencePage() {
 
           {/* Alerts */}
           {ps.alerts.filter(a => a.severity === 'critical').length > 0 && (
-            <div className="glass-card" style={{ padding: '12px', borderRadius: 'var(--p-radius-xl)', borderLeft: '3px solid #FF4757' }}>
-              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FF4757', fontWeight: 800, letterSpacing: '1px', marginBottom: '8px' }}>
+            <div className="glass-card" style={{ padding: '12px', borderRadius: 'var(--p-radius-xl)', borderLeft: '3px solid #8B5CF6' }}>
+              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#8B5CF6', fontWeight: 800, letterSpacing: '1px', marginBottom: '8px' }}>
                 ALERTES CRITIQUES
               </div>
               {ps.alerts.filter(a => a.severity === 'critical').slice(0, 4).map((a, i) => (
                 <div key={i} style={{
                   padding: '6px 8px', marginBottom: '4px', borderRadius: '6px',
-                  background: 'rgba(255,71,87,0.06)', fontSize: '10px', color: 'var(--p-text-muted)',
+                  background: 'rgba(139,92,246,0.06)', fontSize: '10px', color: 'var(--p-text-muted)',
                 }}>
-                  <span style={{ fontWeight: 700, color: '#FF4757' }}>{a.title}</span> — {a.body}
+                  <span style={{ fontWeight: 700, color: '#8B5CF6' }}>{a.title}</span> — {a.body}
                 </div>
               ))}
             </div>

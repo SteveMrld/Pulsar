@@ -17,12 +17,12 @@ const TABS: { id: Tab; label: string; icon: string; color: string }[] = [
   { id: 'eeg', label: 'EEG', icon: 'eeg', color: '#6C7CFF' },
   { id: 'irm', label: 'IRM', icon: 'brain', color: '#B96BFF' },
   { id: 'biomarkers', label: 'Biomarqueurs', icon: 'dna', color: '#2FD1C8' },
-  { id: 'redflags', label: 'Red Flags', icon: 'warning', color: '#FF4757' },
+  { id: 'redflags', label: 'Red Flags', icon: 'warning', color: '#8B5CF6' },
   { id: 'knowledge', label: 'Base de Connaissances', icon: 'books', color: '#FFB347' },
 ]
 
 const SYNDROMES: { key: SyndromeKey; label: string; color: string }[] = [
-  { key: 'FIRES', label: 'FIRES', color: '#FF4757' },
+  { key: 'FIRES', label: 'FIRES', color: '#8B5CF6' },
   { key: 'NMDAR', label: 'Anti-NMDAR', color: '#6C7CFF' },
   { key: 'MOGAD', label: 'MOGAD', color: '#2FD1C8' },
   { key: 'NORSE', label: 'NORSE', color: '#FFB347' },
@@ -30,7 +30,7 @@ const SYNDROMES: { key: SyndromeKey; label: string; color: string }[] = [
 ]
 
 const PHASE_LABELS: Record<PhaseKey, { label: string; color: string }> = {
-  acute: { label: 'Aiguë (J0-J3)', color: '#FF4757' },
+  acute: { label: 'Aiguë (J0-J3)', color: '#8B5CF6' },
   intermediate: { label: 'Intermédiaire (J4-J14)', color: '#FFA502' },
   chronic: { label: 'Chronique (>J14)', color: '#2ED573' },
 }
@@ -139,10 +139,10 @@ function EEGTab({ syndrome, phase }: { syndrome: SyndromeKey; phase: PhaseKey })
 
         {eeg.alertPatterns.length > 0 && (
           <div style={{ marginTop: '10px' }}>
-            <div style={{ fontSize: '9px', color: '#FF4757', fontFamily: 'var(--p-font-mono)', marginBottom: '4px' }}>PATTERNS D&apos;ALERTE</div>
+            <div style={{ fontSize: '9px', color: '#8B5CF6', fontFamily: 'var(--p-font-mono)', marginBottom: '4px' }}>PATTERNS D&apos;ALERTE</div>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px' }}>
               {eeg.alertPatterns.map(p => (
-                <span key={p} style={{ padding: '3px 10px', borderRadius: 'var(--p-radius-sm)', background: 'rgba(255,71,87,0.1)', color: '#FF4757', fontSize: '10px', fontFamily: 'var(--p-font-mono)', border: '1px solid rgba(255,71,87,0.2)' }}>
+                <span key={p} style={{ padding: '3px 10px', borderRadius: 'var(--p-radius-sm)', background: 'rgba(139,92,246,0.1)', color: '#8B5CF6', fontSize: '10px', fontFamily: 'var(--p-font-mono)', border: '1px solid rgba(139,92,246,0.2)' }}>
                   ⚠ {p.replace(/_/g, ' ')}
                 </span>
               ))}
@@ -172,12 +172,12 @@ function EEGTab({ syndrome, phase }: { syndrome: SyndromeKey; phase: PhaseKey })
         {syndrome === 'NMDAR' && (
           <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: '1.5' }}>
             <div>EEG anormal dans <strong style={{ color: '#6C7CFF' }}>63.6%</strong> des cas pédiatriques <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Wu 2023, n=11)</span></div>
-            <div style={{ marginTop: '4px' }}>Extreme Delta Brush associé à formes <strong style={{ color: '#FF4757' }}>plus sévères/prolongées</strong> <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Schmitt 2012; Nathoo 2021)</span></div>
+            <div style={{ marginTop: '4px' }}>Extreme Delta Brush associé à formes <strong style={{ color: '#8B5CF6' }}>plus sévères/prolongées</strong> <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Schmitt 2012; Nathoo 2021)</span></div>
           </div>
         )}
         {syndrome === 'FIRES' && (
           <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: '1.5' }}>
-            <div>Charge critique ne suit <strong style={{ color: '#FF4757' }}>PAS les rythmes circadiens</strong> classiques <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Champsas 2024)</span></div>
+            <div>Charge critique ne suit <strong style={{ color: '#8B5CF6' }}>PAS les rythmes circadiens</strong> classiques <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Champsas 2024)</span></div>
             <div style={{ marginTop: '4px' }}>AUC <strong style={{ color: '#6C7CFF' }}>0.72</strong> pour prédiction pronostic par patterns EEG à J3 <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Shakeshaft 2023)</span></div>
           </div>
         )}
@@ -254,7 +254,7 @@ function IRMTab({ syndrome, phase }: { syndrome: SyndromeKey; phase: PhaseKey })
           {syndrome === 'FIRES' && <>
             <div>IRM normale en phase aiguë : <strong style={{ color: '#B96BFF' }}>~61%</strong> pédiatrique <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Culleton 2019)</span> · <strong style={{ color: '#B96BFF' }}>~73%</strong> adulte <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Shi 2023)</span></div>
             <div>Atteinte temporale : <strong>~25%</strong> des cas <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Culleton 2019)</span></div>
-            <div>Claustrum sign : timing moyen <strong style={{ color: '#FF4757' }}>~10 jours</strong> après début SE <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Shi 2023)</span></div>
+            <div>Claustrum sign : timing moyen <strong style={{ color: '#8B5CF6' }}>~10 jours</strong> après début SE <span style={{ fontSize: '9px', color: 'var(--p-text-dim)' }}>(Shi 2023)</span></div>
             <div style={{ marginTop: '6px', padding: '6px 8px', background: 'rgba(255,165,2,0.08)', borderRadius: 'var(--p-radius-sm)', border: '1px solid rgba(255,165,2,0.15)' }}>
               <strong style={{ color: '#FFA502' }}>Imagerie avancée :</strong> DTI — FA réduite corps calleux corrèle avec déclin cognitif. PET — hypométabolisme thalamique bilatéral = biomarqueur pharmacorésistance
             </div>
@@ -298,7 +298,7 @@ function BiomarkersTab({ syndrome }: { syndrome: SyndromeKey }) {
           <div key={i} style={{ marginBottom: '10px', padding: '8px', background: 'var(--p-bg-elevated)', borderRadius: 'var(--p-radius-md)' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '11px', color: '#FFB347', marginBottom: '2px' }}>{b.marker}</div>
             <div style={{ fontSize: '11px', color: 'var(--p-text-muted)' }}>Attendu : {b.expected}</div>
-            <div style={{ fontSize: '10px', color: '#FF6B8A', marginTop: '2px' }}>Pronostic : {b.prognosticValue}</div>
+            <div style={{ fontSize: '10px', color: '#A78BFA', marginTop: '2px' }}>Pronostic : {b.prognosticValue}</div>
           </div>
         ))}
       </Card>
@@ -321,15 +321,15 @@ function RedFlagsTab({ syndrome, phase, hospDay }: { syndrome: SyndromeKey; phas
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-      <Card border="#FF4757">
-        <SectionLabel color="#FF4757">RED FLAGS — {syndrome} · {PHASE_LABELS[phase].label}</SectionLabel>
+      <Card border="#8B5CF6">
+        <SectionLabel color="#8B5CF6">RED FLAGS — {syndrome} · {PHASE_LABELS[phase].label}</SectionLabel>
         {redFlags.map((f, i) => (
           <div key={i} style={{
             display: 'flex', alignItems: 'flex-start', gap: '8px', padding: '6px 8px',
-            background: 'rgba(255,71,87,0.06)', borderRadius: 'var(--p-radius-sm)',
-            marginBottom: '4px', borderLeft: '3px solid #FF4757',
+            background: 'rgba(139,92,246,0.06)', borderRadius: 'var(--p-radius-sm)',
+            marginBottom: '4px', borderLeft: '3px solid #8B5CF6',
           }}>
-            <span style={{ color: '#FF4757', fontSize: '12px', marginTop: '1px' }}>⚠</span>
+            <span style={{ color: '#8B5CF6', fontSize: '12px', marginTop: '1px' }}>⚠</span>
             <span style={{ fontSize: '11px', color: 'var(--p-text)', lineHeight: '1.4' }}>{f}</span>
           </div>
         ))}
@@ -379,7 +379,7 @@ function KnowledgeTab({ syndrome, phase }: { syndrome: SyndromeKey; phase: Phase
         {(['firstLine', 'secondLine', 'thirdLine'] as const).map(line => {
           const items = tx[line]
           if (items.length === 0) return null
-          const colors = { firstLine: '#2ED573', secondLine: '#FFA502', thirdLine: '#FF4757' }
+          const colors = { firstLine: '#2ED573', secondLine: '#FFA502', thirdLine: '#8B5CF6' }
           const labels = { firstLine: '1ère LIGNE', secondLine: '2ème LIGNE', thirdLine: '3ème LIGNE' }
           return (
             <div key={line} style={{ marginBottom: '10px' }}>
@@ -405,8 +405,8 @@ function KnowledgeTab({ syndrome, phase }: { syndrome: SyndromeKey; phase: Phase
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
               <span style={{
                 padding: '1px 6px', borderRadius: 'var(--p-radius-sm)', fontSize: '9px', fontFamily: 'var(--p-font-mono)', fontWeight: 700,
-                background: cf.severity === 'severe' ? 'rgba(255,71,87,0.1)' : cf.severity === 'moderate' ? 'rgba(255,165,2,0.1)' : 'rgba(46,213,115,0.1)',
-                color: cf.severity === 'severe' ? '#FF4757' : cf.severity === 'moderate' ? '#FFA502' : '#2ED573',
+                background: cf.severity === 'severe' ? 'rgba(139,92,246,0.1)' : cf.severity === 'moderate' ? 'rgba(255,165,2,0.1)' : 'rgba(46,213,115,0.1)',
+                color: cf.severity === 'severe' ? '#8B5CF6' : cf.severity === 'moderate' ? '#FFA502' : '#2ED573',
               }}>{cf.severity}</span>
               <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--p-text)', textTransform: 'capitalize' }}>{cf.domain}</span>
             </div>

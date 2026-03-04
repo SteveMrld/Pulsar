@@ -42,7 +42,7 @@ export class ErrorBoundary extends Component<Props, State> {
       return (
         <div className="glass-card" style={{
           padding: '20px', borderRadius: 'var(--p-radius-xl)',
-          border: '1px solid rgba(255,71,87,0.15)',
+          border: '1px solid rgba(139,92,246,0.15)',
           textAlign: 'center',
         }}>
           <div style={{ fontSize: '20px', marginBottom: '8px' }}>⚠</div>
@@ -52,7 +52,7 @@ export class ErrorBoundary extends Component<Props, State> {
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', marginBottom: '10px' }}>
             {this.props.context ? `Module : ${this.props.context}` : 'Un composant a rencontré une erreur.'}
           </div>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FF4757', marginBottom: '12px', maxWidth: '400px', margin: '0 auto 12px' }}>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#8B5CF6', marginBottom: '12px', maxWidth: '400px', margin: '0 auto 12px' }}>
             {this.state.error?.message || 'Erreur inconnue'}
           </div>
           <button

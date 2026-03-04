@@ -180,7 +180,7 @@ export default function ExportPage() {
           {/* Latest vitals */}
           {sections.vitals && data?.latestVitals && (
             <div className="print-page" style={{ marginBottom: '16px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 800, color: '#FF6B8A', letterSpacing: '0.5px', marginBottom: '8px', borderBottom: '1px solid #FF6B8A40', paddingBottom: '4px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#A78BFA', letterSpacing: '0.5px', marginBottom: '8px', borderBottom: '1px solid #A78BFA40', paddingBottom: '4px' }}>
                 DERNIÈRES CONSTANTES
                 <span style={{ fontWeight: 400, marginLeft: '8px', fontSize: '9px' }}>
                   ({new Date(data.latestVitals.recorded_at).toLocaleString('fr-FR')})
@@ -256,12 +256,12 @@ export default function ExportPage() {
           {/* Active alerts */}
           {sections.alerts && data && data.alerts.length > 0 && (
             <div className="print-page" style={{ marginBottom: '16px' }}>
-              <div style={{ fontSize: '12px', fontWeight: 800, color: '#FF4757', letterSpacing: '0.5px', marginBottom: '8px', borderBottom: '1px solid #FF475740', paddingBottom: '4px' }}>
+              <div style={{ fontSize: '12px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '0.5px', marginBottom: '8px', borderBottom: '1px solid #8B5CF640', paddingBottom: '4px' }}>
                 ALERTES ACTIVES ({data.alerts.length})
               </div>
               {data.alerts.map(a => (
                 <div key={a.id} style={{ fontSize: '10px', padding: '3px 0', borderBottom: '1px solid var(--p-dark-4)' }}>
-                  <strong style={{ color: a.severity === 'critical' ? '#FF4757' : '#FFB347' }}>
+                  <strong style={{ color: a.severity === 'critical' ? '#8B5CF6' : '#FFB347' }}>
                     [{a.severity.toUpperCase()}]
                   </strong> {a.title} {a.body ? `— ${a.body}` : ''}
                 </div>

@@ -2,7 +2,7 @@
 // PULSAR V15 — EWE Engine (Early Warning Engine)
 // Moteur de prévention — Que va-t-il se passer dans 6-24h ?
 // Micro-signaux, vélocité des changements, fenêtres de risque
-// Couleur identitaire : #FF6B8A (rose)
+// Couleur identitaire : #A78BFA (rose)
 // ============================================================
 
 import { BrainCore, SemanticField } from './BrainCore'
@@ -18,7 +18,7 @@ export class EWEEngine extends BrainCore {
     // ── Champ 1 : Vélocité neurologique ──
     // Pas le niveau absolu mais la VITESSE de changement
     this.semanticFields.push(new SemanticField({
-      name: 'Vélocité neurologique', category: 'neuro_velocity', color: '#FF6B8A',
+      name: 'Vélocité neurologique', category: 'neuro_velocity', color: '#A78BFA',
       signals: [
         {
           name: 'Delta GCS', weight: 3,
@@ -116,7 +116,7 @@ export class EWEEngine extends BrainCore {
 
     // ── Champ 4 (V16) : Signaux d'alerte neuro-monitoring (×2.5) ──
     this.semanticFields.push(new SemanticField({
-      name: 'Alerte neuro-monitoring', category: 'neuro_alert', color: '#FF4757',
+      name: 'Alerte neuro-monitoring', category: 'neuro_alert', color: '#8B5CF6',
       signals: [
         { name: 'Tendance EEG', weight: 3, extract: ps => ps.eeg?.trend, normalize: v => ({ worsening: 100, stable: 20, improving: 0 }[v as string] || 0) },
         { name: 'NCSE actif', weight: 3, extract: ps => ps.eeg?.NCSEstatus, normalize: v => v === true ? 100 : 0 },

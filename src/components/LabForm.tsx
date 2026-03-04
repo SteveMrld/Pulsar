@@ -31,7 +31,7 @@ const FIELDS = [
 ] as const
 
 const SECTIONS: { key: string; label: string; color: string }[] = [
-  { key: 'inflammatoire', label: 'INFLAMMATOIRE / NFS', color: '#FF6B8A' },
+  { key: 'inflammatoire', label: 'INFLAMMATOIRE / NFS', color: '#A78BFA' },
   { key: 'lcr', label: 'LCR', color: '#6C7CFF' },
   { key: 'metabolique', label: 'MÉTABOLIQUE', color: '#FFB347' },
   { key: 'hepatique', label: 'HÉPATIQUE', color: '#2ED573' },
@@ -152,7 +152,7 @@ export default function LabForm({ patientId, onSaved }: LabFormProps) {
           {saving ? 'Enregistrement...' : saved ? '✓ Enregistré' : 'Enregistrer la biologie'}
         </button>
         {error && (
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757' }}>{error}</span>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6' }}>{error}</span>
         )}
       </div>
     </div>

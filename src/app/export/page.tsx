@@ -31,7 +31,7 @@ export default function ExportPage() {
     { name: 'VPS', score: vps.synthesis.score, color: '#6C7CFF' },
     { name: 'TDE', score: tde.synthesis.score, color: '#2FD1C8' },
     { name: 'PVE', score: pve.synthesis.score, color: '#B96BFF' },
-    { name: 'EWE', score: ewe.synthesis.score, color: '#FF6B8A' },
+    { name: 'EWE', score: ewe.synthesis.score, color: '#A78BFA' },
     { name: 'TPE', score: tpe.synthesis.score, color: '#FFB347' },
   ]
 
@@ -47,7 +47,7 @@ export default function ExportPage() {
       h1{font-size:18px;border-bottom:2px solid #6C7CFF;padding-bottom:8px;margin-bottom:16px}
       h2{font-size:14px;color:#6C7CFF;margin:16px 0 8px;border-bottom:1px solid #eee;padding-bottom:4px}
       .score-box{display:inline-block;padding:4px 12px;border-radius:6px;font-weight:700;font-family:monospace;margin:2px 4px}
-      .alert{padding:6px 12px;border-left:3px solid #FF4757;margin:4px 0;background:#fff5f5;border-radius:4px}
+      .alert{padding:6px 12px;border-left:3px solid #8B5CF6;margin:4px 0;background:#fff5f5;border-radius:4px}
       .alert.warning{border-color:#FFA502;background:#fff8e8}
       .reco{padding:6px 12px;margin:4px 0;background:#f8f9fa;border-radius:4px}
       table{width:100%;border-collapse:collapse;margin:8px 0}

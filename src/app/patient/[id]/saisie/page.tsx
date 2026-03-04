@@ -58,19 +58,19 @@ function VitalsHistory({ patientId }: { patientId: string }) {
             {history.map(v => {
               const time = new Date(v.recorded_at).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
               const date = new Date(v.recorded_at).toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' })
-              const gcsColor = (v.gcs || 15) <= 8 ? '#FF4757' : (v.gcs || 15) <= 12 ? '#FFB347' : 'var(--p-text)'
+              const gcsColor = (v.gcs || 15) <= 8 ? '#8B5CF6' : (v.gcs || 15) <= 12 ? '#FFB347' : 'var(--p-text)'
               return (
                 <tr key={v.id} style={{ borderBottom: '1px solid var(--p-dark-4)' }}>
                   <td style={{ padding: '5px 6px', color: 'var(--p-text-dim)' }}>{date} {time}</td>
                   <td style={{ textAlign: 'center', color: gcsColor, fontWeight: 800 }}>{fmt(v.gcs)}</td>
-                  <td style={{ textAlign: 'center', color: v.pupils === 'fixed_both' ? '#FF4757' : 'var(--p-text-dim)' }}>
+                  <td style={{ textAlign: 'center', color: v.pupils === 'fixed_both' ? '#8B5CF6' : 'var(--p-text-dim)' }}>
                     {v.pupils === 'reactive' ? '○○' : v.pupils === 'sluggish' ? '◐◐' : v.pupils === 'fixed_one' ? '●○' : v.pupils === 'fixed_both' ? '●●' : '—'}
                   </td>
-                  <td style={{ textAlign: 'center', color: (v.seizures_24h || 0) > 3 ? '#FF4757' : 'var(--p-text)' }}>{v.seizures_24h || 0}</td>
+                  <td style={{ textAlign: 'center', color: (v.seizures_24h || 0) > 3 ? '#8B5CF6' : 'var(--p-text)' }}>{v.seizures_24h || 0}</td>
                   <td style={{ textAlign: 'center' }}>{fmt(v.heart_rate)}</td>
                   <td style={{ textAlign: 'center' }}>{v.sbp && v.dbp ? `${v.sbp}/${v.dbp}` : '—'}</td>
-                  <td style={{ textAlign: 'center', color: (v.spo2 || 100) < 92 ? '#FF4757' : 'var(--p-text)' }}>{fmt(v.spo2)}</td>
-                  <td style={{ textAlign: 'center', color: (v.temp || 37) >= 38.5 ? '#FF4757' : 'var(--p-text)' }}>{fmtT(v.temp)}</td>
+                  <td style={{ textAlign: 'center', color: (v.spo2 || 100) < 92 ? '#8B5CF6' : 'var(--p-text)' }}>{fmt(v.spo2)}</td>
+                  <td style={{ textAlign: 'center', color: (v.temp || 37) >= 38.5 ? '#8B5CF6' : 'var(--p-text)' }}>{fmtT(v.temp)}</td>
                   <td style={{ textAlign: 'center' }}>{fmt(v.resp_rate)}</td>
                 </tr>
               )
@@ -101,7 +101,7 @@ function LabHistory({ patientId }: { patientId: string }) {
   const fmt = (v: number | null | undefined) => v != null ? String(v) : ''
   const highlight = (v: number | null | undefined, lo: number, hi: number) => {
     if (v == null) return 'var(--p-text-dim)'
-    return v < lo || v > hi ? '#FF4757' : 'var(--p-text)'
+    return v < lo || v > hi ? '#8B5CF6' : 'var(--p-text)'
   }
 
   return (
@@ -158,7 +158,7 @@ export default function SaisiePage() {
   return (
     <div className="page-enter-stagger">
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
-        <Picto name="edit" size={28} glow glowColor="rgba(255,107,138,0.5)" />
+        <Picto name="edit" size={28} glow glowColor="rgba(167,139,250,0.5)" />
         <div>
           <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Saisie temps réel</h1>
           <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>

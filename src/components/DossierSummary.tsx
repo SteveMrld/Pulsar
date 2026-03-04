@@ -60,12 +60,12 @@ export default function DossierSummary({ patientId }: { patientId: string }) {
     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
       {/* Alertes critiques */}
       {critAlerts.length > 0 && (
-        <div className="glass-card" style={{ padding: '12px', borderRadius: 'var(--p-radius-xl)', border: '1px solid #FF475730' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#FF4757', letterSpacing: '0.5px', marginBottom: '6px' }}>
+        <div className="glass-card" style={{ padding: '12px', borderRadius: 'var(--p-radius-xl)', border: '1px solid #8B5CF630' }}>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '0.5px', marginBottom: '6px' }}>
             ⚠ {critAlerts.length} ALERTE{critAlerts.length > 1 ? 'S' : ''} CRITIQUE{critAlerts.length > 1 ? 'S' : ''}
           </div>
           {critAlerts.slice(0, 3).map(a => (
-            <div key={a.id} style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757', padding: '2px 0' }}>
+            <div key={a.id} style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6', padding: '2px 0' }}>
               {a.title}
             </div>
           ))}
@@ -75,19 +75,19 @@ export default function DossierSummary({ patientId }: { patientId: string }) {
       {/* Dernières constantes */}
       {vitals && (
         <div className="glass-card" style={{ padding: '12px', borderRadius: 'var(--p-radius-xl)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#FF6B8A', letterSpacing: '0.5px', marginBottom: '6px' }}>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#A78BFA', letterSpacing: '0.5px', marginBottom: '6px' }}>
             DERNIÈRES CONSTANTES
             <span style={{ fontWeight: 400, marginLeft: '6px', color: 'var(--p-text-dim)' }}>
               {new Date(vitals.recorded_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
             </span>
           </div>
-          {kv('GCS', fmt(vitals.gcs), vitals.gcs && vitals.gcs <= 8 ? '#FF4757' : undefined)}
-          {kv('Pupilles', vitals.pupils || '—', vitals.pupils === 'fixed_both' ? '#FF4757' : undefined)}
-          {kv('Crises /24h', String(vitals.seizures_24h || 0), vitals.seizures_24h > 3 ? '#FF4757' : undefined)}
+          {kv('GCS', fmt(vitals.gcs), vitals.gcs && vitals.gcs <= 8 ? '#8B5CF6' : undefined)}
+          {kv('Pupilles', vitals.pupils || '—', vitals.pupils === 'fixed_both' ? '#8B5CF6' : undefined)}
+          {kv('Crises /24h', String(vitals.seizures_24h || 0), vitals.seizures_24h > 3 ? '#8B5CF6' : undefined)}
           {kv('FC', fmt(vitals.heart_rate, ' bpm'))}
           {kv('PA', vitals.sbp && vitals.dbp ? `${vitals.sbp}/${vitals.dbp}` : '—')}
-          {kv('SpO₂', fmt(vitals.spo2, '%'), vitals.spo2 && vitals.spo2 < 92 ? '#FF4757' : undefined)}
-          {kv('T°', fmtT(vitals.temp), vitals.temp && vitals.temp >= 38.5 ? '#FF4757' : undefined)}
+          {kv('SpO₂', fmt(vitals.spo2, '%'), vitals.spo2 && vitals.spo2 < 92 ? '#8B5CF6' : undefined)}
+          {kv('T°', fmtT(vitals.temp), vitals.temp && vitals.temp >= 38.5 ? '#8B5CF6' : undefined)}
         </div>
       )}
 
@@ -100,11 +100,11 @@ export default function DossierSummary({ patientId }: { patientId: string }) {
               {new Date(labs.recorded_at).toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}
             </span>
           </div>
-          {labs.crp != null && kv('CRP', `${labs.crp} mg/L`, labs.crp > 50 ? '#FF4757' : undefined)}
+          {labs.crp != null && kv('CRP', `${labs.crp} mg/L`, labs.crp > 50 ? '#8B5CF6' : undefined)}
           {labs.wbc != null && kv('GB', `${labs.wbc} G/L`)}
-          {labs.lactate != null && kv('Lactate', `${labs.lactate} mmol/L`, labs.lactate > 2 ? '#FF4757' : undefined)}
+          {labs.lactate != null && kv('Lactate', `${labs.lactate} mmol/L`, labs.lactate > 2 ? '#8B5CF6' : undefined)}
           {labs.csf_cells != null && kv('LCR cellules', `${labs.csf_cells} /mm³`, labs.csf_cells > 10 ? '#FFB347' : undefined)}
-          {labs.ferritin != null && kv('Ferritine', `${labs.ferritin} ng/mL`, labs.ferritin > 500 ? '#FF4757' : undefined)}
+          {labs.ferritin != null && kv('Ferritine', `${labs.ferritin} ng/mL`, labs.ferritin > 500 ? '#8B5CF6' : undefined)}
         </div>
       )}
 

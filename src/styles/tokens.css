@@ -30,7 +30,7 @@
   --p-pve:         #B96BFF;
   --p-pve-dim:     rgba(185, 107, 255, 0.15);
   --p-pve-glow:    rgba(185, 107, 255, 0.30);
-  --p-ewe:         #FF6B8A;
+  --p-ewe:         #A78BFA;
   --p-ewe-dim:     rgba(255, 107, 138, 0.15);
   --p-ewe-glow:    rgba(255, 107, 138, 0.30);
   --p-tpe:         #FFB347;
@@ -43,8 +43,8 @@
   --p-disc-glow:   rgba(16, 185, 129, 0.30);
 
   /* ── Sémantique alertes ── */
-  --p-critical:    #FF4757;
-  --p-critical-bg: rgba(255, 71, 87, 0.12);
+  --p-critical:    #8B5CF6;
+  --p-critical-bg: rgba(139, 92, 246, 0.12);
   --p-warning:     #FFA502;
   --p-warning-bg:  rgba(255, 165, 2, 0.12);
   --p-success:     #2ED573;
@@ -374,8 +374,8 @@ body {
   50%      { opacity: 1; }
 }
 @keyframes critical-pulse {
-  0%, 100% { box-shadow: 0 0 8px var(--p-critical), inset 0 0 8px rgba(255,71,87,0.1); }
-  50%      { box-shadow: 0 0 24px var(--p-critical), inset 0 0 16px rgba(255,71,87,0.15); }
+  0%, 100% { box-shadow: 0 0 8px var(--p-critical), inset 0 0 8px rgba(139,92,246,0.1); }
+  50%      { box-shadow: 0 0 24px var(--p-critical), inset 0 0 16px rgba(139,92,246,0.15); }
 }
 @keyframes slide-up {
   from { opacity: 0; transform: translateY(20px); }

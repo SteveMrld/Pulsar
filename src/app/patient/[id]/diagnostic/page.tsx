@@ -23,7 +23,7 @@ const FIRES_CRITERIA = [
 function Gauge({ value, max, label, color, size = 100 }: { value: number; max: number; label: string; color: string; size?: number }) {
   const pct = Math.min(1, value / max)
   const r = (size - 12) / 2, circ = 2 * Math.PI * r, off = circ * (1 - pct)
-  const lc = pct >= 0.7 ? '#FF4757' : pct >= 0.5 ? '#FFA502' : pct >= 0.25 ? color : '#2ED573'
+  const lc = pct >= 0.7 ? '#8B5CF6' : pct >= 0.5 ? '#FFA502' : pct >= 0.25 ? color : '#2ED573'
   return (
     <div style={{ textAlign: 'center' }}>
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
@@ -102,10 +102,10 @@ export default function DiagnosticPage() {
           )}
 
           {/* Scoring FIRES */}
-          <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderTop: '3px solid #FF4757' }}>
+          <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderTop: '3px solid #8B5CF6' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#FF4757', letterSpacing: '1px' }}>CRITÈRES FIRES</span>
-              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 800, color: firesScore >= 8 ? '#FF4757' : firesScore >= 5 ? '#FFA502' : '#6C7CFF' }}>
+              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '1px' }}>CRITÈRES FIRES</span>
+              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 800, color: firesScore >= 8 ? '#8B5CF6' : firesScore >= 5 ? '#FFA502' : '#6C7CFF' }}>
                 {firesScore}/13
               </span>
             </div>
@@ -114,17 +114,17 @@ export default function DiagnosticPage() {
                 <div key={i} style={{
                   display: 'flex', alignItems: 'center', gap: '8px',
                   padding: '5px 8px', borderRadius: '6px',
-                  background: c.met ? 'rgba(255,71,87,0.06)' : 'transparent',
+                  background: c.met ? 'rgba(139,92,246,0.06)' : 'transparent',
                   opacity: c.met ? 1 : 0.4,
                 }}>
                   <div style={{
                     width: '16px', height: '16px', borderRadius: '50%',
-                    background: c.met ? '#FF4757' : 'var(--p-dark-4)',
+                    background: c.met ? '#8B5CF6' : 'var(--p-dark-4)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center',
                     fontSize: '8px', color: 'white', fontWeight: 800,
                   }}>{c.met ? '✓' : ''}</div>
                   <span style={{ flex: 1, fontSize: '10px', color: 'var(--p-text-muted)' }}>{c.label}</span>
-                  <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: c.met ? '#FF4757' : 'var(--p-text-dim)' }}>+{c.pts}</span>
+                  <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: c.met ? '#8B5CF6' : 'var(--p-text-dim)' }}>+{c.pts}</span>
                 </div>
               ))}
             </div>
@@ -135,9 +135,9 @@ export default function DiagnosticPage() {
             <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)' }}>
               {redFlags.length > 0 && (
                 <div style={{ marginBottom: traps.length > 0 ? '12px' : 0 }}>
-                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FF4757', fontWeight: 800, letterSpacing: '1px', marginBottom: '6px' }}>⚠ RED FLAGS</div>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#8B5CF6', fontWeight: 800, letterSpacing: '1px', marginBottom: '6px' }}>⚠ RED FLAGS</div>
                   {redFlags.map((rf, i) => (
-                    <div key={i} style={{ padding: '5px 8px', fontSize: '10px', color: '#FF4757', background: 'rgba(255,71,87,0.05)', borderRadius: '4px', marginBottom: '3px' }}>
+                    <div key={i} style={{ padding: '5px 8px', fontSize: '10px', color: '#8B5CF6', background: 'rgba(139,92,246,0.05)', borderRadius: '4px', marginBottom: '3px' }}>
                       {rf}
                     </div>
                   ))}
@@ -160,7 +160,7 @@ export default function DiagnosticPage() {
         {/* RIGHT: Gauges + Missing data */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px' }}>
-            <Gauge value={firesScore} max={13} label="FIRES" color="#FF4757" />
+            <Gauge value={firesScore} max={13} label="FIRES" color="#8B5CF6" />
             <Gauge value={vps} max={100} label="VPS" color="#6C7CFF" />
           </div>
 

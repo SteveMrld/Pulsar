@@ -84,10 +84,10 @@ const ROLE_LABELS: Record<UserRole, string> = {
 }
 
 const ROLE_COLORS: Record<UserRole, string> = {
-  admin: '#FF4757',
+  admin: '#8B5CF6',
   senior: '#6C7CFF',
   intern: '#2FD1C8',
-  nurse: '#FF6B8A',
+  nurse: '#A78BFA',
   viewer: '#FFB347',
 }
 

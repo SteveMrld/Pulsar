@@ -4,7 +4,7 @@ import type { RegistryRow } from '@/lib/data/observatoryTypes'
 import Picto from '@/components/Picto'
 
 const COLORS: Record<string, string> = {
-  FIRES: '#FF4757', EAIS: '#6C7CFF', NORSE: '#FF6B8A', PIMS: '#2FD1C8', MOGAD: '#FFB347',
+  FIRES: '#8B5CF6', EAIS: '#6C7CFF', NORSE: '#A78BFA', PIMS: '#2FD1C8', MOGAD: '#FFB347',
 }
 
 // Mercator projection: lat/lon → SVG x/y

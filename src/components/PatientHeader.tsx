@@ -12,7 +12,7 @@ interface PatientHeaderProps {
 
 export default function PatientHeader({ ps, patientId, patientName }: PatientHeaderProps) {
   const vps = ps.vpsResult?.synthesis.score ?? 0
-  const vpsColor = vps >= 70 ? '#FF4757' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
+  const vpsColor = vps >= 70 ? '#8B5CF6' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
   const vpsLevel = vps >= 70 ? 'CRITIQUE' : vps >= 50 ? 'SÉVÈRE' : vps >= 30 ? 'MODÉRÉ' : 'STABLE'
   const critAlerts = ps.alerts.filter(a => a.severity === 'critical').length
   const syndrome = ps.csf.antibodies === 'nmdar' ? 'Anti-NMDAR'
@@ -25,7 +25,7 @@ export default function PatientHeader({ ps, patientId, patientName }: PatientHea
     <div style={{
       position: 'sticky', top: 0, zIndex: 100,
       background: 'rgba(10,10,18,0.92)', backdropFilter: 'blur(16px)',
-      borderBottom: `1px solid ${critAlerts > 0 ? 'rgba(255,71,87,0.15)' : 'rgba(108,124,255,0.06)'}`,
+      borderBottom: `1px solid ${critAlerts > 0 ? 'rgba(139,92,246,0.15)' : 'rgba(108,124,255,0.06)'}`,
       padding: '8px 20px',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
@@ -53,8 +53,8 @@ export default function PatientHeader({ ps, patientId, patientName }: PatientHea
             {critAlerts > 0 && (
               <div className="dot-critical" style={{
                 position: 'absolute', top: '-2px', right: '-2px',
-                width: '8px', height: '8px', background: '#FF4757',
-                boxShadow: '0 0 6px rgba(255,71,87,0.6)',
+                width: '8px', height: '8px', background: '#8B5CF6',
+                boxShadow: '0 0 6px rgba(139,92,246,0.6)',
               }} />
             )}
           </div>
@@ -78,7 +78,7 @@ export default function PatientHeader({ ps, patientId, patientName }: PatientHea
                 {syndrome}
               </span>
               <span style={{ color: 'rgba(108,124,255,0.15)' }}>|</span>
-              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: ps.hospDay <= 3 ? '#FF4757' : 'var(--p-text-dim)', fontWeight: 600 }}>
+              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: ps.hospDay <= 3 ? '#8B5CF6' : 'var(--p-text-dim)', fontWeight: 600 }}>
                 J+{ps.hospDay}
               </span>
               <span style={{ color: 'rgba(108,124,255,0.15)' }}>|</span>
@@ -94,10 +94,10 @@ export default function PatientHeader({ ps, patientId, patientName }: PatientHea
           <div className="animate-breathe" style={{
             display: 'flex', alignItems: 'center', gap: '6px',
             padding: '4px 12px', borderRadius: '8px',
-            background: 'rgba(255,71,87,0.08)', border: '1px solid rgba(255,71,87,0.2)',
+            background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.2)',
           }}>
-            <Picto name="warning" size={14} glow glowColor="rgba(255,71,87,0.4)" />
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: '#FF4757' }}>
+            <Picto name="warning" size={14} glow glowColor="rgba(139,92,246,0.4)" />
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: '#8B5CF6' }}>
               {critAlerts} ALERTE{critAlerts > 1 ? 'S' : ''} CRITIQUE{critAlerts > 1 ? 'S' : ''}
             </span>
           </div>
@@ -107,8 +107,8 @@ export default function PatientHeader({ ps, patientId, patientName }: PatientHea
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Link href={`/patient/${patientId}/cockpit`} style={{
             padding: '5px 12px', borderRadius: '8px', textDecoration: 'none',
-            background: 'rgba(255,71,87,0.08)', border: '1px solid rgba(255,71,87,0.15)',
-            fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#FF4757',
+            background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)',
+            fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#8B5CF6',
             letterSpacing: '0.5px',
           }}>COCKPIT</Link>
           <Link href={`/patient/${patientId}/synthese`} style={{

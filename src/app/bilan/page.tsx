@@ -71,7 +71,7 @@ function getPriority(ps: PatientState, keys: string[]): 'urgent' | 'high' | 'nor
 }
 
 const priorityConfig = {
-  urgent: { label: 'URGENT', color: 'var(--p-critical)', bg: 'rgba(255,71,87,0.12)' },
+  urgent: { label: 'URGENT', color: 'var(--p-critical)', bg: 'rgba(139,92,246,0.12)' },
   high: { label: 'PRIORITAIRE', color: 'var(--p-warning)', bg: 'rgba(255,179,71,0.12)' },
   normal: { label: '', color: '', bg: '' },
 }
@@ -143,7 +143,7 @@ export default function BilanPage() {
           </div>
         </div>
         {urgentCount > 0 && (
-          <div style={{ padding: '6px 14px', borderRadius: 'var(--p-radius-lg)', background: 'rgba(255,71,87,0.1)', border: '1px solid rgba(255,71,87,0.3)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ padding: '6px 14px', borderRadius: 'var(--p-radius-lg)', background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.3)', display: 'flex', alignItems: 'center', gap: '6px' }}>
             <Picto name="alert" size={14} glow glowColor="var(--p-critical)" />
             <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--p-critical)', fontFamily: 'var(--p-font-mono)' }}>{urgentCount} URGENT</span>
           </div>
@@ -175,7 +175,7 @@ export default function BilanPage() {
                   <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: cat.color }}>{cat.name}</div>
                   <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>{catDone}/{cat.exams.length}</div>
                 </div>
-                {catUrgent > 0 && <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: 'var(--p-radius-full)', background: 'rgba(255,71,87,0.15)', color: 'var(--p-critical)', fontWeight: 700, fontFamily: 'var(--p-font-mono)' }}>{catUrgent} URG</span>}
+                {catUrgent > 0 && <span style={{ fontSize: '9px', padding: '2px 6px', borderRadius: 'var(--p-radius-full)', background: 'rgba(139,92,246,0.15)', color: 'var(--p-critical)', fontWeight: 700, fontFamily: 'var(--p-font-mono)' }}>{catUrgent} URG</span>}
                 {catPct === 100 && <span style={{ fontSize: '10px', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', background: 'rgba(46,213,115,0.15)', color: 'var(--p-success)', fontWeight: 700 }}>COMPLET</span>}
               </div>
               <div style={{ height: '2px', background: 'var(--p-gray-1)', borderRadius: '1px', overflow: 'hidden', marginBottom: 'var(--p-space-3)' }}>

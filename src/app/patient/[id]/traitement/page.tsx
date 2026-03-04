@@ -36,7 +36,7 @@ export default function TraitementPage() {
       case 'complete': return '#2ED573'
       case 'good': return '#2FD1C8'
       case 'partial': return '#FFB347'
-      case 'none': return '#FF4757'
+      case 'none': return '#8B5CF6'
       default: return 'var(--p-text-dim)'
     }
   }
@@ -127,7 +127,7 @@ export default function TraitementPage() {
           <SectionTitle title="RECOMMANDATIONS THÉRAPEUTIQUES" color="#2FD1C8" icon="shield" />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {tde.synthesis.recommendations.map((r, i) => {
-              const prioColor = r.priority === 'urgent' ? '#FF4757' : r.priority === 'high' ? '#FFB347' : r.priority === 'medium' ? '#6C7CFF' : '#2ED573'
+              const prioColor = r.priority === 'urgent' ? '#8B5CF6' : r.priority === 'high' ? '#FFB347' : r.priority === 'medium' ? '#6C7CFF' : '#2ED573'
               return (
                 <div key={i} className="glass-card" style={{
                   padding: '14px 16px', borderRadius: 'var(--p-radius-lg)',
@@ -155,16 +155,16 @@ export default function TraitementPage() {
       {/* ── PHARMACOVIGILANCE PVE ── */}
       {pve && pve.synthesis.alerts.length > 0 && (
         <>
-          <SectionTitle title="PHARMACOVIGILANCE" color="#FF6B8A" icon="alert" />
+          <SectionTitle title="PHARMACOVIGILANCE" color="#A78BFA" icon="alert" />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {pve.synthesis.alerts.map((a, i) => (
               <div key={i} className="glass-card" style={{
                 padding: '14px 16px', borderRadius: 'var(--p-radius-lg)',
-                borderLeft: `3px solid ${a.severity === 'critical' ? '#FF4757' : '#FFB347'}`,
-                background: a.severity === 'critical' ? 'rgba(255,71,87,0.03)' : undefined,
+                borderLeft: `3px solid ${a.severity === 'critical' ? '#8B5CF6' : '#FFB347'}`,
+                background: a.severity === 'critical' ? 'rgba(139,92,246,0.03)' : undefined,
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800, color: a.severity === 'critical' ? '#FF4757' : '#FFB347' }}>{a.severity === 'critical' ? 'CRITIQUE' : 'ATTENTION'}</span>
+                  <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800, color: a.severity === 'critical' ? '#8B5CF6' : '#FFB347' }}>{a.severity === 'critical' ? 'CRITIQUE' : 'ATTENTION'}</span>
                   <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--p-text)' }}>{a.title}</span>
                 </div>
                 <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', marginTop: '4px', lineHeight: 1.5 }}>{a.body}</div>

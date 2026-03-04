@@ -31,7 +31,7 @@ function VPSGauge({ score, size = 52 }: { score: number; size?: number }) {
   const r = (size - 8) / 2
   const c = 2 * Math.PI * r
   const offset = c - (Math.min(score, 100) / 100) * c * 0.75
-  const color = score >= 70 ? '#FF4757' : score >= 50 ? '#FFA502' : score >= 30 ? '#FFB347' : '#2ED573'
+  const color = score >= 70 ? '#8B5CF6' : score >= 50 ? '#FFA502' : score >= 30 ? '#FFB347' : '#2ED573'
 
   return (
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-225deg)' }}>
@@ -166,10 +166,10 @@ export default function SilhouetteNeon({ sex, vitals, vpsScore, compact = false 
   const h = compact ? 340 : 440
   const [active, setActive] = useState<string | null>(null)
 
-  const levelColor = vpsScore >= 70 ? '#FF4757' : vpsScore >= 50 ? '#FFA502' : vpsScore >= 30 ? '#FFB347' : '#2ED573'
+  const levelColor = vpsScore >= 70 ? '#8B5CF6' : vpsScore >= 50 ? '#FFA502' : vpsScore >= 30 ? '#FFB347' : '#2ED573'
   const level = vpsScore >= 70 ? 'CRITIQUE' : vpsScore >= 50 ? 'SÉVÈRE' : vpsScore >= 30 ? 'MODÉRÉ' : 'STABLE'
   const maxSev = Math.max(...vitals.map(v => v.severity), 0)
-  const partColor = maxSev >= 2 ? '#FF4757' : maxSev >= 1 ? '#FFA502' : '#6C7CFF'
+  const partColor = maxSev >= 2 ? '#8B5CF6' : maxSev >= 1 ? '#FFA502' : '#6C7CFF'
 
   return (
     <div className="glass-card" style={{
@@ -243,7 +243,7 @@ export default function SilhouetteNeon({ sex, vitals, vpsScore, compact = false 
                 padding: compact ? '7px 10px' : '9px 12px',
                 borderRadius: '10px',
                 background: isAct ? `${v.color}12` : `${v.color}06`,
-                borderLeft: `3px solid ${v.severity >= 2 ? '#FF4757' : v.color}`,
+                borderLeft: `3px solid ${v.severity >= 2 ? '#8B5CF6' : v.color}`,
                 cursor: 'pointer',
                 transform: isAct ? 'scale(1.02)' : 'scale(1)',
                 boxShadow: isAct ? `0 0 16px ${v.color}15` : 'none',
@@ -268,9 +268,9 @@ export default function SilhouetteNeon({ sex, vitals, vpsScore, compact = false 
 
                 <div style={{
                   fontFamily: 'var(--p-font-mono)', fontSize: compact ? 11 : 12,
-                  color: v.severity >= 2 ? '#FF4757' : v.severity >= 1 ? '#FFA502' : 'var(--p-text-muted)',
+                  color: v.severity >= 2 ? '#8B5CF6' : v.severity >= 1 ? '#FFA502' : 'var(--p-text-muted)',
                   fontWeight: v.severity >= 1 ? 700 : 500,
-                  textShadow: v.severity >= 2 ? '0 0 8px rgba(255,71,87,0.3)' : 'none',
+                  textShadow: v.severity >= 2 ? '0 0 8px rgba(139,92,246,0.3)' : 'none',
                 }}>{v.value}</div>
 
                 {v.severity >= 1 && (
@@ -278,8 +278,8 @@ export default function SilhouetteNeon({ sex, vitals, vpsScore, compact = false 
                     <div style={{
                       height: '100%', borderRadius: 1,
                       width: v.severity >= 2 ? '100%' : '60%',
-                      background: v.severity >= 2 ? '#FF4757' : '#FFA502',
-                      boxShadow: `0 0 6px ${v.severity >= 2 ? 'rgba(255,71,87,0.5)' : 'rgba(255,165,2,0.5)'}`,
+                      background: v.severity >= 2 ? '#8B5CF6' : '#FFA502',
+                      boxShadow: `0 0 6px ${v.severity >= 2 ? 'rgba(139,92,246,0.5)' : 'rgba(255,165,2,0.5)'}`,
                       transition: 'width 0.6s var(--p-ease)',
                     }} />
                   </div>

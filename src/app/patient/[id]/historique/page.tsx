@@ -11,19 +11,19 @@ import Picto from '@/components/Picto'
 
 const TYPE_CONFIG: Record<string, { icon: string; color: string; label: string }> = {
   admission:  { icon: 'transfer', color: '#6C7CFF', label: 'Admission' },
-  vitals:     { icon: 'heart',    color: '#FF6B8A', label: 'Constantes' },
+  vitals:     { icon: 'heart',    color: '#A78BFA', label: 'Constantes' },
   lab:        { icon: 'blood',    color: '#B96BFF', label: 'Biologie' },
   medication: { icon: 'pill',     color: '#2FD1C8', label: 'Médicament' },
   treatment:  { icon: 'pill',     color: '#2FD1C8', label: 'Traitement' },
   engine:     { icon: 'brain',    color: '#FFB347', label: 'Moteur IA' },
-  alert:      { icon: 'alert',    color: '#FF4757', label: 'Alerte' },
+  alert:      { icon: 'alert',    color: '#8B5CF6', label: 'Alerte' },
   exam:       { icon: 'microscope', color: '#B96BFF', label: 'Examen' },
   note:       { icon: 'note',     color: '#6C7CFF', label: 'Note' },
   discharge:  { icon: 'transfer', color: '#2ED573', label: 'Sortie' },
 }
 
 const SEVERITY_COLORS: Record<string, string> = {
-  critical: '#FF4757', warning: '#FFB347', info: 'var(--p-text-dim)', success: '#2ED573',
+  critical: '#8B5CF6', warning: '#FFB347', info: 'var(--p-text-dim)', success: '#2ED573',
 }
 
 const CATEGORY_LABELS: Record<string, string> = {
@@ -50,7 +50,7 @@ function ScoreChart({ points, color, label, maxScore = 100 }: {
             {latest.score}
           </span>
           {trend !== 0 && (
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: trend > 0 ? '#FF4757' : '#2ED573' }}>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: trend > 0 ? '#8B5CF6' : '#2ED573' }}>
               {trend > 0 ? '▲' : '▼'}{Math.abs(trend)}
             </span>
           )}
@@ -90,7 +90,7 @@ function GcsChart({ points }: { points: { gcs: number; day: number }[] }) {
   return (
     <ScoreChart
       points={points.map(p => ({ score: p.gcs, day: p.day }))}
-      color="#FF6B8A" label="GCS" maxScore={15}
+      color="#A78BFA" label="GCS" maxScore={15}
     />
   )
 }
@@ -192,7 +192,7 @@ export default function HistoriquePage() {
 
   const filters = [
     { key: 'all', label: 'Tout', color: 'var(--p-text)' },
-    { key: 'clinical', label: 'Clinique', color: '#FF6B8A' },
+    { key: 'clinical', label: 'Clinique', color: '#A78BFA' },
     { key: 'diagnostic', label: 'Diagnostic', color: '#B96BFF' },
     { key: 'therapeutic', label: 'Thérapeutique', color: '#2FD1C8' },
     { key: 'system', label: 'Système', color: '#6C7CFF' },
@@ -209,7 +209,7 @@ export default function HistoriquePage() {
   const sortedDays = Object.keys(dayGroups).map(Number).sort((a, b) => b - a)
 
   const ENGINE_COLORS: Record<string, string> = {
-    VPS: '#FF4757', TDE: '#2FD1C8', PVE: '#FFB347', EWE: '#6C7CFF', TPE: '#B96BFF',
+    VPS: '#8B5CF6', TDE: '#2FD1C8', PVE: '#FFB347', EWE: '#6C7CFF', TPE: '#B96BFF',
   }
 
   return (

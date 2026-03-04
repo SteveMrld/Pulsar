@@ -137,7 +137,7 @@ function Trace({ data, color, w, h, alert: isAlert, speed = 1.3, thick }: {
       ctx.beginPath(); ctx.moveTo(0, h / 2); ctx.lineTo(w, h / 2); ctx.stroke()
 
       const b = buf.current, step = w / b.length, mid = h / 2, amp = h * 0.42
-      const tc = isAlert ? '#FF4757' : color
+      const tc = isAlert ? '#8B5CF6' : color
       const sweepIdx = Math.floor(off.current) % b.length
 
       /* Glow layer (wider, dimmer) */
@@ -216,13 +216,13 @@ function VitalBox({ v, w }: { v: VitalSign; w: number }) {
   useEffect(() => { setData(gen()); const iv = setInterval(() => setData(gen()), 3500); return () => clearInterval(iv) }, [gen])
 
   const isCrit = v.severity === 2, isWarn = v.severity === 1
-  const vc = isCrit ? '#FF4757' : isWarn ? '#FFA502' : v.color
+  const vc = isCrit ? '#8B5CF6' : isWarn ? '#FFA502' : v.color
 
   return (
     <div style={{
       background: 'rgba(3,3,8,0.6)', borderRadius: '10px', padding: '10px 12px',
-      border: `1px solid ${isCrit ? 'rgba(255,71,87,0.3)' : isWarn ? 'rgba(255,165,2,0.15)' : 'rgba(108,124,255,0.06)'}`,
-      boxShadow: isCrit ? '0 0 20px rgba(255,71,87,0.1), inset 0 0 12px rgba(255,71,87,0.03)' : 'none',
+      border: `1px solid ${isCrit ? 'rgba(139,92,246,0.3)' : isWarn ? 'rgba(255,165,2,0.15)' : 'rgba(108,124,255,0.06)'}`,
+      boxShadow: isCrit ? '0 0 20px rgba(139,92,246,0.1), inset 0 0 12px rgba(139,92,246,0.03)' : 'none',
       position: 'relative', overflow: 'hidden',
     }}>
       {/* Scanlines micro */}
@@ -232,7 +232,7 @@ function VitalBox({ v, w }: { v: VitalSign; w: number }) {
       {/* Label + alert */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', position: 'relative' }}>
         <span style={{ fontSize: '9px', fontFamily: 'var(--p-font-mono)', color: v.color, fontWeight: 700, letterSpacing: '1.5px' }}>{v.label}</span>
-        {isCrit && <span style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: '#FF4757', fontWeight: 800, letterSpacing: '1px' }} className="animate-breathe">ALERTE</span>}
+        {isCrit && <span style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: '#8B5CF6', fontWeight: 800, letterSpacing: '1px' }} className="animate-breathe">ALERTE</span>}
         {isWarn && <span style={{ fontSize: '7px', fontFamily: 'var(--p-font-mono)', color: '#FFA502', fontWeight: 700, letterSpacing: '0.5px' }}>VIGIL.</span>}
       </div>
 
@@ -247,7 +247,7 @@ function VitalBox({ v, w }: { v: VitalSign; w: number }) {
       <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px', position: 'relative', marginTop: '4px' }}>
         <span style={{
           fontSize: '24px', fontWeight: 900, fontFamily: 'var(--p-font-mono)',
-          color: vc, textShadow: isCrit ? '0 0 14px rgba(255,71,87,0.5)' : `0 0 10px ${v.color}20`,
+          color: vc, textShadow: isCrit ? '0 0 14px rgba(139,92,246,0.5)' : `0 0 10px ${v.color}20`,
           letterSpacing: '-0.5px', lineHeight: 1,
         }}>{v.value}</span>
         <span style={{ fontSize: '10px', color: 'rgba(180,180,200,0.4)', fontFamily: 'var(--p-font-mono)', fontWeight: 500 }}>{v.unit}</span>
@@ -262,7 +262,7 @@ function VitalBox({ v, w }: { v: VitalSign; w: number }) {
 function MetricPill({ label, value, suffix, th, icon }: {
   label: string; value: number; suffix?: string; th: [number, number]; icon?: string
 }) {
-  const c = value > th[1] ? '#FF4757' : value > th[0] ? '#FFA502' : '#2ED573'
+  const c = value > th[1] ? '#8B5CF6' : value > th[0] ? '#FFA502' : '#2ED573'
   const bars = Array.from({ length: 6 }, (_, i) => Math.random() * 0.6 + 0.2)
 
   return (
@@ -305,12 +305,12 @@ const CHANNELS = [
   { label: 'T3-T5', seed: 0.7 }, { label: 'T5-O1', seed: 1.0 },
   { label: 'Fp2-F8', seed: 1.3 }, { label: 'F8-T4', seed: 1.6 },
 ]
-const CH_COLORS = ['#6C7CFF', '#2FD1C8', '#B96BFF', '#FFB347', '#6C7CFF', '#FF6B8A']
+const CH_COLORS = ['#6C7CFF', '#2FD1C8', '#B96BFF', '#FFB347', '#6C7CFF', '#A78BFA']
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
   normal: { label: 'NORMAL', color: '#2ED573' },
   slowing: { label: 'RALENTISSEMENT', color: '#FFA502' },
-  seizure: { label: 'ACTIVITÉ CRITIQUE', color: '#FF4757' },
-  burst_suppression: { label: 'BURST-SUPPRESSION', color: '#FF6B8A' },
+  seizure: { label: 'ACTIVITÉ CRITIQUE', color: '#8B5CF6' },
+  burst_suppression: { label: 'BURST-SUPPRESSION', color: '#A78BFA' },
   suppressed: { label: 'SUPPRIMÉ', color: '#6C7CFF' },
 }
 
@@ -351,9 +351,9 @@ export default function BrainMonitor({
     <div style={{
       background: 'linear-gradient(160deg, rgba(3,3,8,0.98), rgba(6,6,16,0.98) 50%, rgba(4,4,12,0.98))',
       borderRadius: '14px', overflow: 'hidden', position: 'relative',
-      border: `1px solid ${crit && flash ? 'rgba(255,71,87,0.25)' : 'rgba(108,124,255,0.08)'}`,
+      border: `1px solid ${crit && flash ? 'rgba(139,92,246,0.25)' : 'rgba(108,124,255,0.08)'}`,
       boxShadow: crit
-        ? `0 0 50px rgba(255,71,87,${flash ? '0.12' : '0.04'}), 0 8px 40px rgba(0,0,0,0.6)`
+        ? `0 0 50px rgba(139,92,246,${flash ? '0.12' : '0.04'}), 0 8px 40px rgba(0,0,0,0.6)`
         : '0 8px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(108,124,255,0.04)',
       transition: 'box-shadow 0.4s, border-color 0.4s',
     }}>
@@ -369,8 +369,8 @@ export default function BrainMonitor({
       <div style={{
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
         padding: '10px 18px',
-        borderBottom: `1px solid ${crit && flash ? 'rgba(255,71,87,0.12)' : 'rgba(108,124,255,0.06)'}`,
-        background: crit && flash ? 'rgba(255,71,87,0.025)' : 'rgba(108,124,255,0.01)',
+        borderBottom: `1px solid ${crit && flash ? 'rgba(139,92,246,0.12)' : 'rgba(108,124,255,0.06)'}`,
+        background: crit && flash ? 'rgba(139,92,246,0.025)' : 'rgba(108,124,255,0.01)',
         position: 'relative', zIndex: 3,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -383,8 +383,8 @@ export default function BrainMonitor({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div className="dot-alive" style={{
             width: '6px', height: '6px',
-            background: crit ? '#FF4757' : '#2ED573',
-            boxShadow: `0 0 8px ${crit ? 'rgba(255,71,87,0.6)' : 'rgba(46,213,115,0.5)'}`,
+            background: crit ? '#8B5CF6' : '#2ED573',
+            boxShadow: `0 0 8px ${crit ? 'rgba(139,92,246,0.6)' : 'rgba(46,213,115,0.5)'}`,
           }} />
           <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '13px', color: '#6C7CFF', fontWeight: 700, letterSpacing: '1px' }}>{clock}</span>
         </div>
@@ -401,19 +401,19 @@ export default function BrainMonitor({
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             width: '7px', height: '7px', borderRadius: '50%',
-            background: crit ? '#FF4757' : '#2ED573',
-            boxShadow: `0 0 6px ${crit ? 'rgba(255,71,87,0.5)' : 'rgba(46,213,115,0.4)'}`,
+            background: crit ? '#8B5CF6' : '#2ED573',
+            boxShadow: `0 0 6px ${crit ? 'rgba(139,92,246,0.5)' : 'rgba(46,213,115,0.4)'}`,
           }} className="animate-breathe" />
           <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '13px', color: 'var(--p-white)' }}>{patientName}</span>
           <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '0.3px', display: 'flex', alignItems: 'center', gap: '4px' }}>
-            {age} <span style={{ opacity: 0.3 }}>·</span> {syndrome} <span style={{ opacity: 0.3 }}>·</span> <span style={{ display: 'inline-flex' }}><Picto name="eeg" size={11} /></span> <span style={{ opacity: 0.3 }}>·</span> <span style={{ color: crit ? '#FF4757' : '#6C7CFF', fontWeight: 700 }}>J+{hospDay}</span>
+            {age} <span style={{ opacity: 0.3 }}>·</span> {syndrome} <span style={{ opacity: 0.3 }}>·</span> <span style={{ display: 'inline-flex' }}><Picto name="eeg" size={11} /></span> <span style={{ opacity: 0.3 }}>·</span> <span style={{ color: crit ? '#8B5CF6' : '#6C7CFF', fontWeight: 700 }}>J+{hospDay}</span>
           </span>
           {ncsePossible && (
             <span className="animate-breathe" style={{
               fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800, letterSpacing: '1px',
               padding: '3px 8px', borderRadius: '4px', marginLeft: '4px',
-              background: 'rgba(255,71,87,0.12)', color: '#FF4757', border: '1px solid rgba(255,71,87,0.25)',
-              boxShadow: '0 0 8px rgba(255,71,87,0.1)',
+              background: 'rgba(139,92,246,0.12)', color: '#8B5CF6', border: '1px solid rgba(139,92,246,0.25)',
+              boxShadow: '0 0 8px rgba(139,92,246,0.1)',
             }}>NCSE ?</span>
           )}
         </div>
@@ -446,14 +446,14 @@ export default function BrainMonitor({
             <div style={{
               display: 'flex', alignItems: 'center', gap: '8px',
               marginBottom: '10px', padding: '6px 10px',
-              background: 'rgba(255,71,87,0.06)', borderRadius: '8px',
-              border: '1px solid rgba(255,71,87,0.15)',
+              background: 'rgba(139,92,246,0.06)', borderRadius: '8px',
+              border: '1px solid rgba(139,92,246,0.15)',
             }}>
               <span className="animate-breathe" style={{
                 fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800,
                 padding: '3px 10px', borderRadius: '4px', letterSpacing: '1px',
-                background: 'rgba(255,71,87,0.15)', color: '#FF4757',
-                border: '1px solid rgba(255,71,87,0.25)',
+                background: 'rgba(139,92,246,0.15)', color: '#8B5CF6',
+                border: '1px solid rgba(139,92,246,0.25)',
               }}>▲ ALERTE</span>
               <span style={{
                 fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800,
@@ -464,12 +464,12 @@ export default function BrainMonitor({
               <span style={{
                 marginLeft: 'auto',
                 fontFamily: 'var(--p-font-mono)', fontSize: '20px', fontWeight: 900,
-                color: '#FF4757', textShadow: '0 0 10px rgba(255,71,87,0.3)',
+                color: '#8B5CF6', textShadow: '0 0 10px rgba(139,92,246,0.3)',
               }}>={vpsScore}</span>
               {/* Mini sparkline */}
               <svg width="24" height="14" viewBox="0 0 24 14" style={{ opacity: 0.4, flexShrink: 0 }}>
                 {[0.4, 0.6, 0.3, 0.8, 0.5, 0.9, 0.7, 0.4].map((d, i) => (
-                  <rect key={i} x={i * 3} y={14 - d * 14} width="2" height={d * 14} rx="0.5" fill="#FF4757" />
+                  <rect key={i} x={i * 3} y={14 - d * 14} width="2" height={d * 14} rx="0.5" fill="#8B5CF6" />
                 ))}
               </svg>
             </div>
@@ -492,17 +492,17 @@ export default function BrainMonitor({
                   <span style={{
                     width: '42px', textAlign: 'right',
                     fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 600,
-                    color: isSeiz ? 'rgba(255,71,87,0.7)' : 'rgba(180,180,200,0.2)',
+                    color: isSeiz ? 'rgba(139,92,246,0.7)' : 'rgba(180,180,200,0.2)',
                     letterSpacing: '0.3px',
                   }}>{ch.label}</span>
                   <div style={{
                     background: 'rgba(0,0,0,0.3)', borderRadius: '3px', overflow: 'hidden',
-                    border: isSeiz ? '1px solid rgba(255,71,87,0.15)' : '1px solid rgba(108,124,255,0.02)',
+                    border: isSeiz ? '1px solid rgba(139,92,246,0.15)' : '1px solid rgba(108,124,255,0.02)',
                   }}>
                     {bufs[i] && (
                       <Trace
                         data={bufs[i]}
-                        color={isSeiz ? '#FF4757' : CH_COLORS[i]}
+                        color={isSeiz ? '#8B5CF6' : CH_COLORS[i]}
                         w={trW} h={trH}
                         alert={isSeiz}
                         speed={1.2 + i * 0.08}
@@ -540,9 +540,9 @@ export default function BrainMonitor({
             <Link href="/neurocore?tab=redflags" style={{
               marginLeft: 'auto', fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
               padding: '8px 16px', borderRadius: '8px', textDecoration: 'none',
-              background: 'rgba(255,71,87,0.08)', color: '#FF4757',
-              border: '1px solid rgba(255,71,87,0.18)',
-              boxShadow: '0 0 8px rgba(255,71,87,0.06)',
+              background: 'rgba(139,92,246,0.08)', color: '#8B5CF6',
+              border: '1px solid rgba(139,92,246,0.18)',
+              boxShadow: '0 0 8px rgba(139,92,246,0.06)',
               transition: 'all 0.2s', whiteSpace: 'nowrap',
             }}>Red Flags →</Link>
           </div>
@@ -557,7 +557,7 @@ export default function BrainMonitor({
           }}>
             <div style={{
               fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800,
-              color: 'rgba(255,107,138,0.45)', letterSpacing: '2px', marginBottom: '2px',
+              color: 'rgba(167,139,250,0.45)', letterSpacing: '2px', marginBottom: '2px',
             }}>CONSTANTES VITALES</div>
             {vitals.map((v, i) => <VitalBox key={i} v={v} w={226} />)}
             <Link href="/neurocore" style={{

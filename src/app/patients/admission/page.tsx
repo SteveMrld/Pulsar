@@ -11,7 +11,7 @@ import Picto from '@/components/Picto'
 
 const STEPS = [
   { id: 1, label: 'Identité', icon: 'heart', color: '#6C7CFF' },
-  { id: 2, label: 'Clinique', icon: 'brain', color: '#FF6B8A' },
+  { id: 2, label: 'Clinique', icon: 'brain', color: '#A78BFA' },
   { id: 3, label: 'Examens', icon: 'microscope', color: '#B96BFF' },
   { id: 4, label: 'Validation', icon: 'shield', color: '#2ED573' },
 ]
@@ -182,12 +182,12 @@ export default function AdmissionPage() {
               </Field>
 
               <div style={{ gridColumn: 'span 2', borderBottom: '1px solid var(--p-border)', paddingBottom: '4px', marginBottom: '4px' }}>
-                <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#FF6B8A', letterSpacing: '1px' }}>NEUROLOGIQUE</span>
+                <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 800, color: '#A78BFA', letterSpacing: '1px' }}>NEUROLOGIQUE</span>
               </div>
 
               <Field label="Glasgow (GCS)">
                 <input type="number" min="3" max="15" style={inputStyle} value={form.gcs} onChange={e => set('gcs', e.target.value)} />
-                {parseInt(form.gcs) <= 8 && <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757', marginTop: '4px', display: 'block', fontWeight: 700 }}>GCS CRITIQUE</span>}
+                {parseInt(form.gcs) <= 8 && <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6', marginTop: '4px', display: 'block', fontWeight: 700 }}>GCS CRITIQUE</span>}
               </Field>
               <Field label="Crises / 24h">
                 <input type="number" min="0" style={inputStyle} value={form.seizures24h} onChange={e => set('seizures24h', e.target.value)} />
@@ -294,9 +294,9 @@ export default function AdmissionPage() {
                     {ageFromBirthDate()} · {form.sex === 'female' ? '♀' : form.sex === 'male' ? '♂' : '?'} · {form.weight || '?'} kg
                   </div>
                 </div>
-                <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-lg)', borderLeft: '3px solid #FF6B8A' }}>
+                <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-lg)', borderLeft: '3px solid #A78BFA' }}>
                   <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '6px' }}>NEURO</div>
-                  <div style={{ fontSize: '14px', fontWeight: 700, color: parseInt(form.gcs) <= 8 ? '#FF4757' : 'var(--p-text)' }}>GCS {form.gcs}/15</div>
+                  <div style={{ fontSize: '14px', fontWeight: 700, color: parseInt(form.gcs) <= 8 ? '#8B5CF6' : 'var(--p-text)' }}>GCS {form.gcs}/15</div>
                   <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', marginTop: '2px' }}>
                     {form.seizures24h} crise{parseInt(form.seizures24h) > 1 ? 's' : ''}/24h · {form.seizureType || 'non précisé'}
                   </div>

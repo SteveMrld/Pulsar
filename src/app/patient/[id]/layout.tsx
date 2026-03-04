@@ -69,7 +69,7 @@ function PatientHeader() {
           <LangToggle />
           <RoleBadge />
           {info.allergies.length > 0 && (
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FF4757', fontWeight: 700 }}>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#8B5CF6', fontWeight: 700 }}>
               ⚠ {info.allergies.join(', ')}
             </span>
           )}
@@ -96,7 +96,7 @@ function PatientHeader() {
 
         {/* GCS */}
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '16px', fontWeight: 900, color: ps.neuro.gcs <= 8 ? '#FF4757' : 'var(--p-text)', lineHeight: 1 }}>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '16px', fontWeight: 900, color: ps.neuro.gcs <= 8 ? '#8B5CF6' : 'var(--p-text)', lineHeight: 1 }}>
             {ps.neuro.gcs}
           </div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '7px', color: 'var(--p-text-dim)', letterSpacing: '0.5px' }}>GCS</div>
@@ -116,10 +116,10 @@ function PatientHeader() {
           <div style={{
             display: 'flex', alignItems: 'center', gap: '4px',
             padding: '4px 10px', borderRadius: 'var(--p-radius-md)',
-            background: 'rgba(255,71,87,0.08)', border: '1px solid rgba(255,71,87,0.15)',
+            background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)',
           }}>
             <span style={{ fontSize: '12px' }}>⚠</span>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 800, color: '#FF4757' }}>{criticalAlerts}</span>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 800, color: '#8B5CF6' }}>{criticalAlerts}</span>
           </div>
         )}
       </div>
@@ -164,7 +164,7 @@ function PatientTabs() {
                 position: 'absolute', top: '4px', right: '4px',
                 width: t.badge === '!' ? '14px' : 'auto', height: '14px',
                 borderRadius: t.badge === '!' ? '50%' : 'var(--p-radius-full)',
-                background: t.badge === '!' ? '#FF4757' : `${t.color}20`,
+                background: t.badge === '!' ? '#8B5CF6' : `${t.color}20`,
                 color: t.badge === '!' ? 'white' : t.color,
                 fontSize: '7px', fontWeight: 800,
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -187,7 +187,7 @@ function TimelineDrawer({ open, onClose }: { open: boolean; onClose: () => void 
 
   const severityColor = (s?: string) => {
     switch (s) {
-      case 'critical': return '#FF4757'
+      case 'critical': return '#8B5CF6'
       case 'warning': return '#FFB347'
       case 'success': return '#2ED573'
       default: return '#6C7CFF'

@@ -42,13 +42,13 @@ interface PatientSummary {
 }
 
 const PHASE_COLORS: Record<string, string> = {
-  acute: '#FF4757', stabilization: '#FFA502', monitoring: '#FFB347', recovery: '#2ED573',
+  acute: '#8B5CF6', stabilization: '#FFA502', monitoring: '#FFB347', recovery: '#2ED573',
 }
 const PHASE_LABELS: Record<string, string> = {
   acute: 'Aigu', stabilization: 'Stabilisation', monitoring: 'Surveillance', recovery: 'Récupération',
 }
 const TRIAGE_COLORS: Record<string, string> = {
-  P1: '#FF4757', P2: '#FFA502', P3: '#FFB347', P4: '#2ED573',
+  P1: '#8B5CF6', P2: '#FFA502', P3: '#FFB347', P4: '#2ED573',
 }
 
 function StatCard({ value, label, color, icon, sub }: {
@@ -156,7 +156,7 @@ export default function DashboardPage() {
             room: p.room || '—',
             hospDay,
             vps,
-            vpsColor: vps >= 70 ? '#FF4757' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573',
+            vpsColor: vps >= 70 ? '#8B5CF6' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573',
             triage: triage.priority,
             triageColor: TRIAGE_COLORS[triage.priority] || '#FFB347',
             critAlerts: crit,
@@ -223,9 +223,9 @@ export default function DashboardPage() {
           {/* Stats cards */}
           <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginBottom: '16px' }}>
             <StatCard value={stats.total} label="PATIENTS ACTIFS" color="#6C7CFF" icon="heart" />
-            <StatCard value={stats.avgVps} label="VPS MOYEN" color={stats.avgVps >= 50 ? '#FF4757' : '#2ED573'} icon="brain" sub="/100" />
-            <StatCard value={stats.critAlerts} label="ALERTES CRITIQUES" color="#FF4757" icon="alert" sub={`+ ${stats.warnAlerts} warning`} />
-            <StatCard value={stats.gcsBelow8} label="GCS ≤ 8" color={stats.gcsBelow8 > 0 ? '#FF4757' : '#2ED573'} icon="brain" />
+            <StatCard value={stats.avgVps} label="VPS MOYEN" color={stats.avgVps >= 50 ? '#8B5CF6' : '#2ED573'} icon="brain" sub="/100" />
+            <StatCard value={stats.critAlerts} label="ALERTES CRITIQUES" color="#8B5CF6" icon="alert" sub={`+ ${stats.warnAlerts} warning`} />
+            <StatCard value={stats.gcsBelow8} label="GCS ≤ 8" color={stats.gcsBelow8 > 0 ? '#8B5CF6' : '#2ED573'} icon="brain" />
           </div>
 
           {/* Phase + Triage distribution */}
@@ -246,13 +246,13 @@ export default function DashboardPage() {
 
           {/* Critical alerts */}
           {critAlerts.length > 0 && (
-            <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', marginBottom: '16px', border: '1px solid #FF475720' }}>
-              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#FF4757', letterSpacing: '0.5px', marginBottom: '8px' }}>
+            <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', marginBottom: '16px', border: '1px solid #8B5CF620' }}>
+              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '0.5px', marginBottom: '8px' }}>
                 ⚠ ALERTES CRITIQUES NON RÉSOLUES ({critAlerts.length})
               </div>
               {critAlerts.slice(0, 5).map(a => (
                 <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--p-dark-4)' }}>
-                  <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FF4757', fontWeight: 700 }}>
+                  <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6', fontWeight: 700 }}>
                     {a.title}
                   </span>
                   <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)' }}>
@@ -312,7 +312,7 @@ export default function DashboardPage() {
                           {p.triage}
                         </span>
                         {p.critAlerts > 0 && (
-                          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: '#FF4757', fontWeight: 800 }}>
+                          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: '#8B5CF6', fontWeight: 800 }}>
                             ⚠ {p.critAlerts}
                           </span>
                         )}

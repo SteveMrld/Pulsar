@@ -204,7 +204,7 @@ export interface IntakeAnalysis {
 
 // ── Syndrome colors ──
 const SYNDROME_COLORS: Record<SyndromeKey, string> = {
-  FIRES: '#FF4757', NORSE: '#FF6B8A', NMDAR: '#6C7CFF', MOGAD: '#B96BFF', PIMS: '#FFB347',
+  FIRES: '#8B5CF6', NORSE: '#A78BFA', NMDAR: '#6C7CFF', MOGAD: '#B96BFF', PIMS: '#FFB347',
 }
 
 // ── Default history ──
@@ -1059,7 +1059,7 @@ function analyzeExams(d: IntakeData, h: MedicalHistory, diffs: DiagnosisCandidat
 // ═══════════════════════════════════════════════════════════════
 
 const TRIAGE_LEVELS: Record<TriagePriority, { label: string; color: string; maxDelay: string }> = {
-  P1: { label: 'Immédiat',     color: '#FF4757', maxDelay: '< 15 min' },
+  P1: { label: 'Immédiat',     color: '#8B5CF6', maxDelay: '< 15 min' },
   P2: { label: 'Urgent',       color: '#FFA502', maxDelay: '< 30 min' },
   P3: { label: 'Semi-urgent',  color: '#FFB347', maxDelay: '< 1h' },
   P4: { label: 'Standard',     color: '#2ED573', maxDelay: 'File normale' },

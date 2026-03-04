@@ -41,11 +41,11 @@ export const ENRICHMENT_COLORS: Record<EnrichmentSeverity, string> = {
   info: '#6C7CFF',
   suggestion: '#10B981',
   alert: '#FFA502',
-  critical: '#FF4757',
+  critical: '#8B5CF6',
 }
 
 export const RECOMMENDATION_LABELS: Record<string, { label: string; icon: string; color: string }> = {
-  escalate: { label: 'ESCALADE', icon: '⬆', color: '#FF4757' },
+  escalate: { label: 'ESCALADE', icon: '⬆', color: '#8B5CF6' },
   maintain: { label: 'MAINTENIR', icon: '→', color: '#2ED573' },
   de_escalate: { label: 'DÉSESCALADE', icon: '⬇', color: '#3B82F6' },
   add_therapy: { label: 'AJOUT THÉRAPIE', icon: '+', color: '#B96BFF' },

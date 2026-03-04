@@ -26,7 +26,7 @@ export interface PhaseInfo {
 }
 
 export const PHASES: Record<ClinicalPhase, PhaseInfo> = {
-  acute:         { id: 'acute',         label: 'Phase aiguë', labelEn: 'Acute Phase',       color: '#FF4757', dayRange: 'J0–J3',  description: 'Urgence · Stabilisation · Bilan initial' },
+  acute:         { id: 'acute',         label: 'Phase aiguë', labelEn: 'Acute Phase',       color: '#8B5CF6', dayRange: 'J0–J3',  description: 'Urgence · Stabilisation · Bilan initial' },
   stabilization: { id: 'stabilization', label: 'Stabilisation', labelEn: 'Stabilization',     color: '#FFB347', dayRange: 'J3–J7',  description: 'Ajustement thérapeutique · Monitoring renforcé' },
   monitoring:    { id: 'monitoring',    label: 'Monitoring', labelEn: 'Monitoring',        color: '#6C7CFF', dayRange: 'J7–J14', description: 'Suivi évolutif · Réévaluation · Prospection' },
   recovery:      { id: 'recovery',      label: 'Récupération', labelEn: 'Recovery',     color: '#2ED573', dayRange: 'J14+',   description: 'Consolidation · Préparation sortie · Suivi long' },
@@ -108,12 +108,12 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
 
   const allTabs: TabConfig[] = [
     {
-      id: 'cockpit',     label: 'Cockpit', labelEn: 'Cockpit',     icon: 'heart',      color: '#FF4757',
+      id: 'cockpit',     label: 'Cockpit', labelEn: 'Cockpit',     icon: 'heart',      color: '#8B5CF6',
       available: true, priority: 1,
       pulsing: vps >= 70,
     },
     {
-      id: 'urgence',     label: 'Urgence', labelEn: 'Emergency',     icon: 'alert',      color: '#FF6B8A',
+      id: 'urgence',     label: 'Urgence', labelEn: 'Emergency',     icon: 'alert',      color: '#A78BFA',
       available: phase === 'acute' || hasAlerts, priority: 2,
       badge: hasAlerts ? '!' : undefined,
       pulsing: hasAlerts,
@@ -144,7 +144,7 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
       available: true, priority: 8,
     },
     {
-      id: 'saisie',      label: 'Saisie', labelEn: 'Data Entry',      icon: 'edit',       color: '#FF6B8A',
+      id: 'saisie',      label: 'Saisie', labelEn: 'Data Entry',      icon: 'edit',       color: '#A78BFA',
       available: true, priority: 9,
     },
     {
@@ -298,7 +298,7 @@ export function PatientProvider({ id, children }: { id: string; children: ReactN
         const tabs = buildTabs(phase, ps)
         const timeline = buildTimeline(ps, info)
 
-        const vpsColor = vps >= 70 ? '#FF4757' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
+        const vpsColor = vps >= 70 ? '#8B5CF6' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
         const vpsLevel = vps >= 70 ? 'CRITIQUE' : vps >= 50 ? 'SÉVÈRE' : vps >= 30 ? 'MODÉRÉ' : 'STABLE'
 
         const allRecs = [
@@ -355,7 +355,7 @@ export function PatientProvider({ id, children }: { id: string; children: ReactN
     const tabs = buildTabs(phase, ps)
     const timeline = buildTimeline(ps, info)
 
-    const vpsColor = vps >= 70 ? '#FF4757' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
+    const vpsColor = vps >= 70 ? '#8B5CF6' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
     const vpsLevel = vps >= 70 ? 'CRITIQUE' : vps >= 50 ? 'SÉVÈRE' : vps >= 30 ? 'MODÉRÉ' : 'STABLE'
 
     const allRecs = [
@@ -391,7 +391,7 @@ export function PatientProvider({ id, children }: { id: string; children: ReactN
   if (!value) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--p-bg)' }}>
-        <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', color: '#FF4757' }}>
+        <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', color: '#8B5CF6' }}>
           Patient introuvable
         </div>
       </div>

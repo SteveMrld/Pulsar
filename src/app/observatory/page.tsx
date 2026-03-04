@@ -20,7 +20,7 @@ type Tab = 'overview' | 'signals' | 'registry' | 'evidence' | 'epidemio'
 
 const TABS: { id: Tab; label: string; icon: string; color: string }[] = [
   { id: 'overview', label: 'Vue d\'ensemble', icon: 'brain', color: '#6C7CFF' },
-  { id: 'epidemio', label: 'Contexte Épidémio', icon: 'virus', color: '#FF6B8A' },
+  { id: 'epidemio', label: 'Contexte Épidémio', icon: 'virus', color: '#A78BFA' },
   { id: 'signals', label: 'Signal Lab', icon: 'alert', color: '#FFB347' },
   { id: 'registry', label: 'Registre mondial', icon: 'heart', color: '#2FD1C8' },
   { id: 'evidence', label: 'Evidence Library', icon: 'clipboard', color: '#B96BFF' },
@@ -58,8 +58,8 @@ export default function ObservatoryPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div style={{
             padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
-            background: 'rgba(255,71,87,0.08)', border: '1px solid rgba(255,71,87,0.15)',
-            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: '#FF4757',
+            background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)',
+            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: '#8B5CF6',
           }}>{SIGNALS.filter(s => s.status === 'active').length} signal actif</div>
           <div style={{
             padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
@@ -102,7 +102,7 @@ export default function ObservatoryPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '10px' }}>
               {[
                 { label: 'Pathologies', value: '5', color: '#6C7CFF', sub: 'FIRES · EAIS · NORSE · PIMS · MOGAD' },
-                { label: 'Signaux actifs', value: String(SIGNALS.filter(s => s.status === 'active').length), color: '#FF4757', sub: `${SIGNALS.length} total monitorés` },
+                { label: 'Signaux actifs', value: String(SIGNALS.filter(s => s.status === 'active').length), color: '#8B5CF6', sub: `${SIGNALS.length} total monitorés` },
                 { label: 'Cas registre', value: String(REGISTRY.length), color: '#2FD1C8', sub: `${new Set(REGISTRY.map(r => r.country)).size} pays` },
                 { label: 'Publications', value: String(EVIDENCE.length), color: '#B96BFF', sub: 'Références sourcées' },
               ].map((kpi, i) => (

@@ -36,7 +36,7 @@ function MiniGauge({ score, color, size = 48 }: { score: number; color: string; 
 // ── Discovery Engine Panel (signals relevant to current patient) ──
 
 const DISC = '#10B981'
-const STRENGTH_COLORS: Record<string, string> = { very_strong: '#FF4757', strong: '#FFA502', moderate: '#6C7CFF', weak: '#8E8EA3' }
+const STRENGTH_COLORS: Record<string, string> = { very_strong: '#8B5CF6', strong: '#FFA502', moderate: '#6C7CFF', weak: '#8E8EA3' }
 const STRENGTH_LABELS: Record<string, string> = { very_strong: 'TRÈS FORT', strong: 'FORT', moderate: 'MODÉRÉ', weak: 'FAIBLE' }
 
 function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; syndrome: string; base: string }) {
@@ -197,7 +197,7 @@ export default function PatientCockpit() {
     { name: 'VPS', full: 'Vital Prognosis', color: '#6C7CFF', href: `${base}/suivi` },
     { name: 'TDE', full: 'Therapeutic Decision', color: '#2FD1C8', href: `${base}/traitement` },
     { name: 'PVE', full: 'Paraclinical', color: '#B96BFF', href: `${base}/examens` },
-    { name: 'EWE', full: 'Early Warning', color: '#FF6B8A', href: `${base}/suivi` },
+    { name: 'EWE', full: 'Early Warning', color: '#A78BFA', href: `${base}/suivi` },
     { name: 'TPE', full: 'Therapeutic Prospection', color: '#FFB347', href: `${base}/traitement` },
     { name: 'NCE', full: 'NeuroCore', color: '#2ED573', href: `${base}/examens` },
   ]
@@ -221,7 +221,7 @@ export default function PatientCockpit() {
 
   const actions = useMemo(() => {
     const a: { label: string; desc: string; href: string; color: string; icon: string; p: number }[] = []
-    if (critAlerts.length > 0) a.push({ label: 'Alertes critiques', desc: `${critAlerts.length} alerte${critAlerts.length > 1 ? 's' : ''}`, href: `${base}/urgence`, color: '#FF4757', icon: 'alert', p: 0 })
+    if (critAlerts.length > 0) a.push({ label: 'Alertes critiques', desc: `${critAlerts.length} alerte${critAlerts.length > 1 ? 's' : ''}`, href: `${base}/urgence`, color: '#8B5CF6', icon: 'alert', p: 0 })
     const top = engines.reduce((m, e) => e.score > m.score ? e : m, engines[0])
     if (top.score >= 60) a.push({ label: 'Recommandations', desc: `Score ${top.name} élevé (${top.score})`, href: `${base}/traitement`, color: '#2ED573', icon: 'pill', p: 1 })
     a.push({ label: 'Diagnostic IA', desc: 'Scoring multi-pathologique', href: `${base}/diagnostic`, color: '#6C7CFF', icon: 'dna', p: 2 })
@@ -248,7 +248,7 @@ export default function PatientCockpit() {
           eegBackground={ps.neuro.gcs <= 6 ? 'Fond sévèrement ralenti' : ps.neuro.gcs <= 10 ? 'Fond modérément ralenti' : 'Fond normal'}
           ncsePossible={ps.neuro.seizures24h > 8 || ps.neuro.seizureType === 'refractory_status'}
           vitals={[
-            { label: 'FC', value: `${ps.hemodynamics.heartRate}`, unit: 'bpm', color: '#FF6B8A', icon: 'heart',
+            { label: 'FC', value: `${ps.hemodynamics.heartRate}`, unit: 'bpm', color: '#A78BFA', icon: 'heart',
               severity: ps.hemodynamics.heartRate > 160 ? 2 : ps.hemodynamics.heartRate > 140 ? 1 : 0,
               waveform: 'ecg', numericValue: ps.hemodynamics.heartRate, range: [60, 180] },
             { label: 'SpO₂', value: `${ps.hemodynamics.spo2}`, unit: '%', color: '#2FD1C8', icon: 'lungs',
@@ -333,7 +333,7 @@ export default function PatientCockpit() {
               <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: 'var(--p-critical)', marginBottom: '8px', letterSpacing: '0.5px' }}>ALERTES ACTIVES</div>
               {allAlerts.slice(0, 4).map((a, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '8px', marginBottom: '6px' }}>
-                  <Picto name={a.severity === 'critical' ? 'alert' : 'heart'} size={10} glow={a.severity === 'critical'} glowColor={a.severity === 'critical' ? 'rgba(255,71,87,0.5)' : 'rgba(255,179,71,0.5)'} />
+                  <Picto name={a.severity === 'critical' ? 'alert' : 'heart'} size={10} glow={a.severity === 'critical'} glowColor={a.severity === 'critical' ? 'rgba(139,92,246,0.5)' : 'rgba(255,179,71,0.5)'} />
                   <div>
                     <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--p-text)' }}>{a.title}</div>
                     <div style={{ fontSize: '10px', color: 'var(--p-text-dim)' }}>{a.body}</div>
@@ -352,7 +352,7 @@ export default function PatientCockpit() {
             vpsScore={ps.vpsResult?.synthesis.score ?? 0} compact
             vitals={[
               { label: 'NEURO', icon: 'brain', value: `GCS: ${ps.neuro.gcs}/15`, color: '#6C7CFF', severity: ps.neuro.gcs <= 8 ? 2 : ps.neuro.gcs <= 12 ? 1 : 0 },
-              { label: 'CARDIO', icon: '❤️', value: `FC: ${ps.hemodynamics.heartRate} bpm`, color: '#FF6B8A', severity: ps.hemodynamics.heartRate > 140 ? 2 : 0 },
+              { label: 'CARDIO', icon: '❤️', value: `FC: ${ps.hemodynamics.heartRate} bpm`, color: '#A78BFA', severity: ps.hemodynamics.heartRate > 140 ? 2 : 0 },
               { label: 'RESP', icon: '🫁', value: `SpO₂: ${ps.hemodynamics.spo2}%`, color: '#2FD1C8', severity: ps.hemodynamics.spo2 < 95 ? 1 : 0 },
               { label: 'INFLAM', icon: '🔥', value: `CRP: ${ps.biology.crp} mg/L`, color: '#FFB347', severity: ps.biology.crp > 100 ? 2 : ps.biology.crp > 20 ? 1 : 0 },
               { label: 'TEMP', icon: '🌡️', value: `${ps.hemodynamics.temp}°C`, color: '#B96BFF', severity: ps.hemodynamics.temp >= 38 ? 1 : 0 },
@@ -408,7 +408,7 @@ export default function PatientCockpit() {
       <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: 'var(--p-space-3)' }}>ACCÈS RAPIDES</div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 'var(--p-space-3)' }}>
         {[
-          { href: `${base}/examens`, icon: 'microscope', label: 'Examens', color: '#FF4757' },
+          { href: `${base}/examens`, icon: 'microscope', label: 'Examens', color: '#8B5CF6' },
           { href: `${base}/examens`, icon: 'brain', label: 'NeuroCore', color: '#B96BFF' },
           { href: `${base}/diagnostic`, icon: 'cycle', label: 'Cross-Pathologie', color: '#6C7CFF' },
           { href: `${base}/suivi`, icon: 'chart', label: 'Timeline', color: '#2FD1C8' },

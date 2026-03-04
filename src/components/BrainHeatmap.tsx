@@ -31,8 +31,8 @@ const REGIONS = [
 const STATUS_COLORS: Record<string, { base: string; hot: string }> = {
   normal:             { base: 'rgba(46,213,115,0.15)',  hot: 'rgba(46,213,115,0.5)' },
   slowing:            { base: 'rgba(255,165,2,0.15)',   hot: 'rgba(255,165,2,0.6)' },
-  seizure:            { base: 'rgba(255,71,87,0.15)',   hot: 'rgba(255,71,87,0.7)' },
-  burst_suppression:  { base: 'rgba(255,107,138,0.12)', hot: 'rgba(255,107,138,0.5)' },
+  seizure:            { base: 'rgba(139,92,246,0.15)',   hot: 'rgba(139,92,246,0.7)' },
+  burst_suppression:  { base: 'rgba(167,139,250,0.12)', hot: 'rgba(167,139,250,0.5)' },
   suppressed:         { base: 'rgba(108,124,255,0.1)',  hot: 'rgba(108,124,255,0.3)' },
 }
 
@@ -96,8 +96,8 @@ export default function BrainHeatmap({ eegStatus, channelIntensity, vpsScore, si
 
         if (eegStatus === 'seizure' && reg.channels.some(ch => chInt[ch] > 0.7)) {
           // Hot seizure zone
-          grad.addColorStop(0, `rgba(255,71,87,${0.4 + alpha * 0.4})`)
-          grad.addColorStop(0.5, `rgba(255,71,87,${0.15 + alpha * 0.2})`)
+          grad.addColorStop(0, `rgba(139,92,246,${0.4 + alpha * 0.4})`)
+          grad.addColorStop(0.5, `rgba(139,92,246,${0.15 + alpha * 0.2})`)
           grad.addColorStop(1, 'transparent')
         } else if (eegStatus === 'slowing') {
           grad.addColorStop(0, `rgba(255,165,2,${0.2 + alpha * 0.3})`)
@@ -116,7 +116,7 @@ export default function BrainHeatmap({ eegStatus, channelIntensity, vpsScore, si
       /* ── Seizure wave propagation ── */
       if (eegStatus === 'seizure') {
         const waveR = ((t * 30) % (size * 0.5))
-        ctx.strokeStyle = `rgba(255,71,87,${0.3 * (1 - waveR / (size * 0.5))})`
+        ctx.strokeStyle = `rgba(139,92,246,${0.3 * (1 - waveR / (size * 0.5))})`
         ctx.lineWidth = 2
         ctx.beginPath()
         ctx.ellipse(cx, cy * 0.85, waveR, waveR * 0.8, 0, 0, Math.PI * 2)
@@ -136,7 +136,7 @@ export default function BrainHeatmap({ eegStatus, channelIntensity, vpsScore, si
       ctx.restore()
 
       /* ── Brain outline stroke ── */
-      ctx.strokeStyle = eegStatus === 'seizure' ? `rgba(255,71,87,${0.3 + Math.sin(t * 4) * 0.15})`
+      ctx.strokeStyle = eegStatus === 'seizure' ? `rgba(139,92,246,${0.3 + Math.sin(t * 4) * 0.15})`
         : 'rgba(108,124,255,0.15)'
       ctx.lineWidth = 1.5
       ctx.beginPath()
@@ -187,8 +187,8 @@ export default function BrainHeatmap({ eegStatus, channelIntensity, vpsScore, si
   }[eegStatus] || eegStatus
 
   const statusColor = {
-    normal: '#2ED573', slowing: '#FFA502', seizure: '#FF4757',
-    burst_suppression: '#FF6B8A', suppressed: '#6C7CFF',
+    normal: '#2ED573', slowing: '#FFA502', seizure: '#8B5CF6',
+    burst_suppression: '#A78BFA', suppressed: '#6C7CFF',
   }[eegStatus] || '#6C7CFF'
 
   return (

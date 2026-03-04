@@ -48,7 +48,7 @@ export default function SynthesePage() {
               Diagnostic : <span style={{ color: '#6C7CFF', fontWeight: 700 }}>{info.syndrome}</span><br />
               Phase : <span style={{ color: info.phaseInfo.color, fontWeight: 700 }}>{info.phaseInfo.label}</span> ({info.phaseInfo.dayRange})<br />
               Hospitalisation : J+{info.hospDay}
-              {info.allergies.length > 0 && <><br />Allergies : <span style={{ color: '#FF4757', fontWeight: 700 }}>{info.allergies.join(', ')}</span></>}
+              {info.allergies.length > 0 && <><br />Allergies : <span style={{ color: '#8B5CF6', fontWeight: 700 }}>{info.allergies.join(', ')}</span></>}
             </div>
           </div>
           <div style={{ textAlign: 'center' }}>
@@ -69,8 +69,8 @@ export default function SynthesePage() {
       {/* Dashboard counters */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', marginBottom: '16px' }}>
         {[
-          { label: 'GCS', value: ps.neuro.gcs, color: ps.neuro.gcs <= 8 ? '#FF4757' : 'var(--p-text)' },
-          { label: 'Alertes crit.', value: criticalAlerts, color: criticalAlerts > 0 ? '#FF4757' : '#2ED573' },
+          { label: 'GCS', value: ps.neuro.gcs, color: ps.neuro.gcs <= 8 ? '#8B5CF6' : 'var(--p-text)' },
+          { label: 'Alertes crit.', value: criticalAlerts, color: criticalAlerts > 0 ? '#8B5CF6' : '#2ED573' },
           { label: 'Vigilance', value: warningAlerts, color: warningAlerts > 0 ? '#FFB347' : '#2ED573' },
           { label: 'Recomm.', value: totalRecommendations, color: '#6C7CFF' },
         ].map((item, i) => (
@@ -85,9 +85,9 @@ export default function SynthesePage() {
       {allAlerts.filter(a => a.severity === 'critical').length > 0 && (
         <div className="glass-card" style={{
           padding: '16px', borderRadius: 'var(--p-radius-xl)', marginBottom: '16px',
-          borderLeft: '4px solid #FF4757', background: 'rgba(255,71,87,0.03)',
+          borderLeft: '4px solid #8B5CF6', background: 'rgba(139,92,246,0.03)',
         }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#FF4757', marginBottom: '10px', letterSpacing: '0.5px' }}>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#8B5CF6', marginBottom: '10px', letterSpacing: '0.5px' }}>
             ALERTES CRITIQUES
           </div>
           {allAlerts.filter(a => a.severity === 'critical').map((a, i) => (
@@ -169,7 +169,7 @@ export default function SynthesePage() {
             { name: 'VPS', active: !!ps.vpsResult, color: '#6C7CFF' },
             { name: 'TDE', active: !!ps.tdeResult, color: '#2FD1C8' },
             { name: 'PVE', active: !!ps.pveResult, color: '#B96BFF' },
-            { name: 'EWE', active: !!ps.eweResult, color: '#FF6B8A' },
+            { name: 'EWE', active: !!ps.eweResult, color: '#A78BFA' },
             { name: 'TPE', active: !!ps.tpeResult, color: '#FFB347' },
           ].map((e, i) => (
             <div key={i} style={{
