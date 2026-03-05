@@ -3,6 +3,7 @@ import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useLang, LangToggle } from '@/contexts/LanguageContext'
+import { AVATAR_DATA } from '@/lib/avatarData'
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -73,8 +74,11 @@ function buildDemoPatients(): PatientCard[] {
 
 /* ── Mini Avatar SVG ── */
 function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size?: number; name?: string; sex?: 'male' | 'female' }) {
-  const initial = name ? name.charAt(0).toUpperCase() : '?'
-  const isMale = sex === 'male'
+  // Embedded base64 data - ZERO CDN, ZERO CACHE, guaranteed correct
+  const avatarKey = sex === 'male'
+    ? (name?.startsWith('Lucas') ? 'male-lucas' : 'male-noah')
+    : (name?.startsWith('Amara') ? 'female-amara' : 'female-ines')
+  const avatarSrc = AVATAR_DATA[avatarKey] || ''
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%',
@@ -83,23 +87,10 @@ function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size
       flexShrink: 0, overflow: 'hidden',
       boxShadow: `0 0 12px ${vpsColor}15`,
     }}>
-      <svg width={size * 0.7} height={size * 0.7} viewBox="0 0 64 64" fill="none">
-        {isMale ? (
-          /* ── Garçon: cheveux courts, épaules larges ── */
-          <>
-            <circle cx="32" cy="22" r="12" fill={vpsColor} opacity="0.85"/>
-            <path d="M32 10c-7 0-12 5-12 12h2c0-2 1-5 4-7 1-1 3-2 6-2s5 1 6 2c3 2 4 5 4 7h2c0-7-5-12-12-12z" fill={vpsColor} opacity="0.6"/>
-            <path d="M16 58c0-10 7-18 16-18s16 8 16 18" fill={vpsColor} opacity="0.55"/>
-          </>
-        ) : (
-          /* ── Fille: cheveux longs, épaules étroites ── */
-          <>
-            <circle cx="32" cy="22" r="12" fill={vpsColor} opacity="0.85"/>
-            <path d="M20 22c0-2 0-12 12-12s12 10 12 12c0 0 0-2 2 4 0 2-1 4-2 4v0c0 0-1 6-4 8h-2c0 0 1-3 1-6h-14c0 3 1 6 1 6h-2c-3-2-4-8-4-8v0c-1 0-2-2-2-4 2-6 2-4 2-4z" fill={vpsColor} opacity="0.5"/>
-            <path d="M18 58c0-10 6-18 14-18s14 8 14 18" fill={vpsColor} opacity="0.55"/>
-          </>
-        )}
-      </svg>
+      {avatarSrc && (
+        <img src={avatarSrc} alt={name || ''} 
+          style={{ width: '110%', height: '110%', objectFit: 'contain', display: 'block' }} />
+      )}
     </div>
   )
 }
