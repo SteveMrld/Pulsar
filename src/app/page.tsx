@@ -152,7 +152,6 @@ const workflow = [
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
           <LangToggle />
           <Link href="/login" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)', textDecoration: 'none', fontSize: 'var(--p-text-sm)' }}>{t('Connexion', 'Sign in')}</Link>
-          <Link href="/login" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontSize: 'var(--p-text-sm)', fontWeight: 600, boxShadow: '0 0 16px rgba(108,124,255,0.3)' }}>{t('Commencer', 'Get started')}</Link>
         </div>
       </nav>
 
@@ -448,7 +447,6 @@ const workflow = [
             {t('95/95 tests. 59 références cliniques. 25 publications Discovery. Veille PubMed live. 5 pathologies. 15 tables de données. Parce que chaque minute gagnée peut changer une vie.', '95/95 tests. 59 clinical references. 25 Discovery publications. Live PubMed monitoring. 5 pathologies. 15 data tables. Because every minute saved can change a life.')}
           </p>
           <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Accéder à PULSAR', 'Access PULSAR')}</Link>
             <Link href="/login?demo=1" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'transparent', border: '2px solid rgba(245,166,35,0.3)', color: '#F5A623', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)' }}>{t('Voir la démo', 'View demo')}</Link>
           </div>
         </div>
