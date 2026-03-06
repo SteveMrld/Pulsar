@@ -162,6 +162,16 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
       badge: 'NEW',
     },
     {
+      id: 'ddd',         label: 'Retard', labelEn: 'Delay',        icon: 'alert',      color: '#DC2626',
+      available: true, priority: 4.9,
+      badge: hasAlerts ? '!' : undefined,
+      pulsing: hasAlerts,
+    },
+    {
+      id: 'consult',     label: 'Consult', labelEn: 'Consult',     icon: 'clipboard',  color: '#3B82F6',
+      available: true, priority: 5.5,
+    },
+    {
       id: 'rapport',     label: 'Rapport', labelEn: 'Report',     icon: 'clipboard',  color: '#F5A623',
       available: true, priority: 11,
     },
