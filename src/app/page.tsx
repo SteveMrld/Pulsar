@@ -110,6 +110,12 @@ const workflow = [
       </nav>
 
       {/* ═══════════ MEMORIAL ═══════════ */}
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        {/* Video background — child with light particles */}
+        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.25 }}>
+          <source src="/assets/videos/hero-child.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.7) 0%, rgba(12,20,36,0.5) 40%, rgba(12,20,36,0.7) 100%)' }} />
       <style>{`
         @keyframes memorial-fade { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes star-glow { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(245,166,35,0.3)); } 50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(245,166,35,0.6)); } }
@@ -117,7 +123,7 @@ const workflow = [
         .landing-glass { background: rgba(16,22,40,0.6); backdrop-filter: blur(16px) saturate(1.2); border: 1px solid rgba(245,166,35,0.06); }
         .landing-glass:hover { border-color: rgba(245,166,35,0.12); }
       `}</style>
-      <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
+      <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) 0', position: 'relative', zIndex: 2 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', maxWidth: '560px', margin: '0 auto' }}>
           <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(245,166,35,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'right' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', animation: 'memorial-fade 2s ease-out 0.5s both' }}>
@@ -140,7 +146,7 @@ const workflow = [
       </div>
 
       {/* ═══════════ HERO ═══════════ */}
-      <section className="page-enter" style={{ textAlign: 'center', padding: 'var(--p-space-24) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter" style={{ textAlign: 'center', padding: 'var(--p-space-24) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <div style={{ display: 'inline-flex', gap: '8px', marginBottom: 'var(--p-space-6)', flexWrap: 'wrap', justifyContent: 'center' }}>
           <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: 'var(--p-vps-dim)', color: 'var(--p-vps)', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)' }}>{t('INTELLIGENCE CLINIQUE', 'CLINICAL INTELLIGENCE')}</span>
           <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: '#10B98112', color: '#10B981', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)', border: '1px solid #10B98120' }}>{t('RECHERCHE TRANSLATIONNELLE', 'TRANSLATIONAL RESEARCH')}</span>
@@ -163,6 +169,8 @@ const workflow = [
           <Link href="/research" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98130', color: '#10B981', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '18px' }}>🔬</span> Discovery Engine</Link>
         </div>
       </section>
+
+      </div>
 
       {/* ═══════════ DOUBLE PROMESSE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-12) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
@@ -228,7 +236,12 @@ const workflow = [
       </section>
 
       {/* ═══════════ DISCOVERY ENGINE — SHOWCASE ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-16) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.15 }}>
+          <source src="/assets/videos/star-light.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.8) 0%, rgba(12,20,36,0.6) 50%, rgba(12,20,36,0.8) 100%)' }} />
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-16) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-8)' }}>
           <div style={{ display: 'inline-block', padding: '6px 20px', borderRadius: 'var(--p-radius-full)', background: '#10B98112', border: '1px solid #10B98125', marginBottom: 'var(--p-space-4)' }}>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#10B981', letterSpacing: '1.5px' }}>DISCOVERY ENGINE v4.0</span>
@@ -271,6 +284,8 @@ const workflow = [
           <Link href="/research" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'linear-gradient(135deg, #10B981, #3B82F6)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', boxShadow: '0 4px 20px rgba(16,185,129,0.3)' }}>{t('🔬 Explorer le Discovery Engine', '🔬 Explore the Discovery Engine')}</Link>
         </div>
       </section>
+
+      </div>
 
       {/* ═══════════ TREATMENT PATHFINDER — PROMESSE THÉRAPEUTIQUE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
@@ -340,7 +355,7 @@ const workflow = [
       </section>
 
       {/* ═══════════ WORKFLOW ═══════════ */}
-      <section style={{ padding: '0 var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section style={{ padding: '0 var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-6)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>{t("PARCOURS PATIENT — DE L'ADMISSION À LA PUBLICATION", 'PATIENT PATHWAY — FROM ADMISSION TO PUBLICATION')}</div>
           <div style={{ display: 'flex', gap: '4px', alignItems: 'stretch', marginBottom: 'var(--p-space-4)' }}>
@@ -360,7 +375,12 @@ const workflow = [
       </section>
 
       {/* ═══════════ PIPELINE MOTEURS ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.12 }}>
+          <source src="/assets/videos/data-particles.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.85) 0%, rgba(12,20,36,0.65) 50%, rgba(12,20,36,0.85) 100%)' }} />
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-6)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>{t('PIPELINE — 6+1 MOTEURS × 4 COUCHES', 'PIPELINE — 6+1 ENGINES × 4 LAYERS')}</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', flexWrap: 'wrap' }}>
@@ -382,7 +402,7 @@ const workflow = [
       </section>
 
       {/* ═══════════ MOTEURS DÉTAIL ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <h2 className="text-gradient-brand" style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>{t('6+1 moteurs qui pensent ensemble', '6+1 engines that think together')}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {engines.map((e) => (
@@ -397,8 +417,15 @@ const workflow = [
         </div>
       </section>
 
+      </div>
+
       {/* ═══════════ CTA FINAL ═══════════ */}
-      <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-12) var(--p-space-8) var(--p-space-24)', position: 'relative', zIndex: 1 }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.2 }}>
+          <source src="/assets/videos/wheat-hope.mp4" type="video/mp4" />
+        </video>
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.75) 0%, rgba(12,20,36,0.55) 50%, rgba(12,20,36,0.75) 100%)' }} />
+      <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-12) var(--p-space-8) var(--p-space-24)', position: 'relative', zIndex: 2 }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-10) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.04) 0%, rgba(245,166,35,0.04) 50%, rgba(16,185,129,0.02) 100%)', border: '1px solid rgba(245,166,35,0.08)', backdropFilter: 'blur(12px)' }}>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)', lineHeight: 1.3 }}>{t('La bonne information.', 'The right information.')}<br />{t('Au bon endroit.', 'In the right place.')} <span className="text-gradient-vps">{t('Au bon moment.', 'At the right time.')}</span></h2>
           <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', maxWidth: '560px', margin: '0 auto var(--p-space-8)', lineHeight: 1.8 }}>
@@ -411,10 +438,12 @@ const workflow = [
         </div>
       </section>
 
+      </div>
+
       {/* ═══════════ MÉMORIAL + FOOTER ═══════════ */}
 
 
-      <footer style={{ borderTop: '1px solid rgba(245,166,35,0.08)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
+      <footer style={{ borderTop: '1px solid rgba(245,166,35,0.08)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 2 }}>
         {t('PULSAR V21 · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel', 'PULSAR V21 · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
       </footer>
     </div>
