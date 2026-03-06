@@ -332,6 +332,98 @@ const CASCADE_RULES: CascadeRule[] = [
       + 'Monitoring hémodynamique invasif.',
     alternativeSuggestion: 'Envisager monothérapie kétamine + AE non cardiotoxique.',
   },
+
+  // ── PROPOFOL ──
+  {
+    intervention: 'propofol',
+    interventionAliases: ['diprivan'],
+    vulnerabilityId: 'cardiac-fragility',
+    riskLevel: 'high',
+    mechanism: 'Le propofol provoque une dépression cardiovasculaire dose-dépendante. '
+      + 'Syndrome de perfusion au propofol (PRIS) chez l\'enfant : acidose métabolique, '
+      + 'rhabdomyolyse, insuffisance cardiaque. Risque accru si perfusion > 48h ou > 4mg/kg/h.',
+    cascadeChain: [
+      'Propofol IV continu → dépression myocardique',
+      'Si > 48h ou > 4mg/kg/h : risque de PRIS',
+      'PRIS → acidose + rhabdomyolyse + défaillance cardiaque',
+      'Sur terrain inflammatoire : risque amplifié',
+    ],
+    references: [
+      'Bray RJ, Br J Anaesth 1998: "Propofol infusion syndrome in children"',
+      'Vasile B et al., Chest 2003: "PRIS systematic review"',
+    ],
+    recommendation: 'Limiter à < 4 mg/kg/h et < 48h. Lactate + CK + triglycerides q12h. '
+      + 'Switch vers midazolam ou kétamine si perfusion prolongée nécessaire.',
+    alternativeSuggestion: 'Kétamine IV (profil hémodynamique favorable) ou midazolam si sédation légère suffisante.',
+  },
+
+  // ── THIOPENTAL / COMA BARBITURIQUE ──
+  {
+    intervention: 'thiopental',
+    interventionAliases: ['nesdonal', 'pentobarbital', 'pentothal'],
+    vulnerabilityId: 'cardiac-fragility',
+    riskLevel: 'critical',
+    mechanism: 'Le coma barbiturique entraîne une dépression cardiovasculaire profonde. '
+      + 'Hypotension sévère quasi constante nécessitant vasopresseurs. '
+      + 'Sur un cœur fragilisé par inflammation + polythérapie : risque d\'arrêt cardiaque.',
+    cascadeChain: [
+      'Thiopental → dépression myocardique profonde',
+      'Hypotension sévère → vasopresseurs nécessaires',
+      '+ Inflammation systémique → myocarde fragilisé',
+      'Risque de défaillance cardiaque aiguë',
+    ],
+    references: [
+      'Claassen J et al., Epilepsia 2002: "Barbiturate coma hemodynamic complications"',
+      'NORSE Institute: "Intensive hemodynamic monitoring required"',
+    ],
+    recommendation: 'Monitoring invasif obligatoire (KTA + Swan-Ganz si disponible). '
+      + 'Echo q24h. Troponine + BNP q12h. Vasopresseurs anticipés.',
+    alternativeSuggestion: 'Kétamine en première intention (Gaspard 2013) — profil hémodynamique supérieur au barbiturique.',
+  },
+
+  // ── VALPROATE ──
+  {
+    intervention: 'valproate',
+    interventionAliases: ['depakine', 'valproic acid', 'depakote', 'micropakine'],
+    vulnerabilityId: 'inflammatory-autoimmune',
+    riskLevel: 'moderate',
+    mechanism: 'Le valproate peut aggraver une hépatotoxicité dans un contexte inflammatoire. '
+      + 'Risque de pancréatite. Contre-indiqué dans les mitochondriopathies (POLG) '
+      + 'qui peuvent mimer un FIRES.',
+    cascadeChain: [
+      'Valproate + inflammation systémique → risque hépatique amplifié',
+      'Si mitochondriopathie non exclue : hépatite fulminante possible',
+      'Thrombopénie induite peut aggraver un état hémorragique',
+    ],
+    references: [
+      'Saneto RP et al., Epilepsia 2010: "POLG + valproate = hepatic failure"',
+      'van Baalen 2023: "Exclude POLG before valproate in FIRES-like presentations"',
+    ],
+    recommendation: 'Exclure POLG avant d\'initier le valproate dans un tableau FIRES-like. '
+      + 'Bilan hépatique + ammonémie avant et pendant traitement.',
+    alternativeSuggestion: 'Lévétiracétam (Keppra) — pas de risque hépatique ni mitochondrial.',
+  },
+
+  // ── SUFENTANIL ──
+  {
+    intervention: 'sufentanil',
+    interventionAliases: ['sufenta'],
+    vulnerabilityId: 'cardiac-fragility',
+    riskLevel: 'moderate',
+    mechanism: 'Le sufentanil provoque une bradycardie dose-dépendante et une dépression respiratoire. '
+      + 'En association avec midazolam + phénytoïne : synergie dépressive cardiaque.',
+    cascadeChain: [
+      'Sufentanil → bradycardie + hypotension',
+      '+ Midazolam → dépression myocardique additionnelle',
+      '+ Phénytoïne → arythmie',
+      'Triple synergie dépressive cardiaque',
+    ],
+    references: [
+      'RCP Sufenta: "Bradycardie, hypotension"',
+    ],
+    recommendation: 'Monitoring cardiaque continu. Réduire les doses si FC < 60.',
+    alternativeSuggestion: 'Kétamine (pas de bradycardie, effet sympathomimétique) si analgésie nécessaire.',
+  },
 ]
 
 // ── Main CAE function ──

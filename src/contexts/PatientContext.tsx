@@ -177,6 +177,10 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
       badge: 'NEW',
     },
     {
+      id: 'feedback',    label: 'Feedback', labelEn: 'Feedback',   icon: 'cycle',      color: '#10B981',
+      available: true, priority: 10.5,
+    },
+    {
       id: 'rapport',     label: 'Rapport', labelEn: 'Report',     icon: 'clipboard',  color: '#F5A623',
       available: true, priority: 11,
     },
