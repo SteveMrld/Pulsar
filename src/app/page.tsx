@@ -27,9 +27,9 @@ const SPLASH_CSS = `
   .splash-pulsar { font-size:min(30vw,140px); font-weight:900; letter-spacing:-2px; animation: splashAssemble 1s ease; line-height:1; }
   .splash-pulsar { text-shadow: none; }
   .splash-texts { margin-top:30px; max-width:600px; margin-left:auto; margin-right:auto; animation: splashFadeUp 1.5s ease; padding:0 20px; }
-  .splash-tagline { font-size:min(4.5vw,18px); opacity:.9; color:#E8EAF0; line-height:1.6; margin:0; }
-  .splash-promise { margin-top:14px; font-style:italic; opacity:.7; color:rgba(245,166,35,0.7); font-size:min(3.5vw,14px); }
-  .splash-memory { margin-top:20px; font-size:13px; opacity:.5; color:rgba(245,166,35,0.4); letter-spacing:0.15em; }
+  .splash-tagline { font-size:min(4.5vw,18px); opacity:.9; color:#E8EAF0; line-height:1.6; margin:0; font-style:italic; }
+  .splash-subtitle { font-size:min(3.5vw,13px); color:rgba(108,124,255,0.8); letter-spacing:0.12em; text-transform:uppercase; font-weight:500; margin:0 0 16px; }
+  .splash-memory { margin-top:24px; font-size:16px; color:#F5A623; letter-spacing:0.12em; font-weight:500; opacity:1; text-shadow:0 0 20px rgba(245,166,35,0.4); }
   .splash-skip { position:absolute; bottom:30px; right:30px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; padding:8px 16px; border-radius:20px; cursor:pointer; opacity:.6; font-size:12px; z-index:3; }
   .splash-skip:hover { opacity:1; }
   @keyframes splashFadeUp { from{opacity:0;transform:translateY(20px);filter:blur(8px)} to{opacity:1;transform:translateY(0);filter:blur(0)} }
@@ -96,6 +96,12 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
 
           {showText && (
             <div className="splash-texts">
+              <p className="splash-subtitle">
+                {t(
+                  "La première plateforme d'intelligence artificielle dédiée aux urgences neurologiques pédiatriques.",
+                  "The first artificial intelligence platform dedicated to pediatric neurological emergencies."
+                )}
+              </p>
               <p className="splash-tagline">
                 {t(
                   "Quand le cerveau d'un enfant s'enflamme, chaque seconde d'avance sauve une vie.",
