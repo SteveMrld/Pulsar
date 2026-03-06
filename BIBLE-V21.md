@@ -13,12 +13,12 @@
 
 | Métrique | Valeur |
 |----------|--------|
-| Routes | 33 |
-| Fichiers TS/TSX | 122 |
-| Lignes totales | 30 323 |
-| Lignes engines | 8 854 |
+| Routes | 37 |
+| Fichiers TS/TSX | 127 |
+| Lignes totales | 31 406 |
+| Lignes engines | 9 042 |
 | Moteurs IA | 11 |
-| Pages patient | 17 |
+| Pages patient | 21 |
 | Tests | 95/95 |
 | Tables Supabase | 15 |
 | i18n | FR/EN 100% |
@@ -45,7 +45,7 @@
 8. **FeedbackLoop** (618 lignes) — Snapshots anonymisés, Patient 0 (Alejandro), learnings
 9. **Oracle** (568 lignes) — Simulation clinique, 4 scénarios à H+6/H+12/H+24/H+72
 10. **DDD** — Diagnostic Delay Detector (442 lignes) — 8 règles, retards sourés, fenêtres
-11. **CAE** — Cascade Alert Engine (494 lignes) — Effets en chaîne intervention × vulnérabilité × littérature
+11. **CAE** — Cascade Alert Engine (586 lignes) — Effets en chaîne intervention × vulnérabilité × littérature
 
 ### Connecteur live
 - **DrugDatabase** (338 lignes) — OpenFDA FAERS + BDPM ANSM, traduction FR→EN 50+ médicaments
@@ -94,6 +94,7 @@ Le CAE aurait levé une alerte CRITIQUE avant l'administration.
 | ressources | Littérature, guidelines |
 | saisie | Saisie de données (vitales, bio, LCR, cytokines) |
 | historique | Historique patient |
+| feedback | FeedbackLoop — snapshots, Patient 0, learnings, cohorte (NEW V21.1) |
 | rapport | Rapport auto-généré 11 moteurs (NEW V21.1) |
 | export | Export MD/JSON/BibTeX |
 | audit | Audit trail |

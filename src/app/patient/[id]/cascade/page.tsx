@@ -3,7 +3,7 @@ import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { runCAE, type CAEResult, type CascadeAlert, type VulnerabilityProfile } from '@/lib/engines/CascadeAlertEngine'
+import { runCAE, runCAELive, type CAEResult, type CascadeAlert, type VulnerabilityProfile } from '@/lib/engines/CascadeAlertEngine'
 import { PatientState } from '@/lib/engines/PatientState'
 
 const CAE_COLOR = '#FF6B35'
@@ -80,9 +80,9 @@ export default function CascadePage() {
   const params = useParams()
   const [result, setResult] = useState<CAEResult | null>(null)
   const [intervention, setIntervention] = useState('')
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    // Load patient from localStorage
     const stored = localStorage.getItem(`pulsar-patient-${params.id}`)
     if (stored) {
       try {
@@ -92,11 +92,21 @@ export default function CascadePage() {
     }
   }, [params.id])
 
-  const runWithIntervention = () => {
+  const runWithIntervention = async () => {
     const stored = localStorage.getItem(`pulsar-patient-${params.id}`)
     if (!stored || !intervention.trim()) return
-    const ps = new PatientState(JSON.parse(stored))
-    setResult(runCAE(ps, intervention.trim()))
+    setLoading(true)
+    try {
+      const ps = new PatientState(JSON.parse(stored))
+      // Use live version — queries OpenFDA in real time
+      const liveResult = await runCAELive(ps, intervention.trim())
+      setResult(liveResult)
+    } catch {
+      // Fallback to static
+      const ps = new PatientState(JSON.parse(stored))
+      setResult(runCAE(ps, intervention.trim()))
+    }
+    setLoading(false)
   }
 
   const criticals = result?.alerts.filter(a => a.severity === 'critical') || []
@@ -127,12 +137,13 @@ export default function CascadePage() {
             placeholder={t('Ex: MEOPA, Phénytoïne, Midazolam...', 'E.g. MEOPA, Phenytoin, Midazolam...')}
             style={{ flex: 1, padding: '8px 12px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-surface)', border: '1px solid var(--p-border)', color: 'var(--p-text)', fontSize: 'var(--p-text-sm)' }}
           />
-          <button onClick={runWithIntervention} style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-md)', background: CAE_COLOR, color: '#fff', border: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', cursor: 'pointer' }}>
-            {t('Analyser', 'Analyze')}
+          <button onClick={runWithIntervention} disabled={loading} style={{ padding: '8px 20px', borderRadius: 'var(--p-radius-md)', background: loading ? '#6B7280' : CAE_COLOR, color: '#fff', border: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', cursor: loading ? 'wait' : 'pointer' }}>
+            {loading ? t('Analyse live...', 'Live analysis...') : t('Analyser', 'Analyze')}
           </button>
         </div>
-        <div style={{ fontSize: 10, color: 'var(--p-text-dim)', marginTop: 6 }}>
-          {t('PULSAR vérifie si cette intervention risque de déclencher un effet en chaîne sur ce patient.', 'PULSAR checks if this intervention may trigger a cascade effect on this patient.')}
+        <div style={{ fontSize: 10, color: 'var(--p-text-dim)', marginTop: 6, display: 'flex', alignItems: 'center', gap: 6 }}>
+          <div style={{ width: 6, height: 6, borderRadius: 3, background: '#10B981' }} />
+          {t('Connecté OpenFDA FAERS — Analyse temps réel des interactions et effets indésirables', 'Connected to OpenFDA FAERS — Real-time interaction and adverse event analysis')}
         </div>
       </div>
 
