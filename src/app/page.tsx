@@ -22,10 +22,10 @@ const SPLASH_CSS = `
   .splash-bg { position:absolute; width:100%; height:100%; object-fit:cover; opacity:.35; }
   .splash-center { position:relative; text-align:center; z-index:2; }
   .splash-letterBlock { animation: splashFadeUp 1.2s ease; }
-  .splash-letter { font-size:min(40vw,160px); font-weight:900; letter-spacing:-2px; text-shadow:0 0 25px currentColor; line-height:1; }
+  .splash-letter { font-size:min(40vw,160px); font-weight:900; letter-spacing:-2px; text-shadow:0 0 25px rgba(255,255,255,0.4); line-height:1; }
   .splash-word { margin-top:10px; font-size:14px; letter-spacing:6px; opacity:.7; color:#fff; text-transform:uppercase; }
   .splash-pulsar { font-size:min(30vw,140px); font-weight:900; letter-spacing:-2px; animation: splashAssemble 1s ease; line-height:1; }
-  .splash-pulsar span { animation: splashPulse 3s infinite; }
+  .splash-pulsar { text-shadow: none; }
   .splash-texts { margin-top:30px; max-width:600px; margin-left:auto; margin-right:auto; animation: splashFadeUp 1.5s ease; padding:0 20px; }
   .splash-tagline { font-size:min(4.5vw,18px); opacity:.9; color:#E8EAF0; line-height:1.6; margin:0; }
   .splash-promise { margin-top:14px; font-style:italic; opacity:.7; color:rgba(245,166,35,0.7); font-size:min(3.5vw,14px); }
@@ -81,18 +81,16 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
         <div className="splash-center">
           {!assembled && index >= 0 && index < SPLASH_LETTERS.length && (
             <div className="splash-letterBlock" key={index}>
-              <div className="splash-letter" style={{ color: SPLASH_LETTERS[index].color }}>
+              <div className="splash-letter" style={{ color: '#FFFFFF' }}>
                 {SPLASH_LETTERS[index].char}
               </div>
-              <div className="splash-word">{SPLASH_LETTERS[index].word}</div>
+              <div className="splash-word" style={{ color: 'rgba(255,255,255,0.5)' }}>{SPLASH_LETTERS[index].word}</div>
             </div>
           )}
 
           {assembled && (
-            <div className="splash-pulsar">
-              {SPLASH_LETTERS.map((l, i) => (
-                <span key={i} style={{ color: l.color }}>{l.char}</span>
-              ))}
+            <div className="splash-pulsar" style={{ background: 'linear-gradient(90deg, #6C7CFF, #8B5CF6, #2FD1C8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', filter: 'drop-shadow(0 0 30px rgba(108,124,255,0.4))' }}>
+              PULSAR
             </div>
           )}
 
