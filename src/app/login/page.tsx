@@ -1,10 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useLang } from '@/contexts/LanguageContext'
 import { validateInvite, setInviteCookie } from '@/lib/invites'
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 export default function LoginPage() {
   const { t } = useLang()
@@ -16,6 +16,11 @@ export default function LoginPage() {
   const [showDemo, setShowDemo] = useState(false)
   const [demoSlide, setDemoSlide] = useState(0)
   const router = useRouter()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    if (searchParams.get('demo') === '1') setShowDemo(true)
+  }, [searchParams])
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault()

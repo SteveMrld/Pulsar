@@ -205,10 +205,7 @@ const workflow = [
           {t("PULSAR est le premier système d'intelligence artificielle entièrement dédié à ces pathologies. 7 moteurs qui pensent ensemble, un Discovery Engine qui croise chaque patient avec la recherche mondiale, et un principe fondateur : chaque enfant qui entre dans le système rend le système plus intelligent pour le suivant. Rien de tel n'existe aujourd'hui.", "PULSAR is the first AI system entirely dedicated to these conditions. 7 engines that think together, a Discovery Engine that cross-references each patient with global research, and a founding principle: every child who enters the system makes it smarter for the next one. Nothing like this exists today.")}
         </p>
 
-        <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-          <Link href="/login" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Accéder à PULSAR', 'Access PULSAR')}</Link>
-          <Link href="/login" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98130', color: '#10B981', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '18px' }}>🔬</span> Discovery Engine</Link>
-        </div>
+
       </section>
 
       {/* ═══════════ DOUBLE PROMESSE ═══════════ */}
@@ -315,9 +312,7 @@ const workflow = [
           ))}
         </div>
 
-        <div style={{ textAlign: 'center', marginTop: 'var(--p-space-6)' }}>
-          <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'linear-gradient(135deg, #10B981, #3B82F6)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', boxShadow: '0 4px 20px rgba(16,185,129,0.3)' }}>{t('🔬 Explorer le Discovery Engine', '🔬 Explore the Discovery Engine')}</Link>
-        </div>
+
       </section>
 
       {/* ═══════════ TREATMENT PATHFINDER — PROMESSE THÉRAPEUTIQUE ═══════════ */}
@@ -401,9 +396,7 @@ const workflow = [
               </div>
             ))}
           </div>
-          <div style={{ textAlign: 'center' }}>
-            <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'linear-gradient(135deg, #6C7CFF, #2FD1C8)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', boxShadow: '0 4px 20px rgba(108,124,255,0.3)' }}><span style={{ fontSize: '16px' }}>▶</span> Accéder à PULSAR</Link>
-          </div>
+
         </div>
       </section>
 
@@ -455,8 +448,8 @@ const workflow = [
             {t('95/95 tests. 59 références cliniques. 25 publications Discovery. Veille PubMed live. 5 pathologies. 15 tables de données. Parce que chaque minute gagnée peut changer une vie.', '95/95 tests. 59 clinical references. 25 Discovery publications. Live PubMed monitoring. 5 pathologies. 15 data tables. Because every minute saved can change a life.')}
           </p>
           <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Commencer', 'Get started')}</Link>
-            <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98125', color: '#10B981', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)', display: 'flex', alignItems: 'center', gap: '10px' }}>🔬 Discovery</Link>
+            <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Accéder à PULSAR', 'Access PULSAR')}</Link>
+            <Link href="/login?demo=1" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'transparent', border: '2px solid rgba(245,166,35,0.3)', color: '#F5A623', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)' }}>{t('Voir la démo', 'View demo')}</Link>
           </div>
         </div>
       </section>
