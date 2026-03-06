@@ -9,6 +9,7 @@ import SilhouetteNeon from '@/components/SilhouetteNeon'
 import BrainMonitor from '@/components/BrainMonitor'
 import BrainHeatmap from '@/components/BrainHeatmap'
 import { discoveryEngine } from '@/lib/engines/DiscoveryEngine'
+import { runCAE } from '@/lib/engines/CascadeAlertEngine'
 import { DEMO_PATIENTS, SEED_SIGNALS } from '@/lib/data/discoveryData'
 import { SEED_ARTICLES } from '@/lib/data/literatureData'
 import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
@@ -193,6 +194,7 @@ export default function PatientCockpit() {
   const { ps, info, scenarioKey } = usePatient()
   const base = `/patient/${info.id}`
 
+  const caeResult = useMemo(() => runCAE(ps), [ps])
   const enginesDef = [
     { name: 'VPS', full: 'Vital Prognosis', color: '#6C7CFF', href: `${base}/suivi` },
     { name: 'TDE', full: 'Therapeutic Decision', color: '#2FD1C8', href: `${base}/traitement` },
@@ -200,14 +202,26 @@ export default function PatientCockpit() {
     { name: 'EWE', full: 'Early Warning', color: '#A78BFA', href: `${base}/suivi` },
     { name: 'TPE', full: 'Therapeutic Prospection', color: '#FFB347', href: `${base}/traitement` },
     { name: 'NCE', full: 'NeuroCore', color: '#2ED573', href: `${base}/examens` },
+    { name: 'DDD', full: 'Delay Detector', color: '#DC2626', href: `${base}/ddd` },
+    { name: 'CAE', full: 'Cascade Alert', color: '#FF6B35', href: `${base}/cascade` },
   ]
 
   const engines = enginesDef.map((e, i) => {
     const results = [ps.vpsResult, ps.tdeResult, ps.pveResult, ps.eweResult, ps.tpeResult]
     if (i < 5) return { ...e, score: results[i]?.synthesis.score ?? 0, level: results[i]?.synthesis.level ?? '—' }
-    const nce = ps.neuroCoreResult
-    const s = nce?.score ?? 0
-    return { ...e, score: s, level: s > 70 ? 'Critique' : s > 40 ? 'Élevé' : s > 20 ? 'Modéré' : 'Faible' }
+    if (i === 5) { // NeuroCore
+      const nce = ps.neuroCoreResult
+      const s = nce?.score ?? 0
+      return { ...e, score: s, level: s > 70 ? 'Critique' : s > 40 ? 'Élevé' : s > 20 ? 'Modéré' : 'Faible' }
+    }
+    if (i === 6) { // DDD
+      const ddd = (ps as any).dddResult
+      const s = ddd?.delayDetected ? (ddd.estimatedHoursLost > 24 ? 80 : 50) : 10
+      return { ...e, score: s, level: ddd?.delayDetected ? 'Retard' : 'OK' }
+    }
+    // CAE
+    const s = caeResult.highestRisk === 'critical' ? 90 : caeResult.highestRisk === 'high' ? 60 : caeResult.highestRisk === 'moderate' ? 35 : 5
+    return { ...e, score: s, level: caeResult.highestRisk === 'none' ? 'OK' : caeResult.highestRisk }
   })
 
   const critAlerts = ps.alerts.filter(a => a.severity === 'critical')
@@ -234,8 +248,28 @@ export default function PatientCockpit() {
     : ps.neuro.gcs <= 6 ? 'burst_suppression' as const
     : ps.neuro.gcs <= 10 ? 'slowing' as const : 'normal' as const
 
+  // CAE — Cascade Alert Engine
+  const cascadeCriticals = caeResult.alerts.filter(a => a.severity === 'critical')
+
   return (
     <div className="page-enter-stagger">
+      {/* ═══ CAE Cascade Alert Banner ═══ */}
+      {cascadeCriticals.length > 0 && (
+        <Link href={`${base}/cascade`} style={{ textDecoration: 'none', display: 'block', marginBottom: 'var(--p-space-4)' }}>
+          <div style={{ padding: '10px 16px', background: '#FF6B3510', borderRadius: 'var(--p-radius-lg)', border: '1px solid #FF6B3525', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}>
+            <span style={{ fontSize: 18 }}>⚡</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 800, color: '#FF6B35' }}>
+                CASCADE ALERT — {cascadeCriticals.length} {t('risque(s) critique(s)', 'critical risk(s)')}
+              </div>
+              <div style={{ fontSize: 10, color: 'var(--p-text-muted)', marginTop: 2 }}>
+                {cascadeCriticals[0]?.title}
+              </div>
+            </div>
+            <span style={{ color: '#FF6B35', fontSize: 12, fontWeight: 700 }}>→</span>
+          </div>
+        </Link>
+      )}
       {/* ═══ BrainMonitor ICU ═══ */}
       <div style={{ marginBottom: 'var(--p-space-4)' }}>
         <BrainMonitor
