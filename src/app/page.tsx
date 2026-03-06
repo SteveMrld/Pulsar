@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Picto from '@/components/Picto'
 
 // ══════════════════════════════════════════════════════════════
-// PULSAR V20 — Landing
+// PULSAR V21 — Landing
 // La promesse : plus aucun enfant perdu par manque d'intelligence
 // ══════════════════════════════════════════════════════════════
 
@@ -57,15 +57,50 @@ const workflow = [
   ]
 
   return (
-    <div className="page-enter" style={{ minHeight: '100vh', background: 'var(--p-bg)', position: 'relative' }}>
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0, background: 'radial-gradient(ellipse 80% 60% at 20% 30%, rgba(108,124,255,0.06) 0%, transparent 70%), radial-gradient(ellipse 60% 50% at 80% 70%, rgba(16,185,129,0.04) 0%, transparent 60%), radial-gradient(ellipse 50% 40% at 50% 50%, rgba(47,209,200,0.03) 0%, transparent 50%)' }} />
+    <div className="page-enter" style={{ minHeight: '100vh', background: '#0C1424', position: 'relative', color: '#E8EAF0' }}>
+      {/* ── Cinematic atmosphere layers ── */}
+      {/* Warm golden halo top-left */}
+      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
+        <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '50vw', height: '50vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(245,166,35,0.06) 0%, rgba(245,166,35,0.02) 40%, transparent 70%)', filter: 'blur(60px)' }} />
+        <div style={{ position: 'absolute', top: '30%', right: '-10%', width: '40vw', height: '40vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(108,124,255,0.05) 0%, rgba(108,124,255,0.02) 40%, transparent 70%)', filter: 'blur(50px)' }} />
+        <div style={{ position: 'absolute', bottom: '10%', left: '20%', width: '35vw', height: '35vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(16,185,129,0.04) 0%, transparent 60%)', filter: 'blur(40px)' }} />
+        <div style={{ position: 'absolute', bottom: '-5%', right: '10%', width: '30vw', height: '30vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(245,166,35,0.04) 0%, transparent 60%)', filter: 'blur(50px)' }} />
+        {/* Grain overlay */}
+        <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat', backgroundSize: '256px' }} />
+      </div>
+
+      {/* ── Floating light particles ── */}
+      <style>{`
+        @keyframes float-particle {
+          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+        @keyframes glow-pulse {
+          0%, 100% { opacity: 0.3; transform: scale(1); }
+          50% { opacity: 0.6; transform: scale(1.1); }
+        }
+      `}</style>
+      {[...Array(12)].map((_, i) => (
+        <div key={i} style={{
+          position: 'fixed', pointerEvents: 'none', zIndex: 0,
+          width: 2 + Math.random() * 3, height: 2 + Math.random() * 3,
+          borderRadius: '50%',
+          background: i % 3 === 0 ? 'rgba(245,166,35,0.5)' : i % 3 === 1 ? 'rgba(108,124,255,0.4)' : 'rgba(47,209,200,0.4)',
+          boxShadow: i % 3 === 0 ? '0 0 6px rgba(245,166,35,0.3)' : i % 3 === 1 ? '0 0 6px rgba(108,124,255,0.3)' : '0 0 6px rgba(47,209,200,0.3)',
+          left: `${5 + Math.random() * 90}%`,
+          bottom: '-5%',
+          animation: `float-particle ${15 + Math.random() * 20}s linear ${Math.random() * 15}s infinite`,
+        }} />
+      ))}
 
       {/* NAV */}
-      <nav className="glass" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--p-space-4) var(--p-space-8)', position: 'sticky', top: 0, zIndex: 50 }}>
+      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--p-space-4) var(--p-space-8)', position: 'sticky', top: 0, zIndex: 50, background: 'rgba(12,20,36,0.85)', backdropFilter: 'blur(20px) saturate(1.3)', borderBottom: '1px solid rgba(245,166,35,0.08)' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
           <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={40} height={40} style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.5))', display: 'block', objectFit: 'contain' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#6C7CFF', background: '#6C7CFF15', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #6C7CFF25' }}>V20</span>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#6C7CFF', background: '#6C7CFF15', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #6C7CFF25' }}>V21</span>
         </div>
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
           <LangToggle />
@@ -77,22 +112,24 @@ const workflow = [
       {/* ═══════════ MEMORIAL ═══════════ */}
       <style>{`
         @keyframes memorial-fade { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes star-glow { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(139,92,246,0.3)); } 50% { opacity: 1; filter: drop-shadow(0 0 10px rgba(139,92,246,0.6)); } }
+        @keyframes star-glow { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(245,166,35,0.3)); } 50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(245,166,35,0.6)); } }
         @keyframes line-grow { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
+        .landing-glass { background: rgba(16,22,40,0.6); backdrop-filter: blur(16px) saturate(1.2); border: 1px solid rgba(245,166,35,0.06); }
+        .landing-glass:hover { border-color: rgba(245,166,35,0.12); }
       `}</style>
       <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', maxWidth: '480px', margin: '0 auto' }}>
-          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(139,92,246,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'right' }} />
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(245,166,35,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'right' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', animation: 'memorial-fade 2s ease-out 0.5s both' }}>
             <span style={{ fontSize: '16px', lineHeight: 1, animation: 'star-glow 3s ease-in-out 1.5s infinite' }}>✦</span>
-            <p style={{ fontSize: '13px', color: 'rgba(139,92,246,0.8)', margin: 0, fontWeight: 300, letterSpacing: '0.08em', fontStyle: 'italic' }}>
+            <p style={{ fontSize: '13px', color: 'rgba(245,166,35,0.7)', margin: 0, fontWeight: 300, letterSpacing: '0.08em', fontStyle: 'italic' }}>
               {t('À la mémoire d\'Alejandro R.', 'In memory of Alejandro R.')}
             </p>
             <p style={{ fontSize: '11px', color: 'var(--p-text-dim)', margin: 0, fontFamily: 'var(--p-font-mono)', fontWeight: 500, letterSpacing: '0.15em' }}>
               2019 – 2025
             </p>
           </div>
-          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(139,92,246,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'left' }} />
+          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(245,166,35,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'left' }} />
         </div>
       </div>
 
@@ -126,7 +163,7 @@ const workflow = [
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--p-space-6)' }}>
 
           {/* CÔTÉ CLINIQUE */}
-          <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.06) 0%, rgba(47,209,200,0.03) 100%)', border: '1px solid rgba(108,124,255,0.12)' }}>
+          <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.05) 0%, rgba(245,166,35,0.03) 100%)', border: '1px solid rgba(108,124,255,0.10)', backdropFilter: 'blur(8px)' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#6C7CFF', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ CLINIQUE', 'CLINICAL SIDE')}</div>
             <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Comprimer le temps entre', 'Compress the time between')}<br />{t('le premier signal et', 'the first signal and')}<br /><span style={{ color: '#6C7CFF' }}>{t('la bonne décision', 'the right decision')}</span></h3>
             <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
@@ -143,7 +180,7 @@ const workflow = [
           </div>
 
           {/* CÔTÉ RECHERCHE */}
-          <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(16,185,129,0.06) 0%, rgba(139,92,246,0.03) 100%)', border: '1px solid rgba(16,185,129,0.12)' }}>
+          <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(245,166,35,0.03) 100%)', border: '1px solid rgba(16,185,129,0.10)', backdropFilter: 'blur(8px)' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#10B981', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ RECHERCHE', 'RESEARCH SIDE')}</div>
             <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Chaque enfant qui passe dans', 'Every child who passes through')}<br />{t('PULSAR rend le système', 'PULSAR makes the system')}<br /><span style={{ color: '#10B981' }}>{t('plus intelligent pour le suivant', 'smarter for the next one')}</span></h3>
             <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
@@ -164,7 +201,7 @@ const workflow = [
       {/* ═══════════ ÉPIDÉMIOLOGIE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES', 'PEDIATRIC NEUROINFLAMMATORY DISEASES')}</div>
+          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#F5A623', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES', 'PEDIATRIC NEUROINFLAMMATORY DISEASES')}</div>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>{t("Quand le cerveau d'un enfant s'enflamme", "When a child's brain ignites")}</h2>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--p-space-4)' }}>
@@ -176,7 +213,7 @@ const workflow = [
             </div>
           ))}
         </div>
-        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5) var(--p-space-8)', marginTop: 'var(--p-space-4)', textAlign: 'center', borderLeft: '4px solid #8B5CF6' }}>
+        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5) var(--p-space-8)', marginTop: 'var(--p-space-4)', textAlign: 'center', borderLeft: '4px solid #F5A623' }}>
           <p style={{ fontSize: '12px', color: 'var(--p-text-muted)', lineHeight: 1.8, margin: 0 }}>
             <strong style={{ color: 'var(--p-text)' }}>FIRES</strong> (1/million) · <strong style={{ color: 'var(--p-text)' }}>Encéphalites auto-immunes</strong> (jusqu&apos;à 4,2/million) · <strong style={{ color: 'var(--p-text)' }}>NORSE</strong> (~3 200 cas/an aux USA) · <strong style={{ color: 'var(--p-text)' }}>ADEM</strong> (3–6/million) · <strong style={{ color: 'var(--p-text)' }}>MOGAD</strong> · <strong style={{ color: 'var(--p-text)' }}>PIMS/MIS-C</strong> — {t('des enfants en parfaite santé, foudroyés après un simple épisode infectieux. Les traitements de première ligne échouent dans la majorité des cas.', 'perfectly healthy children, struck down after a simple infection. First-line treatments fail in the majority of cases.')}
           </p>
@@ -231,7 +268,7 @@ const workflow = [
 
       {/* ═══════════ TREATMENT PATHFINDER — PROMESSE THÉRAPEUTIQUE ═══════════ */}
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(236,72,153,0.05) 0%, rgba(139,92,246,0.04) 50%, rgba(16,185,129,0.03) 100%)', border: '1px solid rgba(236,72,153,0.12)', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(236,72,153,0.04) 0%, rgba(245,166,35,0.03) 50%, rgba(16,185,129,0.02) 100%)', border: '1px solid rgba(236,72,153,0.10)', position: 'relative', overflow: 'hidden', backdropFilter: 'blur(8px)' }}>
           <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '160px', height: '160px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--p-space-6)', flexWrap: 'wrap' }}>
             <div style={{ flex: '1 1 400px' }}>
@@ -356,7 +393,7 @@ const workflow = [
 
       {/* ═══════════ CTA FINAL ═══════════ */}
       <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-12) var(--p-space-8) var(--p-space-24)', position: 'relative', zIndex: 1 }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto', borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-10) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.04) 0%, rgba(16,185,129,0.04) 50%, rgba(236,72,153,0.02) 100%)', border: '1px solid rgba(108,124,255,0.08)' }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto', borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-10) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.04) 0%, rgba(245,166,35,0.04) 50%, rgba(16,185,129,0.02) 100%)', border: '1px solid rgba(245,166,35,0.08)', backdropFilter: 'blur(12px)' }}>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)', lineHeight: 1.3 }}>{t('La bonne information.', 'The right information.')}<br />{t('Au bon endroit.', 'In the right place.')} <span className="text-gradient-vps">{t('Au bon moment.', 'At the right time.')}</span></h2>
           <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', maxWidth: '560px', margin: '0 auto var(--p-space-8)', lineHeight: 1.8 }}>
             {t('95/95 tests. 59 références cliniques. 25 publications Discovery. Veille PubMed live. 5 pathologies. 15 tables de données. Parce que chaque minute gagnée peut changer une vie.', '95/95 tests. 59 clinical references. 25 Discovery publications. Live PubMed monitoring. 5 pathologies. 15 data tables. Because every minute saved can change a life.')}
@@ -371,8 +408,8 @@ const workflow = [
       {/* ═══════════ MÉMORIAL + FOOTER ═══════════ */}
 
 
-      <footer style={{ borderTop: 'var(--p-border)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
-        {t('PULSAR V20 · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel', 'PULSAR V20 · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
+      <footer style={{ borderTop: '1px solid rgba(245,166,35,0.08)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
+        {t('PULSAR V21 · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel', 'PULSAR V21 · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
       </footer>
     </div>
   )
