@@ -156,6 +156,19 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
       id: 'historique',   label: 'Historique', labelEn: 'History',  icon: 'clipboard',  color: '#6C7CFF',
       available: true, priority: 10,
     },
+    {
+      id: 'cascade',     label: 'Cascade', labelEn: 'Cascade',     icon: 'alert',      color: '#FF6B35',
+      available: true, priority: 4.8,
+      badge: 'NEW',
+    },
+    {
+      id: 'rapport',     label: 'Rapport', labelEn: 'Report',     icon: 'clipboard',  color: '#F5A623',
+      available: true, priority: 11,
+    },
+    {
+      id: 'export',      label: 'Export', labelEn: 'Export',       icon: 'clipboard',  color: '#10B981',
+      available: true, priority: 12,
+    },
   ]
 
   return allTabs.filter(t => t.available).sort((a, b) => a.priority - b.priority)
