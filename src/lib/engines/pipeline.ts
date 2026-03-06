@@ -11,6 +11,7 @@ import { PVEEngine } from './PVEEngine'
 import { EWEEngine } from './EWEEngine'
 import { TPEEngine } from './TPEEngine'
 import { runNeuroCore } from '@/lib/neurocore/engine'
+import { runDDD, type DDDResult } from './DiagnosticDelayDetector'
 
 export function runPipeline(ps: PatientState): PatientState {
   const vps = new VPSEngine()
@@ -59,6 +60,22 @@ export function runPipeline(ps: PatientState): PatientState {
   // Tourne en dernier, enrichit les alertes avec les données neuro
   if (ps.eeg || ps.mri || ps.neuroBiomarkers) {
     runNeuroCore(ps)
+  }
+
+  // Étape 7 — DDD : Diagnostic Delay Detector
+  // Détecte les retards de prise en charge — le garde-fou contre l'inertie clinique
+  const dddResult = runDDD(ps)
+  ;(ps as any).dddResult = dddResult
+
+  // Inject DDD critical alerts at the TOP of alerts list
+  if (dddResult.delayDetected) {
+    const dddAlerts = dddResult.alerts.map(a => ({
+      severity: a.severity as 'critical' | 'warning' | 'info',
+      title: a.title,
+      body: a.message,
+      source: 'Diagnostic Delay Detector',
+    }))
+    ps.alerts = [...dddAlerts, ...ps.alerts]
   }
 
   return ps
