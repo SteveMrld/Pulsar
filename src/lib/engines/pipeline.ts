@@ -12,6 +12,7 @@ import { EWEEngine } from './EWEEngine'
 import { TPEEngine } from './TPEEngine'
 import { runNeuroCore } from '@/lib/neurocore/engine'
 import { runDDD, type DDDResult } from './DiagnosticDelayDetector'
+import { runCAE, type CAEResult } from './CascadeAlertEngine'
 
 export function runPipeline(ps: PatientState): PatientState {
   const vps = new VPSEngine()
@@ -76,6 +77,22 @@ export function runPipeline(ps: PatientState): PatientState {
       source: 'Diagnostic Delay Detector',
     }))
     ps.alerts = [...dddAlerts, ...ps.alerts]
+  }
+
+  // Étape 8 — CAE : Cascade Alert Engine
+  // Détecte les effets en chaîne intervention × vulnérabilité
+  const caeResult = runCAE(ps)
+  ;(ps as any).caeResult = caeResult
+
+  // Inject CAE alerts at priority — cascade risks before everything
+  if (caeResult.alerts.length > 0) {
+    const caeAlerts = caeResult.alerts.map(a => ({
+      severity: a.severity as 'critical' | 'warning' | 'info',
+      title: a.title,
+      body: a.message,
+      source: 'Cascade Alert Engine',
+    }))
+    ps.alerts = [...caeAlerts, ...ps.alerts]
   }
 
   return ps

@@ -1,0 +1,255 @@
+// ============================================================
+// PULSAR — Analyse du cas Alejandro R.
+// Données extraites des 24 documents médicaux
+// Pipeline complet : VPS → TDE → PVE → EWE → TPE → DDD
+// ============================================================
+
+import { PatientState } from './src/lib/engines/PatientState'
+import { runPipeline } from './src/lib/engines/pipeline'
+import { runDDD } from './src/lib/engines/DiagnosticDelayDetector'
+import { runOracle, getDefaultScenarios } from './src/lib/engines/OracleEngine'
+import { generateConsultBrief } from './src/lib/engines/ConsultEngine'
+
+// ── Reconstruction du PatientState depuis les 24 documents ──
+
+const alejandro = new PatientState({
+  // Démographie
+  ageMonths: 72,   // 6 ans
+  weightKg: 24,
+  hospDay: 4,      // J4 au moment des dernières transmissions
+  sex: 'male',
+
+  // Neurologie
+  gcs: 3,                       // Coma profond — intubé, pupilles aréactives
+  gcsHistory: [8, 6, 3],        // Glasgow 8 à l'admission → dégradation
+  pupils: 'fixed_both',         // "Pupille aréactive intermédiaire"
+  seizures24h: 9,               // Multiples convulsions J3-J4
+  seizureDuration: 200,         // >200 min cumulées sur 48h
+  seizureType: 'super_refractory',
+
+  // Biologie
+  crp: 80, pct: 2, ferritin: 800,
+  wbc: 18000, platelets: 180000, lactate: 5.0,
+
+  // Hémodynamique
+  heartRate: 165, sbp: 55, dbp: 30, spo2: 88, temp: 40.0, respRate: 28,
+
+  // LCR
+  csfCells: 15, csfProtein: 0.8, csfAntibodies: 'pending',
+
+  // Médicaments
+  drugs: [
+    { name: 'Midazolam', dose: '83.3 µg/kg/h IV continu', route: 'IV' },
+    { name: 'Sufentanil', dose: '0.42 µg/kg/h IV continu', route: 'IV' },
+    { name: 'Cefotaxime', dose: '50 mg/kg/6h = 4800 mg/j', route: 'IV' },
+    { name: 'Aciclovir', dose: '20 mg/kg/8h = 1440 mg/j', route: 'IV' },
+    { name: 'Lévétiracétam (Keppra)', dose: '25 mg/kg/12h = 1200 mg/j', route: 'IV' },
+    { name: 'Phénytoïne (Dilantin)', dose: '20 mg/kg dose de charge', route: 'IV' },
+    { name: 'Phénobarbital (Gardénal)', dose: '20 mg/kg dose de charge', route: 'IV' },
+    { name: 'Clonazépam (Rivotril)', dose: '0.05 mg/kg = 1.2 mg', route: 'IV' },
+    { name: 'Kétamine', dose: 'bolus répétés + continu', route: 'IV' },
+    { name: 'Paracétamol', dose: '1000 mg à la demande', route: 'IV' },
+    { name: 'Corticoïdes', dose: 'bolus', route: 'IV' },
+    { name: 'SSH (Sérum salé hypertonique)', dose: 'bolus x2 + continu', route: 'IV' },
+  ],
+
+  treatmentHistory: [
+    { treatment: 'Rivotril x3 doses', period: 'J0-J1', response: 'none', line: 1 },
+    { treatment: 'Keppra', period: 'J1', response: 'none', line: 1 },
+    { treatment: 'Dilantin dose de charge', period: 'J1', response: 'none', line: 2 },
+    { treatment: 'Gardénal dose de charge', period: 'J1', response: 'none', line: 2 },
+    { treatment: 'Midazolam continu', period: 'J1-J4', response: 'partial', line: 2 },
+    { treatment: 'Kétamine bolus + continu', period: 'J2-J4', response: 'partial', line: 3 },
+    { treatment: 'Cefotaxime + Aciclovir', period: 'J1-J4', response: 'none' },
+    { treatment: 'Corticoïdes bolus', period: 'J2-J4', response: 'none' },
+    { treatment: 'SSH œdème cérébral', period: 'J3-J4', response: 'partial' },
+  ],
+})
+
+// ── ANTÉCÉDENTS ──
+// Prématurité 34 SA, mère drépanocytaire SS
+// Thrombopénie néonatale (32 000) → TÉGÉLINE (immunoglobulines) J2-J3
+// Détresse respiratoire transitoire
+// Examen neurologique normal à la sortie de néonat
+// Pas d'ATCD neurologiques connus avant cet épisode
+
+// ── DONNÉES SUPPLÉMENTAIRES ──
+// EEG : "très pauvre" (doc 11), convulsions infracliniques continues
+// IRM : mentionnée "IRAS" (doc 11) — à interpréter
+// Doppler transcrânien : "passe mal" puis "meilleure image" après arrêt convulsions
+// Œdème cérébral confirmé (doc 11)
+// Purpura possible (tache en relief pied gauche)
+
+// ══════════════════════════════════════════════════════
+// EXÉCUTION DU PIPELINE PULSAR
+// ══════════════════════════════════════════════════════
+
+console.log('═══════════════════════════════════════════════════════════')
+console.log('  PULSAR — ANALYSE DU CAS ALEJANDRO R.')
+console.log('  Patient : Garçon, 6 ans, 24 kg')
+console.log('  Admission : 03/04/2025 — Réa Péd Robert-Debré')
+console.log('  Données : 24 documents médicaux analysés')
+console.log('═══════════════════════════════════════════════════════════')
+console.log('')
+
+// ── 1. Pipeline complet ──
+console.log('▶ EXÉCUTION PIPELINE (VPS → TDE → PVE → EWE → TPE → NeuroCore → DDD)')
+console.log('')
+const result = runPipeline(alejandro)
+
+// VPS
+console.log('── VPS ENGINE ──')
+if (result.vpsResult) {
+  console.log(`  Score : ${result.vpsResult.synthesis.score}/100`)
+  console.log(`  Niveau : ${result.vpsResult.synthesis.level}`)
+  console.log(`  Alertes VPS : ${result.vpsResult.synthesis.alerts.length}`)
+  for (const a of result.vpsResult.synthesis.alerts) {
+    console.log(`    [${a.severity}] ${a.title}`)
+    console.log(`      ${a.body}`)
+  }
+  console.log(`  Recommandations VPS : ${result.vpsResult.synthesis.recommendations.length}`)
+  for (const r of result.vpsResult.synthesis.recommendations) {
+    console.log(`    [${r.priority}] ${r.title}`)
+    console.log(`      ${r.body}`)
+  }
+}
+
+// TDE
+console.log('')
+console.log('── TDE ENGINE (Therapeutic Decision) ──')
+if (result.tdeResult) {
+  console.log(`  Score : ${result.tdeResult.synthesis.score}`)
+  console.log(`  Alertes : ${result.tdeResult.synthesis.alerts.length}`)
+  for (const a of result.tdeResult.synthesis.alerts) {
+    console.log(`    [${a.severity}] ${a.title}: ${a.body}`)
+  }
+  for (const r of result.tdeResult.synthesis.recommendations) {
+    console.log(`    [${r.priority}] ${r.title}: ${r.body}`)
+  }
+}
+
+// PVE
+console.log('')
+console.log('── PVE ENGINE (Pharmacovigilance) ──')
+if (result.pveResult) {
+  console.log(`  Score : ${result.pveResult.synthesis.score}`)
+  for (const a of result.pveResult.synthesis.alerts) {
+    console.log(`    [${a.severity}] ${a.title}: ${a.body}`)
+  }
+  for (const r of result.pveResult.synthesis.recommendations) {
+    console.log(`    [${r.priority}] ${r.title}: ${r.body}`)
+  }
+}
+
+// EWE
+console.log('')
+console.log('── EWE ENGINE (Early Warning) ──')
+if (result.eweResult) {
+  console.log(`  Score : ${result.eweResult.synthesis.score}`)
+  for (const a of result.eweResult.synthesis.alerts) {
+    console.log(`    [${a.severity}] ${a.title}: ${a.body}`)
+  }
+  // Risk windows
+  const ewe = result.eweResult as any
+  if (ewe.synthesis?.riskWindows) {
+    console.log('  Fenêtres de risque :')
+    for (const rw of ewe.synthesis.riskWindows) {
+      console.log(`    ${rw.window}: risque ${rw.risk}% — ${rw.factors.join(', ')}`)
+    }
+  }
+}
+
+// TPE
+console.log('')
+console.log('── TPE ENGINE (Therapeutic Perspectives) ──')
+if (result.tpeResult) {
+  for (const a of result.tpeResult.synthesis.alerts) {
+    console.log(`    [${a.severity}] ${a.title}: ${a.body}`)
+  }
+  for (const r of result.tpeResult.synthesis.recommendations) {
+    console.log(`    [${r.priority}] ${r.title}: ${r.body}`)
+  }
+}
+
+// ── 2. DDD (Diagnostic Delay Detector) ──
+console.log('')
+console.log('══════════════════════════════════════════════════════════')
+console.log('── DDD ENGINE (Diagnostic Delay Detector) ──')
+const dddResult = (result as any).dddResult || runDDD(result)
+console.log(`  Retard détecté : ${dddResult.delayDetected ? 'OUI' : 'NON'}`)
+console.log(`  Risque global : ${dddResult.overallRisk}`)
+console.log(`  Heures perdues estimées : ${dddResult.estimatedHoursLost}h`)
+console.log(`  Message : ${dddResult.message}`)
+console.log('')
+if (dddResult.patterns.length > 0) {
+  console.log('  PATTERNS DE RETARD DÉTECTÉS :')
+  for (const p of dddResult.patterns) {
+    console.log(`    [${p.severity}] ${p.name}`)
+    console.log(`      Fenêtre optimale : ${p.optimalWindow}`)
+    console.log(`      Délai actuel : ${p.currentDelay}`)
+    console.log(`      Description : ${p.description}`)
+    if (p.evidence.length > 0) {
+      console.log('      Références :')
+      for (const e of p.evidence) console.log(`        • ${e}`)
+    }
+    console.log('')
+  }
+}
+
+if (dddResult.alerts.length > 0) {
+  console.log('  ALERTES DDD :')
+  for (const a of dddResult.alerts) {
+    console.log(`    [${a.severity}] ${a.title}`)
+    console.log(`      ${a.message}`)
+    console.log(`      Action requise : ${a.actionRequired}`)
+    console.log('')
+  }
+}
+
+// ── 3. Toutes les alertes agrégées ──
+console.log('══════════════════════════════════════════════════════════')
+console.log('── TOUTES LES ALERTES PULSAR ──')
+console.log(`  Total : ${result.alerts?.length || 0} alertes`)
+const criticals = result.alerts?.filter(a => a.severity === 'critical') || []
+const warnings = result.alerts?.filter(a => a.severity === 'warning') || []
+console.log(`  Critiques : ${criticals.length}`)
+console.log(`  Warnings : ${warnings.length}`)
+console.log('')
+for (const a of criticals) {
+  console.log(`  🚨 [CRITIQUE] ${a.title}`)
+  console.log(`     ${a.body}`)
+  console.log(`     Source : ${a.source}`)
+  console.log('')
+}
+for (const a of warnings.slice(0, 10)) {
+  console.log(`  ⚠️  [WARNING] ${a.title}`)
+  console.log(`     ${a.body}`)
+  console.log('')
+}
+
+// ── 4. Toutes les recommandations ──
+console.log('══════════════════════════════════════════════════════════')
+console.log('── RECOMMANDATIONS PULSAR ──')
+console.log(`  Total : ${result.recommendations?.length || 0}`)
+for (const r of (result.recommendations || []).slice(0, 15)) {
+  console.log(`  [${r.priority}] ${r.title}`)
+  console.log(`    ${r.body}`)
+  if (r.reference) console.log(`    Réf : ${r.reference}`)
+  console.log('')
+}
+
+// ── 5. Consult Brief ──
+console.log('══════════════════════════════════════════════════════════')
+console.log('── PULSAR CONSULT — QUESTIONS AUTO-GÉNÉRÉES ──')
+const brief = generateConsultBrief(result, 'fr')
+for (let i = 0; i < brief.questions.length; i++) {
+  const q = brief.questions[i]
+  console.log(`  ${i+1}. [${q.urgency}] ${q.question}`)
+  console.log(`     Contexte : ${q.context}`)
+  console.log(`     Source : ${q.source}`)
+  console.log('')
+}
+
+console.log('═══════════════════════════════════════════════════════════')
+console.log('  FIN DE L\'ANALYSE PULSAR — CAS ALEJANDRO R.')
+console.log('═══════════════════════════════════════════════════════════')
