@@ -6,10 +6,7 @@ import Picto from '@/components/Picto'
 
 // ── Cycling Video Background ──
 const VIDEOS = [
-  '/assets/videos/hero-child.mp4',
   '/assets/videos/data-particles.mp4',
-  '/assets/videos/star-light.mp4',
-  '/assets/videos/wheat-hope.mp4',
 ]
 
 function CyclingVideoBackground() {
