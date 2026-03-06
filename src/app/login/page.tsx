@@ -223,6 +223,7 @@ const DEMO_SLIDES = [
   { titleFr: 'Discovery Engine — 4 niveaux', titleEn: 'Discovery Engine — 4 levels', color: '#10B981' },
   { titleFr: 'Consult — Brief expert en 10s', titleEn: 'Consult — Expert Brief in 10s', color: '#3B82F6' },
   { titleFr: 'Admission & Export', titleEn: 'Admission & Export', color: '#F5A623' },
+  { titleFr: 'Cascade Alert Engine', titleEn: 'Cascade Alert Engine', color: '#FF6B35' },
 ]
 
 const DEMO_CSS = `
@@ -471,8 +472,7 @@ function DemoMockup({ index }: { index: number }) {
     </div>
   )
 
-  // index === 9 — Admission & Export
-  return (
+  if (index === 9) return ( // Admission & Export
     <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 5 }}>
       <div style={{ fontSize: 7, fontFamily: 'monospace', color: '#F5A623', letterSpacing: 1, fontWeight: 700 }}>INTAKE — 8 ÉTAPES VALIDÉES</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
@@ -485,6 +485,36 @@ function DemoMockup({ index }: { index: number }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, marginTop: 2 }}>
         {[{ l: 'Export PDF/JSON/BibTeX', c: '#6C7CFF' }, { l: 'Audit trail complet', c: '#F59E0B' }, { l: '5 rôles RBAC', c: '#8B5CF6' }, { l: 'Bilingue FR/EN 100%', c: '#2FD1C8' }, { l: 'Supabase + RLS', c: '#10B981' }, { l: '95/95 tests passés', c: '#10B981' }].map((k, i) => (
           <div key={i} style={{ textAlign: 'center', padding: '4px', background: `${k.c}06`, borderRadius: 4, border: `1px solid ${k.c}10`, fontSize: 7, color: k.c, fontWeight: 600 }}>{k.l}</div>
+        ))}
+      </div>
+    </div>
+  )
+
+  // index === 10 — Cascade Alert Engine
+  return (
+    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 5 }}>
+      <div style={{ fontSize: 7, fontFamily: 'monospace', color: '#FF6B35', letterSpacing: 1, fontWeight: 700 }}>CASCADE ALERT ENGINE — PRE-INTERVENTION</div>
+      <div style={{ display: 'flex', gap: 6, marginBottom: 4 }}>
+        {[{ l: 'Vulnérabilités', v: '5', c: '#FF6B35' }, { l: 'Cascades', v: '2', c: '#EF4444' }, { l: 'Risque', v: 'CRIT', c: '#EF4444' }].map((b, i) => (
+          <div key={i} style={{ flex: 1, textAlign: 'center', padding: '5px', background: `${b.c}08`, borderRadius: 6, border: `1px solid ${b.c}12` }}>
+            <div style={{ fontSize: 14, fontWeight: 900, color: b.c, fontFamily: 'monospace' }}>{b.v}</div>
+            <div style={{ fontSize: 7, color: '#6B7280' }}>{b.l}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ padding: '6px 8px', background: '#EF444408', borderRadius: 6, borderLeft: '3px solid #EF4444' }}>
+        <div style={{ fontSize: 8, fontWeight: 800, color: '#EF4444' }}>🚨 MEOPA × Prodrome FIRES</div>
+        <div style={{ fontSize: 7, color: '#9CA3AF', marginTop: 2 }}>N2O abaisse seuil convulsif. Enfant fébrile en neuroinflammation latente.</div>
+        <div style={{ fontSize: 7, color: '#FF6B35', marginTop: 2 }}>→ Alternative : Emla + Paracétamol</div>
+      </div>
+      <div style={{ padding: '6px 8px', background: '#EF444406', borderRadius: 6, borderLeft: '3px solid #F59E0B' }}>
+        <div style={{ fontSize: 8, fontWeight: 800, color: '#F59E0B' }}>⚠️ PHÉNYTOÏNE × Fragilité cardiaque</div>
+        <div style={{ fontSize: 7, color: '#9CA3AF', marginTop: 2 }}>Cardiotoxicité directe + cocktail 5 molécules</div>
+        <div style={{ fontSize: 7, color: '#FF6B35', marginTop: 2 }}>→ Alternative : Keppra IV (non cardiotoxique)</div>
+      </div>
+      <div style={{ display: 'flex', gap: 4, marginTop: 2 }}>
+        {['OpenFDA FAERS', 'BDPM ANSM', 'Zier 2010', 'Gaspard 2015'].map((r, i) => (
+          <div key={i} style={{ flex: 1, textAlign: 'center', padding: '3px', background: '#FF6B3508', borderRadius: 4, fontSize: 6.5, color: '#FF6B35' }}>{r}</div>
         ))}
       </div>
     </div>

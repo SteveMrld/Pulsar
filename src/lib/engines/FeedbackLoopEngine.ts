@@ -89,6 +89,7 @@ export interface CohortInsight {
 // ══════════════════════════════════════════════════════════════
 
 export class FeedbackLoopEngine {
+  cohort: OutcomeSnapshot[] = []
 
   // ──────────────────────────────────────────────────────────
   // 1. SNAPSHOT — Capturer etat anonymise a admission
@@ -558,3 +559,61 @@ export class FeedbackLoopEngine {
 
 // ── Export singleton ──
 export const feedbackLoop = new FeedbackLoopEngine()
+
+
+// ══════════════════════════════════════════════════════════════
+// CASE INGESTION — Alejandro R. as Patient 0
+// ══════════════════════════════════════════════════════════════
+
+export const PATIENT_ZERO: OutcomeSnapshot = {
+  anonId: 'PULSAR-000',
+  syndrome: 'FIRES',
+  ageMonths: 72,
+  region: 'IDF',
+  admission: {
+    gcs: 8, crp: 80, ferritin: 800, wbc: 18000,
+    csfCells: 15, csfProtein: 0.8, antibody: 'pending',
+    il1b: null, il6: null, il1ra: null, cxcl10: null,
+    eegPattern: 'burst_suppression', mriAbnormal: true,
+  },
+  pulsar: {
+    triageScore: 85, triagePriority: 'P1',
+    vpsScore: 100, tdeScore: 100, tdeLine: 3,
+    eweScore: 74, pveScore: 50,
+  },
+  predictions: [
+    { engine: 'VPS', type: 'severity', prediction: 'VPS 100 — critical', confidence: 100, reasoning: 'All parameters at maximum' },
+    { engine: 'TDE', type: 'pattern', prediction: 'FIRES pattern detected', confidence: 95, reasoning: 'Refractory SE + febrile prodrome + age 6' },
+    { engine: 'DDD', type: 'delay', prediction: '4 delays, 48h lost', confidence: 90, reasoning: 'No IVIG, no anakinra, no KD, no Ab panel' },
+    { engine: 'CAE', type: 'cascade', prediction: 'Phenytoin × cardiac fragility', confidence: 85, reasoning: 'Cardiotoxicity + polytherapy + inflammation' },
+  ],
+  hypotheses: [
+    { id: 'h1', title: 'FIRES pattern', type: 'diagnostic', confidence: 95 },
+    { id: 'h2', title: 'Phenytoin cardiotoxicity', type: 'pharmacovigilance', confidence: 85 },
+    { id: 'h3', title: 'MEOPA cascade trigger', type: 'cascade', confidence: 75 },
+  ],
+  treatments: [
+    { treatment: 'midazolam', line: 2, startDay: 0, response: 'partial' },
+    { treatment: 'phenytoin', line: 2, startDay: 0, response: 'none' },
+    { treatment: 'phenobarbital', line: 2, startDay: 1, response: 'none' },
+    { treatment: 'ketamine', line: 3, startDay: 2, response: 'partial' },
+    { treatment: 'levetiracetam', line: 1, startDay: 0, response: 'none' },
+  ],
+  capturedAt: '2025-04-17T00:00:00Z',
+}
+
+// Learnings from Patient Zero — seed for future cases
+export const PATIENT_ZERO_LEARNINGS = [
+  'FIRES prodrome (febrile illness + headache + abdominal pain) → immediate FIRES suspicion age 3-15',
+  'MEOPA contraindicated in febrile children with neurological signs — cascade risk (Zier 2010)',
+  'Immunotherapy (IVIG) empirically within 48h of refractory SE (Titulaer 2013)',
+  'Anakinra within 72h if FIRES suspected (Kenney-Jung 2016, Dilena 2019)',
+  'Phenytoin >7 days + concurrent sedatives → cardiac monitoring (troponin + echo)',
+  'Ketogenic diet by J2 in suspected FIRES (van Baalen 2023)',
+  'Cytokine panel: standard FIRES workup',
+  'FIRES must appear explicitly in the medical record when pattern suspected',
+]
+
+// Seed
+feedbackLoop.cohort = feedbackLoop.cohort || []
+feedbackLoop.cohort.push(PATIENT_ZERO)
