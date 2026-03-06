@@ -17,7 +17,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { t } = useLang()
 
-  const isPublic = ['/', '/login', '/invite'].includes(pathname)
+  const isPublic = ['/', '/login', '/invite'].includes(pathname) || pathname.startsWith('/case/')
   const isPatient = pathname.startsWith('/patient/')
 
   useEffect(() => {
