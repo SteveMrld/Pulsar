@@ -5,62 +5,66 @@ import Link from 'next/link'
 import Picto from '@/components/Picto'
 
 // ══════════════════════════════════════════════════════════════
-// PULSAR SPLASH — Cinematic pre-landing animation
-// Each letter reveals its meaning, then assembles into the logo
+// PULSAR SPLASH — Cinematic pre-landing (Design GPT)
 // ══════════════════════════════════════════════════════════════
 
-const PULSAR_LETTERS = [
-  { letter: 'P', word: 'Pediatric', descFr: 'Dédié aux pathologies neurologiques pédiatriques. FIRES, NORSE, encéphalites auto-immunes.', descEn: 'Dedicated to pediatric neurological conditions. FIRES, NORSE, autoimmune encephalitis.', color: '#6C7CFF' },
-  { letter: 'U', word: 'Unified', descFr: 'Une plateforme unifiée. Données cliniques, biologiques, radiologiques et littérature scientifique.', descEn: 'A unified platform. Clinical, biological, radiological data and scientific literature.', color: '#8B5CF6' },
-  { letter: 'L', word: 'Learning', descFr: 'Un système apprenant. Chaque enfant rend le système plus intelligent pour le suivant.', descEn: 'A learning system. Every child makes the system smarter for the next one.', color: '#2FD1C8' },
-  { letter: 'S', word: 'Surveillance', descFr: 'Monitoring neurologique en temps réel. Détection des signaux avant la décompensation.', descEn: 'Real-time neurological monitoring. Signal detection before decompensation.', color: '#10B981' },
-  { letter: 'A', word: 'Analysis', descFr: 'Corrélations, scores de risque, détection de patterns. 10 moteurs d\'intelligence artificielle.', descEn: 'Correlations, risk scores, pattern detection. 10 artificial intelligence engines.', color: '#F5A623' },
-  { letter: 'R', word: 'Response', descFr: 'Aide à la décision thérapeutique. Simulation clinique. Brief expert en 10 secondes.', descEn: 'Therapeutic decision support. Clinical simulation. Expert brief in 10 seconds.', color: '#EC4899' },
+const SPLASH_LETTERS = [
+  { char: 'P', word: 'PEDIATRIC', color: '#6C7CFF' },
+  { char: 'U', word: 'UNIFIED', color: '#8B5CF6' },
+  { char: 'L', word: 'LEARNING', color: '#2FD1C8' },
+  { char: 'S', word: 'SURVEILLANCE', color: '#10B981' },
+  { char: 'A', word: 'ANALYSIS', color: '#F5A623' },
+  { char: 'R', word: 'RESPONSE', color: '#EC4899' },
 ]
 
+const SPLASH_CSS = `
+  .splash-root { position:fixed; inset:0; background:#060A14; display:flex; align-items:center; justify-content:center; overflow:hidden; z-index:9999; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
+  .splash-bg { position:absolute; width:100%; height:100%; object-fit:cover; opacity:.35; }
+  .splash-center { position:relative; text-align:center; z-index:2; }
+  .splash-letterBlock { animation: splashFadeUp 1.2s ease; }
+  .splash-letter { font-size:min(40vw,160px); font-weight:900; letter-spacing:-2px; text-shadow:0 0 25px currentColor; line-height:1; }
+  .splash-word { margin-top:10px; font-size:14px; letter-spacing:6px; opacity:.7; color:#fff; text-transform:uppercase; }
+  .splash-pulsar { font-size:min(30vw,140px); font-weight:900; letter-spacing:-2px; animation: splashAssemble 1s ease; line-height:1; }
+  .splash-pulsar span { animation: splashPulse 3s infinite; }
+  .splash-texts { margin-top:30px; max-width:600px; margin-left:auto; margin-right:auto; animation: splashFadeUp 1.5s ease; padding:0 20px; }
+  .splash-tagline { font-size:min(4.5vw,18px); opacity:.9; color:#E8EAF0; line-height:1.6; margin:0; }
+  .splash-promise { margin-top:14px; font-style:italic; opacity:.7; color:rgba(245,166,35,0.7); font-size:min(3.5vw,14px); }
+  .splash-memory { margin-top:20px; font-size:13px; opacity:.5; color:rgba(245,166,35,0.4); letter-spacing:0.15em; }
+  .splash-skip { position:absolute; bottom:30px; right:30px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; padding:8px 16px; border-radius:20px; cursor:pointer; opacity:.6; font-size:12px; z-index:3; }
+  .splash-skip:hover { opacity:1; }
+  @keyframes splashFadeUp { from{opacity:0;transform:translateY(20px);filter:blur(8px)} to{opacity:1;transform:translateY(0);filter:blur(0)} }
+  @keyframes splashAssemble { from{transform:scale(.7);opacity:0} to{transform:scale(1);opacity:1} }
+  @keyframes splashPulse { 0%{text-shadow:0 0 15px currentColor} 50%{text-shadow:0 0 40px currentColor} 100%{text-shadow:0 0 15px currentColor} }
+`
+
 function PulsarSplash({ onComplete }: { onComplete: () => void }) {
-  const [phase, setPhase] = useState<'letters' | 'assemble' | 'tagline' | 'done'>('letters')
-  const [currentLetter, setCurrentLetter] = useState(-1)
-  const [showSkip, setShowSkip] = useState(false)
+  const [index, setIndex] = useState(-1)
+  const [assembled, setAssembled] = useState(false)
+  const [showText, setShowText] = useState(false)
   const { t } = useLang()
 
   useEffect(() => {
-    // Check if already seen this session
     if (typeof window !== 'undefined' && sessionStorage.getItem('pulsar-splash-seen')) {
       onComplete()
       return
     }
 
-    const skipTimer = setTimeout(() => setShowSkip(true), 2000)
+    let i = -1
+    const interval = setInterval(() => {
+      i++
+      setIndex(i)
+      if (i === SPLASH_LETTERS.length) {
+        clearInterval(interval)
+        setTimeout(() => setAssembled(true), 800)
+        setTimeout(() => setShowText(true), 2000)
+        setTimeout(() => {
+          sessionStorage.setItem('pulsar-splash-seen', '1')
+          onComplete()
+        }, 9000)
+      }
+    }, 1600)
 
-    // Letter sequence: each letter shows for 1.8s
-    const letterTimers: NodeJS.Timeout[] = []
-    const startDelay = 800
-
-    PULSAR_LETTERS.forEach((_, i) => {
-      letterTimers.push(setTimeout(() => setCurrentLetter(i), startDelay + i * 1800))
-    })
-
-    // After last letter, assemble phase
-    const assembleTimer = setTimeout(() => setPhase('assemble'), startDelay + PULSAR_LETTERS.length * 1800 + 400)
-
-    // Tagline
-    const taglineTimer = setTimeout(() => setPhase('tagline'), startDelay + PULSAR_LETTERS.length * 1800 + 1600)
-
-    // Done
-    const doneTimer = setTimeout(() => {
-      setPhase('done')
-      if (typeof window !== 'undefined') sessionStorage.setItem('pulsar-splash-seen', '1')
-      setTimeout(onComplete, 800)
-    }, startDelay + PULSAR_LETTERS.length * 1800 + 3800)
-
-    return () => {
-      clearTimeout(skipTimer)
-      letterTimers.forEach(clearTimeout)
-      clearTimeout(assembleTimer)
-      clearTimeout(taglineTimer)
-      clearTimeout(doneTimer)
-    }
+    return () => clearInterval(interval)
   }, [onComplete])
 
   const skip = () => {
@@ -68,186 +72,56 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
     onComplete()
   }
 
-  const activeLetter = currentLetter >= 0 && currentLetter < PULSAR_LETTERS.length ? PULSAR_LETTERS[currentLetter] : null
-
   return (
-    <div style={{
-      position: 'fixed', inset: 0, zIndex: 9999,
-      background: '#060A14',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flexDirection: 'column',
-      opacity: phase === 'done' ? 0 : 1,
-      transition: 'opacity 0.8s ease',
-      overflow: 'hidden',
-    }}>
-      {/* Background glow follows active letter color */}
-      <div style={{
-        position: 'absolute', inset: 0, pointerEvents: 'none',
-        background: activeLetter
-          ? `radial-gradient(ellipse 60% 50% at 50% 50%, ${activeLetter.color}08 0%, transparent 70%)`
-          : 'none',
-        transition: 'background 0.8s ease',
-      }} />
+    <>
+      <style>{SPLASH_CSS}</style>
+      <div className="splash-root">
+        <video className="splash-bg" autoPlay muted loop playsInline src="/assets/videos/neural-bg.mp4" />
 
-      {/* Grain */}
-      <div style={{ position: 'absolute', inset: 0, opacity: 0.04, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat', backgroundSize: '256px', pointerEvents: 'none' }} />
+        <div className="splash-center">
+          {!assembled && index >= 0 && index < SPLASH_LETTERS.length && (
+            <div className="splash-letterBlock" key={index}>
+              <div className="splash-letter" style={{ color: SPLASH_LETTERS[index].color }}>
+                {SPLASH_LETTERS[index].char}
+              </div>
+              <div className="splash-word">{SPLASH_LETTERS[index].word}</div>
+            </div>
+          )}
 
-      <style>{`
-        @keyframes letter-enter {
-          0% { opacity: 0; transform: scale(0.3) translateY(30px); filter: blur(20px); }
-          40% { opacity: 1; filter: blur(0); }
-          100% { opacity: 1; transform: scale(1) translateY(0); }
-        }
-        @keyframes word-fade {
-          0% { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes desc-fade {
-          0% { opacity: 0; transform: translateY(8px); }
-          100% { opacity: 0.7; transform: translateY(0); }
-        }
-        @keyframes pulse-glow {
-          0%, 100% { filter: drop-shadow(0 0 20px var(--glow-color)); }
-          50% { filter: drop-shadow(0 0 40px var(--glow-color)); }
-        }
-        @keyframes assemble-letters {
-          0% { letter-spacing: 0.5em; opacity: 0.5; filter: blur(4px); }
-          100% { letter-spacing: 0.15em; opacity: 1; filter: blur(0); }
-        }
-        @keyframes tagline-enter {
-          0% { opacity: 0; transform: translateY(15px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes line-expand {
-          0% { transform: scaleX(0); }
-          100% { transform: scaleX(1); }
-        }
-      `}</style>
+          {assembled && (
+            <div className="splash-pulsar">
+              {SPLASH_LETTERS.map((l, i) => (
+                <span key={i} style={{ color: l.color }}>{l.char}</span>
+              ))}
+            </div>
+          )}
 
-      {/* PHASE: Individual letters */}
-      {phase === 'letters' && activeLetter && (
-        <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-          {/* Big letter */}
-          <div style={{
-            fontSize: 'min(30vw, 200px)', fontWeight: 900, lineHeight: 1,
-            color: activeLetter.color,
-            animation: 'letter-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-            textShadow: `0 0 60px ${activeLetter.color}40, 0 0 120px ${activeLetter.color}20`,
-            fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-          }}>
-            {activeLetter.letter}
-          </div>
-
-          {/* Word */}
-          <div style={{
-            fontSize: 'min(5vw, 24px)', fontWeight: 300, letterSpacing: '0.3em', textTransform: 'uppercase',
-            color: activeLetter.color, marginTop: 8, opacity: 0.9,
-            animation: 'word-fade 0.5s ease 0.3s both',
-          }}>
-            {activeLetter.word}
-          </div>
-
-          {/* Description */}
-          <div style={{
-            fontSize: 'min(3.5vw, 14px)', color: '#9CA3AF', marginTop: 16,
-            maxWidth: 400, lineHeight: 1.6, fontWeight: 300,
-            animation: 'desc-fade 0.5s ease 0.5s both',
-            padding: '0 20px',
-          }}>
-            {t(activeLetter.descFr, activeLetter.descEn)}
-          </div>
-
-          {/* Progress dots */}
-          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 32 }}>
-            {PULSAR_LETTERS.map((l, i) => (
-              <div key={i} style={{
-                width: i === currentLetter ? 24 : 6, height: 6, borderRadius: 3,
-                background: i <= currentLetter ? l.color : '#1A2035',
-                transition: 'all 0.4s ease',
-                boxShadow: i === currentLetter ? `0 0 12px ${l.color}60` : 'none',
-              }} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* PHASE: Assemble */}
-      {(phase === 'assemble' || phase === 'tagline') && (
-        <div style={{ textAlign: 'center', position: 'relative', zIndex: 1 }}>
-          {/* Assembled PULSAR */}
-          <div style={{
-            fontSize: 'min(15vw, 80px)', fontWeight: 900, lineHeight: 1,
-            animation: 'assemble-letters 1s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-            fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif',
-          }}>
-            {PULSAR_LETTERS.map((l, i) => (
-              <span key={i} style={{
-                color: l.color,
-                textShadow: `0 0 30px ${l.color}30`,
-                display: 'inline-block',
-              }}>
-                {l.letter}
-              </span>
-            ))}
-          </div>
-
-          {/* Separator line */}
-          <div style={{
-            width: 120, height: 1, margin: '20px auto',
-            background: 'linear-gradient(90deg, transparent, rgba(245,166,35,0.5), transparent)',
-            animation: 'line-expand 0.8s ease 0.3s both',
-            transformOrigin: 'center',
-          }} />
-
-          {/* Tagline */}
-          {phase === 'tagline' && (
-            <div style={{ animation: 'tagline-enter 0.8s ease both' }}>
-              <p style={{
-                fontSize: 'min(4vw, 16px)', color: '#E8EAF0', fontWeight: 300,
-                fontStyle: 'italic', lineHeight: 1.6, maxWidth: 500, margin: '0 auto',
-                padding: '0 20px',
-              }}>
+          {showText && (
+            <div className="splash-texts">
+              <p className="splash-tagline">
                 {t(
                   "Quand le cerveau d'un enfant s'enflamme, chaque seconde d'avance sauve une vie.",
                   "When a child's brain ignites, every second ahead saves a life."
                 )}
               </p>
-              <p style={{
-                fontSize: 11, color: 'rgba(245,166,35,0.6)', marginTop: 16,
-                fontStyle: 'italic', fontWeight: 300,
-                animation: 'tagline-enter 0.6s ease 0.4s both',
-              }}>
+              <p className="splash-promise">
                 {t(
-                  'Je t\'avais fait une promesse, mon petit lion.',
-                  'I made you a promise, little lion.'
+                  "Je t'avais fait une promesse, mon petit lion.",
+                  "I made you a promise, little lion."
                 )}
               </p>
-              <p style={{
-                fontSize: 10, color: 'rgba(245,166,35,0.4)', marginTop: 12,
-                fontWeight: 300, letterSpacing: '0.15em',
-                fontFamily: 'var(--p-font-mono)',
-                animation: 'tagline-enter 0.6s ease 0.8s both',
-              }}>
-                {t('À la mémoire d\'Alejandro', 'In memory of Alejandro')}
+              <p className="splash-memory">
+                {t("À la mémoire d'Alejandro", "In memory of Alejandro")}
               </p>
             </div>
           )}
         </div>
-      )}
 
-      {/* Skip button */}
-      {showSkip && phase !== 'done' && (
-        <button onClick={skip} style={{
-          position: 'absolute', bottom: 30, right: 30,
-          background: 'none', border: '1px solid rgba(255,255,255,0.15)',
-          color: '#6B7280', fontSize: 11, padding: '6px 16px',
-          borderRadius: 20, cursor: 'pointer', zIndex: 2,
-          transition: 'all 0.3s ease',
-        }}>
-          {t('Passer', 'Skip')} →
+        <button className="splash-skip" onClick={skip}>
+          {t('Passer →', 'Skip →')}
         </button>
-      )}
-    </div>
+      </div>
+    </>
   )
 }
 
