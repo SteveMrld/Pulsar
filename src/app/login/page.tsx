@@ -4,6 +4,7 @@ import { createClient } from '@/lib/supabase/client'
 import { useLang } from '@/contexts/LanguageContext'
 import { validateInvite, setInviteCookie } from '@/lib/invites'
 import Link from 'next/link'
+import Picto from '@/components/Picto'
 import { useRouter } from 'next/navigation'
 
 export default function LoginPage() {
@@ -14,7 +15,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [inviteCode, setInviteCode] = useState('')
   const [showDemo, setShowDemo] = useState(false)
-  const [demoSlide, setDemoSlide] = useState(0)
+  
   const router = useRouter()
 
   useEffect(() => {
@@ -202,404 +203,377 @@ export default function LoginPage() {
         </div>
 
         {/* ═══════ DEMO OVERLAY ═══════ */}
-        {showDemo && <DemoOverlay t={t} slide={demoSlide} setSlide={setDemoSlide} onClose={() => { setShowDemo(false); setDemoSlide(0) }} />}
+        {showDemo && <DemoOverlay t={t} onClose={() => setShowDemo(false)} />}
       </div>
     </div>
   )
 }
 
+
 // ═══════════════════════════════════════════════════════════
-// DEMO — Autoplay, rich mockups, full PULSAR showcase
+// DEMO IMMERSIVE — Simulation interactive PULSAR
+// L'utilisateur vit l'expérience comme s'il était dans l'app
+// Curseur animé, saisie de données, pipeline en temps réel
 // ═══════════════════════════════════════════════════════════
 
-const DEMO_SLIDES = [
-  { titleFr: 'Registre patients', titleEn: 'Patient Registry', color: '#6C7CFF' },
-  { titleFr: 'Cockpit — Monitoring temps réel', titleEn: 'Cockpit — Real-time Monitoring', color: '#EF4444' },
-  { titleFr: 'Profil patient — Organes & Vitales', titleEn: 'Patient Profile — Organs & Vitals', color: '#EC4899' },
-  { titleFr: 'Pipeline — 10 moteurs IA', titleEn: 'Pipeline — 10 AI Engines', color: '#2FD1C8' },
-  { titleFr: 'Alerte retard diagnostique', titleEn: 'Diagnostic Delay Alert', color: '#DC2626' },
-  { titleFr: 'Oracle — Simulation clinique', titleEn: 'Oracle — Clinical Simulation', color: '#E879F9' },
-  { titleFr: 'Cerveau — Heatmap & EEG', titleEn: 'Brain — Heatmap & EEG', color: '#EC4899' },
-  { titleFr: 'Discovery Engine — 4 niveaux', titleEn: 'Discovery Engine — 4 levels', color: '#10B981' },
-  { titleFr: 'Consult — Brief expert en 10s', titleEn: 'Consult — Expert Brief in 10s', color: '#3B82F6' },
-  { titleFr: 'Admission & Export', titleEn: 'Admission & Export', color: '#F5A623' },
-  { titleFr: 'Cascade Alert Engine', titleEn: 'Cascade Alert Engine', color: '#FF6B35' },
-]
 
-const DEMO_CSS = `
-  .demo-overlay { position:fixed; inset:0; z-index:999; display:flex; align-items:center; justify-content:center; }
-  .demo-bg-video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0.2; z-index:0; }
-  .demo-bg-overlay { position:absolute; inset:0; background:radial-gradient(ellipse at 50% 50%, rgba(6,10,20,0.85) 0%, rgba(6,10,20,0.95) 70%); z-index:1; }
-  .demo-card { position:relative; z-index:2; max-width:480px; width:calc(100% - 32px); border-radius:16px; overflow:hidden; }
-  .demo-header { padding:14px 18px 10px; display:flex; justify-content:space-between; align-items:center; }
-  .demo-mockup { min-height:220px; padding:0; }
-  .demo-desc { padding:12px 18px; font-size:10px; line-height:1.6; }
-  .demo-nav { padding:10px 18px 14px; display:flex; justify-content:space-between; align-items:center; }
-  .demo-progress { position:absolute; top:0; left:0; height:2px; transition:width 0.3s linear; }
-  @keyframes demoSlideIn { from{opacity:0;transform:translateX(30px)} to{opacity:1;transform:translateX(0)} }
-  .demo-slide-enter { animation: demoSlideIn 0.4s ease; }
+const DEMO_STYLE = `
+  .demo-root { position:fixed; inset:0; z-index:999; background:#060A14; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
+  .demo-app { position:absolute; inset:0; background:#0C1424; overflow-y:auto; }
+  .demo-cursor { position:absolute; z-index:100; pointer-events:none; transition: left 0.8s cubic-bezier(0.25,0.1,0.25,1), top 0.8s cubic-bezier(0.25,0.1,0.25,1); }
+  .demo-cursor-dot { width:20px; height:20px; border-radius:50%; border:2px solid #F5A623; background:rgba(245,166,35,0.15); }
+  .demo-cursor-click { position:absolute; inset:-4px; border-radius:50%; border:2px solid #F5A623; opacity:0; }
+  .demo-cursor.clicking .demo-cursor-click { animation: demo-click 0.4s ease; }
+  .demo-topbar { height:36px; background:#111827; border-bottom:1px solid #1F2A40; display:flex; align-items:center; padding:0 16px; gap:8px; }
+  .demo-sidebar { position:absolute; left:0; top:36px; bottom:0; width:48px; background:#0F1520; border-right:1px solid #1F2A40; display:flex; flex-direction:column; align-items:center; padding:8px 0; gap:6px; }
+  .demo-content { position:absolute; left:48px; top:36px; bottom:0; right:0; overflow-y:auto; padding:16px; }
+  .demo-typing { border-right:2px solid #6C7CFF; animation: demo-blink 0.6s step-end infinite; }
+  .demo-badge-pulse { animation: demo-badge-pop 0.5s ease; }
+  .demo-close { position:absolute; top:8px; right:12px; z-index:101; background:none; border:1px solid rgba(255,255,255,0.15); color:#6B7280; font-size:11px; padding:4px 12px; border-radius:16px; cursor:pointer; }
+  .demo-close:hover { color:#fff; }
+  .demo-narration { position:absolute; bottom:16px; left:50%; transform:translateX(-50%); z-index:101; background:rgba(12,20,36,0.92); backdrop-filter:blur(12px); border:1px solid #6C7CFF20; border-radius:12px; padding:10px 20px; max-width:500px; text-align:center; }
+  .demo-narration-text { font-size:12px; color:#E8EAF0; line-height:1.5; }
+  .demo-engine-badge { display:inline-flex; padding:3px 8px; border-radius:6px; font-size:8px; font-weight:800; font-family:monospace; }
+  @keyframes demo-click { 0%{transform:scale(1);opacity:0.8} 100%{transform:scale(2.5);opacity:0} }
+  @keyframes demo-blink { 0%,100%{border-color:#6C7CFF} 50%{border-color:transparent} }
+  @keyframes demo-badge-pop { 0%{transform:scale(0)} 50%{transform:scale(1.3)} 100%{transform:scale(1)} }
+  @keyframes demo-fadein { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+  .demo-fadein { animation: demo-fadein 0.4s ease; }
 `
 
-function DemoMockup({ index }: { index: number }) {
-  if (index === 0) return ( // Patient Registry
-    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 5 }}>
-      {[
-        { name: 'Inès M.', age: '4 ans', synd: 'FIRES', vps: 78, room: 'Réa Neuro — Lit 3', col: '#EF4444', status: 'SE super-réfractaire · J4' },
-        { name: 'Lucas R.', age: '14 ans', synd: 'Anti-NMDAR', vps: 62, room: 'Réa Neuro — Lit 7', col: '#F59E0B', status: 'Immunothérapie J2' },
-        { name: 'Amara T.', age: '8 ans', synd: 'MOGAD', vps: 41, room: 'Neuropéd. — Lit 12', col: '#F5A623', status: 'Stabilisation' },
-        { name: 'Noah B.', age: '6 ans', synd: 'Épil. focale', vps: 23, room: 'Neuropéd. — Lit 5', col: '#10B981', status: 'Monitoring EEG' },
-      ].map((p, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: `${p.col}08`, borderRadius: 10, borderLeft: `3px solid ${p.col}` }}>
-          <div style={{ width: 32, height: 32, borderRadius: '50%', background: `${p.col}15`, border: `2px solid ${p.col}30`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <div style={{ width: 16, height: 16, borderRadius: '50%', background: `radial-gradient(circle, ${p.col}60 0%, ${p.col}20 70%)` }} />
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: '#F0F2F5' }}>{p.name} <span style={{ fontWeight: 400, color: '#6B7280', fontSize: 9 }}>{p.age} · {p.synd}</span></div>
-            <div style={{ fontSize: 8, color: '#6B7280', marginTop: 1 }}>{p.room} · {p.status}</div>
-          </div>
-          <div style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: 18, fontWeight: 900, color: p.col, fontFamily: 'monospace' }}>{p.vps}</div>
-            <div style={{ fontSize: 7, color: p.col, fontWeight: 700 }}>VPS</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
+// ── Scene definitions ──
+interface Scene {
+  id: string
+  duration: number // ms
+  narrationFr: string
+  narrationEn: string
+  cursorX: number // % 
+  cursorY: number // %
+  click?: boolean
+}
 
-  if (index === 1) return ( // Cockpit
-    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <div style={{ display: 'flex', gap: 8 }}>
-        <div style={{ flex: '0 0 100px', background: 'linear-gradient(135deg, #EF444415, #EF444408)', border: '1px solid #EF444425', borderRadius: 12, padding: 12, textAlign: 'center' }}>
-          <div style={{ fontSize: 8, color: '#EF4444', fontFamily: 'monospace', fontWeight: 700 }}>VPS SCORE</div>
-          <div style={{ fontSize: 32, fontWeight: 900, color: '#EF4444', fontFamily: 'monospace', textShadow: '0 0 20px rgba(239,68,68,0.3)' }}>78</div>
-          <div style={{ fontSize: 7, color: '#EF4444', fontWeight: 700, letterSpacing: 1 }}>CRITIQUE</div>
-          <div style={{ width: '100%', height: 3, background: '#1A2035', borderRadius: 2, marginTop: 6 }}>
-            <div style={{ width: '78%', height: '100%', background: 'linear-gradient(90deg, #F59E0B, #EF4444)', borderRadius: 2 }} />
-          </div>
-        </div>
-        <div style={{ flex: 1, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
-          {[{ l: 'GCS', v: '7/15', c: '#EF4444' }, { l: 'Crises/24h', v: '12', c: '#EF4444' }, { l: 'CRP', v: '145', c: '#EF4444' }, { l: 'Ferritine', v: '2400', c: '#EF4444' }, { l: 'FC', v: '152 bpm', c: '#F59E0B' }, { l: 'SpO2', v: '94%', c: '#F59E0B' }, { l: 'Temp', v: '39.2°', c: '#EF4444' }, { l: 'Lactate', v: '4.8', c: '#EF4444' }].map((r, i) => (
-            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 6px', background: `${r.c}06`, borderRadius: 4, borderLeft: `2px solid ${r.c}20` }}>
-              <span style={{ fontSize: 7, color: '#6B7280' }}>{r.l}</span>
-              <span style={{ fontSize: 8, fontWeight: 700, color: r.c, fontFamily: 'monospace' }}>{r.v}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div style={{ display: 'flex', gap: 4 }}>
-        {[{ t: '🚨 3 alertes critiques', c: '#EF4444' }, { t: '⚠️ 5 recommandations', c: '#F59E0B' }].map((a, i) => (
-          <div key={i} style={{ flex: 1, padding: '5px 8px', background: `${a.c}08`, borderRadius: 6, borderLeft: `2px solid ${a.c}`, fontSize: 7, fontWeight: 700, color: a.c }}>{a.t}</div>
-        ))}
-      </div>
-    </div>
-  )
+const SCENES: Scene[] = [
+  { id: 'registry', duration: 3500, narrationFr: 'Le médecin ouvre le registre patients. 3 enfants sont suivis en réanimation.', narrationEn: 'The doctor opens the patient registry. 3 children are in the ICU.', cursorX: 20, cursorY: 30 },
+  { id: 'new-patient', duration: 2500, narrationFr: 'Nouveau patient admis. Il clique sur "Nouvelle admission".', narrationEn: 'New patient admitted. He clicks "New admission".', cursorX: 80, cursorY: 12, click: true },
+  { id: 'intake-name', duration: 3000, narrationFr: 'Léa M., 7 ans, admise pour convulsions fébriles réfractaires depuis 48h.', narrationEn: 'Léa M., 7 years old, admitted for refractory febrile seizures for 48h.', cursorX: 50, cursorY: 30, click: true },
+  { id: 'intake-vitals', duration: 3500, narrationFr: 'Saisie des constantes : GCS 8, FC 158, T° 39.8°C, SpO2 93%, 6 crises/24h.', narrationEn: 'Entering vitals: GCS 8, HR 158, T° 39.8°C, SpO2 93%, 6 seizures/24h.', cursorX: 55, cursorY: 55, click: true },
+  { id: 'intake-bio', duration: 3000, narrationFr: 'Biologie : CRP 95, Ferritine 1200, Lactate 4.2. LCR : 20 cellules.', narrationEn: 'Labs: CRP 95, Ferritin 1200, Lactate 4.2. CSF: 20 cells.', cursorX: 55, cursorY: 70, click: true },
+  { id: 'pipeline', duration: 4000, narrationFr: 'PULSAR lance le pipeline. 11 moteurs s\'activent en séquence. VPS calculé : 88/100 — CRITIQUE.', narrationEn: 'PULSAR launches the pipeline. 11 engines activate in sequence. VPS calculated: 88/100 — CRITICAL.', cursorX: 50, cursorY: 40 },
+  { id: 'cockpit', duration: 4000, narrationFr: 'Le cockpit affiche tout : VPS 88, constantes, alertes, 8 badges moteurs. La bannière cascade s\'allume.', narrationEn: 'The cockpit shows everything: VPS 88, vitals, alerts, 8 engine badges. The cascade banner lights up.', cursorX: 30, cursorY: 25 },
+  { id: 'ddd-alert', duration: 4000, narrationFr: 'ALERTE DDD : immunothérapie non initiée à H+48. Retard critique. "64% des cas similaires : IVIG < 48h."', narrationEn: 'DDD ALERT: immunotherapy not started at H+48. Critical delay. "64% of similar cases: IVIG < 48h."', cursorX: 50, cursorY: 35, click: true },
+  { id: 'cascade', duration: 4500, narrationFr: 'Le médecin teste "MEOPA" dans le Cascade Alert Engine. PULSAR dit : CASCADE CRITIQUE — contre-indication.', narrationEn: 'The doctor tests "MEOPA" in the Cascade Alert Engine. PULSAR says: CRITICAL CASCADE — contraindicated.', cursorX: 60, cursorY: 40, click: true },
+  { id: 'discovery', duration: 3500, narrationFr: 'Discovery Engine : PubMed trouve 7 articles récents sur le FIRES. ClinicalTrials : 2 essais Anakinra recrutent.', narrationEn: 'Discovery Engine: PubMed finds 7 recent FIRES articles. ClinicalTrials: 2 Anakinra trials recruiting.', cursorX: 45, cursorY: 50 },
+  { id: 'oracle', duration: 4000, narrationFr: 'Oracle simule 4 scénarios à H+72. Avec Anakinra + régime cétogène : VPS projeté 32. Sans action : VPS 95.', narrationEn: 'Oracle simulates 4 scenarios at H+72. With Anakinra + ketogenic diet: projected VPS 32. Without action: VPS 95.', cursorX: 50, cursorY: 45 },
+  { id: 'consult', duration: 3500, narrationFr: 'En 10 secondes, PULSAR génère le brief expert. 3 questions urgentes. Prêt à envoyer au spécialiste.', narrationEn: 'In 10 seconds, PULSAR generates the expert brief. 3 urgent questions. Ready to send to the specialist.', cursorX: 70, cursorY: 30, click: true },
+  { id: 'end', duration: 5000, narrationFr: 'PULSAR a posé les bonnes questions au bon moment. Chaque minute gagnée peut sauver une vie.', narrationEn: 'PULSAR asked the right questions at the right time. Every minute saved can save a life.', cursorX: 50, cursorY: 50 },
+]
 
-  if (index === 2) return ( // Patient profile with body/organs
-    <div style={{ padding: 14, display: 'flex', gap: 14, alignItems: 'center' }}>
-      {/* Body silhouette with organ indicators */}
-      <div style={{ width: 100, height: 180, position: 'relative', flexShrink: 0, background: 'linear-gradient(180deg, rgba(236,72,153,0.05) 0%, transparent 100%)', borderRadius: 12, border: '1px solid rgba(236,72,153,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-        {/* Silhouette */}
-        <div style={{ width: 40, height: 140, position: 'relative' }}>
-          {/* Head */}
-          <div style={{ width: 24, height: 24, borderRadius: '50%', border: '2px solid rgba(236,72,153,0.4)', margin: '0 auto', position: 'relative' }}>
-            <div style={{ position: 'absolute', inset: 3, borderRadius: '50%', background: 'radial-gradient(circle, #EF444440 0%, transparent 70%)', animation: 'splashPulse 2s infinite' }} />
-          </div>
-          {/* Body */}
-          <div style={{ width: 20, height: 60, margin: '4px auto 0', borderRadius: 10, border: '2px solid rgba(236,72,153,0.2)' }} />
-          {/* Legs */}
-          <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginTop: 2 }}>
-            <div style={{ width: 8, height: 40, borderRadius: 4, border: '2px solid rgba(236,72,153,0.15)' }} />
-            <div style={{ width: 8, height: 40, borderRadius: 4, border: '2px solid rgba(236,72,153,0.15)' }} />
-          </div>
-        </div>
-        {/* Organ indicators */}
-        {[{ t: 8, l: 70, label: '🧠', c: '#EF4444' }, { t: 45, l: 75, label: '❤️', c: '#F59E0B' }, { t: 65, l: 72, label: '🫁', c: '#2FD1C8' }, { t: 85, l: 70, label: '🩸', c: '#8B5CF6' }].map((o, i) => (
-          <div key={i} style={{ position: 'absolute', top: `${o.t}%`, left: o.l, display: 'flex', alignItems: 'center', gap: 2 }}>
-            <div style={{ width: 4, height: 4, borderRadius: 2, background: o.c, boxShadow: `0 0 6px ${o.c}` }} />
-            <span style={{ fontSize: 10 }}>{o.label}</span>
-          </div>
-        ))}
-      </div>
-      {/* Vitals panel */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        <div style={{ fontSize: 8, fontFamily: 'monospace', color: '#EC4899', fontWeight: 700, letterSpacing: 1, marginBottom: 2 }}>INÈS M. — FIRES — J4</div>
-        {[
-          { icon: '🧠', l: 'Neurologie', items: 'GCS 7 · Pupilles sluggish · 12 crises/24h', c: '#EF4444' },
-          { icon: '❤️', l: 'Hémodynamique', items: 'FC 152 · PA 85/55 · SpO2 94% · T° 39.2', c: '#F59E0B' },
-          { icon: '🫁', l: 'Respiratoire', items: 'FR 28 · Intubée · FiO2 40%', c: '#2FD1C8' },
-          { icon: '🩸', l: 'Biologie', items: 'CRP 145 · Ferritine 2400 · Lactate 4.8', c: '#EF4444' },
-          { icon: '💉', l: 'LCR', items: '85 cellules · Protéines 1.2 · Ab: pending', c: '#8B5CF6' },
-          { icon: '🧬', l: 'Cytokines', items: 'IL-1β 78 · IL-6 340 · TNF-α 45', c: '#EC4899' },
-        ].map((v, i) => (
-          <div key={i} style={{ padding: '4px 8px', background: `${v.c}06`, borderRadius: 5, borderLeft: `2px solid ${v.c}20` }}>
-            <div style={{ fontSize: 8, fontWeight: 700, color: v.c }}>{v.icon} {v.l}</div>
-            <div style={{ fontSize: 7, color: '#9CA3AF', marginTop: 1 }}>{v.items}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
+function DemoApp({ scene, typedText }: { scene: string; typedText: string }) {
+  const engines = ['VPS','TDE','PVE','EWE','TPE','NCE','DDD','CAE','DISC','ORACLE','CONSULT']
+  const activeEngines = scene === 'pipeline' ? engines : []
 
-  if (index === 3) return ( // Pipeline
-    <div style={{ padding: 14 }}>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 3, justifyContent: 'center', marginBottom: 10 }}>
-        {[{ n: 'VPS', c: '#6C7CFF' }, { n: 'TDE', c: '#2FD1C8' }, { n: 'PVE', c: '#B96BFF' }, { n: 'EWE', c: '#A78BFA' }, { n: 'TPE', c: '#FFB347' }, { n: 'NEURO', c: '#EC4899' }, { n: 'DISC', c: '#10B981' }, { n: 'ORACLE', c: '#E879F9' }, { n: 'DDD', c: '#DC2626' }, { n: 'CONSULT', c: '#3B82F6' }].map((e, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <div style={{ padding: '4px 8px', borderRadius: 6, background: `${e.c}12`, border: `1px solid ${e.c}20`, boxShadow: `0 0 8px ${e.c}10` }}>
-              <span style={{ fontSize: 7, fontWeight: 800, color: e.c, fontFamily: 'monospace' }}>{e.n}</span>
-            </div>
-            {i < 9 && <span style={{ color: '#2A2A40', fontSize: 8 }}>→</span>}
-          </div>
-        ))}
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
-        {[{ l: 'Moteurs IA', v: '10', c: '#6C7CFF' }, { l: 'Lignes logique', v: '8 005', c: '#2FD1C8' }, { l: 'Tests validés', v: '95/95', c: '#10B981' }, { l: 'Alignement', v: '93%', c: '#F5A623' }, { l: 'Fichiers engines', v: '23', c: '#8B5CF6' }, { l: 'Pathologies', v: '5', c: '#EC4899' }].map((k, i) => (
-          <div key={i} style={{ textAlign: 'center', padding: '6px', background: `${k.c}08`, borderRadius: 8, border: `1px solid ${k.c}10` }}>
-            <div style={{ fontSize: 16, fontWeight: 900, color: k.c, fontFamily: 'monospace' }}>{k.v}</div>
-            <div style={{ fontSize: 7, color: '#6B7280' }}>{k.l}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-
-  if (index === 4) return ( // DDD
-    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <div style={{ background: 'linear-gradient(135deg, #DC262610, #DC262605)', border: '1px solid #DC262620', borderRadius: 10, padding: 12 }}>
-        <div style={{ fontSize: 11, fontWeight: 800, color: '#DC2626' }}>🚨 RETARD DIAGNOSTIQUE CRITIQUE</div>
-        <div style={{ fontSize: 8, color: '#E8EAF0', lineHeight: 1.6, marginTop: 4 }}>6 signaux compatibles encéphalite auto-immune/FIRES. Dans 64% des cas similaires, immunothérapie initiée {'<'} 48h. Délai actuel : J4 (+48h retard).</div>
-      </div>
-      {[{ a: 'Immunothérapie 1ère ligne', d: '+48h retard', c: '#DC2626', ref: 'Gaspard 2015' }, { a: 'Panel anticorps complet', d: '+24h retard', c: '#DC2626', ref: 'Graus 2016' }, { a: 'Anakinra (anti-IL-1)', d: 'Fenêtre se ferme', c: '#F59E0B', ref: 'Dilena 2019' }, { a: 'Ponction lombaire', d: 'Réalisée ✓', c: '#10B981', ref: '' }].map((r, i) => (
-        <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 10px', background: `${r.c}06`, borderRadius: 6, borderLeft: `3px solid ${r.c}` }}>
-          <div>
-            <span style={{ fontSize: 8.5, color: '#E8EAF0', fontWeight: 600 }}>{r.a}</span>
-            {r.ref && <span style={{ fontSize: 7, color: '#6B7280', marginLeft: 6 }}>{r.ref}</span>}
-          </div>
-          <span style={{ fontSize: 8, color: r.c, fontWeight: 700, fontFamily: 'monospace' }}>{r.d}</span>
-        </div>
-      ))}
-    </div>
-  )
-
-  if (index === 5) return ( // Oracle
-    <div style={{ padding: 14 }}>
-      <div style={{ display: 'flex', gap: 6, marginBottom: 10, flexWrap: 'wrap' }}>
-        {[{ l: 'Standard', c: '#6C7CFF' }, { l: 'Immuno agressive', c: '#8B5CF6' }, { l: 'Expérimental', c: '#F5A623' }, { l: 'Sans action', c: '#EF4444' }].map((s, i) => (
-          <span key={i} style={{ fontSize: 7, padding: '3px 8px', borderRadius: 99, background: `${s.c}12`, border: `1px solid ${s.c}20`, color: s.c, fontWeight: 700 }}>{s.l}</span>
-        ))}
-      </div>
-      {[{ t: 'T0', a: 78, b: 78, c2: 78, no: 78 }, { t: 'H+6', a: 74, b: 68, c2: 65, no: 82 }, { t: 'H+24', a: 62, b: 48, c2: 42, no: 86 }, { t: 'H+72', a: 52, b: 35, c2: 28, no: 89 }].map((r, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 5 }}>
-          <span style={{ width: 28, fontSize: 7, color: '#6B7280', fontFamily: 'monospace', textAlign: 'right' }}>{r.t}</span>
-          <div style={{ flex: 1, height: 14, background: '#0F1628', borderRadius: 7, position: 'relative', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', height: '100%', width: `${r.no}%`, background: 'linear-gradient(90deg, #EF444420, #EF444430)', borderRadius: 7 }} />
-            <div style={{ position: 'absolute', height: '100%', width: `${r.a}%`, background: 'linear-gradient(90deg, #6C7CFF25, #6C7CFF35)', borderRadius: 7 }} />
-            <div style={{ position: 'absolute', height: '100%', width: `${r.c2}%`, background: 'linear-gradient(90deg, #F5A62330, #F5A62345)', borderRadius: 7 }} />
-          </div>
-          <span style={{ width: 20, fontSize: 7, color: '#6B7280', fontFamily: 'monospace' }}>{r.c2}</span>
-        </div>
-      ))}
-      <div style={{ textAlign: 'center', marginTop: 8, padding: '6px 10px', background: '#F5A62308', borderRadius: 8, border: '1px solid #F5A62315' }}>
-        <span style={{ fontSize: 8, fontWeight: 700, color: '#F5A623' }}>⚡ Recommandation : Expérimental — VPS 28 à H+72 (vs 89 sans action)</span>
-      </div>
-    </div>
-  )
-
-  if (index === 6) return ( // Brain heatmap
-    <div style={{ padding: 14, display: 'flex', gap: 14, alignItems: 'center' }}>
-      <div style={{ width: 120, height: 120, borderRadius: '50%', background: 'radial-gradient(circle at 45% 40%, #EC489930 0%, #8B5CF615 35%, #6C7CFF08 60%, transparent 80%)', border: '1px solid #EC489920', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', flexShrink: 0 }}>
-        <div style={{ fontSize: 9, color: '#EC4899', fontWeight: 700, textAlign: 'center', lineHeight: 1.3 }}>Activité<br/>anormale<br/><span style={{ fontSize: 7, color: '#6B7280' }}>temporal G</span></div>
-        {[{ t: 20, l: 15, c: '#EF4444', s: 8 }, { t: 25, l: 65, c: '#F59E0B', s: 6 }, { t: 55, l: 10, c: '#EF4444', s: 7 }, { t: 50, l: 70, c: '#EC4899', s: 5 }, { t: 75, l: 40, c: '#8B5CF6', s: 4 }].map((d, i) => (
-          <div key={i} style={{ position: 'absolute', top: `${d.t}%`, left: `${d.l}%`, width: d.s, height: d.s, borderRadius: d.s, background: d.c, boxShadow: `0 0 8px ${d.c}80` }} />
-        ))}
-      </div>
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 3 }}>
-        <div style={{ fontSize: 8, fontFamily: 'monospace', color: '#EC4899', fontWeight: 700, letterSpacing: 1, marginBottom: 2 }}>NEUROCORE</div>
-        {[{ l: 'EEG', v: 'Burst-suppression', c: '#EF4444' }, { l: 'IRM', v: 'Hypersignal T2 temporal', c: '#F59E0B' }, { l: 'NSE', v: '45 ng/mL ↑↑', c: '#EF4444' }, { l: 'S100B', v: '0.8 µg/L ↑', c: '#F59E0B' }, { l: 'GFAP', v: '12 ng/mL ↑↑', c: '#EF4444' }, { l: 'NFL', v: '85 pg/mL ↑↑', c: '#DC2626' }].map((r, i) => (
-          <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 8px', background: `${r.c}06`, borderRadius: 4, borderLeft: `2px solid ${r.c}15` }}>
-            <span style={{ fontSize: 7.5, color: '#9CA3AF' }}>{r.l}</span>
-            <span style={{ fontSize: 7.5, fontWeight: 700, color: r.c, fontFamily: 'monospace' }}>{r.v}</span>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-
-  if (index === 7) return ( // Discovery
-    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 5 }}>
-      {[
-        { n: 'N1', l: 'PatternMiner', c2: '#10B981', d: '3 corrélations significatives · Pearson > 0.7 · z-score 2.5σ', icon: '📊' },
-        { n: 'N2', l: 'LiteratureScanner', c2: '#3B82F6', d: '7 articles PubMed pertinents · 2 essais NCT actifs', icon: '📡' },
-        { n: 'N3', l: 'HypothesisEngine', c2: '#8B5CF6', d: '"IL-1β/Ferritine pathway in FIRES" — confiance 78%', icon: '💡' },
-        { n: 'N4', l: 'TreatmentPathfinder', c2: '#EC4899', d: 'Anakinra ✓ · Ketogenic diet ✓ · Tocilizumab à évaluer', icon: '🧬' },
-      ].map((lv, i) => (
-        <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, padding: '8px 10px', background: `${lv.c2}06`, borderRadius: 8, borderLeft: `3px solid ${lv.c2}30` }}>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 2, minWidth: 28 }}>
-            <span style={{ fontSize: 12 }}>{lv.icon}</span>
-            <span style={{ fontSize: 8, fontWeight: 900, color: lv.c2, fontFamily: 'monospace' }}>{lv.n}</span>
-          </div>
-          <div>
-            <div style={{ fontSize: 9, fontWeight: 700, color: '#E8EAF0' }}>{lv.l}</div>
-            <div style={{ fontSize: 7.5, color: '#9CA3AF', marginTop: 2 }}>{lv.d}</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-
-  if (index === 8) return ( // Consult
-    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 4 }}>
-      <div style={{ fontSize: 7, fontFamily: 'monospace', color: '#3B82F6', letterSpacing: 1, fontWeight: 700, marginBottom: 2 }}>PULSAR CONSULT — BRIEF EXPERT</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
-        {['Résumé clinique', 'Chronologie J0→J4', 'Examen neuro', 'Biomarqueurs', 'Traitements', 'Analyse 10 moteurs', '⚠️ Alerte retard', 'Projection Oracle'].map((s, i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '4px 6px', background: i === 6 ? '#DC262608' : '#0F1628', borderRadius: 4 }}>
-            <div style={{ width: 3, height: 3, borderRadius: 2, background: i === 6 ? '#DC2626' : '#3B82F6' }} />
-            <span style={{ fontSize: 7, color: i === 6 ? '#DC2626' : '#9CA3AF', fontWeight: i === 6 ? 700 : 400 }}>{s}</span>
-          </div>
-        ))}
-      </div>
-      <div style={{ marginTop: 4, padding: '8px 10px', background: '#3B82F608', borderRadius: 8, borderLeft: '3px solid #3B82F630' }}>
-        <div style={{ fontSize: 7, fontWeight: 700, color: '#3B82F6', marginBottom: 3 }}>QUESTIONS AUTO-GÉNÉRÉES POUR L'EXPERT</div>
-        {['[URGENT] Immunothérapie malgré absence confirmation anticorps ?', '[URGENT] Anakinra justifié pour FIRES suspecté ?', '[24H] Transfert centre de référence neurologique ?'].map((q, i) => (
-          <div key={i} style={{ fontSize: 7.5, color: '#E8EAF0', lineHeight: 1.5, padding: '2px 0' }}>{i+1}. {q}</div>
-        ))}
-      </div>
-      <div style={{ display: 'flex', gap: 4, marginTop: 2 }}>
-        {['PDF', 'JSON', 'Email', 'FR/EN'].map((f, i) => (
-          <div key={i} style={{ flex: 1, textAlign: 'center', padding: '3px', background: '#3B82F608', borderRadius: 4, fontSize: 7, color: '#3B82F6', fontWeight: 600 }}>{f}</div>
-        ))}
-      </div>
-    </div>
-  )
-
-  if (index === 9) return ( // Admission & Export
-    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 5 }}>
-      <div style={{ fontSize: 7, fontFamily: 'monospace', color: '#F5A623', letterSpacing: 1, fontWeight: 700 }}>INTAKE — 8 ÉTAPES VALIDÉES</div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
-        {['1. Source', '2. Identité', '3. Admission', '4. Antécédents', '5. Neurologie', '6. Biologie', '7. Imagerie', '8. Synthèse'].map((s, i) => (
-          <div key={i} style={{ padding: '4px 6px', background: i < 6 ? '#10B98106' : '#F5A62306', borderRadius: 4, borderLeft: `2px solid ${i < 6 ? '#10B98125' : '#F5A62325'}`, fontSize: 7.5, color: i < 6 ? '#10B981' : '#F5A623' }}>
-            {s} {i < 6 ? '✓' : ''}
-          </div>
-        ))}
-      </div>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3, marginTop: 2 }}>
-        {[{ l: 'Export PDF/JSON/BibTeX', c: '#6C7CFF' }, { l: 'Audit trail complet', c: '#F59E0B' }, { l: '5 rôles RBAC', c: '#8B5CF6' }, { l: 'Bilingue FR/EN 100%', c: '#2FD1C8' }, { l: 'Supabase + RLS', c: '#10B981' }, { l: '95/95 tests passés', c: '#10B981' }].map((k, i) => (
-          <div key={i} style={{ textAlign: 'center', padding: '4px', background: `${k.c}06`, borderRadius: 4, border: `1px solid ${k.c}10`, fontSize: 7, color: k.c, fontWeight: 600 }}>{k.l}</div>
-        ))}
-      </div>
-    </div>
-  )
-
-  // index === 10 — Cascade Alert Engine
   return (
-    <div style={{ padding: 14, display: 'flex', flexDirection: 'column', gap: 5 }}>
-      <div style={{ fontSize: 7, fontFamily: 'monospace', color: '#FF6B35', letterSpacing: 1, fontWeight: 700 }}>CASCADE ALERT ENGINE — PRE-INTERVENTION</div>
-      <div style={{ display: 'flex', gap: 6, marginBottom: 4 }}>
-        {[{ l: 'Vulnérabilités', v: '5', c: '#FF6B35' }, { l: 'Cascades', v: '2', c: '#EF4444' }, { l: 'Risque', v: 'CRIT', c: '#EF4444' }].map((b, i) => (
-          <div key={i} style={{ flex: 1, textAlign: 'center', padding: '5px', background: `${b.c}08`, borderRadius: 6, border: `1px solid ${b.c}12` }}>
-            <div style={{ fontSize: 14, fontWeight: 900, color: b.c, fontFamily: 'monospace' }}>{b.v}</div>
-            <div style={{ fontSize: 7, color: '#6B7280' }}>{b.l}</div>
+    <div className="demo-app">
+      {/* Top bar */}
+      <div className="demo-topbar">
+        <div style={{ display:'flex', alignItems:'center', gap:6 }}>
+          <div style={{ width:8, height:8, borderRadius:4, background:'#6C7CFF' }} />
+          <span style={{ fontSize:10, fontWeight:800, color:'#6C7CFF', letterSpacing:1 }}>PULSAR</span>
+        </div>
+        <div style={{ flex:1 }} />
+        <span style={{ fontSize:9, color:'#6B7280' }}>Léa M. · 7 ans · FIRES suspecté</span>
+      </div>
+
+      {/* Sidebar */}
+      <div className="demo-sidebar">
+        {['heart','alert','brain','pill','chart','microscope','shield','clipboard'].map((ic, i) => {
+          const active = (scene === 'cockpit' && i === 0) || (scene === 'ddd-alert' && i === 1) || (scene === 'cascade' && i === 6) || (scene === 'discovery' && i === 5) || (scene === 'oracle' && i === 4) || (scene === 'consult' && i === 7)
+          return (
+            <div key={i} style={{ width:28, height:28, borderRadius:6, background: active ? '#6C7CFF15' : 'transparent', border: active ? '1px solid #6C7CFF30' : '1px solid transparent', display:'flex', alignItems:'center', justifyContent:'center' }}>
+              <Picto name={ic} size={14} glow={active} />
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Content area */}
+      <div className="demo-content">
+        {/* Registry */}
+        {scene === 'registry' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:13, fontWeight:800, color:'#F0F2F5', marginBottom:12 }}>Registre patients</div>
+            {[{ n:'Noah B.', a:'6 ans', s:'Épil. focale', v:23, c:'#10B981' }, { n:'Amara T.', a:'8 ans', s:'MOGAD', v:41, c:'#F5A623' }, { n:'Lucas R.', a:'14 ans', s:'Anti-NMDAR', v:62, c:'#F59E0B' }].map((p,i) => (
+              <div key={i} style={{ display:'flex', alignItems:'center', padding:'8px 12px', background:'#111827', borderRadius:8, marginBottom:4, borderLeft:`3px solid ${p.c}` }}>
+                <div style={{ flex:1 }}><span style={{ fontSize:11, fontWeight:700, color:'#F0F2F5' }}>{p.n}</span> <span style={{ fontSize:9, color:'#6B7280' }}>{p.a} · {p.s}</span></div>
+                <span style={{ fontSize:16, fontWeight:900, color:p.c, fontFamily:'monospace' }}>{p.v}</span>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
-      <div style={{ padding: '6px 8px', background: '#EF444408', borderRadius: 6, borderLeft: '3px solid #EF4444' }}>
-        <div style={{ fontSize: 8, fontWeight: 800, color: '#EF4444' }}>🚨 MEOPA × Prodrome FIRES</div>
-        <div style={{ fontSize: 7, color: '#9CA3AF', marginTop: 2 }}>N2O abaisse seuil convulsif. Enfant fébrile en neuroinflammation latente.</div>
-        <div style={{ fontSize: 7, color: '#FF6B35', marginTop: 2 }}>→ Alternative : Emla + Paracétamol</div>
-      </div>
-      <div style={{ padding: '6px 8px', background: '#EF444406', borderRadius: 6, borderLeft: '3px solid #F59E0B' }}>
-        <div style={{ fontSize: 8, fontWeight: 800, color: '#F59E0B' }}>⚠️ PHÉNYTOÏNE × Fragilité cardiaque</div>
-        <div style={{ fontSize: 7, color: '#9CA3AF', marginTop: 2 }}>Cardiotoxicité directe + cocktail 5 molécules</div>
-        <div style={{ fontSize: 7, color: '#FF6B35', marginTop: 2 }}>→ Alternative : Keppra IV (non cardiotoxique)</div>
-      </div>
-      <div style={{ display: 'flex', gap: 4, marginTop: 2 }}>
-        {['OpenFDA FAERS', 'BDPM ANSM', 'Zier 2010', 'Gaspard 2015'].map((r, i) => (
-          <div key={i} style={{ flex: 1, textAlign: 'center', padding: '3px', background: '#FF6B3508', borderRadius: 4, fontSize: 6.5, color: '#FF6B35' }}>{r}</div>
-        ))}
+        )}
+
+        {/* New patient button */}
+        {scene === 'new-patient' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:13, fontWeight:800, color:'#F0F2F5', marginBottom:12 }}>Registre patients</div>
+            <div style={{ padding:'10px 16px', background:'#6C7CFF15', border:'1px solid #6C7CFF30', borderRadius:8, textAlign:'center', color:'#6C7CFF', fontSize:11, fontWeight:700 }}>+ Nouvelle admission</div>
+          </div>
+        )}
+
+        {/* Intake - Name */}
+        {scene === 'intake-name' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:11, fontWeight:700, color:'#6C7CFF', letterSpacing:1, marginBottom:12 }}>ADMISSION — IDENTITÉ</div>
+            <div style={{ marginBottom:8 }}>
+              <div style={{ fontSize:9, color:'#6B7280', marginBottom:3 }}>Nom du patient</div>
+              <div style={{ padding:'6px 10px', background:'#111827', borderRadius:6, border:'1px solid #6C7CFF30', color:'#F0F2F5', fontSize:12 }}>
+                {typedText}<span className="demo-typing"> </span>
+              </div>
+            </div>
+            <div style={{ display:'flex', gap:8 }}>
+              <div style={{ flex:1 }}><div style={{ fontSize:9, color:'#6B7280', marginBottom:3 }}>Âge</div><div style={{ padding:'6px 10px', background:'#111827', borderRadius:6, border:'1px solid #1F2A40', color:'#F0F2F5', fontSize:12 }}>7 ans</div></div>
+              <div style={{ flex:1 }}><div style={{ fontSize:9, color:'#6B7280', marginBottom:3 }}>Sexe</div><div style={{ padding:'6px 10px', background:'#111827', borderRadius:6, border:'1px solid #1F2A40', color:'#F0F2F5', fontSize:12 }}>F</div></div>
+              <div style={{ flex:1 }}><div style={{ fontSize:9, color:'#6B7280', marginBottom:3 }}>Poids</div><div style={{ padding:'6px 10px', background:'#111827', borderRadius:6, border:'1px solid #1F2A40', color:'#F0F2F5', fontSize:12 }}>22 kg</div></div>
+            </div>
+          </div>
+        )}
+
+        {/* Intake - Vitals */}
+        {scene === 'intake-vitals' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:11, fontWeight:700, color:'#EF4444', letterSpacing:1, marginBottom:12 }}>ADMISSION — NEUROLOGIE + VITALES</div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
+              {[{ l:'GCS', v:'8/15', c:'#EF4444' }, { l:'Crises/24h', v:'6', c:'#EF4444' }, { l:'FC', v:'158 bpm', c:'#F59E0B' }, { l:'T°', v:'39.8°C', c:'#EF4444' }, { l:'SpO2', v:'93%', c:'#F59E0B' }, { l:'Pupilles', v:'Sluggish', c:'#F59E0B' }].map((v,i) => (
+                <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'5px 8px', background:'#111827', borderRadius:4, borderLeft:`2px solid ${v.c}20` }}>
+                  <span style={{ fontSize:9, color:'#6B7280' }}>{v.l}</span>
+                  <span style={{ fontSize:10, fontWeight:700, color:v.c, fontFamily:'monospace' }}>{v.v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Intake - Bio */}
+        {scene === 'intake-bio' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:11, fontWeight:700, color:'#8B5CF6', letterSpacing:1, marginBottom:12 }}>ADMISSION — BIOLOGIE + LCR</div>
+            <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6 }}>
+              {[{ l:'CRP', v:'95 mg/L', c:'#EF4444' }, { l:'Ferritine', v:'1200 µg/L', c:'#EF4444' }, { l:'WBC', v:'16 000', c:'#F59E0B' }, { l:'Lactate', v:'4.2', c:'#EF4444' }, { l:'LCR cellules', v:'20', c:'#F59E0B' }, { l:'LCR protéines', v:'0.9 g/L', c:'#F59E0B' }].map((v,i) => (
+                <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'5px 8px', background:'#111827', borderRadius:4, borderLeft:`2px solid ${v.c}20` }}>
+                  <span style={{ fontSize:9, color:'#6B7280' }}>{v.l}</span>
+                  <span style={{ fontSize:10, fontWeight:700, color:v.c, fontFamily:'monospace' }}>{v.v}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Pipeline running */}
+        {scene === 'pipeline' && (
+          <div className="demo-fadein" style={{ textAlign:'center', paddingTop:20 }}>
+            <div style={{ fontSize:11, fontWeight:700, color:'#2FD1C8', letterSpacing:1, marginBottom:16 }}>PIPELINE EN COURS — 11 MOTEURS</div>
+            <div style={{ display:'flex', flexWrap:'wrap', gap:4, justifyContent:'center', marginBottom:16 }}>
+              {engines.map((e,i) => {
+                const cols = ['#6C7CFF','#2FD1C8','#B96BFF','#A78BFA','#FFB347','#2ED573','#DC2626','#FF6B35','#10B981','#E879F9','#3B82F6']
+                return <div key={i} className="demo-badge-pulse" style={{ animationDelay:`${i*200}ms`, padding:'4px 10px', borderRadius:6, background:`${cols[i]}15`, border:`1px solid ${cols[i]}25`, fontSize:8, fontWeight:800, color:cols[i], fontFamily:'monospace' }}>{e}</div>
+              })}
+            </div>
+            <div style={{ fontSize:32, fontWeight:900, color:'#EF4444', fontFamily:'monospace' }}>VPS 88</div>
+            <div style={{ fontSize:10, color:'#EF4444', fontWeight:700 }}>CRITIQUE</div>
+          </div>
+        )}
+
+        {/* Cockpit */}
+        {scene === 'cockpit' && (
+          <div className="demo-fadein">
+            <div style={{ padding:'8px 12px', background:'#FF6B3510', borderRadius:8, border:'1px solid #FF6B3525', marginBottom:10, fontSize:10, color:'#FF6B35', fontWeight:700 }}>
+              <Picto name="alert" size={12} /> CASCADE ALERT — 1 risque critique
+            </div>
+            <div style={{ display:'flex', gap:8, marginBottom:10 }}>
+              <div style={{ flex:'0 0 70px', background:'#EF444415', borderRadius:10, padding:8, textAlign:'center' }}>
+                <div style={{ fontSize:8, color:'#EF4444', fontFamily:'monospace', fontWeight:700 }}>VPS</div>
+                <div style={{ fontSize:24, fontWeight:900, color:'#EF4444', fontFamily:'monospace' }}>88</div>
+              </div>
+              <div style={{ flex:1, display:'grid', gridTemplateColumns:'1fr 1fr', gap:3 }}>
+                {[{ l:'GCS', v:'8', c:'#EF4444' }, { l:'Crises', v:'6', c:'#EF4444' }, { l:'FC', v:'158', c:'#F59E0B' }, { l:'SpO2', v:'93%', c:'#F59E0B' }].map((r,i) => (
+                  <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'2px 6px', background:'#111827', borderRadius:3, fontSize:8 }}>
+                    <span style={{ color:'#6B7280' }}>{r.l}</span><span style={{ color:r.c, fontWeight:700, fontFamily:'monospace' }}>{r.v}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={{ display:'flex', gap:3, flexWrap:'wrap' }}>
+              {['VPS','TDE','PVE','EWE','TPE','NCE','DDD','CAE'].map((e,i) => {
+                const cols = ['#6C7CFF','#2FD1C8','#B96BFF','#A78BFA','#FFB347','#2ED573','#DC2626','#FF6B35']
+                return <span key={i} style={{ padding:'2px 6px', borderRadius:4, background:`${cols[i]}12`, fontSize:7, fontWeight:800, color:cols[i], fontFamily:'monospace' }}>{e}</span>
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* DDD Alert */}
+        {scene === 'ddd-alert' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:11, fontWeight:700, color:'#DC2626', letterSpacing:1, marginBottom:10 }}>DIAGNOSTIC DELAY DETECTOR</div>
+            <div style={{ padding:'12px', background:'#DC262610', borderRadius:8, border:'1px solid #DC262620', marginBottom:8 }}>
+              <div style={{ fontSize:10, fontWeight:800, color:'#DC2626' }}><Picto name="warning" size={12} /> RETARD CRITIQUE — Immunothérapie</div>
+              <div style={{ fontSize:9, color:'#E8EAF0', marginTop:4 }}>Fenêtre optimale {'<'} 48h. Délai actuel : 48h. 64% des cas : IVIG {'<'} 48h.</div>
+            </div>
+            <div style={{ padding:'8px', background:'#F59E0B08', borderRadius:6, borderLeft:'3px solid #F59E0B', fontSize:9, color:'#E8EAF0' }}>
+              Anakinra (anti-IL-1) : fenêtre {'<'} 72h. Kenney-Jung 2016.
+            </div>
+          </div>
+        )}
+
+        {/* Cascade */}
+        {scene === 'cascade' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:11, fontWeight:700, color:'#FF6B35', letterSpacing:1, marginBottom:10 }}>CASCADE ALERT ENGINE</div>
+            <div style={{ display:'flex', gap:6, marginBottom:8 }}>
+              <div style={{ padding:'4px 8px', borderRadius:6, border:'1px solid #6C7CFF20', background:'#111827', flex:1 }}>
+                <input value="MEOPA" readOnly style={{ background:'transparent', border:'none', color:'#F0F2F5', fontSize:11, width:'100%' }} />
+              </div>
+              <div style={{ padding:'4px 12px', borderRadius:6, background:'#FF6B35', color:'#fff', fontSize:10, fontWeight:700, display:'flex', alignItems:'center' }}>Analyser</div>
+            </div>
+            <div style={{ padding:'10px', background:'#EF444408', borderRadius:8, border:'1px solid #EF444420' }}>
+              <div style={{ fontSize:10, fontWeight:800, color:'#EF4444' }}><Picto name="warning" size={12} /> CASCADE CRITIQUE : MEOPA × Prodrome FIRES</div>
+              <div style={{ fontSize:8, color:'#9CA3AF', marginTop:4, lineHeight:1.5 }}>N2O abaisse le seuil convulsif. Enfant fébrile en neuroinflammation latente.</div>
+              <div style={{ fontSize:8, color:'#FF6B35', marginTop:3 }}>→ Alternative : Emla + Paracétamol</div>
+            </div>
+          </div>
+        )}
+
+        {/* Discovery */}
+        {scene === 'discovery' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:11, fontWeight:700, color:'#10B981', letterSpacing:1, marginBottom:10 }}>DISCOVERY ENGINE — PubMed</div>
+            {['Anakinra for FIRES: early initiation in pediatric SE (2024)', 'Ketogenic diet as neuroprotector in FIRES (van Baalen 2023)', 'IL-1β pathway in febrile infection-related epilepsy (Lin 2021)'].map((a,i) => (
+              <div key={i} style={{ padding:'6px 10px', background:'#111827', borderRadius:6, marginBottom:4, borderLeft:'2px solid #10B98120', fontSize:9, color:'#E8EAF0' }}>{a}</div>
+            ))}
+            <div style={{ marginTop:8, fontSize:11, fontWeight:700, color:'#EC4899', letterSpacing:1 }}>ClinicalTrials.gov</div>
+            {['NCT05432109 — Anakinra in FIRES (Recruiting)', 'NCT06218430 — Tocilizumab pediatric SE (Phase 2)'].map((t2,i) => (
+              <div key={i} style={{ padding:'6px 10px', background:'#111827', borderRadius:6, marginBottom:4, borderLeft:'2px solid #EC489920', fontSize:9, color:'#E8EAF0' }}>{t2}</div>
+            ))}
+          </div>
+        )}
+
+        {/* Oracle */}
+        {scene === 'oracle' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:11, fontWeight:700, color:'#E879F9', letterSpacing:1, marginBottom:10 }}>ORACLE — SIMULATION H+72</div>
+            {[{ l:'Standard', v:62, c:'#6C7CFF' }, { l:'Anakinra + KD', v:32, c:'#10B981' }, { l:'Expérimental', v:28, c:'#F5A623' }, { l:'Sans action', v:95, c:'#EF4444' }].map((s,i) => (
+              <div key={i} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+                <span style={{ width:80, fontSize:8, color:'#6B7280', textAlign:'right' }}>{s.l}</span>
+                <div style={{ flex:1, height:14, background:'#111827', borderRadius:7, overflow:'hidden' }}>
+                  <div style={{ height:'100%', width:`${s.v}%`, background:`${s.c}30`, borderRadius:7 }} />
+                </div>
+                <span style={{ width:24, fontSize:9, fontWeight:700, color:s.c, fontFamily:'monospace' }}>{s.v}</span>
+              </div>
+            ))}
+            <div style={{ textAlign:'center', marginTop:8, padding:'4px 8px', background:'#10B98108', borderRadius:6, fontSize:9, fontWeight:700, color:'#10B981' }}>Recommandation : Anakinra + Régime cétogène → VPS 32 à H+72</div>
+          </div>
+        )}
+
+        {/* Consult */}
+        {scene === 'consult' && (
+          <div className="demo-fadein">
+            <div style={{ fontSize:11, fontWeight:700, color:'#3B82F6', letterSpacing:1, marginBottom:10 }}>PULSAR CONSULT — BRIEF EXPERT</div>
+            {['Résumé clinique', 'Chronologie', 'Biomarqueurs', 'Analyse 11 moteurs', 'Alerte retard', 'Projection Oracle'].map((s,i) => (
+              <div key={i} style={{ display:'flex', alignItems:'center', gap:4, padding:'3px 6px', background:'#111827', borderRadius:3, marginBottom:2 }}>
+                <div style={{ width:3, height:3, borderRadius:2, background:'#3B82F6' }} />
+                <span style={{ fontSize:8, color:'#9CA3AF' }}>{s}</span>
+              </div>
+            ))}
+            <div style={{ marginTop:8, padding:'6px 10px', background:'#3B82F608', borderRadius:6, borderLeft:'2px solid #3B82F6' }}>
+              <div style={{ fontSize:8, fontWeight:700, color:'#3B82F6', marginBottom:3 }}>QUESTIONS URGENTES</div>
+              <div style={{ fontSize:8, color:'#E8EAF0', lineHeight:1.5 }}>1. Immunothérapie malgré absence anticorps ?<br/>2. Anakinra pour FIRES suspecté ?</div>
+            </div>
+            <div style={{ marginTop:6, textAlign:'center' }}>
+              <span style={{ padding:'4px 12px', borderRadius:4, background:'#3B82F6', color:'#fff', fontSize:9, fontWeight:700 }}>Copier le brief</span>
+            </div>
+          </div>
+        )}
+
+        {/* End */}
+        {scene === 'end' && (
+          <div className="demo-fadein" style={{ textAlign:'center', paddingTop:30 }}>
+            <div style={{ fontSize:24, fontWeight:900, color:'#F0F2F5', marginBottom:8 }}>PULSAR</div>
+            <div style={{ fontSize:11, color:'#6C7CFF', marginBottom:16 }}>11 moteurs · 30 000+ lignes · OpenFDA · PubMed · ClinicalTrials</div>
+            <div style={{ fontSize:13, color:'#E8EAF0', fontStyle:'italic', maxWidth:350, margin:'0 auto', lineHeight:1.6 }}>
+              Chaque minute gagnée peut sauver une vie.
+            </div>
+            <div style={{ marginTop:16, fontSize:10, color:'rgba(245,166,35,0.6)' }}>À la mémoire d'Alejandro</div>
+          </div>
+        )}
       </div>
     </div>
   )
 }
 
-function DemoOverlay({ t, slide, setSlide, onClose }: { t: (fr: string, en: string) => string; slide: number; setSlide: (n: number) => void; onClose: () => void }) {
-  const s = DEMO_SLIDES[slide]
-  const total = DEMO_SLIDES.length
+function DemoOverlay({ t, onClose }: { t: (fr: string, en: string) => string; onClose: () => void }) {
+  const [sceneIdx, setSceneIdx] = useState(0)
+  const [typedText, setTypedText] = useState('')
+  const [clicking, setClicking] = useState(false)
 
-  // Autoplay — advance every 5s
+  const scene = SCENES[sceneIdx]
+  const name = 'Léa M.'
+
+  // Auto-advance scenes
   useEffect(() => {
-    if (slide >= total - 1) return
+    if (sceneIdx >= SCENES.length) return
     const timer = setTimeout(() => {
-      setSlide(slide + 1)
-    }, 5000)
+      if (sceneIdx < SCENES.length - 1) setSceneIdx(s => s + 1)
+    }, scene.duration)
     return () => clearTimeout(timer)
-  }, [slide, total, setSlide])
+  }, [sceneIdx, scene])
+
+  // Typing animation for intake-name
+  useEffect(() => {
+    if (scene.id !== 'intake-name') { setTypedText(''); return }
+    let i = 0
+    const interval = setInterval(() => {
+      i++
+      setTypedText(name.substring(0, i))
+      if (i >= name.length) clearInterval(interval)
+    }, 150)
+    return () => clearInterval(interval)
+  }, [scene.id])
+
+  // Click animation
+  useEffect(() => {
+    if (!scene.click) return
+    const timer = setTimeout(() => {
+      setClicking(true)
+      setTimeout(() => setClicking(false), 400)
+    }, scene.duration * 0.4)
+    return () => clearTimeout(timer)
+  }, [sceneIdx, scene])
 
   return (
     <>
-      <style>{DEMO_CSS}</style>
-      <div className="demo-overlay" onClick={onClose}>
-        {/* Background video */}
-        <video className="demo-bg-video" autoPlay muted loop playsInline src="/assets/videos/neural-bg.mp4" />
-        <div className="demo-bg-overlay" />
+      <style>{DEMO_STYLE}</style>
+      <div className="demo-root">
+        {/* App simulation */}
+        <DemoApp scene={scene.id} typedText={typedText} />
 
-        {/* Floating particles */}
-        {[...Array(8)].map((_, i) => (
-          <div key={i} style={{
-            position: 'absolute', zIndex: 1,
-            width: 2 + Math.random() * 2, height: 2 + Math.random() * 2,
-            borderRadius: '50%',
-            background: i % 2 === 0 ? 'rgba(108,124,255,0.4)' : 'rgba(245,166,35,0.3)',
-            left: `${10 + Math.random() * 80}%`, top: `${10 + Math.random() * 80}%`,
-            boxShadow: i % 2 === 0 ? '0 0 6px rgba(108,124,255,0.3)' : '0 0 6px rgba(245,166,35,0.2)',
-          }} />
-        ))}
+        {/* Animated cursor */}
+        <div className={`demo-cursor ${clicking ? 'clicking' : ''}`} style={{ left: `${scene.cursorX}%`, top: `${scene.cursorY}%` }}>
+          <div className="demo-cursor-dot" />
+          <div className="demo-cursor-click" />
+        </div>
 
-        <div className="demo-card" style={{ background: 'linear-gradient(135deg, rgba(12,20,36,0.95), rgba(17,24,39,0.98))', border: `1px solid ${s.color}20`, boxShadow: `0 0 60px rgba(0,0,0,0.5), 0 0 30px ${s.color}08` }} onClick={e => e.stopPropagation()}>
-          {/* Autoplay progress bar */}
-          <div className="demo-progress" style={{ background: s.color, width: '100%', animation: 'none', transition: 'none' }}>
-            <div style={{ height: '100%', background: s.color, animation: `demoProgress 5s linear`, width: '100%' }} />
-          </div>
-
-          <style>{`@keyframes demoProgress { from{width:0%} to{width:100%} }`}</style>
-
-          {/* Header */}
-          <div className="demo-header" style={{ borderBottom: `1px solid ${s.color}10` }}>
-            <div>
-              <div style={{ fontSize: 7, fontFamily: 'monospace', color: s.color, letterSpacing: 1.5, fontWeight: 700 }}>PULSAR DEMO — {slide + 1}/{total}</div>
-              <div style={{ fontSize: 14, fontWeight: 800, color: '#F0F2F5', marginTop: 3 }}>{t(s.titleFr, s.titleEn)}</div>
-            </div>
-            <button onClick={onClose} style={{ background: 'none', border: 'none', color: '#6B7280', fontSize: 18, cursor: 'pointer', padding: 4 }}>✕</button>
-          </div>
-
-          {/* Mockup */}
-          <div className="demo-mockup demo-slide-enter" key={slide}>
-            <DemoMockup index={slide} />
-          </div>
-
-          {/* Navigation */}
-          <div className="demo-nav" style={{ borderTop: `1px solid ${s.color}08` }}>
-            <button onClick={() => setSlide(Math.max(0, slide - 1))} disabled={slide === 0}
-              style={{ padding: '5px 14px', borderRadius: 8, background: slide > 0 ? '#1A2035' : 'transparent', color: slide > 0 ? '#E8EAF0' : '#3A3A50', border: 'none', fontSize: 10, fontWeight: 600, cursor: slide > 0 ? 'pointer' : 'default' }}>
-              ←
-            </button>
-            <div style={{ display: 'flex', gap: 4 }}>
-              {DEMO_SLIDES.map((_, i) => (
-                <div key={i} onClick={() => setSlide(i)} style={{ width: i === slide ? 16 : 5, height: 5, borderRadius: 3, background: i === slide ? s.color : i < slide ? `${s.color}60` : '#2A2A40', cursor: 'pointer', transition: 'all 0.3s ease' }} />
-              ))}
-            </div>
-            {slide < total - 1 ? (
-              <button onClick={() => setSlide(slide + 1)}
-                style={{ padding: '5px 14px', borderRadius: 8, background: s.color, color: '#fff', border: 'none', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}>
-                →
-              </button>
-            ) : (
-              <button onClick={onClose}
-                style={{ padding: '5px 14px', borderRadius: 8, background: '#F5A623', color: '#000', border: 'none', fontSize: 10, fontWeight: 700, cursor: 'pointer' }}>
-                {t('Fermer', 'Close')}
-              </button>
-            )}
+        {/* Narration bar */}
+        <div className="demo-narration">
+          <div className="demo-narration-text" key={sceneIdx}>{t(scene.narrationFr, scene.narrationEn)}</div>
+          {/* Progress dots */}
+          <div style={{ display:'flex', gap:3, justifyContent:'center', marginTop:6 }}>
+            {SCENES.map((_, i) => (
+              <div key={i} onClick={() => setSceneIdx(i)} style={{ width: i === sceneIdx ? 12 : 4, height:4, borderRadius:2, background: i <= sceneIdx ? '#6C7CFF' : '#1F2A40', cursor:'pointer', transition:'all 0.3s' }} />
+            ))}
           </div>
         </div>
+
+        {/* Close */}
+        <button className="demo-close" onClick={onClose}>{t('Fermer', 'Close')} ✕</button>
       </div>
     </>
   )
