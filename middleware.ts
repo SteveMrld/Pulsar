@@ -31,7 +31,7 @@ export async function middleware(request: NextRequest) {
   const isDemo = request.cookies.get('pulsar-demo')?.value === 'true'
 
   const path = request.nextUrl.pathname
-  const isPublic = ['/', '/login', '/signup'].includes(path)
+  const isPublic = ['/', '/login', '/signup'].includes(path) || path.startsWith('/case/') || path.startsWith('/invite')
   const isAuthPage = ['/login', '/signup'].includes(path)
   const isProtected = path.startsWith('/patients') || path.startsWith('/patient/') || path.startsWith('/observatory') || path.startsWith('/neurocore') || path.startsWith('/case-matching') || path.startsWith('/cross-pathologie') || path.startsWith('/export') || path.startsWith('/bilan') || path.startsWith('/staff')
 
