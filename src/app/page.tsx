@@ -222,6 +222,14 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
                   'I made you a promise, little lion.'
                 )}
               </p>
+              <p style={{
+                fontSize: 10, color: 'rgba(245,166,35,0.4)', marginTop: 12,
+                fontWeight: 300, letterSpacing: '0.15em',
+                fontFamily: 'var(--p-font-mono)',
+                animation: 'tagline-enter 0.6s ease 0.8s both',
+              }}>
+                {t('À la mémoire d\'Alejandro', 'In memory of Alejandro')}
+              </p>
             </div>
           )}
         </div>
