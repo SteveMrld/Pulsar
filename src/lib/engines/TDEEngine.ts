@@ -295,6 +295,18 @@ export class TDEEngine extends BrainCore {
     else if (score >= 40) level = 'SURVEILLANCE ACTIVE'
     else level = 'MAINTIEN'
 
+    // ── PIMS/MIS-C detection — SPF 2022, Feldstein NEJM 2020, Lee 2024 ──
+    if (ps.biology.crp > 100 && ps.biology.ferritin > 500 && ps.hemodynamics.temp >= 38.5) {
+      const pimsSignals = [ps.biology.crp > 100 && 'CRP>100', ps.biology.ferritin > 500 && 'Ferritine>500', ps.hemodynamics.heartRate > 140 && 'Tachycardie', ps.neuro.gcs < 13 && 'GCS altéré'].filter(Boolean)
+      if (pimsSignals.length >= 3) {
+        alerts.push({ severity: 'warning', title: 'Pattern PIMS/MIS-C suspecté', body: `Orage cytokinique (${pimsSignals.join(', ')}). Neuro PIMS: 8.5-32.1% (Lee 2024). Myocardite 66% (SPF). Troponine + BNP + écho urgente.`, source: 'TDE — SPF 2022, Lee 2024' })
+      }
+    }
+    // ── MOGAD detection — Banwell Lancet Neurol 2023 ──
+    if (String(ps.csf.antibodies).toUpperCase().includes('MOG')) {
+      alerts.push({ severity: 'warning', title: 'MOGAD confirmé (anti-MOG+)', body: 'Critères Banwell 2023. 1ère ligne: méthylprednisolone IV. 2ème: IVIG. Rechute 30-50%. Sevrage corticoïdes ≥6 semaines.', source: 'TDE — Banwell Lancet Neurol 2023' })
+    }
+
     return { score, level, alerts, recommendations: recs }
   }
 }

@@ -52,7 +52,38 @@ export class SemanticField {
     return this.signals.map(s => {
       const raw = s.extract(ps)
       const norm = raw != null ? s.normalize(raw, ps) : 0
-      return {
+    
+  // ── EEG/IRM Pattern Library (Source: Culleton 2019, Wickström 2022, Wu 2023, Hou 2024) ──
+  // FIRES: IRM normale phase aiguë ~61% (Culleton 2019), anomalies temporales ~25%
+  // Anti-NMDAR: EDB (Extreme Delta Brush) — formes sévères (Schmitt 2012)
+  // Anti-NMDAR: IRM normale pédiatrique 63.6% (Wu 2023, 11 patients)
+  // FIRES/NORSE: lésions claustrum ~J10 (Shi 2023)
+  const neuroInsights: string[] = []
+  
+  // EEG pattern detection
+  if (ps.neuro.seizureType === 'super_refractory' || ps.neuro.seizureType === 'refractory_status') {
+    neuroInsights.push('SE réfractaire: EEG continu obligatoire (Wickström 2022). Pattern FIRES: crises focales/multifocales + NCSE fréquent.')
+  }
+  if (ps.neuro.gcs <= 6 && ps.neuro.seizures24h > 3) {
+    neuroInsights.push('GCS ≤6 + crises multiples: rechercher NCSE sur EEG continu. Ralentissement diffus + décharges = pattern FIRES/NORSE.')
+  }
+  
+  // IRM timing
+  if (ps.hospDay >= 8 && ps.hospDay <= 14) {
+    neuroInsights.push('J' + ps.hospDay + ': fenêtre optimale IRM de contrôle. Lésions claustrum apparaissent ~J10 dans FIRES (Shi 2023). Anomalies temporales/insula/thalamus possibles.')
+  }
+  if (ps.hospDay <= 3) {
+    neuroInsights.push('IRM phase aiguë: normale dans ~61% des FIRES (Culleton 2019). Une IRM normale N\'EXCLUT PAS un FIRES. Refaire à J10-14.')
+  }
+  
+  // Anti-NMDAR patterns
+  if (String(ps.csf.antibodies).toUpperCase().includes('NMDAR')) {
+    neuroInsights.push('Anti-NMDAR confirmé. EEG: rechercher Extreme Delta Brush (EDB) — associé formes sévères (Schmitt 2012). IRM souvent normale chez l\'enfant (63.6%, Wu 2023).')
+  }
+  
+  (ps as any).neuroInsights = neuroInsights
+
+  return {
         name: s.name,
         rawValue: raw,
         normalized: norm,

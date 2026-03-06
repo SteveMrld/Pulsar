@@ -231,6 +231,22 @@ export class PVEEngine extends BrainCore {
       alerts.push({ severity: 'warning', title: p.name, body: p.description, source: 'PVE Patterns' })
     )
 
+    // ── Valproate + Carbapénème: CRITIQUE — Spriet 2007, Al-Quteimat 2020 ──
+    const drugNames = ps.drugs.map(d => d.name.toLowerCase())
+    const hasVPA = drugNames.some(d => ['valproate', 'depakine', 'valproic', 'depakote', 'micropakine'].some(v => d.includes(v)))
+    const hasCarbapenem = drugNames.some(d => ['meropenem', 'meronem', 'carbapenem', 'imipenem', 'ertapenem', 'doripenem'].some(m => d.includes(m)))
+    if (hasVPA && hasCarbapenem) {
+      alerts.push({ severity: 'critical', title: 'INTERACTION CRITIQUE: Valproate + Carbapénème', body: 'Chute 66-88% VPA en 24h (Spriet 2007). Détérioration électroclinique 55%. SUBSTITUTION ANTIBIOTIQUE ou monitoring VPA urgent.', source: 'PVE — Spriet 2007, Al-Quteimat 2020' })
+      recs.push({ priority: 'urgent', title: 'Switch antibiotique', body: 'Remplacer carbapénème par céfépime ou pipéracilline-tazobactam. Si indispensable: switch VPA → lévétiracétam.', reference: 'Al-Quteimat Hosp Pharmacy 2020' })
+      score = Math.min(100, score + 25)
+    }
+    // ── Midazolam + Fluconazole: WARNING — CYP3A4 ──
+    const hasMidaz = drugNames.some(d => ['midazolam', 'hypnovel'].some(m => d.includes(m)))
+    const hasFluconazole = drugNames.some(d => ['fluconazole', 'triflucan'].some(m => d.includes(m)))
+    if (hasMidaz && hasFluconazole) {
+      alerts.push({ severity: 'warning', title: 'Midazolam + Fluconazole (CYP3A4)', body: 'Augmentation x2-4 taux midazolam. Risque sédation excessive. Réduire dose midazolam 50%.', source: 'PVE — Pharmacopée internationale' })
+    }
+
     let level: string
     if (score >= 75) level = 'RISQUE ÉLEVÉ'
     else if (score >= 50) level = 'RISQUE MODÉRÉ'

@@ -291,6 +291,22 @@ export class VPSEngine extends BrainCore {
       alerts.push({ severity: p.confidence > 0.8 ? 'critical' : 'warning', title: p.name, body: p.description, source: 'VPS Patterns' })
     )
 
+    // ── FIRES Score Composite (13 critères, Méthodologie V2) ──
+    const firesScore = [
+      ps.hemodynamics.temp >= 37.5, ps.biology.crp > 10,
+      ps.neuro.seizureType !== 'none', false,
+      ps.csf.antibodies !== 'negative',
+      ps.biology.wbc > 15000 || ps.biology.wbc < 4000,
+      ps.hemodynamics.temp >= 38,
+      ps.neuro.seizures24h > 0,
+      ps.hemodynamics.temp >= 37.5 && ps.neuro.seizures24h > 0,
+      ps.csf.antibodies !== 'negative' && ps.csf.antibodies !== 'pending',
+      false, ps.csf.cells > 5 || ps.csf.protein > 0.45,
+      ps.ageMonths >= 36 && ps.ageMonths <= 180,
+    ].filter(Boolean).length
+    if (firesScore >= 7) alerts.push({ severity: 'critical', title: `FIRES Score ${firesScore}/13`, body: 'Suspicion forte FIRES. Immunothérapie < 48h. Anakinra < 72h.', source: 'VPS — Score composite Méthodologie V2' })
+    else if (firesScore >= 4) alerts.push({ severity: 'warning', title: `FIRES Score ${firesScore}/13`, body: 'Suspicion modérée. Panel anticorps urgent. EEG continu.', source: 'VPS — Score composite' })
+
     return { score, level, alerts, recommendations: [] }
   }
 }

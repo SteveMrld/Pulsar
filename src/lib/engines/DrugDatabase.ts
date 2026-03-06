@@ -272,6 +272,21 @@ export async function getDrugSafetyProfile(drugName: string): Promise<DrugSafety
     'sandimmun': 'cyclosporine',
     'ibuprofene': 'ibuprofen',
     'advil': 'ibuprofen',
+    'meropenem': 'meropenem',
+    'meronem': 'meropenem',
+    'imipenem': 'imipenem',
+    'tienam': 'imipenem',
+    'ertapenem': 'ertapenem',
+    'invanz': 'ertapenem',
+    'fluconazole': 'fluconazole',
+    'triflucan': 'fluconazole',
+    'cefepime': 'cefepime',
+    'axepim': 'cefepime',
+    'piperacilline': 'piperacillin',
+    'tazocilline': 'piperacillin',
+    'vancomycine': 'vancomycin',
+    'gentamicine': 'gentamicin',
+    'amikacine': 'amikacin',
   }
 
   const searchName = frenchToInternational[normalized] || normalized

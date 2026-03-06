@@ -424,6 +424,32 @@ const CASCADE_RULES: CascadeRule[] = [
     recommendation: 'Monitoring cardiaque continu. Réduire les doses si FC < 60.',
     alternativeSuggestion: 'Kétamine (pas de bradycardie, effet sympathomimétique) si analgésie nécessaire.',
   },
+
+  // ── VALPROATE + CARBAPÉNÈME ──
+  {
+    intervention: 'meropenem',
+    interventionAliases: ['meronem', 'carbapenem', 'imipenem', 'ertapenem', 'doripenem'],
+    vulnerabilityId: 'seizure-threshold',
+    riskLevel: 'critical',
+    mechanism: 'Les carbapénèmes provoquent une chute de 66-88% des concentrations de valproate '
+      + 'en 24h (Spriet 2007, Park). Mécanisme : inhibition de l\'acylpeptide hydrolase → suppression '
+      + 'du recyclage entéro-hépatique du VPA. Détérioration électroclinique chez 55% des patients.',
+    cascadeChain: [
+      'Patient sous valproate pour contrôle des crises',
+      'Carbapénème prescrit pour infection (fréquent en réa)',
+      'Chute brutale VPA -66 à -88% en 24h',
+      'Perte du contrôle épileptique → reprise des crises',
+      'Escalade thérapeutique en urgence',
+    ],
+    references: [
+      'Spriet et al., Ann Pharmacother 2007: "Chute moyenne 66% VPA en 24h, 55% détérioration"',
+      'Al-Quteimat & Laila, Hosp Pharmacy 2020: "Revue systématique mécanisme VPA-carbapénème"',
+      'Park et al.: "Chute 88.7% avec méropénème spécifiquement"',
+    ],
+    recommendation: 'SUBSTITUTION ANTIBIOTIQUE URGENTE. Alternatives : céfépime, pipéracilline-tazobactam, '
+      + 'ou ciprofloxacine selon antibiogramme. Si carbapénème indispensable : switch AE vers lévétiracétam.',
+    alternativeSuggestion: 'Céfépime ou pipéracilline-tazobactam (pas d\'interaction avec VPA).',
+  },
 ]
 
 // ── Main CAE function ──
