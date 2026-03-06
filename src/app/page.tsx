@@ -112,10 +112,10 @@ const workflow = [
       {/* ═══════════ MEMORIAL ═══════════ */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         {/* Video background — child with light particles */}
-        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.25 }}>
+        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.5 }}>
           <source src="/assets/videos/hero-child.mp4" type="video/mp4" />
         </video>
-        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.7) 0%, rgba(12,20,36,0.5) 40%, rgba(12,20,36,0.7) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.5) 0%, rgba(12,20,36,0.3) 40%, rgba(12,20,36,0.5) 100%)' }} />
       <style>{`
         @keyframes memorial-fade { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes star-glow { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(245,166,35,0.3)); } 50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(245,166,35,0.6)); } }
@@ -237,10 +237,10 @@ const workflow = [
 
       {/* ═══════════ DISCOVERY ENGINE — SHOWCASE ═══════════ */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.15 }}>
+        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.4 }}>
           <source src="/assets/videos/star-light.mp4" type="video/mp4" />
         </video>
-        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.8) 0%, rgba(12,20,36,0.6) 50%, rgba(12,20,36,0.8) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.55) 0%, rgba(12,20,36,0.35) 50%, rgba(12,20,36,0.55) 100%)' }} />
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-16) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-8)' }}>
           <div style={{ display: 'inline-block', padding: '6px 20px', borderRadius: 'var(--p-radius-full)', background: '#10B98112', border: '1px solid #10B98125', marginBottom: 'var(--p-space-4)' }}>
@@ -376,10 +376,10 @@ const workflow = [
 
       {/* ═══════════ PIPELINE MOTEURS ═══════════ */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.12 }}>
+        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.35 }}>
           <source src="/assets/videos/data-particles.mp4" type="video/mp4" />
         </video>
-        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.85) 0%, rgba(12,20,36,0.65) 50%, rgba(12,20,36,0.85) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.6) 0%, rgba(12,20,36,0.4) 50%, rgba(12,20,36,0.6) 100%)' }} />
       <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
         <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-6)' }}>
           <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>{t('PIPELINE — 6+1 MOTEURS × 4 COUCHES', 'PIPELINE — 6+1 ENGINES × 4 LAYERS')}</div>
@@ -421,10 +421,10 @@ const workflow = [
 
       {/* ═══════════ CTA FINAL ═══════════ */}
       <div style={{ position: 'relative', overflow: 'hidden' }}>
-        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.2 }}>
+        <video autoPlay muted loop playsInline style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', zIndex: 0, opacity: 0.45 }}>
           <source src="/assets/videos/wheat-hope.mp4" type="video/mp4" />
         </video>
-        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.75) 0%, rgba(12,20,36,0.55) 50%, rgba(12,20,36,0.75) 100%)' }} />
+        <div style={{ position: 'absolute', inset: 0, zIndex: 1, background: 'linear-gradient(180deg, rgba(12,20,36,0.5) 0%, rgba(12,20,36,0.3) 50%, rgba(12,20,36,0.5) 100%)' }} />
       <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-12) var(--p-space-8) var(--p-space-24)', position: 'relative', zIndex: 2 }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-10) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.04) 0%, rgba(245,166,35,0.04) 50%, rgba(16,185,129,0.02) 100%)', border: '1px solid rgba(245,166,35,0.08)', backdropFilter: 'blur(12px)' }}>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)', lineHeight: 1.3 }}>{t('La bonne information.', 'The right information.')}<br />{t('Au bon endroit.', 'In the right place.')} <span className="text-gradient-vps">{t('Au bon moment.', 'At the right time.')}</span></h2>
