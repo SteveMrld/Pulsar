@@ -593,7 +593,7 @@ const workflow = [
 
       {/* ═══════════ MÉMORIAL + FOOTER ═══════════ */}
       <footer style={{ borderTop: '1px solid rgba(245,166,35,0.08)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
-        {t('PULSAR · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel', 'PULSAR · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
+        {t('PULSAR · Intelligence clinique pédiatrique · Discovery Engine v4.0 · 11 moteurs · 30 000+ lignes · © 2026 Steve Moradel', 'PULSAR · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
       </footer>
     </div>
   )

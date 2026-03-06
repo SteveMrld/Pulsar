@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
+import DrugSafetyChecker from '@/components/DrugSafetyChecker'
 import Link from 'next/link'
 import { discoveryEngine } from '@/lib/engines/DiscoveryEngine'
 import { DEMO_PATIENTS } from '@/lib/data/discoveryData'
@@ -309,6 +310,11 @@ function DiscoveryEnrichmentPanel({ syndrome }: { syndrome: string }) {
             </div>
           )
         })}
+      </div>
+
+      {/* Drug Safety Checker — OpenFDA */}
+      <div style={{ marginTop: 'var(--p-space-6)' }}>
+        <DrugSafetyChecker />
       </div>
     </div>
   )

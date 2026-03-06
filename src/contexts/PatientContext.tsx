@@ -172,6 +172,11 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
       available: true, priority: 5.5,
     },
     {
+      id: 'discovery',   label: 'Discovery', labelEn: 'Discovery',  icon: 'microscope', color: '#10B981',
+      available: true, priority: 5.8,
+      badge: 'NEW',
+    },
+    {
       id: 'rapport',     label: 'Rapport', labelEn: 'Report',     icon: 'clipboard',  color: '#F5A623',
       available: true, priority: 11,
     },
