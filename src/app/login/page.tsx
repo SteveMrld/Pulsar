@@ -6,6 +6,9 @@ import { validateInvite, setInviteCookie } from '@/lib/invites'
 import Link from 'next/link'
 import Picto from '@/components/Picto'
 import { useRouter } from 'next/navigation'
+import dynamic from 'next/dynamic'
+
+const AlejandroCasePage = dynamic(() => import('@/app/usecase/alejandro/page'), { ssr: false })
 
 export default function LoginPage() {
   const { t } = useLang()
@@ -15,11 +18,15 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [inviteCode, setInviteCode] = useState('')
   const [showDemo, setShowDemo] = useState(false)
+  const [showCase, setShowCase] = useState(false)
   
   const router = useRouter()
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && window.location.search.includes('demo=1')) setShowDemo(true)
+    if (typeof window !== 'undefined') {
+      if (window.location.search.includes('demo=1')) setShowDemo(true)
+      if (window.location.search.includes('case=alejandro')) setShowCase(true)
+    }
   }, [])
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -204,6 +211,7 @@ export default function LoginPage() {
 
         {/* ═══════ DEMO OVERLAY ═══════ */}
         {showDemo && <DemoOverlay t={t} onClose={() => setShowDemo(false)} />}
+        {showCase && <CaseOverlay t={t} onClose={() => setShowCase(false)} />}
       </div>
     </div>
   )
@@ -505,6 +513,17 @@ function DemoApp({ scene, typedText }: { scene: string; typedText: string }) {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+function CaseOverlay({ t, onClose }: { t: (fr: string, en: string) => string; onClose: () => void }) {
+  return (
+    <div style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'var(--p-bg, #0C1424)', overflowY: 'auto' }}>
+      <button onClick={onClose} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>
+        {t('Fermer', 'Close')} ✕
+      </button>
+      <AlejandroCasePage />
     </div>
   )
 }
