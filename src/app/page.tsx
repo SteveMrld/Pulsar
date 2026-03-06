@@ -211,7 +211,7 @@ const workflow = [
 
         <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/login" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Accéder à PULSAR', 'Access PULSAR')}</Link>
-          <Link href="/research" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98130', color: '#10B981', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '18px' }}>🔬</span> Discovery Engine</Link>
+          <Link href="/login" style={{ padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98130', color: '#10B981', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-base)', display: 'flex', alignItems: 'center', gap: '8px' }}><span style={{ fontSize: '18px' }}>🔬</span> Discovery Engine</Link>
         </div>
       </section>
 
@@ -320,7 +320,7 @@ const workflow = [
         </div>
 
         <div style={{ textAlign: 'center', marginTop: 'var(--p-space-6)' }}>
-          <Link href="/research" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'linear-gradient(135deg, #10B981, #3B82F6)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', boxShadow: '0 4px 20px rgba(16,185,129,0.3)' }}>{t('🔬 Explorer le Discovery Engine', '🔬 Explore the Discovery Engine')}</Link>
+          <Link href="/login" style={{ display: 'inline-flex', alignItems: 'center', gap: '10px', padding: 'var(--p-space-3) var(--p-space-8)', borderRadius: 'var(--p-radius-lg)', background: 'linear-gradient(135deg, #10B981, #3B82F6)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', boxShadow: '0 4px 20px rgba(16,185,129,0.3)' }}>{t('🔬 Explorer le Discovery Engine', '🔬 Explore the Discovery Engine')}</Link>
         </div>
       </section>
 
@@ -460,7 +460,7 @@ const workflow = [
           </p>
           <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Commencer', 'Get started')}</Link>
-            <Link href="/research" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98125', color: '#10B981', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)', display: 'flex', alignItems: 'center', gap: '10px' }}>🔬 Discovery</Link>
+            <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: '#10B98110', border: '2px solid #10B98125', color: '#10B981', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)', display: 'flex', alignItems: 'center', gap: '10px' }}>🔬 Discovery</Link>
           </div>
         </div>
       </section>
