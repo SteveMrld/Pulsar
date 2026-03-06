@@ -44,6 +44,38 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
   const [showText, setShowText] = useState(false)
   const { t } = useLang()
 
+  // Ambient cinematic audio
+  useEffect(() => {
+    let ctx: AudioContext | null = null
+    try {
+      ctx = new AudioContext()
+      const g = ctx.createGain()
+      g.gain.setValueAtTime(0, ctx.currentTime)
+      g.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2)
+      g.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 8)
+      g.gain.linearRampToValueAtTime(0, ctx.currentTime + 11.5)
+      g.connect(ctx.destination)
+
+      // Deep pad: layered oscillators
+      const notes = [55, 82.41, 110, 164.81] // A1, E2, A2, E3
+      notes.forEach((freq, i) => {
+        const osc = ctx!.createOscillator()
+        const oscGain = ctx!.createGain()
+        osc.type = i < 2 ? 'sine' : 'triangle'
+        osc.frequency.setValueAtTime(freq, ctx!.currentTime)
+        // Subtle pitch drift
+        osc.frequency.linearRampToValueAtTime(freq * 1.002, ctx!.currentTime + 6)
+        osc.frequency.linearRampToValueAtTime(freq * 0.998, ctx!.currentTime + 10)
+        oscGain.gain.setValueAtTime(i < 2 ? 0.4 : 0.15, ctx!.currentTime)
+        osc.connect(oscGain)
+        oscGain.connect(g)
+        osc.start()
+        osc.stop(ctx!.currentTime + 12)
+      })
+    } catch { /* Web Audio not available */ }
+    return () => { ctx?.close().catch(() => {}) }
+  }, [])
+
   useEffect(() => {
     if (typeof window !== 'undefined' && sessionStorage.getItem('pulsar-splash-seen')) {
       onComplete()
@@ -160,6 +192,7 @@ function CyclingVideoBackground() {
         ref={videoRef}
         muted
         playsInline
+        loop
         style={{
           position: 'fixed', inset: 0, width: '100%', height: '100%',
           objectFit: 'cover', zIndex: 0, opacity: 0.7,
