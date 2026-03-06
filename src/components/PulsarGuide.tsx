@@ -82,6 +82,16 @@ function getContextualGuide(pathname: string, lang: 'fr' | 'en'): GuideStep {
     }
   }
 
+  // ── ORACLE ──
+  if (pathname.match(/\/patient\/[^/]+\/oracle/)) {
+    return {
+      message: "ORACLE simule le futur du patient selon les décisions thérapeutiques. Comparez les scénarios et visualisez les trajectoires VPS projetées.",
+      messageEn: "ORACLE simulates the patient's future based on therapeutic decisions. Compare scenarios and visualize projected VPS trajectories.",
+      tip: "Cliquez sur un scénario pour isoler sa courbe. ORACLE est un outil de simulation — le médecin reste maître de la décision.",
+      tipEn: "Click a scenario to isolate its curve. ORACLE is a simulation tool — the physician remains the decision-maker.",
+    }
+  }
+
   // ── EXAMENS ──
   if (pathname.match(/\/patient\/[^/]+\/examens/)) {
     return {

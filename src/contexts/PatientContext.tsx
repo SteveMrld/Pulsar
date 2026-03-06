@@ -128,6 +128,11 @@ function buildTabs(phase: ClinicalPhase, ps: PatientState): TabConfig[] {
       badge: ps.tdeResult ? undefined : 'NEW',
     },
     {
+      id: 'oracle',      label: 'Oracle', labelEn: 'Oracle',      icon: 'chart',      color: '#E879F9',
+      available: true, priority: 4.5,
+      badge: 'NEW',
+    },
+    {
       id: 'examens',     label: 'Examens', labelEn: 'Tests',     icon: 'microscope', color: '#B96BFF',
       available: true, priority: 5,
     },
