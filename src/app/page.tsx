@@ -118,7 +118,7 @@ const workflow = [
         .landing-glass:hover { border-color: rgba(245,166,35,0.12); }
       `}</style>
       <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', maxWidth: '480px', margin: '0 auto' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', maxWidth: '560px', margin: '0 auto' }}>
           <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(245,166,35,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'right' }} />
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', animation: 'memorial-fade 2s ease-out 0.5s both' }}>
             <span style={{ fontSize: '16px', lineHeight: 1, animation: 'star-glow 3s ease-in-out 1.5s infinite' }}>✦</span>
@@ -127,6 +127,12 @@ const workflow = [
             </p>
             <p style={{ fontSize: '11px', color: 'var(--p-text-dim)', margin: 0, fontFamily: 'var(--p-font-mono)', fontWeight: 500, letterSpacing: '0.15em' }}>
               2019 – 2025
+            </p>
+            <p style={{ fontSize: '11px', color: 'rgba(245,166,35,0.55)', margin: '8px 0 0', fontWeight: 300, fontStyle: 'italic', lineHeight: 1.6, maxWidth: 380, textAlign: 'center' }}>
+              {t(
+                'Je t\'avais fait une promesse, petit lion. Elle est désormais tenue. Aujourd\'hui, elle protégera d\'autres enfants.',
+                'I made you a promise, little lion. It is now kept. Today, it will protect other children.'
+              )}
             </p>
           </div>
           <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(245,166,35,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'left' }} />
