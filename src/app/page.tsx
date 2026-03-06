@@ -39,13 +39,13 @@ function CyclingVideoBackground() {
         playsInline
         style={{
           position: 'fixed', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover', zIndex: 0, opacity: 0.35,
+          objectFit: 'cover', zIndex: 0, opacity: 0.7,
           transition: 'opacity 1.5s ease',
         }}
       />
       <div style={{
         position: 'fixed', inset: 0, zIndex: 0,
-        background: 'linear-gradient(180deg, rgba(12,20,36,0.55) 0%, rgba(12,20,36,0.35) 40%, rgba(12,20,36,0.45) 70%, rgba(12,20,36,0.6) 100%)',
+        background: 'linear-gradient(180deg, rgba(12,20,36,0.25) 0%, rgba(12,20,36,0.1) 40%, rgba(12,20,36,0.15) 70%, rgba(12,20,36,0.3) 100%)',
         pointerEvents: 'none',
       }} />
     </>
@@ -53,7 +53,7 @@ function CyclingVideoBackground() {
 }
 
 // ══════════════════════════════════════════════════════════════
-// PULSAR V21 — Landing
+// PULSAR — Landing
 // La promesse : plus aucun enfant perdu par manque d'intelligence
 // ══════════════════════════════════════════════════════════════
 
@@ -112,10 +112,10 @@ const workflow = [
       {/* ── Cinematic atmosphere layers ── */}
       {/* Warm golden halo top-left */}
       <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-        <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '50vw', height: '50vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(245,166,35,0.06) 0%, rgba(245,166,35,0.02) 40%, transparent 70%)', filter: 'blur(60px)' }} />
-        <div style={{ position: 'absolute', top: '30%', right: '-10%', width: '40vw', height: '40vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(108,124,255,0.05) 0%, rgba(108,124,255,0.02) 40%, transparent 70%)', filter: 'blur(50px)' }} />
-        <div style={{ position: 'absolute', bottom: '10%', left: '20%', width: '35vw', height: '35vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(16,185,129,0.04) 0%, transparent 60%)', filter: 'blur(40px)' }} />
-        <div style={{ position: 'absolute', bottom: '-5%', right: '10%', width: '30vw', height: '30vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(245,166,35,0.04) 0%, transparent 60%)', filter: 'blur(50px)' }} />
+        <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '50vw', height: '50vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(245,166,35,0.03) 0%, rgba(245,166,35,0.02) 40%, transparent 70%)', filter: 'blur(60px)' }} />
+        <div style={{ position: 'absolute', top: '30%', right: '-10%', width: '40vw', height: '40vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(108,124,255,0.02) 0%, rgba(108,124,255,0.02) 40%, transparent 70%)', filter: 'blur(50px)' }} />
+        <div style={{ position: 'absolute', bottom: '10%', left: '20%', width: '35vw', height: '35vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(16,185,129,0.02) 0%, transparent 60%)', filter: 'blur(40px)' }} />
+        <div style={{ position: 'absolute', bottom: '-5%', right: '10%', width: '30vw', height: '30vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(245,166,35,0.02) 0%, transparent 60%)', filter: 'blur(50px)' }} />
         {/* Grain overlay */}
         <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat', backgroundSize: '256px' }} />
       </div>
@@ -151,7 +151,6 @@ const workflow = [
         <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
           <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={40} height={40} style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.5))', display: 'block', objectFit: 'contain' }} />
           <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#6C7CFF', background: '#6C7CFF15', padding: '2px 8px', borderRadius: 'var(--p-radius-full)', border: '1px solid #6C7CFF25' }}>V21</span>
         </div>
         <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
           <LangToggle />
@@ -165,7 +164,7 @@ const workflow = [
         @keyframes memorial-fade { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
         @keyframes star-glow { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(245,166,35,0.3)); } 50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(245,166,35,0.6)); } }
         @keyframes line-grow { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
-        .landing-glass { background: rgba(16,22,40,0.6); backdrop-filter: blur(16px) saturate(1.2); border: 1px solid rgba(245,166,35,0.06); }
+        .landing-glass { background: rgba(16,22,40,0.6); backdrop-filter: blur(16px) saturate(1.2); border: 1px solid rgba(245,166,35,0.03); }
         .landing-glass:hover { border-color: rgba(245,166,35,0.12); }
       `}</style>
       <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
@@ -179,10 +178,10 @@ const workflow = [
             <p style={{ fontSize: '11px', color: 'var(--p-text-dim)', margin: 0, fontFamily: 'var(--p-font-mono)', fontWeight: 500, letterSpacing: '0.15em' }}>
               2019 – 2025
             </p>
-            <p style={{ fontSize: '11px', color: 'rgba(245,166,35,0.55)', margin: '8px 0 0', fontWeight: 300, fontStyle: 'italic', lineHeight: 1.6, maxWidth: 380, textAlign: 'center' }}>
+            <p style={{ fontSize: '11px', color: 'rgba(245,166,35,0.85)', margin: '8px 0 0', fontWeight: 300, fontStyle: 'italic', lineHeight: 1.6, maxWidth: 380, textAlign: 'center' }}>
               {t(
-                'Je t\'avais fait une promesse, petit lion. Elle est désormais tenue. Aujourd\'hui, elle protégera d\'autres enfants.',
-                'I made you a promise, little lion. It is now kept. Today, it will protect other children.'
+                'Je t\'avais fait une promesse, mon petit lion. Elle est désormais tenue. Aujourd\'hui, elle protégera d\'autres enfants.',
+                'I made you a promise, my little lion. It is now kept. Today, it will protect other children.'
               )}
             </p>
           </div>
@@ -191,7 +190,7 @@ const workflow = [
       </div>
 
       {/* ═══════════ HERO ═══════════ */}
-      <section className="page-enter" style={{ textAlign: 'center', padding: 'var(--p-space-24) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter" style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'inline-flex', gap: '8px', marginBottom: 'var(--p-space-6)', flexWrap: 'wrap', justifyContent: 'center' }}>
           <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: 'var(--p-vps-dim)', color: 'var(--p-vps)', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)' }}>{t('INTELLIGENCE CLINIQUE', 'CLINICAL INTELLIGENCE')}</span>
           <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: '#10B98112', color: '#10B981', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)', border: '1px solid #10B98120' }}>{t('RECHERCHE TRANSLATIONNELLE', 'TRANSLATIONAL RESEARCH')}</span>
@@ -216,11 +215,11 @@ const workflow = [
       </section>
 
       {/* ═══════════ DOUBLE PROMESSE ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-12) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-6) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--p-space-6)' }}>
 
           {/* CÔTÉ CLINIQUE */}
-          <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.05) 0%, rgba(245,166,35,0.03) 100%)', border: '1px solid rgba(108,124,255,0.10)', backdropFilter: 'blur(8px)' }}>
+          <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.02) 0%, rgba(245,166,35,0.03) 100%)', border: '1px solid rgba(108,124,255,0.10)', backdropFilter: 'blur(8px)' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#6C7CFF', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ CLINIQUE', 'CLINICAL SIDE')}</div>
             <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Comprimer le temps entre', 'Compress the time between')}<br />{t('le premier signal et', 'the first signal and')}<br /><span style={{ color: '#6C7CFF' }}>{t('la bonne décision', 'the right decision')}</span></h3>
             <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
@@ -280,7 +279,7 @@ const workflow = [
 
       {/* ═══════════ DISCOVERY ENGINE — SHOWCASE ═══════════ */}
 
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-16) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-8)' }}>
           <div style={{ display: 'inline-block', padding: '6px 20px', borderRadius: 'var(--p-radius-full)', background: '#10B98112', border: '1px solid #10B98125', marginBottom: 'var(--p-space-4)' }}>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#10B981', letterSpacing: '1.5px' }}>DISCOVERY ENGINE v4.0</span>
@@ -325,7 +324,7 @@ const workflow = [
       </section>
 
       {/* ═══════════ TREATMENT PATHFINDER — PROMESSE THÉRAPEUTIQUE ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(236,72,153,0.04) 0%, rgba(245,166,35,0.03) 50%, rgba(16,185,129,0.02) 100%)', border: '1px solid rgba(236,72,153,0.10)', position: 'relative', overflow: 'hidden', backdropFilter: 'blur(8px)' }}>
           <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '160px', height: '160px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%)', pointerEvents: 'none' }} />
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--p-space-6)', flexWrap: 'wrap' }}>
@@ -368,7 +367,7 @@ const workflow = [
       </section>
 
       {/* ═══════════ INGÉNIERIE ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('CE QUI REND PULSAR UNIQUE', 'WHAT MAKES PULSAR UNIQUE')}</div>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>{t('Un vrai système.', 'A real system.')}<br /><span className="text-gradient-brand">{t('Pas un chatbot.', 'Not a chatbot.')}</span></h2>
@@ -435,7 +434,7 @@ const workflow = [
       </section>
 
       {/* ═══════════ MOTEURS DÉTAIL ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-16)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
         <h2 className="text-gradient-brand" style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>{t('6+1 moteurs qui pensent ensemble', '6+1 engines that think together')}</h2>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {engines.map((e) => (
@@ -452,7 +451,7 @@ const workflow = [
 
       {/* ═══════════ CTA FINAL ═══════════ */}
 
-      <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-12) var(--p-space-8) var(--p-space-24)', position: 'relative', zIndex: 1 }}>
+      <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-4) var(--p-space-8)', position: 'relative', zIndex: 1 }}>
         <div style={{ maxWidth: '700px', margin: '0 auto', borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-10) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.04) 0%, rgba(245,166,35,0.04) 50%, rgba(16,185,129,0.02) 100%)', border: '1px solid rgba(245,166,35,0.08)', backdropFilter: 'blur(12px)' }}>
           <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)', lineHeight: 1.3 }}>{t('La bonne information.', 'The right information.')}<br />{t('Au bon endroit.', 'In the right place.')} <span className="text-gradient-vps">{t('Au bon moment.', 'At the right time.')}</span></h2>
           <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', maxWidth: '560px', margin: '0 auto var(--p-space-8)', lineHeight: 1.8 }}>
@@ -466,10 +465,8 @@ const workflow = [
       </section>
 
       {/* ═══════════ MÉMORIAL + FOOTER ═══════════ */}
-
-
       <footer style={{ borderTop: '1px solid rgba(245,166,35,0.08)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
-        {t('PULSAR V21 · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel', 'PULSAR V21 · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
+        {t('PULSAR · Intelligence clinique pédiatrique · Discovery Engine v4.0 · © 2026 Steve Moradel', 'PULSAR · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
       </footer>
     </div>
   )
