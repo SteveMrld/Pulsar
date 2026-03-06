@@ -17,6 +17,7 @@
 // ============================================================
 
 import type { PatientState, Alert, Drug } from './PatientState'
+import { getDrugSafetyProfile, analyzeSafetyForPatient, type PatientContext } from './DrugDatabase'
 
 // ── Types ──
 
@@ -411,5 +412,83 @@ export function runCAE(ps: PatientState, plannedIntervention?: string): CAEResul
     alerts,
     highestRisk,
     message,
+  }
+}
+
+// ══════════════════════════════════════════════════════════════
+// LIVE ENRICHMENT — Queries OpenFDA + BDPM in real time
+// Adds LIVE adverse event data on top of static rules
+// ══════════════════════════════════════════════════════════════
+
+
+export async function runCAELive(ps: PatientState, plannedIntervention?: string): Promise<CAEResult> {
+  // 1. Run static rules first (instant)
+  const staticResult = runCAE(ps, plannedIntervention)
+
+  // 2. Build patient context for live analysis
+  const context: PatientContext = {
+    age: ps.ageMonths,
+    hasSeizures: ps.neuro.seizures24h > 0 || ps.neuro.seizureType !== 'none',
+    hasCardiacRisk: ps.hemodynamics.heartRate > 150 || ps.hemodynamics.heartRate < 50 || ps.hemodynamics.map < 50,
+    hasRespiratoryRisk: ps.hemodynamics.spo2 < 95,
+    isFebrile: ps.hemodynamics.temp >= 38,
+    hasInflammation: ps.biology.crp > 30 || ps.biology.ferritin > 500,
+    gcs: ps.neuro.gcs,
+  }
+
+  // 3. Query live drug data for all current + planned drugs
+  const allDrugNames = [
+    ...(ps.drugs || []).map(d => d.name),
+    ...(plannedIntervention ? [plannedIntervention] : []),
+  ]
+
+  const liveAlerts: CascadeAlert[] = []
+
+  for (const drugName of allDrugNames) {
+    try {
+      const profile = await getDrugSafetyProfile(drugName)
+      if (!profile) continue
+
+      const analysis = analyzeSafetyForPatient(profile, context)
+      
+      if (analysis.riskLevel === 'critical' || analysis.riskLevel === 'high') {
+        // Check if this risk is already covered by static rules
+        const alreadyCovered = staticResult.alerts.some(a => 
+          a.intervention.toLowerCase() === drugName.toLowerCase() ||
+          a.title.toLowerCase().includes(drugName.toLowerCase())
+        )
+
+        if (!alreadyCovered) {
+          liveAlerts.push({
+            severity: analysis.riskLevel === 'critical' ? 'critical' : 'warning',
+            title: `📡 LIVE: ${drugName.toUpperCase()} — ${analysis.riskLevel === 'critical' ? 'RISQUE CRITIQUE' : 'RISQUE ÉLEVÉ'}`,
+            message: analysis.reasons.join('. '),
+            intervention: drugName,
+            vulnerability: 'Détecté par analyse temps réel OpenFDA/ANSM',
+            cascadeChain: analysis.reasons,
+            mechanism: `Données pharmacovigilance en temps réel — ${profile.adverseEvents.length} effets indésirables, ${profile.cardiacRisks.length} risques cardiaques, ${profile.neuroRisks.length} risques neuro.`,
+            references: [`OpenFDA FAERS (${profile.adverseEvents.filter(ae => ae.serious).length} EI graves)`, 'ANSM/BDPM — RCP officiel'],
+            alternativeSuggestion: 'Consulter le RCP complet via /api/drugs?drug=' + encodeURIComponent(drugName),
+            timestamp: new Date().toISOString(),
+          })
+        }
+      }
+    } catch {
+      // Live lookup failed — static rules still apply
+      continue
+    }
+  }
+
+  // 4. Merge live alerts with static alerts
+  return {
+    vulnerabilities: staticResult.vulnerabilities,
+    risks: staticResult.risks,
+    alerts: [...staticResult.alerts, ...liveAlerts],
+    highestRisk: liveAlerts.some(a => a.severity === 'critical') && staticResult.highestRisk !== 'critical'
+      ? 'critical' 
+      : staticResult.highestRisk,
+    message: liveAlerts.length > 0
+      ? `${staticResult.message} + ${liveAlerts.length} alerte(s) supplémentaire(s) détectée(s) en temps réel (OpenFDA/ANSM).`
+      : staticResult.message,
   }
 }
