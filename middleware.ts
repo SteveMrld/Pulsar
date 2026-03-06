@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   // Skip middleware entirely for public case study pages
-  if (path.startsWith('/case/') || path.startsWith('/invite')) {
+  if (path.startsWith('/usecase/') || path.startsWith('/invite')) {
     return NextResponse.next()
   }
 
