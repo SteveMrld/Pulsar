@@ -140,10 +140,7 @@ export default function LoginPage() {
           fontSize: 'var(--p-text-sm)',
           color: 'var(--p-text-dim)',
         }}>
-          {t('Pas encore de compte ?', "Don't have an account?")}{' '}
-          <Link href="/signup" style={{ color: 'var(--p-vps)', textDecoration: 'none', fontWeight: 600 }}>
-            {t('Créer un compte', 'Create account')}
-          </Link>
+          {t('Accès sur invitation uniquement', 'Invite-only access')}
         </p>
 
         <div style={{ marginTop: 'var(--p-space-4)', paddingTop: 'var(--p-space-4)', borderTop: 'var(--p-border)' }}>
@@ -182,9 +179,7 @@ export default function LoginPage() {
 
           <button
             onClick={() => {
-              document.cookie = 'pulsar-demo=true; path=/; max-age=86400'
-              localStorage.setItem('pulsar-demo', 'true')
-              router.push('/patients')
+              router.push('/?demo=true')
             }}
             style={{
               width: '100%',
@@ -198,7 +193,7 @@ export default function LoginPage() {
               cursor: 'pointer',
             }}
           >
-            {t('Accès Démo — Sans compte', 'Demo Access — No account')}
+            {t('Découvrir PULSAR — Démo', 'Discover PULSAR — Demo')}
           </button>
         </div>
       </div>

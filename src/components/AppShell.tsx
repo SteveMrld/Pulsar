@@ -17,7 +17,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { t } = useLang()
 
-  const isPublic = ['/', '/login', '/signup', '/invite'].includes(pathname)
+  const isPublic = ['/', '/login', '/invite'].includes(pathname)
   const isPatient = pathname.startsWith('/patient/')
 
   useEffect(() => {
@@ -31,11 +31,6 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
         setLoading(false)
         return
       }
-    }
-    if (typeof window !== 'undefined' && localStorage.getItem('pulsar-demo') === 'true') {
-      setUser('demo@pulsar.app')
-      setLoading(false)
-      return
     }
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => {
@@ -62,8 +57,8 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   }
 
   const handleLogout = async () => {
-    document.cookie = 'pulsar-demo=; path=/; max-age=0'
-    localStorage.removeItem('pulsar-demo')
+    document.cookie = 'pulsar-invite=; path=/; max-age=0'
+    document.cookie = 'pulsar-invite-name=; path=/; max-age=0'
     const supabase = createClient()
     await supabase.auth.signOut()
     router.push('/')
