@@ -102,12 +102,6 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
                   "When a child's brain ignites, every second ahead saves a life."
                 )}
               </p>
-              <p className="splash-promise">
-                {t(
-                  "Je t'avais fait une promesse, mon petit lion.",
-                  "I made you a promise, little lion."
-                )}
-              </p>
               <p className="splash-memory">
                 {t("À la mémoire d'Alejandro", "In memory of Alejandro")}
               </p>
