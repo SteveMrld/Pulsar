@@ -30,6 +30,7 @@ const SPLASH_CSS = `
   .splash-tagline { font-size:min(4.5vw,18px); opacity:.9; color:#E8EAF0; line-height:1.6; margin:0; font-style:italic; }
   .splash-subtitle { font-size:min(3.5vw,13px); color:rgba(108,124,255,0.8); letter-spacing:0.12em; text-transform:uppercase; font-weight:500; margin:0 0 16px; }
   .splash-memory { margin-top:24px; font-size:16px; color:#F5A623; letter-spacing:0.12em; font-weight:500; opacity:1; text-shadow:0 0 20px rgba(245,166,35,0.4); }
+  .splash-deploy { margin-top:20px; font-size:12px; color:rgba(108,124,255,0.6); letter-spacing:0.08em; font-weight:400; }
   .splash-skip { position:absolute; bottom:30px; right:30px; background:transparent; border:1px solid rgba(255,255,255,0.2); color:white; padding:8px 16px; border-radius:20px; cursor:pointer; opacity:.6; font-size:12px; z-index:3; }
   .splash-skip:hover { opacity:1; }
   @keyframes splashFadeUp { from{opacity:0;transform:translateY(20px);filter:blur(8px)} to{opacity:1;transform:translateY(0);filter:blur(0)} }
@@ -60,7 +61,7 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
         setTimeout(() => {
           sessionStorage.setItem('pulsar-splash-seen', '1')
           onComplete()
-        }, 9000)
+        }, 12000)
       }
     }, 1600)
 
@@ -110,6 +111,12 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
               </p>
               <p className="splash-memory">
                 {t("À la mémoire d'Alejandro", "In memory of Alejandro")}
+              </p>
+              <p className="splash-deploy">
+                {t(
+                  "Bientôt déployé dans les plus grands centres hospitaliers internationaux.",
+                  "Soon deployed in the world's leading hospital centers."
+                )}
               </p>
             </div>
           )}
@@ -578,6 +585,7 @@ const workflow = [
             {t('95/95 tests. 59 références cliniques. 25 publications Discovery. Veille PubMed live. 5 pathologies. 15 tables de données. Parce que chaque minute gagnée peut changer une vie.', '95/95 tests. 59 clinical references. 25 Discovery publications. Live PubMed monitoring. 5 pathologies. 15 data tables. Because every minute saved can change a life.')}
           </p>
           <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Accéder à PULSAR', 'Access PULSAR')}</Link>
             <Link href="/login?demo=1" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'transparent', border: '2px solid rgba(245,166,35,0.3)', color: '#F5A623', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)' }}>{t('Voir la démo', 'View demo')}</Link>
           </div>
         </div>
