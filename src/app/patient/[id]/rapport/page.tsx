@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
 import { useParams } from 'next/navigation'
 import { useEffect, useState, useRef } from 'react'
@@ -39,11 +40,11 @@ function Section({ title, color, children }: { title: string; color: string; chi
 
 function AlertRow({ severity, title, body, source }: { severity: string; title: string; body: string; source: string }) {
   const col = severity === 'critical' ? '#EF4444' : severity === 'warning' ? '#F59E0B' : '#6C7CFF'
-  const icon = severity === 'critical' ? '🚨' : severity === 'warning' ? '⚠️' : 'ℹ️'
+  const iconName = severity === 'critical' ? 'warning' : severity === 'warning' ? 'alert' : 'shield'
   return (
     <div style={{ padding: '10px 14px', background: `${col}06`, borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${col}`, marginBottom: 6 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-        <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: col }}>{icon} {title}</span>
+        <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: col }}><Picto name={iconName} size={12} /> {title}</span>
         <span style={{ fontSize: 9, fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', background: 'var(--p-bg-surface)', padding: '1px 6px', borderRadius: 4 }}>{source}</span>
       </div>
       <div style={{ fontSize: 11, color: 'var(--p-text-muted)', lineHeight: 1.5 }}>{body}</div>
@@ -91,7 +92,7 @@ export default function RapportPage() {
   if (!generated || !result || !ps) {
     return (
       <div style={{ textAlign: 'center', padding: 'var(--p-space-10)' }}>
-        <div style={{ fontSize: 40, marginBottom: 10 }}>📊</div>
+        <Picto name="chart" size={40} glow />
         <div style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700, color: 'var(--p-text)' }}>
           {t('Génération du rapport PULSAR...', 'Generating PULSAR report...')}
         </div>

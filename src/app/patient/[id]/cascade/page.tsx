@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -105,7 +106,7 @@ export default function CascadePage() {
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 'var(--p-space-6)' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 'var(--p-space-6)' }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: `${CAE_COLOR}15`, border: `2px solid ${CAE_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>⚡</div>
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: `${CAE_COLOR}15`, border: `2px solid ${CAE_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Picto name="alert" size={20} glow /></div>
         <div>
           <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Cascade Alert Engine</h1>
           <p style={{ fontSize: 'var(--p-text-sm)', color: CAE_COLOR, margin: 0, fontFamily: 'var(--p-font-mono)' }}>
@@ -171,7 +172,7 @@ export default function CascadePage() {
       {criticals.length > 0 && (
         <div style={{ marginBottom: 'var(--p-space-6)' }}>
           <h2 style={{ fontSize: 'var(--p-text-base)', fontWeight: 700, color: '#EF4444', marginBottom: 10 }}>
-            🚨 {t('Cascades critiques', 'Critical cascades')} ({criticals.length})
+            {t('Cascades critiques', 'Critical cascades')} ({criticals.length})
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {criticals.map((a, i) => <CascadeCard key={i} a={a} t={t} />)}
@@ -183,7 +184,7 @@ export default function CascadePage() {
       {warnings.length > 0 && (
         <div style={{ marginBottom: 'var(--p-space-6)' }}>
           <h2 style={{ fontSize: 'var(--p-text-base)', fontWeight: 700, color: '#F59E0B', marginBottom: 10 }}>
-            ⚠️ {t('Cascades à surveiller', 'Cascades to monitor')} ({warnings.length})
+            {t('Cascades à surveiller', 'Cascades to monitor')} ({warnings.length})
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {warnings.map((a, i) => <CascadeCard key={i} a={a} t={t} />)}

@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
 import { useParams } from 'next/navigation'
 import { useEffect, useState, useCallback } from 'react'
@@ -7,10 +8,10 @@ import { usePatient } from '@/contexts/PatientContext'
 
 const DISC_COLOR = '#10B981'
 const LEVELS = [
-  { n: 1, name: 'PatternMiner', icon: '📊', color: '#10B981', desc: 'Corrélations statistiques (Pearson, k-means, z-score)' },
-  { n: 2, name: 'LiteratureScanner', icon: '📡', color: '#3B82F6', desc: 'Recherche PubMed temps réel' },
-  { n: 3, name: 'HypothesisEngine', icon: '💡', color: '#8B5CF6', desc: 'Génération d\'hypothèses via IA' },
-  { n: 4, name: 'TreatmentPathfinder', icon: '🧬', color: '#EC4899', desc: 'Chemins thérapeutiques innovants + ClinicalTrials.gov' },
+  { n: 1, name: 'PatternMiner', icon: 'chart', color: '#10B981', desc: 'Corrélations statistiques (Pearson, k-means, z-score)' },
+  { n: 2, name: 'LiteratureScanner', icon: 'eeg', color: '#3B82F6', desc: 'Recherche PubMed temps réel' },
+  { n: 3, name: 'HypothesisEngine', icon: 'pulsar-ai', color: '#8B5CF6', desc: 'Génération d\'hypothèses via IA' },
+  { n: 4, name: 'TreatmentPathfinder', icon: 'dna', color: '#EC4899', desc: 'Chemins thérapeutiques innovants + ClinicalTrials.gov' },
 ]
 
 interface PubMedResult { title: string; authors: string; journal: string; year: string; pmid: string }
@@ -84,7 +85,7 @@ export default function DiscoveryPage() {
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 'var(--p-space-6)' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 'var(--p-space-6)' }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: `${DISC_COLOR}15`, border: `2px solid ${DISC_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>🔬</div>
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: `${DISC_COLOR}15`, border: `2px solid ${DISC_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Picto name="microscope" size={20} glow /></div>
         <div>
           <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Discovery Engine</h1>
           <p style={{ fontSize: 'var(--p-text-sm)', color: DISC_COLOR, margin: 0, fontFamily: 'var(--p-font-mono)' }}>
@@ -98,7 +99,7 @@ export default function DiscoveryPage() {
         {LEVELS.map((l, i) => (
           <button key={i} onClick={() => { setActiveLevel(i); if (i === 1 && !searched) runPubMed(); if (i === 3) runTrials() }}
             style={{ padding: '10px 8px', borderRadius: 'var(--p-radius-lg)', background: activeLevel === i ? `${l.color}12` : 'var(--p-bg-card)', border: `1px solid ${activeLevel === i ? l.color + '30' : 'var(--p-border)'}`, cursor: 'pointer', textAlign: 'center' }}>
-            <div style={{ fontSize: 18, marginBottom: 4 }}>{l.icon}</div>
+            <Picto name={l.icon} size={18} glow />
             <div style={{ fontSize: 9, fontWeight: 800, color: l.color, fontFamily: 'var(--p-font-mono)' }}>N{l.n}</div>
             <div style={{ fontSize: 10, fontWeight: 600, color: activeLevel === i ? 'var(--p-text)' : 'var(--p-text-muted)' }}>{l.name}</div>
           </button>

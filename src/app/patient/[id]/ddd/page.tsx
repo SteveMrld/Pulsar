@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -27,7 +28,7 @@ export default function DDDPage() {
 
   if (!ddd) return (
     <div style={{ textAlign: 'center', padding: 'var(--p-space-10)', color: 'var(--p-text-dim)' }}>
-      <div style={{ fontSize: 40, marginBottom: 10 }}>⏱</div>
+      <Picto name="urgence-chrono" size={40} glow />
       <div style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700 }}>{t('Chargement DDD...', 'Loading DDD...')}</div>
     </div>
   )
@@ -36,7 +37,7 @@ export default function DDDPage() {
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 'var(--p-space-6)' }}>
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 'var(--p-space-6)' }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: `${DDD_COLOR}15`, border: `2px solid ${DDD_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>⏱</div>
+        <div style={{ width: 40, height: 40, borderRadius: 12, background: `${DDD_COLOR}15`, border: `2px solid ${DDD_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Picto name="urgence-chrono" size={20} glow /></div>
         <div>
           <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Diagnostic Delay Detector</h1>
           <p style={{ fontSize: 'var(--p-text-sm)', color: DDD_COLOR, margin: 0, fontFamily: 'var(--p-font-mono)' }}>
@@ -83,7 +84,7 @@ export default function DDDPage() {
               <div key={i} style={{ background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-lg)', border: `1px solid ${col}15`, marginBottom: 8, overflow: 'hidden' }}>
                 <div style={{ padding: '14px 16px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
-                    <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 800, color: col }}>{p.severity === 'critical' ? '🚨' : '⚠️'} {p.name}</span>
+                    <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 800, color: col }}>{p.severity === 'critical' ? '!' : '!'} {p.name}</span>
                     <span style={{ fontSize: 10, fontFamily: 'var(--p-font-mono)', color: col, background: `${col}10`, padding: '2px 8px', borderRadius: 99, fontWeight: 700 }}>{p.currentDelay}</span>
                   </div>
                   <div style={{ fontSize: 11, color: 'var(--p-text-muted)', lineHeight: 1.5, marginBottom: 8 }}>{p.description}</div>

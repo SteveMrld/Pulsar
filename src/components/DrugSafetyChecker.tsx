@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useState } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 
@@ -45,7 +46,7 @@ export default function DrugSafetyChecker() {
   return (
     <div style={{ background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-lg)', padding: 16, border: '1px solid var(--p-border)' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-        <span style={{ fontSize: 16 }}>💊</span>
+        <Picto name="pill" size={16} />
         <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)' }}>
           {t('Vérification médicament', 'Drug Safety Check')}
         </span>
@@ -68,9 +69,9 @@ export default function DrugSafetyChecker() {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
           {/* Risk badges */}
           <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-            {hasCardiac && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 99, background: '#EF444412', color: '#EF4444', fontWeight: 700 }}>❤️ Cardiotoxique</span>}
-            {hasNeuro && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 99, background: '#F59E0B12', color: '#F59E0B', fontWeight: 700 }}>🧠 Neurotoxique</span>}
-            {hasResp && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 99, background: '#8B5CF612', color: '#8B5CF6', fontWeight: 700 }}>🫁 Resp. depression</span>}
+            {hasCardiac && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 99, background: '#EF444412', color: '#EF4444', fontWeight: 700 }}><Picto name="heart" size={10} /> Cardiotoxique</span>}
+            {hasNeuro && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 99, background: '#F59E0B12', color: '#F59E0B', fontWeight: 700 }}><Picto name="brain" size={10} /> Neurotoxique</span>}
+            {hasResp && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 99, background: '#8B5CF612', color: '#8B5CF6', fontWeight: 700 }}><Picto name="lungs" size={10} /> Resp. depression</span>}
             {!hasCardiac && !hasNeuro && !hasResp && <span style={{ fontSize: 9, padding: '2px 8px', borderRadius: 99, background: '#10B98112', color: '#10B981', fontWeight: 700 }}>✓ Profil standard</span>}
           </div>
 

@@ -1,4 +1,5 @@
 'use client'
+import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
 import { useParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -37,7 +38,7 @@ export default function ConsultPage() {
 
   if (!brief) return (
     <div style={{ textAlign: 'center', padding: 'var(--p-space-10)', color: 'var(--p-text-dim)' }}>
-      <div style={{ fontSize: 40, marginBottom: 10 }}>📋</div>
+      <Picto name="clipboard" size={40} glow />
       <div style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700 }}>{t('Génération du brief...', 'Generating brief...')}</div>
     </div>
   )
@@ -47,7 +48,7 @@ export default function ConsultPage() {
       {/* Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--p-space-6)', flexWrap: 'wrap', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-          <div style={{ width: 40, height: 40, borderRadius: 12, background: `${CONSULT_COLOR}15`, border: `2px solid ${CONSULT_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20 }}>📋</div>
+          <div style={{ width: 40, height: 40, borderRadius: 12, background: `${CONSULT_COLOR}15`, border: `2px solid ${CONSULT_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Picto name="clipboard" size={20} glow /></div>
           <div>
             <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>PULSAR Consult</h1>
             <p style={{ fontSize: 'var(--p-text-sm)', color: CONSULT_COLOR, margin: 0, fontFamily: 'var(--p-font-mono)' }}>
@@ -93,7 +94,7 @@ export default function ConsultPage() {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                   <span style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)' }}>{i + 1}. {lang === 'fr' ? q.question : (q.questionEn || q.question)}</span>
                   <span style={{ fontSize: 9, fontWeight: 700, color: urgCol, fontFamily: 'var(--p-font-mono)', background: `${urgCol}10`, padding: '2px 8px', borderRadius: 99 }}>
-                    {q.urgency === 'immediate' ? '🚨 URGENT' : q.urgency === 'within24h' ? '⏱ 24H' : 'ÉLECTIF'}
+                    {q.urgency === 'immediate' ? t('URGENT', 'URGENT') : q.urgency === 'within24h' ? t('24H', '24H') : 'ÉLECTIF'}
                   </span>
                 </div>
                 <div style={{ fontSize: 11, color: 'var(--p-text-muted)', lineHeight: 1.5, marginBottom: 4 }}>{q.context}</div>

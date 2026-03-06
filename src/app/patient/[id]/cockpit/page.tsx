@@ -257,7 +257,7 @@ export default function PatientCockpit() {
       {cascadeCriticals.length > 0 && (
         <Link href={`${base}/cascade`} style={{ textDecoration: 'none', display: 'block', marginBottom: 'var(--p-space-4)' }}>
           <div style={{ padding: '10px 16px', background: '#FF6B3510', borderRadius: 'var(--p-radius-lg)', border: '1px solid #FF6B3525', display: 'flex', alignItems: 'center', gap: 12, cursor: 'pointer' }}>
-            <span style={{ fontSize: 18 }}>⚡</span>
+            <Picto name="alert" size={18} glow />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 800, color: '#FF6B35' }}>
                 CASCADE ALERT — {cascadeCriticals.length} {t('risque(s) critique(s)', 'critical risk(s)')}
@@ -386,8 +386,8 @@ export default function PatientCockpit() {
             vpsScore={ps.vpsResult?.synthesis.score ?? 0} compact
             vitals={[
               { label: 'NEURO', icon: 'brain', value: `GCS: ${ps.neuro.gcs}/15`, color: '#6C7CFF', severity: ps.neuro.gcs <= 8 ? 2 : ps.neuro.gcs <= 12 ? 1 : 0 },
-              { label: 'CARDIO', icon: '❤️', value: `FC: ${ps.hemodynamics.heartRate} bpm`, color: '#A78BFA', severity: ps.hemodynamics.heartRate > 140 ? 2 : 0 },
-              { label: 'RESP', icon: '🫁', value: `SpO₂: ${ps.hemodynamics.spo2}%`, color: '#2FD1C8', severity: ps.hemodynamics.spo2 < 95 ? 1 : 0 },
+              { label: 'CARDIO', icon: 'heart', value: `FC: ${ps.hemodynamics.heartRate} bpm`, color: '#A78BFA', severity: ps.hemodynamics.heartRate > 140 ? 2 : 0 },
+              { label: 'RESP', icon: 'lungs', value: `SpO₂: ${ps.hemodynamics.spo2}%`, color: '#2FD1C8', severity: ps.hemodynamics.spo2 < 95 ? 1 : 0 },
               { label: 'INFLAM', icon: '🔥', value: `CRP: ${ps.biology.crp} mg/L`, color: '#FFB347', severity: ps.biology.crp > 100 ? 2 : ps.biology.crp > 20 ? 1 : 0 },
               { label: 'TEMP', icon: '🌡️', value: `${ps.hemodynamics.temp}°C`, color: '#B96BFF', severity: ps.hemodynamics.temp >= 38 ? 1 : 0 },
             ]}
