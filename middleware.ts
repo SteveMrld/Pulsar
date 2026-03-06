@@ -2,6 +2,13 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  const path = request.nextUrl.pathname
+
+  // Skip middleware entirely for public case study pages
+  if (path.startsWith('/case/') || path.startsWith('/invite')) {
+    return NextResponse.next()
+  }
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -30,8 +37,7 @@ export async function middleware(request: NextRequest) {
   // Demo mode bypass via cookie
   const isDemo = request.cookies.get('pulsar-demo')?.value === 'true'
 
-  const path = request.nextUrl.pathname
-  const isPublic = ['/', '/login', '/signup'].includes(path) || path.startsWith('/case/') || path.startsWith('/invite')
+  const isPublic = ['/', '/login', '/signup'].includes(path)
   const isAuthPage = ['/login', '/signup'].includes(path)
   const isProtected = path.startsWith('/patients') || path.startsWith('/patient/') || path.startsWith('/observatory') || path.startsWith('/neurocore') || path.startsWith('/case-matching') || path.startsWith('/cross-pathologie') || path.startsWith('/export') || path.startsWith('/bilan') || path.startsWith('/staff')
 
