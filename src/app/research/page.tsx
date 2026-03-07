@@ -26,9 +26,9 @@ import { exportMarkdown, exportJSON, exportBibTeX, triggerDownload } from '@/lib
    ══════════════════════════════════════════════════════════════ */
 
 // ── Design tokens ──
-const DISC = '#10B981'
-const DISC_DIM = 'rgba(16, 185, 129, 0.12)'
-const DISC_GLOW = 'rgba(16, 185, 129, 0.30)'
+const DISC = 'var(--p-disc)'
+const DISC_DIM = 'var(--p-disc-dim)'
+const DISC_GLOW = 'var(--p-disc-glow)'
 
 type Tab = 'signals' | 'correlations' | 'clusters' | 'literature' | 'hypotheses' | 'pathfinder' | 'roadmap'
 
@@ -44,10 +44,10 @@ const TABS: { id: Tab; label: string; labelEn?: string; icon: string }[] = [
 
 // ── Strength badge colors ──
 const STRENGTH_COLORS: Record<SignalStrength, string> = {
-  very_strong: '#8B5CF6',
-  strong: '#FFA502',
-  moderate: '#6C7CFF',
-  weak: '#8E8EA3',
+  very_strong: 'var(--p-critical)',
+  strong: 'var(--p-warning)',
+  moderate: 'var(--p-vps)',
+  weak: 'var(--p-text-dim)',
 }
 
 const STRENGTH_LABELS: Record<SignalStrength, string> = {
@@ -67,11 +67,11 @@ const TYPE_LABELS: Record<SignalType, string> = {
 }
 
 const STATUS_LABELS: Record<string, { label: string; labelEn?: string; color: string }> = {
-  new: { label: 'NOUVEAU', labelEn: 'NEW', color: '#3B82F6' },
-  confirmed: { label: 'CONFIRMÉ', labelEn: 'CONFIRMED', color: '#2ED573' },
-  monitoring: { label: 'SURVEILLANCE', labelEn: 'MONITORING', color: '#FFA502' },
-  archived: { label: 'ARCHIVÉ', labelEn: 'ARCHIVED', color: '#8E8EA3' },
-  rejected: { label: 'REJETÉ', labelEn: 'REJECTED', color: '#8B5CF6' },
+  new: { label: 'NOUVEAU', labelEn: 'NEW', color: 'var(--p-info)' },
+  confirmed: { label: 'CONFIRMÉ', labelEn: 'CONFIRMED', color: 'var(--p-success)' },
+  monitoring: { label: 'SURVEILLANCE', labelEn: 'MONITORING', color: 'var(--p-warning)' },
+  archived: { label: 'ARCHIVÉ', labelEn: 'ARCHIVED', color: 'var(--p-text-dim)' },
+  rejected: { label: 'REJETÉ', labelEn: 'REJECTED', color: 'var(--p-critical)' },
 }
 
 export default function ResearchPage() {
@@ -198,7 +198,7 @@ export default function ResearchPage() {
             background: summary.strongSignals > 0 ? 'rgba(139,92,246,0.08)' : 'rgba(108,124,255,0.06)',
             border: `1px solid ${summary.strongSignals > 0 ? 'rgba(139,92,246,0.15)' : 'rgba(108,124,255,0.1)'}`,
             fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700,
-            color: summary.strongSignals > 0 ? '#8B5CF6' : 'var(--p-text-dim)',
+            color: summary.strongSignals > 0 ? 'var(--p-critical)' : 'var(--p-text-dim)',
           }}>
             {summary.strongSignals} fort{summary.strongSignals !== 1 ? 's' : ''}
           </div>
@@ -233,7 +233,7 @@ export default function ResearchPage() {
         }} style={{
           padding: '4px 12px', borderRadius: 'var(--p-radius-md)',
           background: 'rgba(108,124,255,0.06)', border: '1px solid rgba(108,124,255,0.15)',
-          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#6C7CFF', cursor: 'pointer',
+          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--p-vps)', cursor: 'pointer',
         }}>💾 JSON</button>
         <button onClick={() => {
           const bib = exportBibTeX(discoveryResult.literature.articles)
@@ -241,7 +241,7 @@ export default function ResearchPage() {
         }} style={{
           padding: '4px 12px', borderRadius: 'var(--p-radius-md)',
           background: 'rgba(185,107,255,0.06)', border: '1px solid rgba(185,107,255,0.15)',
-          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#B96BFF', cursor: 'pointer',
+          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--p-pve)', cursor: 'pointer',
         }}>📚 BibTeX</button>
       </div>
 
@@ -285,16 +285,16 @@ export default function ResearchPage() {
         }}>
           {[
             { label: 'Signaux total', value: summary.totalSignals, color: DISC },
-            { label: 'Nouveaux', value: summary.newSignals, color: '#3B82F6' },
-            { label: 'Signaux forts', value: summary.strongSignals, color: '#8B5CF6' },
-            { label: 'Patients', value: summary.patientsAnalyzed, color: '#6C7CFF' },
-            { label: 'Publications', value: litStats.articlesScanned, color: '#B96BFF' },
-            { label: 'Confirmations', value: litStats.confirmations, color: '#2ED573' },
-            { label: 'Contradictions', value: litStats.contradictions, color: '#FFA502' },
-            { label: 'Essais cliniques', value: litStats.clinicalTrials, color: '#2FD1C8' },
-            { label: 'Hypothèses', value: discoveryResult.hypotheses.length, color: '#B96BFF' },
-            { label: 'Pistes thérap.', value: pathStats.totalPathways, color: '#FFB347' },
-            { label: 'Patients éligibles', value: pathStats.eligiblePatients, color: '#2ED573' },
+            { label: 'Nouveaux', value: summary.newSignals, color: 'var(--p-info)' },
+            { label: 'Signaux forts', value: summary.strongSignals, color: 'var(--p-critical)' },
+            { label: 'Patients', value: summary.patientsAnalyzed, color: 'var(--p-vps)' },
+            { label: 'Publications', value: litStats.articlesScanned, color: 'var(--p-pve)' },
+            { label: 'Confirmations', value: litStats.confirmations, color: 'var(--p-success)' },
+            { label: 'Contradictions', value: litStats.contradictions, color: 'var(--p-warning)' },
+            { label: 'Essais cliniques', value: litStats.clinicalTrials, color: 'var(--p-tde)' },
+            { label: 'Hypothèses', value: discoveryResult.hypotheses.length, color: 'var(--p-pve)' },
+            { label: 'Pistes thérap.', value: pathStats.totalPathways, color: 'var(--p-tpe)' },
+            { label: 'Patients éligibles', value: pathStats.eligiblePatients, color: 'var(--p-success)' },
           ].map((kpi, i) => (
             <div key={i} style={{
               ...glass({ padding: '14px', borderTop: `3px solid ${kpi.color}`, textAlign: 'center' }),
@@ -480,14 +480,14 @@ function SignalCardView({ signal, expanded, onToggle }: {
             <span style={badgeStyle(strengthColor)}>
               {STRENGTH_LABELS[signal.strength]}
             </span>
-            <span style={badgeStyle('#6C7CFF')}>
+            <span style={badgeStyle('var(--p-vps)')}>
               {TYPE_LABELS[signal.type] || signal.type}
             </span>
             <span style={badgeStyle(statusInfo.color)}>
               {statusInfo.label}
             </span>
             {signal.statistics.correlation != null && (
-              <span style={badgeStyle(signal.statistics.correlation > 0 ? '#2FD1C8' : '#A78BFA')}>
+              <span style={badgeStyle(signal.statistics.correlation > 0 ? 'var(--p-tde)' : 'var(--p-pve-soft)')}>
                 r = {signal.statistics.correlation > 0 ? '+' : ''}{signal.statistics.correlation}
               </span>
             )}
@@ -534,7 +534,7 @@ function SignalCardView({ signal, expanded, onToggle }: {
           {/* Statistics grid */}
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))', gap: '8px', marginBottom: '12px' }}>
             {signal.statistics.pValue != null && (
-              <StatBox label="p-value" value={signal.statistics.pValue < 0.001 ? '<0.001' : String(signal.statistics.pValue)} color={signal.statistics.pValue < 0.05 ? '#2ED573' : '#8B5CF6'} />
+              <StatBox label="p-value" value={signal.statistics.pValue < 0.001 ? '<0.001' : String(signal.statistics.pValue)} color={signal.statistics.pValue < 0.05 ? 'var(--p-success)' : 'var(--p-critical)'} />
             )}
             {signal.statistics.sampleSize != null && (
               <StatBox label="n patients" value={String(signal.statistics.sampleSize)} color="#6C7CFF" />
@@ -565,7 +565,7 @@ function SignalCardView({ signal, expanded, onToggle }: {
             marginTop: '12px', padding: '8px 12px',
             background: 'rgba(255,165,2,0.06)', border: '1px solid rgba(255,165,2,0.12)',
             borderRadius: 'var(--p-radius-md)',
-            fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FFA502',
+            fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-warning)',
           }}>
             ⚠ {signal.disclaimer}
           </div>
@@ -741,7 +741,7 @@ function CorrelationMatrixView({ matrix }: { matrix: CorrelationMatrix }) {
         {matrix.significantPairs.slice(0, 10).map((pair, i) => {
           const metaA = PARAMETER_META[pair.paramA]
           const metaB = PARAMETER_META[pair.paramB]
-          const color = pair.coefficient > 0 ? '#2ED573' : '#8B5CF6'
+          const color = pair.coefficient > 0 ? 'var(--p-success)' : 'var(--p-critical)'
           return (
             <div key={i} style={{
               display: 'flex', alignItems: 'center', gap: '10px',
@@ -778,7 +778,7 @@ function CorrelationMatrixView({ matrix }: { matrix: CorrelationMatrix }) {
 // ══════════════════════════════════════════════════════════════
 
 function ClustersView({ clusters, patients }: { clusters: PatientCluster[]; patients: any[] }) {
-  const clusterColors = ['#6C7CFF', '#2FD1C8', '#A78BFA', '#FFB347', '#B96BFF']
+  const clusterColors = ['var(--p-vps)', 'var(--p-tde)', 'var(--p-pve-soft)', 'var(--p-tpe)', 'var(--p-pve)']
 
   return (
     <div>
@@ -878,7 +878,7 @@ function ClustersView({ clusters, patients }: { clusters: PatientCluster[]; pati
 
 function RoadmapView() {
   const roadmap = discoveryEngine.getRoadmap()
-  const phaseColors: Record<string, string> = { A: DISC, B: '#6C7CFF', C: '#B96BFF', D: '#FFB347' }
+  const phaseColors: Record<string, string> = { A: DISC, B: 'var(--p-vps)', C: 'var(--p-pve)', D: 'var(--p-tpe)' }
 
   return (
     <div>
@@ -891,7 +891,7 @@ function RoadmapView() {
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
         {roadmap.map((item, i) => {
-          const color = phaseColors[item.phase] || '#8E8EA3'
+          const color = phaseColors[item.phase] || 'var(--p-text-dim)'
           const active = item.phase === 'A'
           return (
             <div key={i} style={{
@@ -965,10 +965,10 @@ function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
         display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '10px', marginBottom: '16px',
       }}>
         {[
-          { label: 'Pistes identifiées', value: pathfinder.stats.totalPathways, color: '#FFB347' },
-          { label: 'Patients éligibles', value: pathfinder.stats.eligiblePatients, color: '#2ED573' },
-          { label: 'Essais actifs', value: pathfinder.stats.activeTrials, color: '#3B82F6' },
-          { label: 'Usage compassionnel', value: pathfinder.stats.compassionateOptions, color: '#B96BFF' },
+          { label: 'Pistes identifiées', value: pathfinder.stats.totalPathways, color: 'var(--p-tpe)' },
+          { label: 'Patients éligibles', value: pathfinder.stats.eligiblePatients, color: 'var(--p-success)' },
+          { label: 'Essais actifs', value: pathfinder.stats.activeTrials, color: 'var(--p-info)' },
+          { label: 'Usage compassionnel', value: pathfinder.stats.compassionateOptions, color: 'var(--p-pve)' },
         ].map((s, i) => (
           <div key={i} style={{
             background: 'var(--p-bg-card)', border: '1px solid var(--p-border)',
@@ -984,7 +984,7 @@ function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
       <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', flexWrap: 'wrap', alignItems: 'center' }}>
         <div style={{ display: 'flex', gap: '4px' }}>
           {['all', 'eligible', 'potential', 'to_evaluate'].map(s => {
-            const info = s === 'all' ? { label: 'Toutes', color: '#FFB347' } : PATH_STATUS_LABELS[s as PathwayStatus]
+            const info = s === 'all' ? { label: 'Toutes', color: 'var(--p-tpe)' } : PATH_STATUS_LABELS[s as PathwayStatus]
             return (
               <button key={s} onClick={() => setStatusFilter(s as any)} style={{
                 padding: '4px 10px', borderRadius: 'var(--p-radius-full)',
@@ -1016,9 +1016,9 @@ function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
         {filtered.map(pw => {
           const isOpen = expanded === pw.id
           const statusInfo = PATH_STATUS_LABELS[pw.status]
-          const evidenceInfo = EVIDENCE_LABELS[pw.evidenceLevel] || { label: pw.evidenceLevel, color: '#8E8EA3' }
+          const evidenceInfo = EVIDENCE_LABELS[pw.evidenceLevel] || { label: pw.evidenceLevel, color: 'var(--p-text-dim)' }
           const scorePercent = Math.round(pw.eligibilityScore * 100)
-          const scoreColor = scorePercent >= 80 ? '#2ED573' : scorePercent >= 60 ? '#FFA502' : '#A78BFA'
+          const scoreColor = scorePercent >= 80 ? 'var(--p-success)' : scorePercent >= 60 ? 'var(--p-warning)' : 'var(--p-pve-soft)'
 
           return (
             <div key={pw.id}
@@ -1037,12 +1037,12 @@ function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '6px' }}>
                     <span style={badgeStyle(statusInfo.color)}>{statusInfo.label}</span>
                     <span style={badgeStyle(evidenceInfo.color)}>{evidenceInfo.label}</span>
-                    {pw.trialId && <span style={badgeStyle('#2FD1C8')}>{pw.trialId}</span>}
-                    {pw.source === 'hypothesis' && <span style={badgeStyle('#B96BFF')}>HYPOTHÈSE N3</span>}
+                    {pw.trialId && <span style={badgeStyle('var(--p-tde)')}>{pw.trialId}</span>}
+                    {pw.source === 'hypothesis' && <span style={badgeStyle('var(--p-pve)')}>HYPOTHÈSE N3</span>}
                   </div>
                   <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--p-text)' }}>{pw.treatment}</div>
                   <div style={{ fontSize: '11px', color: 'var(--p-text-dim)', marginTop: '2px' }}>
-                    Patient: <span style={{ color: '#6C7CFF', fontWeight: 600 }}>{pw.patientName}</span>
+                    Patient: <span style={{ color: 'var(--p-vps)', fontWeight: 600 }}>{pw.patientName}</span>
                   </div>
                 </div>
                 {/* Score gauge */}
@@ -1066,7 +1066,7 @@ function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
                     background: 'rgba(255,179,71,0.04)', border: '1px solid rgba(255,179,71,0.12)',
                     marginBottom: '12px',
                   }}>
-                    <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#FFB347', marginBottom: '4px' }}>MÉCANISME</div>
+                    <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--p-tpe)', marginBottom: '4px' }}>MÉCANISME</div>
                     <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6 }}>{pw.mechanism}</div>
                   </div>
 
@@ -1081,7 +1081,7 @@ function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
                           border: `1px solid ${c.met ? '#2ED57320' : '#8B5CF620'}`,
                         }}>
                           <span style={{ fontSize: '12px' }}>{c.met ? '✓' : '✗'}</span>
-                          <span style={{ fontSize: '11px', color: c.met ? '#2ED573' : '#8B5CF6', flex: 1 }}>{c.criterion}</span>
+                          <span style={{ fontSize: '11px', color: c.met ? 'var(--p-success)' : 'var(--p-critical)', flex: 1 }}>{c.criterion}</span>
                           <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)' }}>{c.detail}</span>
                         </div>
                       ))}
@@ -1091,11 +1091,11 @@ function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
                   {/* Benefit & risks */}
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', marginBottom: '12px' }}>
                     <div style={{ padding: '10px', borderRadius: 'var(--p-radius-lg)', background: 'rgba(46,213,115,0.04)', border: '1px solid rgba(46,213,115,0.12)' }}>
-                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#2ED573', marginBottom: '4px' }}>BÉNÉFICE ATTENDU</div>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--p-success)', marginBottom: '4px' }}>BÉNÉFICE ATTENDU</div>
                       <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.5 }}>{pw.expectedBenefit}</div>
                     </div>
                     <div style={{ padding: '10px', borderRadius: 'var(--p-radius-lg)', background: 'rgba(139,92,246,0.04)', border: '1px solid rgba(139,92,246,0.12)' }}>
-                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#8B5CF6', marginBottom: '4px' }}>RISQUES</div>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--p-critical)', marginBottom: '4px' }}>RISQUES</div>
                       <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.5 }}>{pw.risks}</div>
                     </div>
                   </div>
@@ -1107,16 +1107,16 @@ function PathfinderView({ pathfinder }: { pathfinder: PathfinderResult }) {
                       background: 'rgba(47,209,200,0.04)', border: '1px solid rgba(47,209,200,0.12)',
                       marginBottom: '12px', display: 'flex', gap: '16px',
                     }}>
-                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#2FD1C8' }}>ESSAI</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialId}</span></div>
-                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#2FD1C8' }}>PHASE</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialPhase}</span></div>
-                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#2FD1C8' }}>STATUT</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialStatus}</span></div>
+                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-tde)' }}>ESSAI</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialId}</span></div>
+                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-tde)' }}>PHASE</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialPhase}</span></div>
+                      <div><span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-tde)' }}>STATUT</span><br /><span style={{ fontSize: '11px', color: 'var(--p-text)' }}>{pw.trialStatus}</span></div>
                     </div>
                   )}
 
                   {/* Disclaimer */}
                   <div style={{
                     padding: '8px 12px', background: 'rgba(255,165,2,0.06)', border: '1px solid rgba(255,165,2,0.12)',
-                    borderRadius: 'var(--p-radius-md)', fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FFA502',
+                    borderRadius: 'var(--p-radius-md)', fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-warning)',
                   }}>
                     ⚠ {pw.disclaimer}
                   </div>
@@ -1150,10 +1150,10 @@ function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
   const filtered = statusFilter === 'all' ? hypotheses : hypotheses.filter(h => h.status === statusFilter)
 
   const IMPACT_COLORS: Record<string, string> = {
-    transformative: '#8B5CF6',
-    high: '#FFA502',
-    medium: '#6C7CFF',
-    low: '#8E8EA3',
+    transformative: 'var(--p-critical)',
+    high: 'var(--p-warning)',
+    medium: 'var(--p-vps)',
+    low: 'var(--p-text-dim)',
   }
   const IMPACT_LABELS: Record<string, string> = {
     transformative: 'TRANSFORMATIF',
@@ -1197,10 +1197,10 @@ function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
         {filtered.map(hyp => {
           const isOpen = expanded === hyp.id
           const statusInfo = HYPOTHESIS_STATUS_LABELS[hyp.status]
-          const impactColor = IMPACT_COLORS[hyp.impactPotential] || '#8E8EA3'
+          const impactColor = IMPACT_COLORS[hyp.impactPotential] || 'var(--p-text-dim)'
           const typeLabel = HYPOTHESIS_TYPE_LABELS[hyp.type] || hyp.type
           const confPercent = Math.round(hyp.confidence * 100)
-          const confColor = confPercent >= 70 ? '#2ED573' : confPercent >= 50 ? '#FFA502' : '#A78BFA'
+          const confColor = confPercent >= 70 ? 'var(--p-success)' : confPercent >= 50 ? 'var(--p-warning)' : 'var(--p-pve-soft)'
 
           return (
             <div key={hyp.id}
@@ -1220,7 +1220,7 @@ function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
                 <div style={{ flex: 1 }}>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: '5px', marginBottom: '8px' }}>
                     <span style={badgeStyle(statusInfo.color)}>{statusInfo.label}</span>
-                    <span style={badgeStyle('#B96BFF')}>{typeLabel}</span>
+                    <span style={badgeStyle('var(--p-pve)')}>{typeLabel}</span>
                     <span style={badgeStyle(impactColor)}>Impact {IMPACT_LABELS[hyp.impactPotential]}</span>
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--p-text)', lineHeight: 1.4 }}>
@@ -1266,7 +1266,7 @@ function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
                       padding: '12px', borderRadius: 'var(--p-radius-lg)',
                       background: 'var(--p-bg)', border: '1px solid var(--p-border)',
                     }}>
-                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#6C7CFF', marginBottom: '6px', letterSpacing: '0.5px' }}>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--p-vps)', marginBottom: '6px', letterSpacing: '0.5px' }}>
                         LITTÉRATURE (N2)
                       </div>
                       <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6 }}>
@@ -1281,7 +1281,7 @@ function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
                     background: 'rgba(185,107,255,0.04)', border: '1px solid rgba(185,107,255,0.12)',
                     marginBottom: '12px',
                   }}>
-                    <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: '#B96BFF', marginBottom: '6px', letterSpacing: '0.5px' }}>
+                    <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: 'var(--p-pve)', marginBottom: '6px', letterSpacing: '0.5px' }}>
                       RAISONNEMENT
                     </div>
                     <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.7 }}>
@@ -1310,7 +1310,7 @@ function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
                         {hyp.literatureRefs.map((ref, i) => (
                           <div key={i} style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>
-                            {ref.pmid && <span style={{ color: '#6C7CFF' }}>PMID:{ref.pmid} · </span>}
+                            {ref.pmid && <span style={{ color: 'var(--p-vps)' }}>PMID:{ref.pmid} · </span>}
                             {ref.title} ({ref.year})
                           </div>
                         ))}
@@ -1323,7 +1323,7 @@ function HypothesesView({ hypotheses }: { hypotheses: Hypothesis[] }) {
                     padding: '8px 12px',
                     background: 'rgba(255,165,2,0.06)', border: '1px solid rgba(255,165,2,0.12)',
                     borderRadius: 'var(--p-radius-md)',
-                    fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: '#FFA502',
+                    fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-warning)',
                   }}>
                     ⚠ {hyp.disclaimer}
                   </div>
@@ -1444,10 +1444,10 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
   }, [customQuery])
 
   const ALERT_COLORS: Record<string, string> = {
-    contradiction: '#FFA502',
-    confirmation: '#2ED573',
-    opportunity: '#3B82F6',
-    update: '#8E8EA3',
+    contradiction: 'var(--p-warning)',
+    confirmation: 'var(--p-success)',
+    opportunity: 'var(--p-info)',
+    update: 'var(--p-text-dim)',
   }
   const ALERT_ICONS: Record<string, string> = {
     contradiction: '⚠',
@@ -1466,7 +1466,7 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {scanResult.alerts.map(alert => {
-              const color = ALERT_COLORS[alert.type] || '#8E8EA3'
+              const color = ALERT_COLORS[alert.type] || 'var(--p-text-dim)'
               const expanded = alertExpanded === alert.id
               return (
                 <div key={alert.id}
@@ -1484,8 +1484,8 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
                     <div style={{ flex: 1 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={badgeStyle(color)}>{alert.type.toUpperCase()}</span>
-                        {alert.severity === 'critical' && <span style={badgeStyle('#8B5CF6')}>CRITIQUE</span>}
-                        {alert.protocolImpact && <span style={badgeStyle('#FFB347')}>TDE {alert.protocolImpact}</span>}
+                        {alert.severity === 'critical' && <span style={badgeStyle('var(--p-critical)')}>CRITIQUE</span>}
+                        {alert.protocolImpact && <span style={badgeStyle('var(--p-tpe)')}>TDE {alert.protocolImpact}</span>}
                       </div>
                       <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--p-text)', marginTop: '4px' }}>
                         {alert.title}
@@ -1553,7 +1553,7 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
               padding: '7px 16px', borderRadius: 'var(--p-radius-md)',
               background: scanning === 'trials' ? 'rgba(47,209,200,0.15)' : 'rgba(47,209,200,0.06)',
               border: '1px solid rgba(47,209,200,0.3)', fontFamily: 'var(--p-font-mono)',
-              fontSize: '10px', fontWeight: 700, color: '#2FD1C8', cursor: scanning !== 'idle' ? 'wait' : 'pointer',
+              fontSize: '10px', fontWeight: 700, color: 'var(--p-tde)', cursor: scanning !== 'idle' ? 'wait' : 'pointer',
               opacity: scanning !== 'idle' && scanning !== 'trials' ? 0.5 : 1,
             }}
           >
@@ -1640,7 +1640,7 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
               background: q.priority === 1 ? '#8B5CF610' : q.priority === 2 ? '#6C7CFF10' : 'var(--p-bg)',
               border: `1px solid ${q.priority === 1 ? '#8B5CF620' : q.priority === 2 ? '#6C7CFF20' : 'var(--p-border)'}`,
               fontFamily: 'var(--p-font-mono)', fontSize: '9px',
-              color: q.priority === 1 ? '#8B5CF6' : q.priority === 2 ? '#6C7CFF' : 'var(--p-text-dim)',
+              color: q.priority === 1 ? 'var(--p-critical)' : q.priority === 2 ? 'var(--p-vps)' : 'var(--p-text-dim)',
             }}>
               P{q.priority} · {q.topic}
             </span>
@@ -1658,12 +1658,12 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
 function ArticleCard({ article }: { article: LiteratureArticle }) {
   const [open, setOpen] = useState(false)
 
-  const relColor = article.relevance === 'high' ? '#2ED573' :
-    article.relevance === 'medium' ? '#FFB347' : '#8E8EA3'
+  const relColor = article.relevance === 'high' ? 'var(--p-success)' :
+    article.relevance === 'medium' ? 'var(--p-tpe)' : 'var(--p-text-dim)'
 
-  const actionColor = article.action === 'confirms' ? '#2ED573' :
-    article.action === 'contradicts' ? '#8B5CF6' :
-    article.action === 'extends' ? '#3B82F6' : '#8E8EA3'
+  const actionColor = article.action === 'confirms' ? 'var(--p-success)' :
+    article.action === 'contradicts' ? 'var(--p-critical)' :
+    article.action === 'extends' ? 'var(--p-info)' : 'var(--p-text-dim)'
 
   const actionLabel = article.action === 'confirms' ? 'CONFIRME' :
     article.action === 'contradicts' ? 'CONTREDIT' :
@@ -1686,12 +1686,12 @@ function ArticleCard({ article }: { article: LiteratureArticle }) {
         </span>
         <span style={badgeStyle(actionColor)}>{actionLabel}</span>
         {article.isClinicalTrial && (
-          <span style={badgeStyle('#2FD1C8')}>ESSAI · {article.trialPhase}</span>
+          <span style={badgeStyle('var(--p-tde)')}>ESSAI · {article.trialPhase}</span>
         )}
         {article.source !== 'seed' && (
-          <span style={badgeStyle('#8E8EA3')}>{article.source.toUpperCase()}</span>
+          <span style={badgeStyle('var(--p-text-dim)')}>{article.source.toUpperCase()}</span>
         )}
-        <span style={badgeStyle('#8E8EA3')}>{article.year}</span>
+        <span style={badgeStyle('var(--p-text-dim)')}>{article.year}</span>
       </div>
 
       {/* Title */}
@@ -1701,7 +1701,7 @@ function ArticleCard({ article }: { article: LiteratureArticle }) {
 
       {/* Authors & journal */}
       <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', marginTop: '4px', fontFamily: 'var(--p-font-mono)' }}>
-        {article.authors} · <span style={{ color: '#B96BFF' }}>{article.journal}</span>
+        {article.authors} · <span style={{ color: 'var(--p-pve)' }}>{article.journal}</span>
         {article.pmid && <span> · PMID:{article.pmid}</span>}
         {article.trialId && <span> · {article.trialId}</span>}
       </div>
