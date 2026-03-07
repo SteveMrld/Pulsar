@@ -620,7 +620,7 @@ const workflow = [
           <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Accéder à PULSAR', 'Access PULSAR')}</Link>
             <Link href="/login?demo=1" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'transparent', border: '2px solid rgba(245,166,35,0.3)', color: '#F5A623', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)' }}>{t('Voir la démo', 'View demo')}</Link>
-            <Link href="/login?case=alejandro" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'transparent', border: '2px solid rgba(108,124,255,0.2)', color: '#6C7CFF', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-base)' }}>{t('Patient 0 — Use Case', 'Patient 0 — Use Case')}</Link>
+
           </div>
         </div>
       </section>
