@@ -617,3 +617,19 @@ export const PATIENT_ZERO_LEARNINGS = [
 // Seed
 feedbackLoop.cohort = feedbackLoop.cohort || []
 feedbackLoop.cohort.push(PATIENT_ZERO)
+
+// ── Patient Zero CORRIGÉ (Mars 2026 — 66 documents analysés) ──
+export const PATIENT_ZERO_CORRECTED_LEARNINGS = [
+  { id: 'L001', learning: 'Prodrome FIRES : fièvre J-5 (38.5°C) → J0 (effondrement sous Kalinox+Sevoflurane). Fenêtre prodromique = 5 jours.', confidence: 0.95, source: 'Dossier Alejandro — timeline 29/03 → 02/04' },
+  { id: 'L002', learning: 'Kalinox + Sevoflurane (PAS juste MEOPA) = déclencheur. Deux agents dépresseurs SNC sur enfant en prodrome.', confidence: 0.90, source: 'IMG_7865: "Échec prélèvement sous sédation légère (Sevoflurane). Effondrement brutal."' },
+  { id: 'L003', learning: 'IVIG administrées J+3, PAS J0. Retard +24h vs recommandé 48h. Corticoïdes J+2.', confidence: 1.0, source: 'IMG_7853: "5 avril J+3 — IVIG administrées"' },
+  { id: 'L004', learning: 'Régime cétogène DÉBUTÉ J+5 (7 avril). Impact partiel. Retard +72h vs J+2 recommandé.', confidence: 1.0, source: 'IMG_7852 + IMG_7869: "7 avril — Introduction régime cétogène"' },
+  { id: 'L005', learning: 'Anakinra administré J+10 (12 avril). 7 JOURS de retard vs 72h recommandées. 4 jours de "préparation logistique" entre décision et admin.', confidence: 1.0, source: 'IMG_7867 + IMG_7869: "12 avril J+10 — Introduction Anakinra"' },
+  { id: 'L006', learning: 'FIRES évoqué à J+5 (7 avril), PAS absent du dossier. Mais 3 hypothèses concurrentes (FIRES / EAIS / PIMS neuro) ont coexisté et retardé la décision.', confidence: 1.0, source: 'IMG_7860: tableau 3 hypothèses — Debré vs Giles vs Sonigo' },
+  { id: 'L007', learning: 'Polythérapie réelle : 10+ molécules simultanées à J+8. Midazolam + Kétamine + Sufentanil + Phénytoïne + Phénobarbital + Thiopental + Dépakine + Perampanel + Noradrénaline + Corticoïdes.', confidence: 0.95, source: 'IMG_7734 + IMG_7858 + Screenshot_091224' },
+  { id: 'L008', learning: 'PA oscillante : PAM 61 (J+2) → PAM 67 (J+3) → PAM 114 (J+9). Hypertension sévère J+9 sous Noradrénaline 0.53 µg/kg/min. Instabilité hémodynamique majeure.', confidence: 0.90, source: 'Scope photos multiples' },
+  { id: 'L009', learning: 'Signes subtils amélioration J+9-J+11 (plissement yeux, mouvement doigt, PGCS > 7) corrélés temporellement avec Anakinra — mais trop tard. Décès J+15 arrêt cardiaque.', confidence: 0.85, source: 'IMG_7866 + IMG_7869' },
+  { id: 'L010', learning: 'Le problème N EST PAS "on n a rien fait". Le problème c est "on a tout fait TROP TARD". IVIG +24h, KD +72h, Anakinra +168h, diagnostic FIRES +120h.', confidence: 1.0, source: 'Synthèse des 66 documents' },
+  { id: 'L011', learning: 'Pierre Sonigo était impliqué dans le cas dès J+4 (hypothèse PIMS neuro). Son expertise sur les endotoxines intestinales pourrait éclairer le mécanisme de déclenchement.', confidence: 0.80, source: 'IMG_7860 + IMG_7866' },
+  { id: 'L012', learning: 'Valproate (Dépakine) introduit J+8. Si carbapénèmes en parallèle → interaction critique (-66-88% VPA). À vérifier dans les prescriptions complètes.', confidence: 0.70, source: 'IMG_7858: "10/04 Introduction Dépakine"' },
+]
