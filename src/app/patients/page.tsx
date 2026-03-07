@@ -50,6 +50,7 @@ import { PHASES, type ClinicalPhase } from '@/contexts/PatientContext'
 import { patientService } from '@/lib/services'
 import { intakePersistenceService } from '@/lib/services/intakePersistenceService'
 import { computeTriageFromPipeline } from '@/lib/engines/IntakeAnalyzer'
+import { UseCaseButton } from '@/components/UseCaseButton';
 
 /* ══════════════════════════════════════════════════════════════
    FILE ACTIVE — PULSAR V17
@@ -634,6 +635,7 @@ export default function FileActivePage() {
           )}
         </div>
       )}
-    </div>
+      <div style={{ position:'fixed', bottom:'24px', right:'24px', zIndex:1000 }}><UseCaseButton /></div>
+  </div>
   )
 }
