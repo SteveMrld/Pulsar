@@ -1,5 +1,5 @@
 // ============================================================
-// PULSAR V18 — Literature Seed Data
+// PULSAR V18 -- Literature Seed Data
 // 30 publications issues de la bibliographie PULSAR
 // + 3 essais cliniques ClinicalTrials.gov
 // Sourcé depuis PULSAR_METHODOLOGIE_CLINIQUE_V2
@@ -8,10 +8,10 @@
 import type { LiteratureArticle } from '@/lib/engines/LiteratureScanner'
 
 
-  // ── DOSSIER V3 — Neuroinflammation pédiatrique (ingestion 2026-03-07) ──────
+  // ── DOSSIER V3 -- Neuroinflammation pédiatrique (ingestion 2026-03-07) ──────
   {
     pmid: 'V3-001',
-    title: 'NORSE/FIRES — dysrégulation immunitaire IL-1/IL-6 dans l'épilepsie réfractaire',
+    title: 'NORSE/FIRES -- dysrégulation immunitaire IL-1/IL-6 dans l'épilepsie réfractaire',
     authors: 'Dossier Scientifique V3',
     journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
     year: '2026',
@@ -20,7 +20,7 @@ import type { LiteratureArticle } from '@/lib/engines/LiteratureScanner'
   },
   {
     pmid: 'V3-002',
-    title: 'Anakinra antagoniste IL-1 dans FIRES/NORSE — niveau de preuve modéré',
+    title: 'Anakinra antagoniste IL-1 dans FIRES/NORSE -- niveau de preuve modéré',
     authors: 'Dossier Scientifique V3',
     journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
     year: '2026',
@@ -29,7 +29,7 @@ import type { LiteratureArticle } from '@/lib/engines/LiteratureScanner'
   },
   {
     pmid: 'V3-003',
-    title: 'Tocilizumab anti-IL-6 dans les cas réfractaires FIRES — niveau émergent',
+    title: 'Tocilizumab anti-IL-6 dans les cas réfractaires FIRES -- niveau émergent',
     authors: 'Dossier Scientifique V3',
     journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
     year: '2026',
@@ -38,7 +38,7 @@ import type { LiteratureArticle } from '@/lib/engines/LiteratureScanner'
   },
   {
     pmid: 'V3-004',
-    title: 'Régime cétogène précoce — effets anticonvulsivants et anti-inflammatoires',
+    title: 'Régime cétogène précoce -- effets anticonvulsivants et anti-inflammatoires',
     authors: 'Dossier Scientifique V3',
     journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
     year: '2026',
@@ -65,7 +65,7 @@ import type { LiteratureArticle } from '@/lib/engines/LiteratureScanner'
   },
 export const SEED_ARTICLES: LiteratureArticle[] = [
 
-  // ═══════════ FIRES / NORSE — Fondamentaux ═══════════
+  // ═══════════ FIRES / NORSE -- Fondamentaux ═══════════
 
   {
     id: 'lit-001',
@@ -116,7 +116,7 @@ export const SEED_ARTICLES: LiteratureArticle[] = [
     fetchedAt: '2026-03-02T12:00:00Z', source: 'seed',
   },
 
-  // ═══════════ FIRES / NORSE — 2025 ═══════════
+  // ═══════════ FIRES / NORSE -- 2025 ═══════════
 
   {
     id: 'lit-004',
@@ -225,7 +225,7 @@ export const SEED_ARTICLES: LiteratureArticle[] = [
     authors: 'Titulaer MJ, McCracken L et al.',
     journal: 'Lancet Neurology',
     year: 2013,
-    abstract: 'Large observational cohort demonstrating early treatment significantly improves prognosis in anti-NMDAR encephalitis. Documents rebound phenomenon after premature immunotherapy cessation — basis for VPS Pattern 2 (post-improvement rebound).',
+    abstract: 'Large observational cohort demonstrating early treatment significantly improves prognosis in anti-NMDAR encephalitis. Documents rebound phenomenon after premature immunotherapy cessation -- basis for VPS Pattern 2 (post-improvement rebound).',
     relevance: 'high', relevanceScore: 0.85,
     matchedKeywords: ['anti-NMDA', 'treatment', 'improved outcome', 'refractory'],
     matchedSignalIds: [],
