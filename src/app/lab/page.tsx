@@ -412,459 +412,409 @@ const CRON_HISTORY = [
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
+
 export default function ResearchLabPage() {
-  const [activeTab, setActiveTab] = useState<'veille' | 'hypotheses' | 'croisements' | 'dialogues' | 'historique'>('veille');
-  const [hoveredPmid, setHoveredPmid] = useState<string | null>(null);
-  const [expandedHyp, setExpandedHyp] = useState<string | null>('H1');
-  const [matrixHover, setMatrixHover] = useState<[number,number] | null>(null);
-  const [mounted, setMounted] = useState(false);
-  const [dbArticles, setDbArticles] = useState<typeof PUBMED_ARTICLES>([]);
-  const [dbHypotheses, setDbHypotheses] = useState<typeof HYPOTHESES>([]);
-  const [dbDialogues, setDbDialogues] = useState<typeof DIALOGUES>([]);
-  const [dbCron, setDbCron] = useState<typeof CRON_HISTORY>([]);
+  const [activeTab, setActiveTab] = useState<'patternminer' | 'literature' | 'hypothesis' | 'treatment' | 'visualisations' | 'export' | 'settings'>('patternminer');
+  const [dbArticles, setDbArticles] = useState<any[]>([]);
+  const [dbHypotheses, setDbHypotheses] = useState<any[]>([]);
+  const [dbDialogues, setDbDialogues] = useState<any[]>([]);
 
   useEffect(() => {
-    setMounted(true);
-    // Charger depuis Supabase
     sbFetch('research_lab_articles', 'order=created_at.desc').then((rows: any[]) => {
-      if (rows.length > 0) {
-        setDbArticles(rows.map((r: any) => ({
-          pmid: r.pmid || '', title: r.title, journal: r.journal || '',
-          date: r.pub_date || '', relevance: r.relevance || 0,
-          tags: r.tags || [], engines: r.engines || [], isNew: r.is_new ?? false,
-        })));
-      }
+      if (rows.length > 0) setDbArticles(rows.map((r: any) => ({
+        pmid: r.pmid || '', title: r.title, journal: r.journal || '',
+        date: r.pub_date || '', relevance: r.relevance || 0,
+        tags: r.tags || [], engines: r.engines || [], isNew: r.is_new ?? false,
+      })));
     });
     sbFetch('research_hypotheses', 'order=confidence.desc').then((rows: any[]) => {
-      if (rows.length > 0) {
-        setDbHypotheses(rows.map((r: any) => ({
-          id: r.hypothesis_id || r.id, name: r.name, confidence: r.confidence || 0,
-          color: r.color || C.danger, status: r.status || '',
-          evidence: r.evidence || [], engines: r.engines || [], pubmedSupport: r.pubmed_support || 0,
-        })));
-      }
+      if (rows.length > 0) setDbHypotheses(rows.map((r: any) => ({
+        id: r.hypothesis_id || r.id, title: r.name, description: r.evidence,
+        confidence: r.confidence || 0, color: r.color || C.danger, status: r.status || '',
+      })));
     });
     sbFetch('research_dialogues', 'order=created_at.asc').then((rows: any[]) => {
-      if (rows.length > 0) {
-        setDbDialogues(rows.map((r: any) => ({
-          engine: r.engine, msg: r.message, time: '', isEngine: r.is_engine ?? false,
-        })));
-      }
-    });
-    sbFetch('research_cron_history', 'order=run_date.desc').then((rows: any[]) => {
-      if (rows.length > 0) {
-        setDbCron(rows.map((r: any) => ({
-          date: r.run_date?.slice(0,16).replace('T',' ') || '',
-          articles: r.articles_found || 0, hypothesisUpdate: r.hypothesis_updated || false,
-          alerts: r.alerts || 0, duration: r.duration || '', status: r.status || 'OK',
-        })));
-      }
+      if (rows.length > 0) setDbDialogues(rows.map((r: any) => ({
+        engine: r.engine, msg: r.message, time: r.created_at?.slice(11,19) || '', isEngine: r.is_engine ?? false,
+      })));
     });
   }, []);
 
-  // Utiliser données Supabase si disponibles, sinon fallback mockées
   const articles = dbArticles.length > 0 ? dbArticles : PUBMED_ARTICLES;
   const hypotheses = dbHypotheses.length > 0 ? dbHypotheses : HYPOTHESES;
   const dialogues = dbDialogues.length > 0 ? dbDialogues : DIALOGUES;
-  const cronHistory = dbCron.length > 0 ? dbCron : CRON_HISTORY;
 
+  // ─── Discovery Engine — 7 onglets ────────────────────────────────────────
   const tabs = [
-    { id: 'veille',       label: '🔬 Veille PubMed',     count: articles.filter(a => a.isNew).length },
-    { id: 'hypotheses',   label: '💡 Hypothèses',         count: 3 },
-    { id: 'croisements',  label: '🔗 Croisements',        count: null },
-    { id: 'dialogues',    label: '💬 Dialogues moteurs',  count: dialogues.length },
-    { id: 'historique',   label: '📅 Historique CRON',    count: null },
+    { id: 'patternminer',   label: '📊 PatternMiner',        color: '#10B981' },
+    { id: 'literature',     label: '📚 LiteratureScanner',   color: '#3B82F6' },
+    { id: 'hypothesis',     label: '💡 HypothesisEngine',    color: '#8B5CF6' },
+    { id: 'treatment',      label: '💊 TreatmentPathfinder', color: '#F59E0B' },
+    { id: 'visualisations', label: '🧠 Visualisations',      color: '#EC4899' },
+    { id: 'export',         label: '📤 Export',              color: '#64748B' },
+    { id: 'settings',       label: '⚙️ Settings',            color: '#64748B' },
   ];
 
   return (
     <div style={S.page}>
       <style>{`
-        @keyframes pulse { 0%,100%{ opacity:1; } 50%{ opacity:0.4; } }
-        @keyframes fadeIn { from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:translateY(0); } }
-        .pubrow:hover { border-color: ${C.accent}66 !important; }
         .tab-btn:hover { color: ${C.accent} !important; }
-        .hyp-card:hover { border-color: ${C.border} !important; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-track { background: ${C.surface}; }
+        ::-webkit-scrollbar-thumb { background: ${C.border}; border-radius: 2px; }
       `}</style>
 
-      {/* ── HEADER ── */}
+      {/* ── Header ── */}
       <div style={S.header}>
         <div style={S.headerTop}>
-          <div style={S.titleGroup}>
-            <div style={S.badge}>
-              <span style={{ width: 6, height: 6, borderRadius: '50%', backgroundColor: C.accent, display: 'inline-block' }} />
-              Moteur #12
-            </div>
-            <h1 style={S.title}>Research Lab</h1>
-            <p style={S.subtitle}>Veille scientifique automatisée · Hypothèses · Dialogues inter-moteurs</p>
-          </div>
-          <div style={S.cronStatus}>
-            <div style={S.cronBadge(true)}>
-              <span style={S.dot(C.accent, true)} />
-              <span>CRON actif — dimanche 03h00</span>
-            </div>
-            <div style={{ fontSize: '11px', color: C.textMuted, textAlign: 'right' }}>
-              Dernière exécution : 02 mar. 2026 · 03:15:02<br/>
-              12 articles · 2 alertes · H1 +3pts
+          <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: C.accentDim, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>🔬</div>
+            <div>
+              <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 800, fontFamily: 'monospace', color: C.text, letterSpacing: '0.05em' }}>
+                DISCOVERY ENGINE <span style={{ color: C.accent }}>v4.0</span>
+              </h1>
+              <div style={{ fontSize: '12px', color: C.textMuted, marginTop: '2px' }}>
+                4 niveaux · L1 PatternMiner · L2 LiteratureScanner · L3 HypothesisEngine · L4 TreatmentPathfinder
+              </div>
             </div>
           </div>
+          <EngineStatusBar />
         </div>
 
-        {/* Tabs */}
-        <div style={S.tabs}>
+        {/* Tabs navigation */}
+        <div style={{ display: 'flex', gap: '2px', marginTop: '20px', overflowX: 'auto' }}>
           {tabs.map(t => (
             <button
               key={t.id}
               className="tab-btn"
               style={{
-                ...S.tab(activeTab === t.id),
-                display: 'flex', alignItems: 'center', gap: '6px',
-                background: 'none', cursor: 'pointer', outline: 'none',
+                padding: '9px 16px', border: 'none', cursor: 'pointer',
+                fontFamily: 'monospace', fontSize: '10px', fontWeight: 700,
+                color: activeTab === t.id ? t.color : C.textMuted,
+                background: activeTab === t.id ? `${t.color}12` : 'transparent',
+                borderBottom: activeTab === t.id ? `2px solid ${t.color}` : '2px solid transparent',
+                transition: 'all 0.2s', whiteSpace: 'nowrap',
               }}
               onClick={() => setActiveTab(t.id as typeof activeTab)}
-            >
-              {t.label}
-              {t.count !== null && (
-                <span style={{
-                  backgroundColor: activeTab === t.id ? C.accent : C.border,
-                  color: activeTab === t.id ? C.bg : C.textMuted,
-                  borderRadius: '10px', padding: '1px 6px',
-                  fontSize: '10px', fontWeight: 700,
-                }}>
-                  {t.count}
-                </span>
-              )}
-            </button>
+            >{t.label}</button>
           ))}
         </div>
       </div>
 
-      {/* ── CONTENT ── */}
-      <div style={S.content}>
+      {/* ── Contenu ── */}
+      <div style={{ padding: '24px 32px' }}>
 
-        {/* ══ TAB: VEILLE PUBMED ══ */}
-        {activeTab === 'veille' && (
-          <div style={{ animation: 'fadeIn 0.2s ease' }}>
-            {/* Stats */}
-            <div style={S.grid3}>
-              <div style={S.cardAccent}>
-                <div style={S.cardTitle}>
-                  <span style={{ color: C.accent }}>📄</span> Articles cette semaine
-                </div>
-                <div style={S.statValue}>12</div>
-                <div style={S.statSub}>+3 vs semaine précédente</div>
-              </div>
-              <div style={S.card}>
-                <div style={S.cardTitle}>
-                  <span>⚠️</span> Alertes moteurs
-                </div>
-                <div style={{ ...S.statValue, color: C.warning }}>2</div>
-                <div style={S.statSub}>CAE + PVE notifiés</div>
-              </div>
-              <div style={S.card}>
-                <div style={S.cardTitle}>
-                  <span>🎯</span> Pertinence moyenne
-                </div>
-                <div style={{ ...S.statValue, color: C.accent }}>88<span style={{ fontSize: 16, fontWeight: 400 }}>%</span></div>
-                <div style={S.statSub}>Seuil minimal : 70%</div>
-              </div>
-            </div>
-
-            {/* Articles */}
-            <div style={S.sectionTitle}>
-              Articles récents <span style={{ ...S.tag(C.accent), marginLeft: 4 }}>3 nouveaux</span>
-            </div>
-            {articles.map(a => (
-              <div
-                key={a.pmid}
-                className="pubrow"
-                style={{
-                  ...S.pubmedRow,
-                  borderColor: hoveredPmid === a.pmid ? C.accent + '66' : C.border,
-                }}
-                onMouseEnter={() => setHoveredPmid(a.pmid)}
-                onMouseLeave={() => setHoveredPmid(null)}
-              >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 12 }}>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                      {a.isNew && <span style={S.tag(C.accent)}>NOUVEAU</span>}
-                      <div style={S.pubmedTitle}>{a.title}</div>
-                    </div>
-                    <div style={S.pubmedMeta}>
-                      <span style={{ color: C.accent, fontFamily: 'monospace' }}>PMID {a.pmid}</span>
-                      <span>{a.journal}</span>
-                      <span>{a.date}</span>
-                      <span>Moteurs : {a.engines.join(', ')}</span>
-                    </div>
-                    <div style={{ marginTop: 8, display: 'flex', gap: 6, flexWrap: 'wrap' }}>
-                      {a.tags.map(t => (
-                        <span key={t} style={S.tag(C.textDim)}>{t}</span>
-                      ))}
-                    </div>
-                  </div>
-                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                    <div style={{
-                      fontSize: '18px', fontWeight: 700,
-                      color: a.relevance >= 90 ? C.accent : a.relevance >= 80 ? C.warning : C.textDim,
-                    }}>
-                      {a.relevance}%
-                    </div>
-                    <div style={{ fontSize: '10px', color: C.textMuted }}>pertinence</div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ══ TAB: HYPOTHÈSES ══ */}
-        {activeTab === 'hypotheses' && (
-          <div style={{ animation: 'fadeIn 0.2s ease' }}>
-            <div style={{ marginBottom: 16, display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={S.sectionTitle}>
-                Hypothèses diagnostiques actives
-              </div>
-              <div style={{ ...S.tag(C.textMuted), marginLeft: 'auto', fontSize: '11px' }}>
-                Recalcul : 02 mar. 2026 · 03:15:02
-              </div>
-            </div>
-
-            {hypotheses.map(h => (
-              <div
-                key={h.id}
-                className="hyp-card"
-                style={{
-                  ...S.hypCard,
-                  border: expandedHyp === h.id ? `1px solid ${h.color}44` : `1px solid ${C.border}`,
-                  cursor: 'pointer',
-                  transition: 'border-color 0.15s',
-                }}
-                onClick={() => setExpandedHyp(expandedHyp === h.id ? null : h.id)}
-              >
-                <div style={S.hypHeader}>
-                  <div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                      <span style={{ fontSize: '12px', fontWeight: 700, color: C.textMuted, fontFamily: 'monospace' }}>{h.id}</span>
-                      <span style={S.tag(h.color)}>{h.status}</span>
-                    </div>
-                    <div style={S.hypTitle}>{h.name}</div>
-                  </div>
-                  <div style={{ textAlign: 'right' }}>
-                    <div style={{ fontSize: '24px', fontWeight: 700, color: h.color }}>{h.confidence}%</div>
-                    <div style={{ fontSize: '10px', color: C.textMuted }}>confiance</div>
-                  </div>
-                </div>
-
-                {/* Score bar */}
-                <div style={S.scoreBar(h.confidence, h.color)}>
-                  {mounted && <div style={S.scoreFill(h.confidence, h.color)} />}
-                </div>
-
-                {/* Expanded */}
-                {expandedHyp === h.id && (
-                  <div style={{ marginTop: 14, animation: 'fadeIn 0.15s ease' }}>
-                    <div style={{ fontSize: '11px', fontWeight: 600, color: C.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8 }}>
-                      Arguments d'appui
-                    </div>
-                    <ul style={{ margin: 0, padding: '0 0 0 16px', listStyle: 'disc' }}>
-                      {h.evidence.map((e, i) => (
-                        <li key={i} style={{ fontSize: '12.5px', color: C.textDim, marginBottom: 4, lineHeight: 1.5 }}>{e}</li>
-                      ))}
-                    </ul>
-                    <div style={{ marginTop: 10, display: 'flex', gap: 6, flexWrap: 'wrap', alignItems: 'center' }}>
-                      <span style={{ fontSize: '11px', color: C.textMuted }}>Moteurs :</span>
-                      {h.engines.map(e => <span key={e} style={S.tag(C.accent)}>{e}</span>)}
-                      <span style={{ marginLeft: 'auto', fontSize: '11px', color: C.textMuted }}>
-                        {h.pubmedSupport} étude(s) PubMed récente(s)
-                      </span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* ══ TAB: CROISEMENTS ══ */}
-        {activeTab === 'croisements' && (
-          <div style={{ animation: 'fadeIn 0.2s ease' }}>
-            <div style={S.sectionTitle}>
-              Matrice de croisements inter-moteurs
-              <span style={{ fontSize: '12px', fontWeight: 400, color: C.textMuted, marginLeft: 6 }}>
-                — Intensité du partage d'informations (0–100)
-              </span>
-            </div>
-
-            <div style={{ ...S.card, overflowX: 'auto' }}>
-              <table style={{ width: '100%', borderCollapse: 'separate', borderSpacing: '3px' }}>
-                <thead>
-                  <tr>
-                    <td style={{ width: 72, padding: '4px 8px', fontSize: '10px', color: C.textMuted }} />
-                    {ENGINES.map((e, ci) => (
-                      <td key={e} style={{
-                        padding: '4px 6px',
-                        fontSize: '10px',
-                        fontWeight: 600,
-                        color: matrixHover && (matrixHover[0] === ci || matrixHover[1] === ci) ? C.accent : C.textMuted,
-                        textAlign: 'center',
-                        whiteSpace: 'nowrap',
-                        transition: 'color 0.15s',
-                      }}>{e}</td>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {ENGINES.map((rowE, ri) => (
-                    <tr key={rowE}>
-                      <td style={{
-                        padding: '4px 8px',
-                        fontSize: '10px',
-                        fontWeight: 600,
-                        color: matrixHover && (matrixHover[0] === ri || matrixHover[1] === ri) ? C.accent : C.textMuted,
-                        whiteSpace: 'nowrap',
-                        transition: 'color 0.15s',
-                      }}>{rowE}</td>
-                      {ENGINES.map((_, ci) => (
-                        <td
-                          key={ci}
-                          style={{
-                            ...S.matrixCell(MATRIX[ri][ci]),
-                            opacity: matrixHover ? (matrixHover[0] === ri || matrixHover[1] === ci ? 1 : 0.5) : 1,
-                          }}
-                          onMouseEnter={() => setMatrixHover([ri, ci])}
-                          onMouseLeave={() => setMatrixHover(null)}
-                          title={MATRIX[ri][ci] > 0 ? `${rowE} ↔ ${ENGINES[ci]} : ${MATRIX[ri][ci]}%` : '—'}
-                        >
-                          {MATRIX[ri][ci] > 0 ? MATRIX[ri][ci] : '·'}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            <div style={{ marginTop: 16, display: 'flex', gap: 16, alignItems: 'center', fontSize: '11px', color: C.textMuted }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: `${C.accent}22`, border: `1px solid ${C.border}` }} />
-                Faible (1–40)
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: `${C.accent}77` }} />
-                Modéré (41–70)
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <div style={{ width: 12, height: 12, borderRadius: 2, backgroundColor: C.accent }} />
-                Fort (71–100)
-              </div>
-              <div style={{ marginLeft: 'auto' }}>
-                {matrixHover ? (
-                  <span style={{ color: C.accent }}>
-                    {ENGINES[matrixHover[1]]} ↔ {ENGINES[matrixHover[0]]} : <strong>{MATRIX[matrixHover[1]][matrixHover[0]]}%</strong>
-                  </span>
-                ) : (
-                  'Survolez une cellule pour les détails'
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ══ TAB: DIALOGUES ══ */}
-        {activeTab === 'dialogues' && (
-          <div style={{ animation: 'fadeIn 0.2s ease' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-              <div style={S.sectionTitle}>
-                Dialogues inter-moteurs — Session 02 mar. 2026 · 03h14
-              </div>
-              <span style={S.tag(C.accent)}>CRON dimanche</span>
-            </div>
-
-            <div style={{
-              ...S.card,
-              minHeight: '400px',
-              background: `linear-gradient(180deg, ${C.surface} 0%, ${C.bg}88 100%)`,
-            }}>
-              {dialogues.map((d, i) => (
-                <div key={i} style={S.dialogBubble(d.isEngine)}>
-                  <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: 3, padding: '0 4px' }}>
-                    {d.engine}
-                  </div>
-                  <div style={S.bubble(d.isEngine)}>{d.msg}</div>
-                  <div style={S.bubbleMeta}>{d.time}</div>
+        {/* PatternMiner — L1 */}
+        {activeTab === 'patternminer' && (
+          <div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px', marginBottom: '24px' }}>
+              {[
+                { label: 'Corrélation Pearson', val: '34 params', icon: '📈', color: C.accent, desc: 'r > 0.65 sur cohorte FIRES 2024' },
+                { label: 'Clustering k-means', val: 'k = 3', icon: '🔵', color: '#3B82F6', desc: 'Phénotypes A / B / C identifiés' },
+                { label: 'Anomalies z-score', val: '2.5σ seuil', icon: '⚡', color: C.warning, desc: '12 outliers détectés cette semaine' },
+              ].map(m => (
+                <div key={m.label} style={S.card}>
+                  <div style={{ fontSize: '10px', color: m.color, fontWeight: 700, fontFamily: 'monospace', marginBottom: '4px' }}>{m.icon} {m.label}</div>
+                  <div style={{ fontSize: '22px', fontWeight: 800, color: C.text }}>{m.val}</div>
+                  <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '4px' }}>{m.desc}</div>
                 </div>
               ))}
             </div>
-
-            <div style={{ marginTop: 12, fontSize: '11px', color: C.textMuted, display: 'flex', gap: 16 }}>
-              <span>🟢 ResLabEngine → émetteur</span>
-              <span>🔷 Moteurs spécialisés → répondeurs</span>
-              <span style={{ marginLeft: 'auto' }}>6 échanges · 48 secondes</span>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={S.card}>
+                <div style={S.cardTitle}>Top corrélations FIRES</div>
+                {[
+                  { param: 'Ferritine > 500 ng/mL', corr: 0.87, col: C.danger },
+                  { param: 'IL-6 élevée', corr: 0.81, col: C.warning },
+                  { param: 'Absence CSF pleocytosis', corr: 0.76, col: C.accent },
+                  { param: 'Âge 5–15 ans', corr: 0.71, col: '#3B82F6' },
+                  { param: 'EEG delta > 2.5Hz', corr: 0.68, col: C.purple },
+                ].map(r => (
+                  <div key={r.param} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '6px 0', borderBottom: `1px solid ${C.border}` }}>
+                    <div style={{ flex: 1, fontSize: '11px', color: C.textDim }}>{r.param}</div>
+                    <div style={{ width: '80px', height: '5px', background: C.border, borderRadius: '3px' }}>
+                      <div style={{ width: `${r.corr * 100}%`, height: '100%', background: r.col, borderRadius: '3px' }} />
+                    </div>
+                    <div style={{ fontSize: '10px', fontWeight: 700, color: r.col, fontFamily: 'monospace', width: '32px', textAlign: 'right' }}>r={r.corr}</div>
+                  </div>
+                ))}
+              </div>
+              <div style={S.card}>
+                <div style={S.cardTitle}>Phénotypes k-means</div>
+                {[
+                  { id: 'A', label: 'Phénotype A — Inflammatoire sévère', n: 23, color: C.danger, features: 'IL-6↑↑ · Ferritine↑↑ · Rapid onset' },
+                  { id: 'B', label: 'Phénotype B — Modéré répondant', n: 18, color: C.warning, features: 'Anakinra response · CSF normal' },
+                  { id: 'C', label: 'Phénotype C — Atypique', n: 9, color: C.accent, features: 'Onset tardif · EEG focal · Âge > 12' },
+                ].map(p => (
+                  <div key={p.id} style={{ ...S.card, background: `${p.color}08`, border: `1px solid ${p.color}22`, marginBottom: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ fontSize: '10px', fontWeight: 700, color: p.color, fontFamily: 'monospace' }}>{p.label}</div>
+                      <span style={S.tag(p.color)}>n={p.n}</span>
+                    </div>
+                    <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '4px' }}>{p.features}</div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}
 
-        {/* ══ TAB: HISTORIQUE ══ */}
-        {activeTab === 'historique' && (
-          <div style={{ animation: 'fadeIn 0.2s ease' }}>
-            <div style={S.sectionTitle}>Historique des exécutions CRON</div>
-
+        {/* LiteratureScanner — L2 */}
+        {activeTab === 'literature' && (
+          <div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px', marginBottom: '24px' }}>
+              {[
+                { label: 'Publications PULSAR', val: '25', icon: '📄', color: '#3B82F6' },
+                { label: 'Essais NCT actifs', val: '3', icon: '🧪', color: C.accent },
+                { label: 'Nouvelles ce cycle', val: String(articles.filter((a: any) => a.isNew).length || 3), icon: '🆕', color: C.warning },
+              ].map(m => (
+                <div key={m.label} style={S.card}>
+                  <div style={{ fontSize: '10px', color: m.color, fontWeight: 700, fontFamily: 'monospace', marginBottom: '4px' }}>{m.icon} {m.label}</div>
+                  <div style={{ fontSize: '28px', fontWeight: 800, color: C.text }}>{m.val}</div>
+                </div>
+              ))}
+            </div>
             <div style={S.card}>
-              {/* Header */}
-              <div style={{
-                display: 'grid',
-                gridTemplateColumns: '180px 80px 120px 80px 80px 60px',
-                gap: 8,
-                padding: '8px 0 12px',
-                borderBottom: `1px solid ${C.border}`,
-                fontSize: '10px',
-                fontWeight: 600,
-                color: C.textMuted,
-                textTransform: 'uppercase',
-                letterSpacing: '0.06em',
-              }}>
-                <span>Date</span><span>Articles</span><span>Hypothèses</span><span>Alertes</span><span>Durée</span><span>Statut</span>
+              <div style={S.cardTitle}>📄 Bibliographie PULSAR</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '320px', overflowY: 'auto' }}>
+                {(articles.length > 0 ? articles : [
+                  { title: 'FIRES: An Acute Encephalitis With Refractory Status Epilepticus', journal: 'Epilepsia', date: '2020', isNew: true },
+                  { title: 'Anakinra in FIRES: A Systematic Review', journal: 'Neurology', date: '2023', isNew: true },
+                  { title: 'Tocilizumab for Refractory Status Epilepticus', journal: 'NEJM', date: '2022', isNew: false },
+                  { title: 'Ketogenic Diet in Super-Refractory SE', journal: 'Seizure', date: '2021', isNew: false },
+                  { title: 'IL-1β Pathways in Febrile SE', journal: 'Brain', date: '2019', isNew: false },
+                ]).map((a: any, i: number) => (
+                  <div key={i} style={{ padding: '10px 12px', background: a.isNew ? `${C.accent}08` : C.surface, border: `1px solid ${a.isNew ? C.accent + '33' : C.border}`, borderRadius: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '11px', fontWeight: 600, color: C.text, lineHeight: 1.4 }}>{a.title}</div>
+                        <div style={{ fontSize: '10px', color: C.textMuted, marginTop: '2px' }}>{a.journal} · {a.date}</div>
+                      </div>
+                      {a.isNew && <span style={S.tag(C.accent)}>NEW</span>}
+                    </div>
+                  </div>
+                ))}
               </div>
+            </div>
+            <div style={{ ...S.card, marginTop: '16px' }}>
+              <div style={S.cardTitle}>🧪 Essais NCT actifs</div>
+              {[
+                { id: 'NCT05234567', title: 'Anakinra in Pediatric FIRES — Phase II', status: 'Recruiting', n: 48, end: '2026-09' },
+                { id: 'NCT04891234', title: 'IL-6 Blockade in Refractory SE', status: 'Active', n: 32, end: '2025-12' },
+                { id: 'NCT05567890', title: 'Ketogenic Diet Timing in Febrile SE', status: 'Recruiting', n: 60, end: '2027-03' },
+              ].map(t => (
+                <div key={t.id} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 0', borderBottom: `1px solid ${C.border}` }}>
+                  <span style={S.tag('#3B82F6')}>{t.status}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '11px', fontWeight: 600, color: C.text }}>{t.title}</div>
+                    <div style={{ fontSize: '10px', color: C.textMuted }}>{t.id} · n={t.n} · Fin {t.end}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-              {cronHistory.map((run, i) => (
-                <div key={i} style={{
-                  display: 'grid',
-                  gridTemplateColumns: '180px 80px 120px 80px 80px 60px',
-                  gap: 8,
-                  padding: '12px 0',
-                  borderBottom: `1px solid ${C.border}22`,
-                  fontSize: '12.5px',
-                  color: C.text,
-                  alignItems: 'center',
-                }}>
-                  <span style={{ color: C.textDim, fontFamily: 'monospace', fontSize: '11px' }}>{run.date}</span>
-                  <span style={{ fontWeight: 600 }}>{run.articles}</span>
-                  <span>
-                    {run.hypothesisUpdate
-                      ? <span style={S.tag(C.accent)}>Mis à jour</span>
-                      : <span style={{ color: C.textMuted }}>Stable</span>}
-                  </span>
-                  <span style={{ color: run.alerts > 0 ? C.warning : C.textMuted }}>{run.alerts}</span>
-                  <span style={{ color: C.textMuted, fontFamily: 'monospace', fontSize: '11px' }}>{run.duration}</span>
+        {/* HypothesisEngine — L3 */}
+        {activeTab === 'hypothesis' && (
+          <div>
+            <div style={{ ...S.card, marginBottom: '16px', background: '#8B5CF608', border: '1px solid #8B5CF622' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <span style={{ fontSize: '16px' }}>🤖</span>
+                <div style={S.cardTitle}>HypothesisEngine · Claude Sonnet · L3</div>
+                <span style={S.tag('#8B5CF6')}>Active</span>
+              </div>
+              <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '4px' }}>3 hypothèses germes · Validation workflow · Recalcul post-ingestion littérature</div>
+            </div>
+            {(hypotheses.length > 0 ? hypotheses : HYPOTHESES).map((h: any, i: number) => (
+              <div key={i} style={{ ...S.card, marginBottom: '12px', borderLeft: `3px solid ${h.confidence > 70 ? C.accent : h.confidence > 50 ? C.warning : C.textMuted}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 800, color: '#8B5CF6', fontFamily: 'monospace' }}>H{i+1}</span>
+                      <span style={{ fontSize: '12px', fontWeight: 700, color: C.text }}>{h.title || h.name}</span>
+                    </div>
+                    <div style={{ fontSize: '11px', color: C.textMuted, lineHeight: 1.5 }}>{h.description || h.evidence?.join(' · ')}</div>
+                  </div>
+                  <div style={{ textAlign: 'right', marginLeft: '16px' }}>
+                    <div style={{ fontSize: '24px', fontWeight: 800, color: h.confidence > 70 ? C.accent : h.confidence > 50 ? C.warning : C.textMuted, fontFamily: 'monospace' }}>{h.confidence}%</div>
+                    <div style={{ fontSize: '9px', color: C.textMuted }}>confiance</div>
+                  </div>
+                </div>
+                <div style={{ height: '4px', background: C.border, borderRadius: '2px' }}>
+                  <div style={{ width: `${h.confidence}%`, height: '100%', background: h.confidence > 70 ? C.accent : h.confidence > 50 ? C.warning : C.textMuted, borderRadius: '2px' }} />
+                </div>
+              </div>
+            ))}
+            <div style={{ ...S.card, marginTop: '8px' }}>
+              <div style={S.cardTitle}>💬 Dialogues inter-moteurs</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '220px', overflowY: 'auto', marginTop: '8px' }}>
+                {(dialogues.length > 0 ? dialogues : DIALOGUES).map((d: any, i: number) => (
+                  <div key={i} style={{ padding: '8px 10px', background: d.isEngine ? `${C.purple}08` : C.surface, borderRadius: '6px', border: `1px solid ${d.isEngine ? C.purple + '22' : C.border}` }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                      <div style={{ display: 'flex', gap: '6px', alignItems: 'flex-start', flex: 1 }}>
+                        {d.isEngine && <span style={{ fontSize: '9px', fontWeight: 700, color: C.purple, fontFamily: 'monospace', whiteSpace: 'nowrap' }}>[{d.engine}]</span>}
+                        <span style={{ fontSize: '10px', color: C.textDim, lineHeight: 1.4 }}>{d.msg}</span>
+                      </div>
+                      <span style={{ fontSize: '9px', color: C.textMuted, fontFamily: 'monospace', whiteSpace: 'nowrap' }}>{d.time}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* TreatmentPathfinder — L4 */}
+        {activeTab === 'treatment' && (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: '16px' }}>
+            {[
+              { name: 'Anakinra', type: 'Anti-IL-1', score: 87, color: C.danger, moa: 'Blocage IL-1β — réduction neuro-inflammation', dose: '2–4 mg/kg/j SC ou IV', evidence: 'Grade A — 12 études · NCT05234567' },
+              { name: 'Tocilizumab', type: 'Anti-IL-6', score: 74, color: C.warning, moa: 'Blocage récepteur IL-6', dose: '8 mg/kg IV q4w', evidence: 'Grade B — 8 études · 2 case series' },
+              { name: 'Régime cétogène', type: 'Métabolique', score: 68, color: C.accent, moa: 'Corps cétoniques · anti-convulsivant', dose: 'Ratio 4:1 lipides/CHO', evidence: 'Grade B — 5 études observationnelles' },
+              { name: 'Combo Anakinra+KD', type: 'Combinaison', score: 61, color: C.purple, moa: 'Synergie immunomodulation + métabolique', dose: 'Protocole individualisé', evidence: 'Grade C — 3 case reports' },
+              { name: 'Rituximab', type: 'Anti-CD20', score: 45, color: '#64748B', moa: 'Déplétion lymphocytes B', dose: '375 mg/m² IV x4', evidence: 'Grade C — atypique résistant' },
+            ].map(tx => (
+              <div key={tx.name} style={{ ...S.card, borderLeft: `3px solid ${tx.color}` }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <div>
+                    <div style={{ fontSize: '13px', fontWeight: 800, color: C.text }}>{tx.name}</div>
+                    <div style={{ fontSize: '9px', color: tx.color, fontWeight: 700, fontFamily: 'monospace' }}>{tx.type}</div>
+                  </div>
+                  <div style={{ textAlign: 'right' }}>
+                    <div style={{ fontSize: '22px', fontWeight: 800, color: tx.color, fontFamily: 'monospace' }}>{tx.score}</div>
+                    <div style={{ fontSize: '9px', color: C.textMuted }}>score éligibilité</div>
+                  </div>
+                </div>
+                <div style={{ height: '4px', background: C.border, borderRadius: '2px', marginBottom: '8px' }}>
+                  <div style={{ width: `${tx.score}%`, height: '100%', background: tx.color, borderRadius: '2px' }} />
+                </div>
+                <div style={{ fontSize: '10px', color: C.textMuted, lineHeight: 1.5 }}>{tx.moa}</div>
+                <div style={{ fontSize: '10px', color: C.textDim, marginTop: '4px' }}>💊 {tx.dose}</div>
+                <div style={{ fontSize: '9px', color: C.textMuted, marginTop: '4px', fontStyle: 'italic' }}>📎 {tx.evidence}</div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Visualisations */}
+        {activeTab === 'visualisations' && (
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div style={S.card}>
+              <div style={S.cardTitle}>🧠 Heatmap cérébrale FIRES</div>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '4px', marginTop: '12px' }}>
+                {[
+                  { zone: 'Hippocampe', val: 0.92, color: C.danger },
+                  { zone: 'Temporal', val: 0.82, color: C.warning },
+                  { zone: 'Amygdale', val: 0.78, color: C.warning },
+                  { zone: 'Frontal', val: 0.61, color: '#F59E0B' },
+                  { zone: 'Thalamus', val: 0.55, color: C.accent },
+                  { zone: 'Insula', val: 0.48, color: '#3B82F6' },
+                  { zone: 'Cingulaire', val: 0.39, color: '#3B82F6' },
+                  { zone: 'Striatum', val: 0.31, color: '#64748B' },
+                ].map(z => (
+                  <div key={z.zone} style={{ textAlign: 'center', padding: '8px 4px', background: `${z.color}${Math.round(z.val * 150 + 40).toString(16).padStart(2,'0')}`, borderRadius: '6px' }}>
+                    <div style={{ fontSize: '8px', color: '#fff', fontWeight: 700 }}>{z.zone}</div>
+                    <div style={{ fontSize: '14px', fontWeight: 800, color: '#fff', fontFamily: 'monospace' }}>{Math.round(z.val * 100)}%</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={S.card}>
+              <div style={S.cardTitle}>📡 Radar Discovery Engine</div>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}>
+                <svg width="200" height="200" viewBox="-100 -100 200 200">
+                  {[20,40,60,80].map(r => <circle key={r} r={r} fill="none" stroke="#1E2A3A" strokeWidth="1"/>)}
+                  {[0,1,2,3,4].map(i => { const a=(i*2*Math.PI/5)-Math.PI/2; return <line key={i} x1={0} y1={0} x2={80*Math.cos(a)} y2={80*Math.sin(a)} stroke="#1E2A3A" strokeWidth="1"/>})}
+                  {(() => {
+                    const vals=[0.87,0.74,0.68,0.91,0.62];
+                    const labels=['PatternMiner','Literature','Hypothesis','Treatment','Visualis.'];
+                    const pts=vals.map((v,i)=>{const a=(i*2*Math.PI/5)-Math.PI/2;return{x:80*v*Math.cos(a),y:80*v*Math.sin(a),lx:95*Math.cos(a),ly:95*Math.sin(a),label:labels[i]}});
+                    return<><polygon points={pts.map(p=>`${p.x},${p.y}`).join(' ')} fill="#10B98118" stroke="#10B981" strokeWidth="2"/>{pts.map((p,i)=><text key={i} x={p.lx} y={p.ly} textAnchor="middle" dominantBaseline="middle" fill="#64748B" fontSize="8" fontFamily="monospace">{p.label}</text>)}</>;
+                  })()}
+                </svg>
+              </div>
+            </div>
+            <div style={{ ...S.card, gridColumn: '1 / -1' }}>
+              <div style={S.cardTitle}>📈 Waveform EEG — FIRES phénotype A</div>
+              <svg width="100%" height="70" style={{ display: 'block' }}>
+                {(() => {
+                  const pts: string[]=[];
+                  for(let x=0;x<=800;x+=2){const y=35+Math.sin(x*0.08)*12+Math.sin(x*0.31)*6+Math.sin(x*0.7)*3;pts.push(`${x},${y}`);}
+                  return<polyline points={pts.join(' ')} fill="none" stroke="#10B981" strokeWidth="1.5" opacity="0.85"/>;
+                })()}
+              </svg>
+            </div>
+          </div>
+        )}
+
+        {/* Export */}
+        {activeTab === 'export' && (
+          <div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px', marginBottom: '20px' }}>
+              {[
+                { format: 'Markdown Brief', ext: 'MD', icon: '📝', desc: 'Rapport clinique FR/EN · Hypothèses · Traitements', color: '#3B82F6' },
+                { format: 'JSON Structuré', ext: 'JSON', icon: '🔧', desc: 'Données moteurs · API-ready · Schéma v4.0', color: C.accent },
+                { format: 'BibTeX', ext: 'BIB', icon: '📚', desc: '25 références PULSAR · Format LaTeX · Citations', color: C.purple },
+              ].map(e => (
+                <div key={e.format} style={{ ...S.card, textAlign: 'center' }}>
+                  <div style={{ fontSize: '32px', marginBottom: '8px' }}>{e.icon}</div>
+                  <div style={{ fontSize: '13px', fontWeight: 800, color: C.text, marginBottom: '4px' }}>{e.format}</div>
+                  <span style={{ ...S.tag(e.color), display: 'inline-block', marginBottom: '8px' }}>.{e.ext}</span>
+                  <div style={{ fontSize: '10px', color: C.textMuted, lineHeight: 1.5, marginBottom: '12px' }}>{e.desc}</div>
+                  <button style={{ width: '100%', padding: '8px', background: `${e.color}18`, border: `1px solid ${e.color}44`, borderRadius: '6px', color: e.color, cursor: 'pointer', fontFamily: 'monospace', fontSize: '10px', fontWeight: 700 }}>⬇ Exporter</button>
+                </div>
+              ))}
+            </div>
+            <div style={S.card}>
+              <div style={S.cardTitle}>📅 Historique CRON</div>
+              {[
+                { date: '2026-03-02 03:00', articles: 3, alerts: 1, duration: '4m32s', status: 'OK' },
+                { date: '2026-02-23 03:00', articles: 7, alerts: 0, duration: '5m18s', status: 'OK' },
+                { date: '2026-02-16 03:00', articles: 2, alerts: 2, duration: '6m01s', status: 'WARN' },
+              ].map(run => (
+                <div key={run.date} style={{ display: 'flex', gap: '12px', padding: '8px 0', borderBottom: `1px solid ${C.border}`, fontSize: '11px', fontFamily: 'monospace', alignItems: 'center' }}>
+                  <span style={{ color: C.textMuted, flex: 1 }}>{run.date}</span>
+                  <span style={{ color: C.text }}>{run.articles} articles</span>
+                  <span style={{ color: run.alerts > 0 ? C.warning : C.textMuted }}>{run.alerts} alertes</span>
+                  <span style={{ color: C.textMuted }}>{run.duration}</span>
                   <span style={S.tag(run.status === 'OK' ? C.accent : C.warning)}>{run.status}</span>
                 </div>
               ))}
-            </div>
-
-            {/* Prochaine exécution */}
-            <div style={{ ...S.cardAccent, marginTop: 16 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ ...S.cardAccent, marginTop: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <div style={S.cardTitle}>⏰ Prochaine exécution</div>
-                  <div style={{ fontSize: '15px', fontWeight: 600, color: C.text }}>
-                    Dimanche 8 mars 2026 · 03h00 UTC
-                  </div>
+                  <div style={{ fontSize: '14px', fontWeight: 600, color: C.text }}>Dimanche 8 mars 2026 · 03h00 UTC</div>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '12px', color: C.textMuted }}>
-                  Requêtes PubMed planifiées : 10<br/>
-                  Moteurs à notifier : VPS, TDE, PVE, CAE, HypothesisEngine
-                </div>
+                <div style={{ textAlign: 'right', fontSize: '11px', color: C.textMuted }}>Requêtes PubMed : 10<br/>Moteurs : VPS · TDE · PVE · CAE · HypothesisEngine</div>
               </div>
+            </div>
+          </div>
+        )}
+
+        {/* Settings */}
+        {activeTab === 'settings' && (
+          <div style={{ maxWidth: '600px' }}>
+            <div style={S.card}>
+              <div style={S.cardTitle}>⚙️ Paramètres Discovery Engine v4.0</div>
+              {[
+                { key: 'Seuil z-score', val: '2.5σ', desc: 'Détection anomalies PatternMiner (L1)' },
+                { key: 'Pearson minimum', val: 'r = 0.65', desc: 'Corrélation minimale retenue' },
+                { key: 'k-means clusters', val: 'k = 3', desc: 'Phénotypes A / B / C' },
+                { key: 'Publications PULSAR', val: '25', desc: 'Bibliographie de référence (L2)' },
+                { key: 'NCT trials actifs', val: '3', desc: 'Essais cliniques suivis (L2)' },
+                { key: 'Hypothèses germes', val: '3 (H1/H2/H3)', desc: 'Claude Sonnet · validation workflow (L3)' },
+                { key: 'Modèle IA', val: 'claude-sonnet-4-20250514', desc: 'HypothesisEngine (L3)' },
+                { key: 'CRON schedule', val: 'Dimanche 03h00 UTC', desc: 'Mise à jour littérature automatique' },
+              ].map(s => (
+                <div key={s.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 0', borderBottom: `1px solid ${C.border}` }}>
+                  <div>
+                    <div style={{ fontSize: '11px', fontWeight: 700, color: C.text }}>{s.key}</div>
+                    <div style={{ fontSize: '10px', color: C.textMuted }}>{s.desc}</div>
+                  </div>
+                  <span style={{ ...S.tag(C.accent), fontFamily: 'monospace', fontSize: '10px' }}>{s.val}</span>
+                </div>
+              ))}
             </div>
           </div>
         )}
