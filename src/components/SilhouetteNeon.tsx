@@ -1,294 +1,175 @@
-'use client'
-import { useEffect, useRef, useState } from 'react'
+'use client';
 
-/* ══════════════════════════════════════════════════════════════
-   TYPES
-   ══════════════════════════════════════════════════════════════ */
-interface VitalOverlay {
-  label: string; icon: string; value: string; color: string
-  severity: number
+interface VitalSign {
+  label: string;
+  value: string | number;
+  unit?: string;
+  status: 'normal' | 'warning' | 'critical';
 }
 
 interface SilhouetteNeonProps {
-  sex: 'M' | 'F'; vitals: VitalOverlay[]; vpsScore: number; compact?: boolean
+  patientName?: string;
+  age?: number;
+  gender?: 'M' | 'F';
+  vitals?: {
+    neuro?: VitalSign;
+    cardio?: VitalSign;
+    resp?: VitalSign;
+    inflam?: VitalSign;
+    temp?: VitalSign;
+  };
+  severity?: 'normal' | 'warning' | 'critical';
 }
 
-/* ══════════════════════════════════════════════════════════════
-   ORGAN HOTSPOT POSITIONS (% of silhouette)
-   ══════════════════════════════════════════════════════════════ */
-const ORGAN_SPOTS: Record<string, { x: number; y: number }> = {
-  NEURO:  { x: 50, y: 10 },
-  CARDIO: { x: 46, y: 35 },
-  RESP:   { x: 54, y: 30 },
-  INFLAM: { x: 50, y: 50 },
-  TEMP:   { x: 50, y: 18 },
-}
+const STATUS_COLORS = {
+  normal:   { main: '#10B981', glow: '16,185,129',  dot: '#34d399' },
+  warning:  { main: '#f59e0b', glow: '245,158,11',  dot: '#fbbf24' },
+  critical: { main: '#ef4444', glow: '239,68,68',   dot: '#f87171' },
+};
 
-/* ══════════════════════════════════════════════════════════════
-   VPS ARC GAUGE
-   ══════════════════════════════════════════════════════════════ */
-function VPSGauge({ score, size = 52 }: { score: number; size?: number }) {
-  const r = (size - 8) / 2
-  const c = 2 * Math.PI * r
-  const offset = c - (Math.min(score, 100) / 100) * c * 0.75
-  const color = score >= 70 ? '#8B5CF6' : score >= 50 ? '#FFA502' : score >= 30 ? '#FFB347' : '#2ED573'
-
+function StatusDots({ status }: { status: 'normal' | 'warning' | 'critical' }) {
+  const colors = {
+    normal:   ['#10B981', '#1e293b', '#1e293b'],
+    warning:  ['#f59e0b', '#f59e0b', '#1e293b'],
+    critical: ['#ef4444', '#ef4444', '#ef4444'],
+  }[status];
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} style={{ transform: 'rotate(-225deg)' }}>
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none"
-        stroke="rgba(108,124,255,0.06)" strokeWidth="4"
-        strokeDasharray={`${c * 0.75} ${c * 0.25}`} strokeLinecap="round" />
-      <circle cx={size / 2} cy={size / 2} r={r} fill="none"
-        stroke={color} strokeWidth="4"
-        strokeDasharray={c} strokeDashoffset={offset} strokeLinecap="round"
-        style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1)', filter: `drop-shadow(0 0 6px ${color}60)` }} />
-      <g transform={`rotate(225, ${size / 2}, ${size / 2})`}>
-        <text x={size / 2} y={size / 2 + 1} textAnchor="middle" dominantBaseline="middle"
-          fill={color} fontSize="14" fontWeight="900" fontFamily="var(--p-font-mono)">{score}</text>
-        <text x={size / 2} y={size / 2 + 12} textAnchor="middle"
-          fill="rgba(180,180,200,0.35)" fontSize="6" fontFamily="var(--p-font-mono)" letterSpacing="1">VPS</text>
-      </g>
-    </svg>
-  )
-}
-
-/* ══════════════════════════════════════════════════════════════
-   HOTSPOT — pulsing organ dot
-   ══════════════════════════════════════════════════════════════ */
-function Hotspot({ x, y, color, severity, active, onClick }: {
-  x: number; y: number; color: string; severity: number; active: boolean; onClick: () => void
-}) {
-  const sz = severity >= 2 ? 10 : severity >= 1 ? 8 : 6
-  return (
-    <div onClick={onClick} style={{
-      position: 'absolute', left: `${x}%`, top: `${y}%`,
-      transform: 'translate(-50%, -50%)', cursor: 'pointer', zIndex: 4,
-    }}>
-      {severity >= 1 && (
-        <div style={{
-          position: 'absolute', left: '50%', top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: `${sz + 12}px`, height: `${sz + 12}px`, borderRadius: '50%',
-          border: `1.5px solid ${color}40`,
-          animation: 'hsPulse 2s ease-in-out infinite',
-        }} />
-      )}
-      <div style={{
-        width: `${sz}px`, height: `${sz}px`, borderRadius: '50%',
-        background: color,
-        boxShadow: `0 0 ${severity >= 2 ? 12 : 6}px ${color}${severity >= 2 ? '80' : '50'}`,
-        border: active ? '2px solid var(--p-white)' : 'none',
-        transition: 'all 0.3s',
-      }} />
-    </div>
-  )
-}
-
-/* ══════════════════════════════════════════════════════════════
-   NEURAL PARTICLES — Canvas flow along body
-   ══════════════════════════════════════════════════════════════ */
-function NeuralParticles({ w, h, intensity, color }: { w: number; h: number; intensity: number; color: string }) {
-  const cvs = useRef<HTMLCanvasElement>(null)
-  const parts = useRef<{ x: number; y: number; vx: number; vy: number; life: number; max: number; sz: number }[]>([])
-
-  useEffect(() => {
-    const c = cvs.current
-    if (!c) return
-    const ctx = c.getContext('2d')
-    if (!ctx) return
-    let id: number
-    const n = Math.floor(intensity / 4) + 8
-
-    parts.current = Array.from({ length: n }, () => ({
-      x: w * (0.3 + Math.random() * 0.4),
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: -0.3 - Math.random() * 0.6,
-      life: Math.random() * 100,
-      max: 80 + Math.random() * 60,
-      sz: 1 + Math.random() * 1.5,
-    }))
-
-    const draw = () => {
-      const dpr = window.devicePixelRatio || 1
-      c.width = w * dpr; c.height = h * dpr
-      ctx.scale(dpr, dpr)
-      ctx.clearRect(0, 0, w, h)
-
-      for (const p of parts.current) {
-        p.x += p.vx; p.y += p.vy; p.life++
-        if (p.life > p.max || p.y < -5 || p.x < 0 || p.x > w) {
-          p.x = w * (0.3 + Math.random() * 0.4)
-          p.y = h * 0.85 + Math.random() * h * 0.15
-          p.life = 0
-        }
-        const a = (1 - p.life / p.max) * 0.6
-        ctx.globalAlpha = a
-        ctx.fillStyle = color
-        ctx.shadowColor = color; ctx.shadowBlur = 6
-        ctx.beginPath()
-        ctx.arc(p.x, p.y, p.sz, 0, Math.PI * 2)
-        ctx.fill()
-      }
-      ctx.shadowBlur = 0; ctx.globalAlpha = 1
-      id = requestAnimationFrame(draw)
-    }
-    draw()
-    return () => cancelAnimationFrame(id)
-  }, [w, h, intensity, color])
-
-  return <canvas ref={cvs} style={{ position: 'absolute', inset: 0, width: w, height: h, pointerEvents: 'none', zIndex: 3, opacity: 0.7 }} />
-}
-
-/* ══════════════════════════════════════════════════════════════
-   SEVERITY DOTS
-   ══════════════════════════════════════════════════════════════ */
-function SeverityDots({ severity }: { severity: number }) {
-  const cs = severity >= 2
-    ? ['var(--p-critical)', 'var(--p-critical)', 'var(--p-critical)']
-    : severity >= 1 ? ['var(--p-warning)', 'var(--p-warning)', 'var(--p-dark-4)']
-    : ['var(--p-success)', 'var(--p-dark-4)', 'var(--p-dark-4)']
-  return (
-    <div style={{ display: 'flex', gap: '3px' }}>
-      {cs.map((c, i) => (
-        <div key={i} style={{ width: 5, height: 5, borderRadius: '50%', background: c,
-          boxShadow: c !== 'var(--p-dark-4)' ? `0 0 4px ${c}` : 'none' }} />
+    <span style={{ display: 'flex', gap: 3 }}>
+      {colors.map((c, i) => (
+        <span key={i} style={{ width: 7, height: 7, borderRadius: '50%', background: c,
+          boxShadow: c !== '#1e293b' ? `0 0 5px ${c}` : 'none' }}/>
       ))}
-    </div>
-  )
+    </span>
+  );
 }
 
-/* ══════════════════════════════════════════════════════════════
-   SILHOUETTE NEON V2 — MAIN
-   ══════════════════════════════════════════════════════════════ */
-export default function SilhouetteNeon({ sex, vitals, vpsScore, compact = false }: SilhouetteNeonProps) {
-  const img = sex === 'F' ? '/silhouette-girl.jpg' : '/silhouette-boy.jpg'
-  const h = compact ? 340 : 440
-  const [active, setActive] = useState<string | null>(null)
+function VitalPanel({ icon, label, vital }: { icon: string; label: string; vital?: VitalSign }) {
+  const status = vital?.status ?? 'normal';
+  const col = STATUS_COLORS[status];
+  return (
+    <div style={{
+      background: 'rgba(5,12,24,0.88)', border: `1px solid ${col.main}44`,
+      borderRadius: 8, padding: '7px 11px', width: 144, backdropFilter: 'blur(10px)',
+    }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
+        <span style={{ fontSize: 11, fontWeight: 700, color: col.main, fontFamily: 'monospace', letterSpacing: 1 }}>
+          {icon} {label}
+        </span>
+        <StatusDots status={status}/>
+      </div>
+      {vital && (
+        <div style={{ fontFamily: 'monospace', fontSize: 12 }}>
+          <span style={{ color: col.main, fontWeight: 600 }}>{vital.value}</span>
+          {vital.unit && <span style={{ color: '#64748b' }}> {vital.unit}</span>}
+          <div style={{ fontSize: 10, color: '#475569', marginTop: 1 }}>{vital.label}</div>
+        </div>
+      )}
+    </div>
+  );
+}
 
-  const levelColor = vpsScore >= 70 ? '#8B5CF6' : vpsScore >= 50 ? '#FFA502' : vpsScore >= 30 ? '#FFB347' : '#2ED573'
-  const level = vpsScore >= 70 ? 'CRITIQUE' : vpsScore >= 50 ? 'SÉVÈRE' : vpsScore >= 30 ? 'MODÉRÉ' : 'STABLE'
-  const maxSev = Math.max(...vitals.map(v => v.severity), 0)
-  const partColor = maxSev >= 2 ? '#8B5CF6' : maxSev >= 1 ? '#FFA502' : '#6C7CFF'
+export default function SilhouetteNeon({
+  patientName = 'Patient',
+  age,
+  gender = 'F',
+  vitals = {},
+  severity = 'normal',
+}: SilhouetteNeonProps) {
+  const sevColor = severity === 'critical' ? '#ef4444' : severity === 'warning' ? '#f59e0b' : '#10B981';
+
+  // Hotspots positionnés sur la silhouette féminine (droite de l'image)
+  // L'image contient 2 silhouettes : garçon gauche, fille droite
+  // On affiche uniquement si gender='M' (garçon) ou 'F' (fille)
+  // Pour PULSAR : on crop/positionne selon le genre
+  const imgStyle = gender === 'M'
+    ? { objectPosition: '20% center' }
+    : { objectPosition: '75% center' };
+
+  const hotspots = [
+    { id: 'neuro',  top: '12%', left: gender === 'M' ? '28%' : '68%', status: vitals.neuro?.status  ?? 'normal' },
+    { id: 'cardio', top: '36%', left: gender === 'M' ? '35%' : '62%', status: vitals.cardio?.status ?? 'normal' },
+    { id: 'resp',   top: '33%', left: gender === 'M' ? '28%' : '56%', status: vitals.resp?.status   ?? 'normal' },
+    { id: 'inflam', top: '48%', left: gender === 'M' ? '33%' : '63%', status: vitals.inflam?.status ?? 'normal' },
+    { id: 'temp',   top: '60%', left: gender === 'M' ? '32%' : '62%', status: vitals.temp?.status   ?? 'normal' },
+  ];
 
   return (
-    <div className="glass-card" style={{
-      position: 'relative', borderRadius: 'var(--p-radius-2xl)',
-      overflow: 'hidden', padding: 0, height: `${h}px`,
+    <div style={{
+      background: '#07111f', border: '1px solid rgba(255,255,255,0.05)',
+      borderRadius: 16, padding: 20, display: 'flex', flexDirection: 'column',
+      alignItems: 'center', gap: 12,
     }}>
-      <style>{`@keyframes hsPulse { 0%,100% { transform:translate(-50%,-50%) scale(1); opacity:0.6 } 50% { transform:translate(-50%,-50%) scale(1.8); opacity:0 } }`}</style>
-
-      {/* ── Header ── */}
-      <div style={{
-        padding: '10px 14px', display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-        borderBottom: '1px solid rgba(108,124,255,0.08)', position: 'relative', zIndex: 5,
-        background: 'rgba(0,0,0,0.15)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <VPSGauge score={vpsScore} size={compact ? 44 : 52} />
-          <div>
-            <div style={{ fontSize: '9px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1px' }}>VISUAL PHYSIOLOGY</div>
-            <div style={{ fontSize: '9px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: levelColor }}>{level}</div>
-          </div>
+      {/* Header */}
+      <div style={{ textAlign: 'center' }}>
+        <div style={{ fontSize: 9, fontFamily: 'monospace', color: '#475569', letterSpacing: 3, textTransform: 'uppercase', marginBottom: 4 }}>
+          PULSAR — VISUAL PHYSIOLOGY SYSTEM
+        </div>
+        <div style={{ fontSize: 15, fontWeight: 600, color: '#e2e8f0' }}>
+          {patientName}{age ? `, ${age} ans` : ''}
         </div>
         <div style={{
-          padding: '3px 10px', borderRadius: 'var(--p-radius-full)',
-          background: `${levelColor}12`, border: `1px solid ${levelColor}30`,
-          fontSize: '8px', fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: levelColor,
-          display: 'flex', alignItems: 'center', gap: '5px',
+          display: 'inline-block', marginTop: 5, padding: '2px 10px', borderRadius: 20,
+          background: `rgba(${STATUS_COLORS[severity].glow},0.15)`,
+          border: `1px solid ${sevColor}55`,
+          fontSize: 10, fontFamily: 'monospace', fontWeight: 700, color: sevColor, letterSpacing: 1,
         }}>
-          <div className={maxSev >= 2 ? 'dot-critical' : 'dot-alive'} style={{
-            width: 5, height: 5, background: levelColor, boxShadow: `0 0 6px ${levelColor}`,
-          }} />
-          {maxSev >= 2 ? 'ALERTE' : maxSev >= 1 ? 'VIGILANCE' : 'STABLE'}
+          {severity === 'critical' ? '● CRITIQUE' : severity === 'warning' ? '● VIGILANCE' : '● STABLE'}
         </div>
       </div>
 
-      {/* ── Body ── */}
-      <div style={{ display: 'flex', height: `${h - 52}px`, position: 'relative' }}>
+      {/* Contenu : panneaux + image + panneaux */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
 
-        {/* Silhouette + hotspots + particles */}
-        <div style={{ flex: compact ? '0 0 50%' : '0 0 48%', position: 'relative', overflow: 'hidden' }}>
-          <img src={img} alt={`Silhouette ${sex === 'F' ? 'fille' : 'garçon'}`}
-            style={{
-              width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top',
-              filter: `brightness(${vpsScore >= 70 ? 1.1 : 0.9}) saturate(${vpsScore >= 50 ? 1.3 : 1})`,
-              transition: 'filter 0.6s',
-            }} />
-
-          <NeuralParticles w={compact ? 160 : 180} h={h - 52} intensity={vpsScore} color={partColor} />
-
-          {vitals.map((v) => {
-            const spot = ORGAN_SPOTS[v.label]
-            if (!spot) return null
-            return <Hotspot key={v.label} x={spot.x} y={spot.y} color={v.color} severity={v.severity}
-              active={active === v.label} onClick={() => setActive(active === v.label ? null : v.label)} />
-          })}
-
-          {/* Fade right */}
-          <div style={{ position: 'absolute', top: 0, right: 0, bottom: 0, width: '40%',
-            background: 'linear-gradient(to right, transparent, rgba(14,14,22,0.85))', zIndex: 2 }} />
+        {/* Panneaux gauche */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+          <VitalPanel icon="🧠" label="NEURO"  vital={vitals.neuro}/>
+          <VitalPanel icon="❤️" label="CARDIO" vital={vitals.cardio}/>
+          <VitalPanel icon="🫁" label="RESP"   vital={vitals.resp}/>
         </div>
 
-        {/* Vital cards */}
-        <div style={{
-          flex: 1, display: 'flex', flexDirection: 'column',
-          justifyContent: 'center', gap: compact ? '5px' : '7px',
-          padding: compact ? '8px' : '12px', position: 'relative', zIndex: 5,
-        }}>
-          {vitals.map((v, i) => {
-            const isAct = active === v.label
+        {/* Image silhouette avec hotspots */}
+        <div style={{ position: 'relative', width: 220, height: 340, borderRadius: 12, overflow: 'hidden' }}>
+          <img
+            src="/assets/silhouette-neon.jpg"
+            alt="Visual Physiology"
+            style={{
+              width: '100%', height: '100%', objectFit: 'cover',
+              ...imgStyle,
+            }}
+          />
+          {/* Hotspots SVG overlay */}
+          {hotspots.map(h => {
+            const col = STATUS_COLORS[h.status];
             return (
-              <div key={i} onClick={() => setActive(isAct ? null : v.label)} style={{
-                padding: compact ? '7px 10px' : '9px 12px',
-                borderRadius: '10px',
-                background: isAct ? `${v.color}12` : `${v.color}06`,
-                borderLeft: `3px solid ${v.severity >= 2 ? '#8B5CF6' : v.color}`,
-                cursor: 'pointer',
-                transform: isAct ? 'scale(1.02)' : 'scale(1)',
-                boxShadow: isAct ? `0 0 16px ${v.color}15` : 'none',
-                transition: 'all 0.25s var(--p-ease)',
-                position: 'relative', overflow: 'hidden',
+              <div key={h.id} style={{
+                position: 'absolute', top: h.top, left: h.left,
+                transform: 'translate(-50%, -50%)',
+                width: 18, height: 18,
               }}>
-                {isAct && <div style={{
-                  position: 'absolute', left: -3, top: '50%', transform: 'translateY(-50%)',
-                  width: 3, height: '60%', borderRadius: 2,
-                  background: `linear-gradient(to bottom, transparent, ${v.color}, transparent)`,
-                  boxShadow: `0 0 8px ${v.color}60`,
-                }} />}
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 3 }}>
-                  <span style={{ fontSize: compact ? 9 : 10, fontWeight: 700, color: v.color,
-                    display: 'flex', alignItems: 'center', gap: 5,
-                    fontFamily: 'var(--p-font-mono)', letterSpacing: '0.5px' }}>
-                    <span style={{ fontSize: 12 }}>{v.icon}</span> {v.label}
-                  </span>
-                  <SeverityDots severity={v.severity} />
-                </div>
-
                 <div style={{
-                  fontFamily: 'var(--p-font-mono)', fontSize: compact ? 11 : 12,
-                  color: v.severity >= 2 ? '#8B5CF6' : v.severity >= 1 ? '#FFA502' : 'var(--p-text-muted)',
-                  fontWeight: v.severity >= 1 ? 700 : 500,
-                  textShadow: v.severity >= 2 ? '0 0 8px rgba(139,92,246,0.3)' : 'none',
-                }}>{v.value}</div>
-
-                {v.severity >= 1 && (
-                  <div style={{ marginTop: 4, height: 2, borderRadius: 1, background: 'rgba(108,124,255,0.06)', overflow: 'hidden' }}>
-                    <div style={{
-                      height: '100%', borderRadius: 1,
-                      width: v.severity >= 2 ? '100%' : '60%',
-                      background: v.severity >= 2 ? '#8B5CF6' : '#FFA502',
-                      boxShadow: `0 0 6px ${v.severity >= 2 ? 'rgba(139,92,246,0.5)' : 'rgba(255,165,2,0.5)'}`,
-                      transition: 'width 0.6s var(--p-ease)',
-                    }} />
-                  </div>
-                )}
+                  width: 10, height: 10, borderRadius: '50%',
+                  background: col.main,
+                  boxShadow: `0 0 8px 3px rgba(${col.glow},0.6)`,
+                  position: 'absolute', top: 4, left: 4,
+                  animation: h.status === 'critical' ? 'pulse 1s infinite' : 'none',
+                }}/>
+                <div style={{
+                  width: 18, height: 18, borderRadius: '50%',
+                  border: `1.5px solid ${col.main}`,
+                  opacity: 0.5, position: 'absolute', top: 0, left: 0,
+                }}/>
               </div>
-            )
+            );
           })}
+          <style>{`@keyframes pulse { 0%,100%{opacity:1;transform:translate(-50%,-50%) scale(1)} 50%{opacity:.6;transform:translate(-50%,-50%) scale(1.3)} }`}</style>
+        </div>
+
+        {/* Panneaux droite */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+          <VitalPanel icon="🔥" label="INFLAM" vital={vitals.inflam}/>
+          <VitalPanel icon="🌡️" label="TEMP"   vital={vitals.temp}/>
         </div>
       </div>
     </div>
-  )
+  );
 }
