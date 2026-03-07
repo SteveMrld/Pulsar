@@ -247,6 +247,22 @@ export class PVEEngine extends BrainCore {
       alerts.push({ severity: 'warning', title: 'Midazolam + Fluconazole (CYP3A4)', body: 'Augmentation x2-4 taux midazolam. Risque sédation excessive. Réduire dose midazolam 50%.', source: 'PVE — Pharmacopée internationale' })
     }
 
+
+    // ── POLYTHÉRAPIE CARDIOTOXIQUE — Cascade Alejandro ──
+    const cardioDepressors = ['phenytoin', 'phenytoïne', 'dilantin', 'midazolam', 'hypnovel', 'sufentanil', 'thiopental', 'phenobarbital', 'gardenal', 'propofol'].filter(d => drugNames.some(dn => dn.includes(d)))
+    const cardioStimulants = ['ketamine', 'kétamine', 'noradrenaline', 'noradrénaline', 'adrenaline', 'adrénaline', 'dobutamine'].filter(d => drugNames.some(dn => dn.includes(d)))
+    if (cardioDepressors.length >= 3) {
+      alerts.push({ severity: 'critical', title: 'POLYTHÉRAPIE CARDIOTOXIQUE', body: cardioDepressors.length + ' dépresseurs cardiaques simultanés (' + cardioDepressors.join(', ') + ')' + (cardioStimulants.length > 0 ? ' + ' + cardioStimulants.length + ' stimulant(s) (' + cardioStimulants.join(', ') + ') = signaux contradictoires sur le myocarde' : '') + '. Risque arrêt cardiaque. Troponine q12h + écho q48h + kaliémie q8h. Switch phénytoïne → lévétiracétam.', source: 'PVE — Glauser 2016, Yale SE 2023, cas Alejandro' })
+      recs.push({ priority: 'urgent', title: 'Monitoring cardiaque immédiat', body: 'Troponine q12h + échocardiographie q48h + BNP + ionogramme q8h (K+, Ca2+, Mg2+). Envisager switch phénytoïne → lévétiracétam.', reference: 'Glauser 2016, Yale SE Algorithm 2023' })
+      score = Math.min(100, score + 20)
+    }
+    // ── KD + PHÉNYTOÏNE = toxicité imprévisible ──
+    const hasKD = drugNames.some(d => d.includes('cetogen') || d.includes('cétogène') || d.includes('ketocal'))
+    const hasPhenytoin = drugNames.some(d => ['phenytoin', 'phenytoïne', 'dilantin'].some(p => d.includes(p)))
+    if (hasKD && hasPhenytoin) {
+      alerts.push({ severity: 'warning', title: 'KD + Phénytoïne : toxicité accrue', body: 'Le régime cétogène modifie la liaison albumine. Taux de phénytoïne libre augmentent de manière imprévisible → cardiotoxicité accrue. Doser phénytoïne libre (pas totale).', source: 'PVE — Pharmacocinétique phénytoïne + KD' })
+    }
+
     let level: string
     if (score >= 75) level = 'RISQUE ÉLEVÉ'
     else if (score >= 50) level = 'RISQUE MODÉRÉ'

@@ -450,6 +450,47 @@ const CASCADE_RULES: CascadeRule[] = [
       + 'ou ciprofloxacine selon antibiogramme. Si carbapénème indispensable : switch AE vers lévétiracétam.',
     alternativeSuggestion: 'Céfépime ou pipéracilline-tazobactam (pas d\'interaction avec VPA).',
   },
+
+  // ── CASCADE CARDIAQUE IATROGÈNE (Cas Alejandro — 66 documents) ──
+  // Le cœur reçoit des signaux contradictoires permanents :
+  // Dépresseurs (phénytoïne + midazolam + sufentanil + thiopental)
+  // vs Stimulants (kétamine + noradrénaline)
+  // = stress myocardique → arrêts cardiaques → décès
+  {
+    intervention: 'polytherapy_cardiac',
+    interventionAliases: [],
+    vulnerabilityId: 'cardiac-fragility',
+    riskLevel: 'critical',
+    mechanism: 'Polythérapie sédative ≥ 4 molécules cardio-dépressives (phénytoïne/midazolam/sufentanil/thiopental) '
+      + '+ stimulants (kétamine/noradrénaline) = signaux contradictoires permanents sur le myocarde. '
+      + 'Chaque oscillation PA (hypo→hyper) fatigue le muscle cardiaque. '
+      + 'Phénytoïne 14j IV = antiarythmique classe IB, bradycardie + hypotension + FV (Glauser 2016). '
+      + 'Thiopental = dépresseur myocardique direct → nécessite noradrénaline → stress O2 myocarde. '
+      + 'KD + phénytoïne = modification liaison albumine → toxicité phénytoïne libre imprévisible. '
+      + 'Corticoïdes → hypokaliémie → arythmie. '
+      + 'Résultat : PAM oscillante 61→67→114, arrêts cardiaques récurrents, décès.',
+    cascadeChain: [
+      'Status epilepticus réfractaire → polythérapie sédative obligatoire',
+      'Phénytoïne + midazolam + sufentanil + thiopental → dépression cardiovasculaire',
+      'Hypotension → noradrénaline nécessaire (0.53-0.80 µg/kg/min)',
+      'Kétamine (sympathomimétique) + noradrénaline vs dépresseurs = signaux contradictoires',
+      'Inflammation systémique 15 jours → myocardite infraclinique possible',
+      'KD → perturbations électrolytiques (K+, Ca2+, Mg2+) → arythmie',
+      'Corticoïdes → hypokaliémie → facteur arythmogène supplémentaire',
+      'Cœur de 24 kg sous stress contradictoire permanent → arrêts cardiaques → décès',
+    ],
+    references: [
+      'Glauser 2016: "Phenytoin cardiac monitoring mandatory during IV infusion"',
+      'Yale SE Algorithm 2023: "Switch to levetiracetam if cardiac concerns"',
+      'Bray 1998: "Propofol-related infusion syndrome — extrapolable aux barbituriques"',
+      'Cas Alejandro: PAM 61→67→114, arrêt cardiaque J+15, pas de lésion cérébrale irréversible',
+    ],
+    recommendation: 'MONITORING CARDIAQUE OBLIGATOIRE dès J+3 : troponine q12h + écho q48h + BNP + kaliémie q8h. '
+      + 'SWITCH phénytoïne → lévétiracétam (pas de cardiotoxicité). '
+      + 'RÉDUIRE la polythérapie sédative au minimum. '
+      + 'Si anakinra précoce avait cassé la boucle inflammatoire, la plupart de ces molécules n\'auraient jamais été nécessaires.',
+    alternativeSuggestion: 'Anakinra J+1 + KD J+2 + IVIG J0 → fenêtre pour réduire la sédation → moins de cardiotoxicité.',
+  },
 ]
 
 // ── Main CAE function ──
