@@ -12,6 +12,7 @@ import { runPipeline } from '@/lib/engines/pipeline'
 import { computeTriageFromPipeline } from '@/lib/engines/IntakeAnalyzer'
 import type { Patient, Alert } from '@/lib/types/database'
 import dynamic from 'next/dynamic'
+import { UseCaseButton } from '@/components/UseCaseButton';
 
 const AlejandroCasePage = dynamic(() => import('@/app/usecase/alejandro/page'), { ssr: false })
 
@@ -392,6 +393,7 @@ export default function DashboardPage() {
 
       {/* ── Use Case Alejandro — accès protégé par code ── */}
       <UseCaseGate />
-    </div>
+      <div style={{ position:'fixed', bottom:'24px', right:'24px', zIndex:100 }}><UseCaseButton /></div>
+  </div>
   )
 }
