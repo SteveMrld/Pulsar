@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
+import PatientView from '@/components/PatientView';
 
 /* ══════════════════════════════════════════════════════════════
    ADMISSION — Nouveau patient
@@ -48,6 +49,7 @@ const INITIAL: FormData = {
 function Field({ label, children, span }: { label: string; children: React.ReactNode; span?: number }) {
   return (
     <div style={{ gridColumn: span ? `span ${span}` : undefined }}>
+      <PatientView />
       <label style={{
         display: 'block', fontFamily: 'var(--p-font-mono)', fontSize: '10px',
         fontWeight: 700, color: 'var(--p-text-dim)', letterSpacing: '0.5px',
