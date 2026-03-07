@@ -232,164 +232,390 @@ export default function LoginPage() {
 // ═══════════════════════════════════════════════════════════
 
 const DEMO_V2_CSS = `
-  .dv2-root { position:fixed; inset:0; z-index:999; background:#0C1424; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
-  .dv2-sidebar { position:absolute; left:0; top:0; bottom:0; width:180px; background:#0A0E1A; border-right:1px solid #1F2A40; display:flex; flex-direction:column; padding:10px 0; overflow-y:auto; z-index:2; }
-  .dv2-logo { padding:10px 14px 16px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #1F2A40; margin-bottom:8px; }
-  .dv2-tab { display:flex; align-items:center; gap:8px; padding:8px 14px; cursor:default; transition:all 0.4s ease; border-left:3px solid transparent; font-size:11px; color:#6B7280; }
-  .dv2-tab.active { background:rgba(108,124,255,0.06); border-left-color:var(--tc, #6C7CFF); color:#F0F2F5; }
-  .dv2-tab.highlight { background:rgba(245,166,35,0.08); border-left-color:#F5A623; }
-  .dv2-content { position:absolute; left:180px; top:0; bottom:0; right:0; overflow-y:auto; padding:20px; }
-  .dv2-cursor { position:absolute; z-index:50; pointer-events:none; transition: left 0.9s cubic-bezier(0.25,0.1,0.25,1), top 0.9s cubic-bezier(0.25,0.1,0.25,1); }
-  .dv2-cursor-ring { width:22px; height:22px; border-radius:50%; border:2px solid #F5A623; background:rgba(245,166,35,0.12); }
+  .dv2-root { position:fixed; inset:0; z-index:999; background:#0C1424; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif; }
+  .dv2-sidebar { position:absolute; left:0; top:0; bottom:0; width:188px; background:#080C18; border-right:1px solid #1A2540; display:flex; flex-direction:column; padding:10px 0; overflow-y:auto; z-index:2; }
+  .dv2-logo { padding:10px 14px 12px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #1A2540; margin-bottom:6px; }
+  .dv2-patient-chip { padding:6px 14px 8px; border-bottom:1px solid #1A2540; margin-bottom:4px; }
+  .dv2-tab { display:flex; align-items:center; gap:8px; padding:7px 14px; cursor:default; transition:all 0.35s ease; border-left:2px solid transparent; font-size:10.5px; color:#4B5563; }
+  .dv2-tab.active { background:rgba(108,124,255,0.07); border-left-color:var(--tc, #6C7CFF); color:#E8EAF0; }
+  .dv2-content { position:absolute; left:188px; top:0; bottom:0; right:0; overflow-y:auto; padding:22px 24px; }
+  .dv2-content-header { font-size:9px; fontFamily:'JetBrains Mono',monospace; font-weight:700; letter-spacing:1.2px; text-transform:uppercase; margin-bottom:14px; }
+  .dv2-cursor { position:absolute; z-index:50; pointer-events:none; transition: left 0.85s cubic-bezier(0.25,0.1,0.25,1), top 0.85s cubic-bezier(0.25,0.1,0.25,1); }
+  .dv2-cursor-dot { width:10px; height:10px; border-radius:50%; background:#F5A623; position:absolute; top:-5px; left:-5px; }
+  .dv2-cursor-ring { width:26px; height:26px; border-radius:50%; border:1.5px solid #F5A623; position:absolute; top:-13px; left:-13px; background:rgba(245,166,35,0.06); }
   .dv2-cursor.click .dv2-cursor-ring { animation: dv2click 0.4s ease; }
-  .dv2-bubble { position:absolute; z-index:60; pointer-events:none; background:rgba(12,20,36,0.95); backdrop-filter:blur(12px); border:1px solid #6C7CFF25; border-radius:10px; padding:10px 14px; max-width:280px; animation:dv2fadein 0.5s ease; }
-  .dv2-bubble-title { font-size:11px; font-weight:800; color:#6C7CFF; margin-bottom:4px; }
-  .dv2-bubble-text { font-size:10px; color:#E8EAF0; line-height:1.5; }
-  .dv2-progress { position:absolute; bottom:0; left:180px; right:0; height:3px; background:#0A0E1A; z-index:10; }
-  .dv2-progress-bar { height:100%; background:linear-gradient(90deg, #6C7CFF, #2FD1C8); transition: width 0.5s ease; }
-  .dv2-close { position:absolute; top:10px; right:14px; z-index:101; background:none; border:1px solid rgba(255,255,255,0.12); color:#6B7280; font-size:10px; padding:4px 12px; border-radius:14px; cursor:pointer; }
-  .dv2-close:hover { color:#fff; }
-  @keyframes dv2click { 0%{transform:scale(1);box-shadow:0 0 0 0 rgba(245,166,35,0.4)} 100%{transform:scale(1.8);box-shadow:0 0 0 8px rgba(245,166,35,0)} }
-  @keyframes dv2fadein { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+  .dv2-bubble { position:absolute; z-index:60; pointer-events:none; background:rgba(8,12,24,0.97); backdrop-filter:blur(16px); border:1px solid rgba(108,124,255,0.2); border-radius:12px; padding:12px 16px; max-width:290px; animation:dv2fadein 0.45s cubic-bezier(0.34,1.56,0.64,1); }
+  .dv2-bubble-act { font-size:8px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:4px; opacity:0.6; }
+  .dv2-bubble-title { font-size:12px; font-weight:800; color:#E8EAF0; margin-bottom:6px; }
+  .dv2-bubble-text { font-size:10.5px; color:#9CA3AF; line-height:1.55; }
+  .dv2-bubble-step { margin-top:8px; font-size:8.5px; color:#374151; display:flex; align-items:center; gap:6px; }
+  .dv2-progress { position:absolute; top:0; left:188px; right:0; height:2px; background:#0A0E1A; z-index:10; }
+  .dv2-progress-bar { height:100%; transition: width 0.6s ease; }
+  .dv2-acts { position:absolute; top:6px; left:200px; display:flex; gap:2px; z-index:11; }
+  .dv2-act-label { font-size:7.5px; font-weight:700; letter-spacing:1px; padding:2px 8px; border-radius:10px; text-transform:uppercase; }
+  .dv2-close { position:absolute; top:10px; right:14px; z-index:101; background:none; border:1px solid rgba(255,255,255,0.1); color:#4B5563; font-size:10px; padding:4px 12px; border-radius:14px; cursor:pointer; transition:all 0.2s; }
+  .dv2-close:hover { color:#E8EAF0; border-color:rgba(255,255,255,0.25); }
+  .dv2-nav { position:absolute; bottom:14px; left:200px; display:flex; gap:4px; z-index:10; align-items:center; }
+  .dv2-dot { height:4px; border-radius:2px; cursor:pointer; transition:all 0.3s; }
+  .dv2-nav-btn { background:none; border:1px solid #1F2A40; color:#6B7280; font-size:9px; padding:3px 10px; border-radius:8px; cursor:pointer; }
+  .dv2-nav-btn:hover { color:#E8EAF0; border-color:#6C7CFF40; }
+  .dv2-glass { background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06); border-radius:10px; padding:12px; }
+  .dv2-badge { display:inline-flex; align-items:center; gap:4px; padding:2px 7px; border-radius:6px; font-size:8px; font-weight:800; font-family:monospace; }
+  .dv2-metric { text-align:center; padding:8px; background:rgba(0,0,0,0.2); border-radius:8px; }
+  .dv2-bar-track { height:12px; background:#0D1526; border-radius:6px; overflow:hidden; position:relative; }
+  .dv2-bar-fill { height:100%; border-radius:6px; transition:width 0.8s ease; }
+  @keyframes dv2click { 0%{transform:scale(1);opacity:1} 100%{transform:scale(2.2);opacity:0} }
+  @keyframes dv2fadein { from{opacity:0;transform:translateY(8px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+  @keyframes dv2pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+  @keyframes dv2scanline { 0%{transform:translateY(-100%)} 100%{transform:translateY(400%)} }
+  @keyframes dv2count { from{opacity:0;transform:scale(0.8)} to{opacity:1;transform:scale(1)} }
 `
 
 const SIDEBAR_TABS = [
-  { id: 'cockpit', label: 'Cockpit', icon: 'heart', color: '#8B5CF6' },
-  { id: 'urgence', label: 'Urgence', icon: 'alert', color: '#A78BFA' },
-  { id: 'diagnostic', label: 'Diagnostic', icon: 'brain', color: '#6C7CFF' },
-  { id: 'traitement', label: 'Traitement', icon: 'pill', color: '#2FD1C8' },
-  { id: 'cascade', label: 'Cascade', icon: 'shield', color: '#FF6B35' },
-  { id: 'ddd', label: 'Retard', icon: 'alert', color: '#DC2626' },
-  { id: 'oracle', label: 'Oracle', icon: 'chart', color: '#E879F9' },
-  { id: 'discovery', label: 'Discovery', icon: 'microscope', color: '#10B981' },
-  { id: 'consult', label: 'Consult', icon: 'clipboard', color: '#3B82F6' },
-  { id: 'rapport', label: 'Rapport', icon: 'export', color: '#F5A623' },
+  { id: 'intake',    label: 'Admission',   icon: 'clipboard', color: '#6C7CFF' },
+  { id: 'cockpit',   label: 'Cockpit',     icon: 'heart',     color: '#8B5CF6' },
+  { id: 'dashboard', label: 'Observatory', icon: 'chart',     color: '#3B82F6' },
+  { id: 'diagnostic',label: 'Diagnostic',  icon: 'brain',     color: '#6C7CFF' },
+  { id: 'traitement',label: 'Traitement',  icon: 'pill',      color: '#2FD1C8' },
+  { id: 'pve',       label: 'Médicaments', icon: 'shield',    color: '#B96BFF' },
+  { id: 'ewe',       label: 'Évolution',   icon: 'chart',     color: '#A78BFA' },
+  { id: 'discovery', label: 'Discovery',   icon: 'microscope',color: '#10B981' },
+  { id: 'lab',       label: 'Research Lab',icon: 'microscope',color: '#0EA5E9' },
+  { id: 'cascade',   label: 'Cascade',     icon: 'alert',     color: '#FF6B35' },
+  { id: 'oracle',    label: 'Oracle',      icon: 'chart',     color: '#E879F9' },
+  { id: 'rapport',   label: 'Export',      icon: 'export',    color: '#F5A623' },
+]
+
+const ACTS = [
+  { label: 'Acte I — Admission',  steps: [0,1,2],       color: '#6C7CFF' },
+  { label: 'Acte II — Moteurs',   steps: [3,4,5,6,7,8], color: '#10B981' },
+  { label: 'Acte III — Puissance',steps: [9,10,11],     color: '#E879F9' },
 ]
 
 interface DemoStep {
   tabId: string
   duration: number
   bubbleFr: string
-  bubbleEn: string
   titleFr: string
-  titleEn: string
+  act: number
   cursorTarget: 'sidebar' | 'content'
-  contentX?: number // %
-  contentY?: number // %
+  contentX?: number
+  contentY?: number
 }
 
 const DEMO_STEPS: DemoStep[] = [
-  { tabId: 'cockpit', duration: 5000,
-    titleFr: 'Cockpit patient', titleEn: 'Patient Cockpit',
-    bubbleFr: 'Le cockpit affiche en temps réel le score VPS, les constantes vitales, les alertes critiques et les 8 moteurs IA. Un seul écran pour tout voir.',
-    bubbleEn: 'The cockpit displays real-time VPS score, vital signs, critical alerts and all 8 AI engines. One screen to see everything.',
+  { tabId: 'intake', duration: 5500, act: 0,
+    titleFr: 'IntakeAnalyzer — Admission',
+    bubbleFr: 'Lucas, 8 ans. 5 paramètres saisis en 20 secondes. PULSAR calcule le niveau de triage : P1 Critique. Fièvre J-3, convulsions, GCS 9.',
+    cursorTarget: 'content', contentX: 50, contentY: 30 },
+  { tabId: 'cockpit', duration: 5500, act: 0,
+    titleFr: 'VPS Score — Sévérité globale',
+    bubbleFr: 'Score VPS 81/100. 13 critères analysés en temps réel : neurologique, inflammatoire, vital. FIRES suspect à 87%. Un seul écran, toute la sévérité.',
     cursorTarget: 'sidebar' },
-  { tabId: 'diagnostic', duration: 5000,
-    titleFr: 'Diagnostic IA', titleEn: 'AI Diagnosis',
-    bubbleFr: 'PULSAR analyse le profil clinique et calcule un score FIRES composite de 0 à 13. Il détecte automatiquement les patterns FIRES, anti-NMDAR, PIMS et MOGAD.',
-    bubbleEn: 'PULSAR analyzes the clinical profile and calculates a FIRES composite score from 0 to 13. It automatically detects FIRES, anti-NMDAR, PIMS and MOGAD patterns.',
+  { tabId: 'dashboard', duration: 5000, act: 0,
+    titleFr: 'Observatory — Vue chef de service',
+    bubbleFr: '8 patients actifs. Lucas apparaît en rouge P1. Vue multi-patients en temps réel : le chef de service pilote depuis un seul écran.',
+    cursorTarget: 'content', contentX: 40, contentY: 35 },
+  { tabId: 'diagnostic', duration: 5500, act: 1,
+    titleFr: 'Diagnostic IA — Pattern FIRES',
+    bubbleFr: 'PULSAR identifie le pattern FIRES sur 13 critères. Score composite 9/13. Hypothèse principale : FIRES. Différentiel : anti-NMDAR, PIMS-TS neuro.',
     cursorTarget: 'sidebar' },
-  { tabId: 'traitement', duration: 5000,
-    titleFr: 'Traitement + Vérification médicaments', titleEn: 'Treatment + Drug Safety Check',
-    bubbleFr: 'Le TDE recommande l\'escalade thérapeutique en 4 lignes. Le Drug Safety Checker interroge OpenFDA en temps réel — tapez un médicament et PULSAR dit immédiatement s\'il est cardiotoxique ou neurotoxique.',
-    bubbleEn: 'The TDE recommends 4-line therapeutic escalation. The Drug Safety Checker queries OpenFDA in real-time — type a drug and PULSAR immediately says if it\'s cardiotoxic or neurotoxic.',
+  { tabId: 'traitement', duration: 5500, act: 1,
+    titleFr: 'TDE — Escalade thérapeutique',
+    bubbleFr: 'Le TDE génère le protocole en 4 lignes. Ligne 1 déjà administrée. Ligne 2 : Midazolam IV recommandé. Délai optimal : prochaines 2h.',
     cursorTarget: 'sidebar' },
-  { tabId: 'cascade', duration: 6000,
-    titleFr: 'Cascade Alert Engine', titleEn: 'Cascade Alert Engine',
-    bubbleFr: 'Le moteur né du cas Alejandro. Tapez "MEOPA" : PULSAR croise avec le profil du patient et la littérature mondiale. Si un effet en chaîne est possible, il dit STOP avant l\'administration.',
-    bubbleEn: 'The engine born from Alejandro\'s case. Type "MEOPA": PULSAR cross-references the patient profile with global literature. If a chain effect is possible, it says STOP before administration.',
-    cursorTarget: 'content', contentX: 55, contentY: 35 },
-  { tabId: 'ddd', duration: 5000,
-    titleFr: 'Détection de retards', titleEn: 'Delay Detection',
-    bubbleFr: 'Le DDD compare le parcours réel au parcours optimal. "Immunothérapie non initiée à H+48 — 64% des cas favorables reçoivent les IVIG < 48h." Chaque heure perdue est comptée.',
-    bubbleEn: 'The DDD compares the actual care path to the optimal one. "Immunotherapy not started at H+48 — 64% of favorable cases receive IVIG < 48h." Every lost hour is counted.',
+  { tabId: 'pve', duration: 5500, act: 1,
+    titleFr: 'PVE — Alerte interaction médicamenteuse',
+    bubbleFr: 'Flash rouge : Kétamine + Midazolam × profil FIRES. Le PVE interroge OpenFDA en temps réel et signale le risque de dépression respiratoire.',
+    cursorTarget: 'content', contentX: 55, contentY: 25 },
+  { tabId: 'ewe', duration: 5000, act: 1,
+    titleFr: 'EWE — Signal dégradation J+2',
+    bubbleFr: "Tendance vitale : SpO₂ en baisse sur 18h. EWE projette une dégradation à J+2 avec 74% de probabilité. Fenêtre d'action : 6h.",
+    cursorTarget: 'content', contentX: 60, contentY: 40 },
+  { tabId: 'discovery', duration: 5500, act: 1,
+    titleFr: 'Discovery — PubMed en temps réel',
+    bubbleFr: 'Scan PubMed : 3 articles remontés sur FIRES pédiatrique 2023–2024. PatternMiner détecte une corrélation GCS × délai IVIG non documentée.',
     cursorTarget: 'sidebar' },
-  { tabId: 'oracle', duration: 5000,
-    titleFr: 'Oracle — Simulation', titleEn: 'Oracle — Simulation',
-    bubbleFr: 'L\'Oracle simule 4 scénarios à H+72. "Avec anakinra + régime cétogène : VPS projeté 32. Sans action : VPS 95." Le médecin voit l\'impact de chaque choix.',
-    bubbleEn: 'Oracle simulates 4 scenarios at H+72. "With anakinra + ketogenic diet: projected VPS 32. Without action: VPS 95." The doctor sees the impact of each choice.',
+  { tabId: 'lab', duration: 5000, act: 1,
+    titleFr: 'Research Lab — Hypothèses IA',
+    bubbleFr: '3 hypothèses générées par IA. H1 : FIRES idiopathique 87%. H2 : FIRES infectieux 11%. H3 : PIMS-TS neuro 2%. Essais NCT actifs identifiés.',
     cursorTarget: 'sidebar' },
-  { tabId: 'discovery', duration: 5000,
-    titleFr: 'Discovery Engine', titleEn: 'Discovery Engine',
-    bubbleFr: '4 niveaux : corrélations statistiques, PubMed en temps réel, hypothèses IA, essais cliniques ClinicalTrials.gov. Tout personnalisé pour CE patient.',
-    bubbleEn: '4 levels: statistical correlations, real-time PubMed, AI hypotheses, ClinicalTrials.gov clinical trials. All personalized for THIS patient.',
+  { tabId: 'cascade', duration: 5500, act: 2,
+    titleFr: 'Cascade Alert Engine',
+    bubbleFr: "Médicament saisi : MEOPA. PULSAR croise avec le profil Lucas. STOP : 4 étapes de cascade identifiées. Alternative proposée en 1 clic.",
+    cursorTarget: 'content', contentX: 55, contentY: 30 },
+  { tabId: 'oracle', duration: 5500, act: 2,
+    titleFr: 'Oracle — 4 scénarios à H+72',
+    bubbleFr: 'Simulation complète. Anakinra + Régime Cétogène → VPS projeté 28. Sans action → VPS 95. Le médecin voit l\'impact de chaque décision.',
     cursorTarget: 'sidebar' },
-  { tabId: 'consult', duration: 5000,
-    titleFr: 'Brief expert en 10 secondes', titleEn: 'Expert brief in 10 seconds',
-    bubbleFr: 'Un clic : le brief complet pour le spécialiste. 8 sections, questions auto-générées avec niveau d\'urgence, FR ou EN. Prêt à copier et envoyer.',
-    bubbleEn: 'One click: the complete brief for the specialist. 8 sections, auto-generated questions with urgency level, FR or EN. Ready to copy and send.',
-    cursorTarget: 'sidebar' },
-  { tabId: 'rapport', duration: 5000,
-    titleFr: 'Rapport PULSAR', titleEn: 'PULSAR Report',
-    bubbleFr: '11 moteurs. 9 000+ lignes de logique clinique. 70+ publications sourées. Et un principe : la décision finale reste TOUJOURS dans la main du médecin.',
-    bubbleEn: '11 engines. 9,000+ lines of clinical logic. 70+ sourced publications. And one principle: the final decision ALWAYS remains in the doctor\'s hands.',
-    cursorTarget: 'sidebar' },
+  { tabId: 'rapport', duration: 5500, act: 2,
+    titleFr: 'Export — Brief clinique en 1 clic',
+    bubbleFr: 'PDF clinique généré : 12 moteurs, 70+ sources, traductions FR/EN. MD · JSON · BibTeX. Prêt pour le spécialiste en moins de 3 secondes.',
+    cursorTarget: 'content', contentX: 50, contentY: 40 },
 ]
 
-function DemoContent({ step }: { step: DemoStep }) {
-  if (step.tabId === 'cockpit') return (
+function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
+  const s = step.tabId
+
+  if (s === 'intake') return (
     <div>
-      <div style={{ display:'flex', gap:8, marginBottom:12 }}>
-        <div style={{ flex:'0 0 80px', background:'#EF444412', borderRadius:10, padding:10, textAlign:'center' }}>
-          <div style={{ fontSize:8, color:'#EF4444', fontFamily:'monospace', fontWeight:700 }}>VPS</div>
-          <div style={{ fontSize:28, fontWeight:900, color:'#EF4444', fontFamily:'monospace' }}>88</div>
-          <div style={{ fontSize:7, color:'#EF4444' }}>CRITIQUE</div>
+      <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6, marginBottom:10 }}>
+        {[
+          { l:'Patient', v:'Lucas M., 8 ans', c:'#6C7CFF' },
+          { l:'Triage', v:'P1 — CRITIQUE', c:'#EF4444' },
+          { l:'Symptômes', v:'Convulsions J-3', c:'#F59E0B' },
+          { l:'GCS initial', v:'9 / 15', c:'#EF4444' },
+          { l:'Température', v:'39.2°C', c:'#F59E0B' },
+          { l:'Service', v:'Neuropédiatrie', c:'#6B7280' },
+        ].map((m,i) => (
+          <div key={i} style={{ padding:'7px 10px', background:'#0D1526', borderRadius:7, borderLeft:`2px solid ${m.c}30` }}>
+            <div style={{ fontSize:7.5, color:'#4B5563', marginBottom:2 }}>{m.l}</div>
+            <div style={{ fontSize:9.5, fontWeight:700, color:m.c, fontFamily:'monospace' }}>{m.v}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ padding:'8px 12px', background:'#6C7CFF08', borderRadius:8, border:'1px solid #6C7CFF18', fontSize:8.5, color:'#6C7CFF', fontWeight:700 }}>
+        ✓ Analyse IntakeAnalyzer — Triage automatique P1 en 18 secondes
+      </div>
+    </div>
+  )
+
+  if (s === 'cockpit') return (
+    <div>
+      <div style={{ display:'flex', gap:8, marginBottom:10 }}>
+        <div style={{ flex:'0 0 76px', background:'#EF444410', borderRadius:10, padding:'10px 8px', textAlign:'center', border:'1px solid #EF444420' }}>
+          <div style={{ fontSize:7.5, color:'#EF4444', fontFamily:'monospace', fontWeight:700 }}>VPS</div>
+          <div style={{ fontSize:30, fontWeight:900, color:'#EF4444', fontFamily:'monospace', lineHeight:1 }}>81</div>
+          <div style={{ fontSize:7, color:'#EF4444', marginTop:2 }}>CRITIQUE</div>
         </div>
         <div style={{ flex:1, display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
-          {[{ l:'GCS', v:'8/15', c:'#EF4444' }, { l:'Crises/24h', v:'6', c:'#EF4444' }, { l:'FC', v:'158', c:'#F59E0B' }, { l:'SpO2', v:'93%', c:'#F59E0B' }, { l:'T°', v:'39.8°C', c:'#EF4444' }, { l:'CRP', v:'95', c:'#EF4444' }].map((v,i) => (
-            <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'3px 8px', background:'#111827', borderRadius:4, borderLeft:`2px solid ${v.c}15` }}>
-              <span style={{ fontSize:8, color:'#6B7280' }}>{v.l}</span>
+          {[{ l:'GCS', v:'9/15', c:'#EF4444' }, { l:'Crises/24h', v:'4', c:'#EF4444' }, { l:'FC', v:'142', c:'#F59E0B' }, { l:'SpO2', v:'94%', c:'#F59E0B' }, { l:'T°', v:'39.2°C', c:'#F59E0B' }, { l:'CRP', v:'78', c:'#EF4444' }].map((v,i) => (
+            <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'4px 8px', background:'#0D1526', borderRadius:5 }}>
+              <span style={{ fontSize:7.5, color:'#4B5563' }}>{v.l}</span>
               <span style={{ fontSize:9, fontWeight:700, color:v.c, fontFamily:'monospace' }}>{v.v}</span>
             </div>
           ))}
         </div>
       </div>
-      <div style={{ padding:'6px 10px', background:'#FF6B3508', borderRadius:6, border:'1px solid #FF6B3520', fontSize:9, color:'#FF6B35', fontWeight:700, marginBottom:8 }}>
-        <Picto name="alert" size={10} /> CASCADE ALERT — MEOPA × Prodrome FIRES
-      </div>
       <div style={{ display:'flex', gap:3, flexWrap:'wrap' }}>
-        {['VPS 88','TDE','PVE','EWE','TPE','NCE','DDD !','CAE !'].map((e,i) => {
-          const cols = ['#EF4444','#2FD1C8','#B96BFF','#A78BFA','#FFB347','#2ED573','#DC2626','#FF6B35']
-          return <span key={i} style={{ padding:'2px 6px', borderRadius:4, background:`${cols[i]}12`, fontSize:7, fontWeight:800, color:cols[i], fontFamily:'monospace' }}>{e}</span>
-        })}
+        {[['VPS 81','#EF4444'],['TDE','#2FD1C8'],['PVE','#B96BFF'],['EWE','#A78BFA'],['TPE','#FFB347'],['NCE','#EC4899'],['CAE','#FF6B35'],['Discovery','#10B981']].map(([e,c],i) => (
+          <span key={i} style={{ padding:'2px 7px', borderRadius:4, background:`${c}12`, fontSize:7.5, fontWeight:800, color:c as string, fontFamily:'monospace' }}>{e}</span>
+        ))}
       </div>
     </div>
   )
-  if (step.tabId === 'cascade') return (
+
+  if (s === 'dashboard') return (
     <div>
-      <div style={{ display:'flex', gap:6, marginBottom:8 }}>
-        <div style={{ flex:1, padding:'4px 8px', background:'#111827', borderRadius:6, border:'1px solid #6C7CFF20' }}>
-          <span style={{ fontSize:10, color:'#F0F2F5' }}>MEOPA</span>
+      <div style={{ fontSize:8, color:'#4B5563', marginBottom:6 }}>8 patients actifs — Service Neuropédiatrie</div>
+      {[
+        { n:'Lucas M.',   a:'8a', vps:81, p:'P1', c:'#EF4444', dx:'FIRES suspect' },
+        { n:'Emma R.',    a:'6a', vps:52, p:'P2', c:'#F59E0B', dx:'Encéphalite' },
+        { n:'Noah B.',    a:'11a',vps:38, p:'P2', c:'#F59E0B', dx:'Épilepsie réfractaire' },
+        { n:'Léa K.',     a:'4a', vps:21, p:'P3', c:'#10B981', dx:'Bilan neurologique' },
+      ].map((pt,i) => (
+        <div key={i} style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 10px', background: i===0 ? '#EF444406' : '#0D1526', borderRadius:7, marginBottom:4, border: i===0 ? '1px solid #EF444418' : '1px solid transparent' }}>
+          <span style={{ width:5, height:5, borderRadius:3, background:pt.c, flexShrink:0 }} />
+          <span style={{ fontSize:9, fontWeight:600, color: i===0 ? '#F0F2F5' : '#6B7280', flex:1 }}>{pt.n} <span style={{ color:'#374151' }}>{pt.a}</span></span>
+          <span style={{ fontSize:7.5, color:pt.c, fontFamily:'monospace', fontWeight:700 }}>{pt.p}</span>
+          <span style={{ fontSize:7.5, color:'#374151' }}>{pt.dx}</span>
+          <span style={{ fontSize:9, fontWeight:800, color:pt.c, fontFamily:'monospace', minWidth:24, textAlign:'right' }}>{pt.vps}</span>
         </div>
-        <div style={{ padding:'4px 12px', borderRadius:6, background:'#FF6B35', color:'#fff', fontSize:9, fontWeight:700 }}>Analyser</div>
+      ))}
+    </div>
+  )
+
+  if (s === 'diagnostic') return (
+    <div>
+      <div style={{ display:'flex', gap:8, marginBottom:10 }}>
+        <div style={{ padding:'10px 14px', background:'#6C7CFF10', borderRadius:10, border:'1px solid #6C7CFF18', textAlign:'center', flex:'0 0 80px' }}>
+          <div style={{ fontSize:7.5, color:'#6C7CFF', fontWeight:700 }}>FIRES</div>
+          <div style={{ fontSize:26, fontWeight:900, color:'#6C7CFF', fontFamily:'monospace' }}>9/13</div>
+          <div style={{ fontSize:7, color:'#6C7CFF' }}>87% prob.</div>
+        </div>
+        <div style={{ flex:1 }}>
+          {[['Fièvre pré-ictale','✓','#10B981'],['Crise >24h','✓','#10B981'],['EEG continu','✓','#10B981'],['IRM normale','✓','#10B981'],['LCS normal','?','#F59E0B']].map(([l,v,c],i) => (
+            <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'3px 8px', background:'#0D1526', borderRadius:4, marginBottom:3 }}>
+              <span style={{ fontSize:8, color:'#6B7280' }}>{l}</span>
+              <span style={{ fontSize:9, fontWeight:700, color:c as string }}>{v}</span>
+            </div>
+          ))}
+        </div>
       </div>
-      <div style={{ padding:'10px', background:'#EF444408', borderRadius:8, border:'1px solid #EF444418', marginBottom:6 }}>
-        <div style={{ fontSize:9, fontWeight:800, color:'#EF4444', marginBottom:4 }}><Picto name="warning" size={10} /> CASCADE CRITIQUE : MEOPA × Prodrome FIRES</div>
-        {['Infection fébrile → neuroinflammation latente','MEOPA → hypoxie cérébrale transitoire','Seuil convulsif abaissé → 1ère crise','Cascade auto-entretenue → FIRES'].map((s,i) => (
-          <div key={i} style={{ display:'flex', gap:6, marginBottom:2, alignItems:'center' }}>
-            <span style={{ fontSize:7, fontWeight:900, color:'#EF4444', fontFamily:'monospace', minWidth:12 }}>{i+1}</span>
+      <div style={{ display:'flex', gap:4 }}>
+        {[['FIRES','#6C7CFF','87%'],['Anti-NMDAR','#B96BFF','8%'],['PIMS-TS','#10B981','3%'],['MOGAD','#2FD1C8','2%']].map(([l,c,p],i) => (
+          <div key={i} style={{ flex:1, padding:'5px 4px', background:`${c}10`, borderRadius:7, textAlign:'center', border:`1px solid ${c}20` }}>
+            <div style={{ fontSize:7, color:c as string, fontWeight:700 }}>{l}</div>
+            <div style={{ fontSize:11, fontWeight:800, color:c as string, fontFamily:'monospace' }}>{p}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+
+  if (s === 'traitement') return (
+    <div>
+      {[
+        { n:'Ligne 1', tx:'Benzos + Phénobarbital', s:'✓ Administrée', c:'#10B981' },
+        { n:'Ligne 2', tx:'Midazolam IV continu', s:'→ Recommandée', c:'#6C7CFF' },
+        { n:'Ligne 3', tx:'Kétamine + Propofol', s:'En attente', c:'#4B5563' },
+        { n:'Ligne 4', tx:'Anesthésie générale', s:'Si échec L3', c:'#374151' },
+      ].map((l,i) => (
+        <div key={i} style={{ display:'flex', alignItems:'center', gap:8, padding:'7px 10px', background: i===1 ? '#6C7CFF08' : '#0D1526', borderRadius:7, marginBottom:4, border: i===1 ? '1px solid #6C7CFF20' : '1px solid transparent' }}>
+          <div style={{ width:4, height:4, borderRadius:2, background:l.c, flexShrink:0 }} />
+          <span style={{ fontSize:7.5, color:'#4B5563', minWidth:38 }}>{l.n}</span>
+          <span style={{ fontSize:9, color: i<=1 ? '#E8EAF0' : '#6B7280', flex:1 }}>{l.tx}</span>
+          <span style={{ fontSize:8, fontWeight:700, color:l.c }}>{l.s}</span>
+        </div>
+      ))}
+      <div style={{ marginTop:6, padding:'5px 10px', background:'#F59E0B08', borderRadius:6, fontSize:8, color:'#F59E0B' }}>
+        ⚡ Délai optimal ligne 2 : &lt; 2h (H+6 actuel)
+      </div>
+    </div>
+  )
+
+  if (s === 'pve') return (
+    <div>
+      <div style={{ display:'flex', gap:6, marginBottom:10 }}>
+        <div style={{ flex:1, padding:'6px 10px', background:'#0D1526', borderRadius:7, border:'1px solid #EF444420', fontSize:9.5, color:'#F0F2F5' }}>Kétamine</div>
+        <div style={{ padding:'6px 14px', borderRadius:7, background:'#EF4444', color:'#fff', fontSize:8.5, fontWeight:700 }}>Analyser PVE</div>
+      </div>
+      <div style={{ padding:'10px 12px', background:'#EF444408', borderRadius:9, border:'1px solid #EF444418' }}>
+        <div style={{ fontSize:9, fontWeight:800, color:'#EF4444', marginBottom:6 }}>⚠ INTERACTION CRITIQUE</div>
+        {['Kétamine × Midazolam IV — dépression respiratoire','Profil FIRES : sensibilité EEG augmentée','Dose cumulée : seuil déjà à 78%'].map((s,i) => (
+          <div key={i} style={{ display:'flex', gap:6, marginBottom:3 }}>
+            <span style={{ fontSize:7, color:'#EF4444', fontWeight:900 }}>→</span>
             <span style={{ fontSize:8, color:'#E8EAF0' }}>{s}</span>
           </div>
         ))}
-        <div style={{ marginTop:4, fontSize:8, color:'#FF6B35' }}>→ Alternative : Emla + Paracétamol</div>
+        <div style={{ marginTop:6, fontSize:8, color:'#10B981', fontWeight:600 }}>Alternative : Phénobarbital + monitoring EEG renforcé</div>
       </div>
     </div>
   )
-  if (step.tabId === 'oracle') return (
+
+  if (s === 'ewe') return (
     <div>
-      {[{ l:'Standard', v:62, c:'#6C7CFF' }, { l:'Anakinra + KD', v:32, c:'#10B981' }, { l:'Expérimental', v:28, c:'#F5A623' }, { l:'Sans action', v:95, c:'#EF4444' }].map((s,i) => (
-        <div key={i} style={{ display:'flex', alignItems:'center', gap:6, marginBottom:8 }}>
-          <span style={{ width:70, fontSize:8, color:'#6B7280', textAlign:'right' }}>{s.l}</span>
-          <div style={{ flex:1, height:16, background:'#111827', borderRadius:8, overflow:'hidden', position:'relative' }}>
-            <div style={{ height:'100%', width:`${s.v}%`, background:`${s.c}25`, borderRadius:8, transition:'width 1s ease' }} />
-            <span style={{ position:'absolute', right:6, top:2, fontSize:8, fontWeight:700, color:s.c, fontFamily:'monospace' }}>{s.v}</span>
-          </div>
-        </div>
-      ))}
-      <div style={{ textAlign:'center', padding:'4px 8px', background:'#10B98108', borderRadius:6, fontSize:8, fontWeight:700, color:'#10B981' }}>Recommandation : Anakinra + KD → VPS 32 à H+72</div>
+      <div style={{ fontSize:8, color:'#4B5563', marginBottom:8 }}>Tendance SpO₂ — 18 dernières heures</div>
+      <div style={{ display:'flex', alignItems:'flex-end', gap:3, height:60, marginBottom:10 }}>
+        {[96,95,95,94,94,93,93,93,92,91,91,90,90,89,88,87,87,86].map((v,i) => (
+          <div key={i} style={{ flex:1, height:`${(v-82)*6}px`, background: v<90 ? '#EF444430' : '#A78BFA30', borderRadius:'2px 2px 0 0', borderTop:`2px solid ${v<90?'#EF4444':'#A78BFA'}`, transition:'height 0.5s' }} />
+        ))}
+      </div>
+      <div style={{ padding:'8px 12px', background:'#EF444408', borderRadius:8, border:'1px solid #EF444418', fontSize:8.5 }}>
+        <span style={{ color:'#EF4444', fontWeight:700 }}>EWE Alert — </span>
+        <span style={{ color:'#9CA3AF' }}>Dégradation projetée J+2 · Probabilité 74% · Fenêtre d'action : 6h</span>
+      </div>
     </div>
   )
-  // Generic content for other tabs
+
+  if (s === 'discovery') return (
+    <div>
+      <div style={{ display:'flex', gap:4, marginBottom:8 }}>
+        {[['L1 Pattern','#10B981'],['L2 PubMed','#10B981'],['L3 Hypothèses','#F59E0B'],['L4 Essais','#4B5563']].map(([l,c],i) => (
+          <div key={i} style={{ flex:1, padding:'4px 4px', background:`${c}10`, borderRadius:5, textAlign:'center', border:`1px solid ${c}20` }}>
+            <div style={{ fontSize:7, color:c as string, fontWeight:700, lineHeight:1.3 }}>{l}</div>
+            {i < 2 && <div style={{ width:6, height:6, borderRadius:3, background:c, margin:'2px auto 0' }} />}
+          </div>
+        ))}
+      </div>
+      {[
+        { src:'Nat. Neurology 2023', t:'FIRES + GCS < 10 → IVIG J+2 améliore pronostic ×2.3', c:'#10B981' },
+        { src:'Epilepsia 2024', t:'Corrélation CRP > 60 + pattern EEG = FIRES dans 89% des cas', c:'#10B981' },
+        { src:'Brain 2023', t:'Anakinra précoce (< 72h) réduit durée status epilepticus', c:'#0EA5E9' },
+      ].map((a,i) => (
+        <div key={i} style={{ padding:'6px 10px', background:'#0D1526', borderRadius:6, marginBottom:4 }}>
+          <div style={{ fontSize:7, color:a.c, fontWeight:700, marginBottom:2 }}>{a.src}</div>
+          <div style={{ fontSize:8, color:'#9CA3AF', lineHeight:1.4 }}>{a.t}</div>
+        </div>
+      ))}
+    </div>
+  )
+
+  if (s === 'lab') return (
+    <div>
+      <div style={{ marginBottom:8 }}>
+        {[
+          { h:'H1', l:'FIRES idiopathique', p:87, c:'#6C7CFF' },
+          { h:'H2', l:'FIRES infectieux', p:11, c:'#10B981' },
+          { h:'H3', l:'PIMS-TS neurologique', p:2, c:'#B96BFF' },
+        ].map((h,i) => (
+          <div key={i} style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
+            <span style={{ fontSize:8, fontWeight:800, color:h.c, fontFamily:'monospace', minWidth:20 }}>{h.h}</span>
+            <span style={{ fontSize:8.5, color:'#9CA3AF', flex:1 }}>{h.l}</span>
+            <div className="dv2-bar-track" style={{ width:80 }}>
+              <div className="dv2-bar-fill" style={{ width:`${h.p}%`, background:h.c }} />
+            </div>
+            <span style={{ fontSize:8.5, fontWeight:700, color:h.c, fontFamily:'monospace', minWidth:28 }}>{h.p}%</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ padding:'6px 10px', background:'#0EA5E908', borderRadius:7, border:'1px solid #0EA5E918', fontSize:8, color:'#0EA5E9' }}>
+        🔬 NCT05847205 — Anakinra pédiatrique FIRES · Recrutement actif · 4 centres FR
+      </div>
+    </div>
+  )
+
+  if (s === 'cascade') return (
+    <div>
+      <div style={{ display:'flex', gap:6, marginBottom:8 }}>
+        <div style={{ flex:1, padding:'6px 10px', background:'#0D1526', borderRadius:7, border:'1px solid #FF6B3520', fontSize:9.5, color:'#F0F2F5' }}>MEOPA</div>
+        <div style={{ padding:'6px 14px', borderRadius:7, background:'#FF6B35', color:'#fff', fontSize:8.5, fontWeight:700 }}>Analyser</div>
+      </div>
+      <div style={{ padding:'10px 12px', background:'#EF444408', borderRadius:9, border:'1px solid #EF444418' }}>
+        <div style={{ fontSize:9, fontWeight:800, color:'#EF4444', marginBottom:6 }}>⛔ CASCADE CRITIQUE — 4 étapes identifiées</div>
+        {['Neuroinflammation latente active','MEOPA → hypoxie cérébrale transitoire','Seuil convulsif déjà abaissé (GCS 9)','Cascade auto-entretenue irréversible'].map((s,i) => (
+          <div key={i} style={{ display:'flex', gap:6, marginBottom:3, alignItems:'center' }}>
+            <span style={{ fontSize:8, fontWeight:900, color:'#EF4444', fontFamily:'monospace', minWidth:12 }}>{i+1}</span>
+            <span style={{ fontSize:8, color:'#E8EAF0' }}>{s}</span>
+          </div>
+        ))}
+        <div style={{ marginTop:6, fontSize:8, color:'#10B981', fontWeight:600 }}>→ Alternative : Emla topique + Paracétamol IV</div>
+      </div>
+    </div>
+  )
+
+  if (s === 'oracle') return (
+    <div>
+      <div style={{ fontSize:8, color:'#4B5563', marginBottom:8 }}>Simulation pronostique H+72 — VPS projeté</div>
+      {[
+        { l:'Anakinra + Régime Cétogène', v:28, c:'#10B981', tag:'↑ Recommandé' },
+        { l:'Standard (Corticoïdes + IVIG)', v:44, c:'#6C7CFF', tag:'' },
+        { l:'Rituximab expérimental', v:35, c:'#F5A623', tag:'Essai NCT' },
+        { l:'Sans action supplémentaire', v:95, c:'#EF4444', tag:'⚠ Critique' },
+      ].map((s,i) => (
+        <div key={i} style={{ display:'flex', alignItems:'center', gap:6, marginBottom:8 }}>
+          <span style={{ width:130, fontSize:8, color:'#6B7280', textAlign:'right', flexShrink:0 }}>{s.l}</span>
+          <div className="dv2-bar-track" style={{ flex:1 }}>
+            <div className="dv2-bar-fill" style={{ width:`${s.v}%`, background:`${s.c}40` }} />
+            <span style={{ position:'absolute', right:6, top:1, fontSize:8, fontWeight:700, color:s.c, fontFamily:'monospace' }}>{s.v}</span>
+          </div>
+          {s.tag && <span style={{ fontSize:7.5, color:s.c, fontWeight:700, minWidth:60 }}>{s.tag}</span>}
+        </div>
+      ))}
+    </div>
+  )
+
+  if (s === 'rapport') return (
+    <div>
+      <div style={{ display:'flex', gap:6, marginBottom:10 }}>
+        {[['MD Brief','#6C7CFF'],['JSON','#10B981'],['BibTeX','#F5A623']].map(([f,c],i) => (
+          <div key={i} style={{ flex:1, padding:'8px 6px', background:`${c}10`, borderRadius:8, border:`1px solid ${c}20`, textAlign:'center', cursor:'pointer' }}>
+            <div style={{ fontSize:8, fontWeight:700, color:c as string }}>{f}</div>
+          </div>
+        ))}
+      </div>
+      {['Analyse VPS · 12 moteurs IA','70+ publications sourées','Traduction FR / EN auto','Hypothèses + Essais NCT actifs','Signature médecin + Timestamp'].map((l,i) => (
+        <div key={i} style={{ display:'flex', gap:6, padding:'4px 0', borderBottom:'1px solid #1A2540', alignItems:'center' }}>
+          <span style={{ fontSize:8, color:'#10B981' }}>✓</span>
+          <span style={{ fontSize:8.5, color:'#9CA3AF' }}>{l}</span>
+        </div>
+      ))}
+      <div style={{ marginTop:8, padding:'6px 10px', background:'#10B98108', borderRadius:7, fontSize:8.5, color:'#10B981', fontWeight:700 }}>
+        PDF généré en 2.3 secondes · Prêt à envoyer
+      </div>
+    </div>
+  )
+
   return (
     <div style={{ padding:8, textAlign:'center', color:'#6B7280', fontSize:10 }}>
       <Picto name={SIDEBAR_TABS.find(t => t.id === step.tabId)?.icon || 'brain'} size={32} glow />
@@ -401,88 +627,126 @@ function DemoContent({ step }: { step: DemoStep }) {
 function DemoOverlay({ t, onClose }: { t: (fr: string, en: string) => string; onClose: () => void }) {
   const [stepIdx, setStepIdx] = useState(0)
   const [clicking, setClicking] = useState(false)
-  const isFr = true // simplified
+  const [paused, setPaused] = useState(false)
 
   const step = DEMO_STEPS[stepIdx]
   const tabIndex = SIDEBAR_TABS.findIndex(tab => tab.id === step.tabId)
+  const act = ACTS[step.act]
+  const W = typeof window !== 'undefined' ? window.innerWidth : 900
+  const H = typeof window !== 'undefined' ? window.innerHeight : 700
 
   // Auto-advance
   useEffect(() => {
-    if (stepIdx >= DEMO_STEPS.length) return
+    if (paused || stepIdx >= DEMO_STEPS.length) return
     const timer = setTimeout(() => {
       if (stepIdx < DEMO_STEPS.length - 1) setStepIdx(s => s + 1)
       else onClose()
     }, step.duration)
     return () => clearTimeout(timer)
-  }, [stepIdx, step, onClose])
+  }, [stepIdx, step, onClose, paused])
 
   // Click animation
   useEffect(() => {
     const timer = setTimeout(() => {
       setClicking(true)
       setTimeout(() => setClicking(false), 400)
-    }, 600)
+    }, 700)
     return () => clearTimeout(timer)
   }, [stepIdx])
 
-  // Cursor position
-  const cursorLeft = step.cursorTarget === 'sidebar' ? 100 : 180 + ((step.contentX || 50) / 100) * (typeof window !== 'undefined' ? window.innerWidth - 180 : 600)
-  const cursorTop = step.cursorTarget === 'sidebar' ? 60 + tabIndex * 36 : ((step.contentY || 40) / 100) * (typeof window !== 'undefined' ? window.innerHeight : 600)
+  const cursorLeft = step.cursorTarget === 'sidebar' ? 94 : 188 + ((step.contentX || 50) / 100) * (W - 188)
+  const cursorTop  = step.cursorTarget === 'sidebar' ? 130 + tabIndex * 31 : ((step.contentY || 40) / 100) * H
 
-  // Bubble position
-  const bubbleLeft = step.cursorTarget === 'sidebar' ? 190 : Math.min(cursorLeft + 30, (typeof window !== 'undefined' ? window.innerWidth - 300 : 400))
-  const bubbleTop = Math.max(40, cursorTop - 20)
+  const bubbleLeft = step.cursorTarget === 'sidebar' ? 198 : Math.min(cursorLeft + 26, W - 310)
+  const bubbleTop  = Math.max(30, cursorTop - 16)
+
+  const actProgress = ((stepIdx + 1) / DEMO_STEPS.length) * 100
 
   return (
     <>
       <style>{DEMO_V2_CSS}</style>
       <div className="dv2-root">
-        {/* Sidebar — real PULSAR tabs */}
+
+        {/* Sidebar */}
         <div className="dv2-sidebar">
           <div className="dv2-logo">
-            <div style={{ width:8, height:8, borderRadius:4, background:'#6C7CFF' }} />
-            <span style={{ fontSize:11, fontWeight:800, color:'#6C7CFF', letterSpacing:1 }}>PULSAR</span>
+            <div style={{ width:7, height:7, borderRadius:'50%', background:'#6C7CFF', boxShadow:'0 0 6px #6C7CFF' }} />
+            <span style={{ fontSize:10.5, fontWeight:900, color:'#6C7CFF', letterSpacing:1.5 }}>PULSAR</span>
           </div>
-          <div style={{ fontSize:8, color:'#6B7280', padding:'0 14px 8px', borderBottom:'1px solid #1F2A40', marginBottom:4 }}>Léa M. · 7 ans · FIRES</div>
+          <div className="dv2-patient-chip">
+            <div style={{ fontSize:8.5, fontWeight:700, color:'#E8EAF0' }}>Lucas M. · 8 ans</div>
+            <div style={{ fontSize:7.5, color:'#EF4444', fontWeight:600 }}>P1 · FIRES suspect</div>
+          </div>
           {SIDEBAR_TABS.map((tab, i) => (
-            <div key={tab.id} className={`dv2-tab ${tab.id === step.tabId ? 'active' : ''}`} style={{ '--tc': tab.color } as any}>
-              <Picto name={tab.icon} size={13} glow={tab.id === step.tabId} />
+            <div key={tab.id}
+              className={`dv2-tab ${tab.id === step.tabId ? 'active' : ''}`}
+              style={{ '--tc': tab.color } as React.CSSProperties}
+              onClick={() => setStepIdx(DEMO_STEPS.findIndex(s => s.tabId === tab.id))}
+            >
+              <Picto name={tab.icon} size={12} glow={tab.id === step.tabId} />
               <span>{tab.label}</span>
-              {(tab.id === 'ddd' || tab.id === 'cascade') && <span style={{ marginLeft:'auto', width:6, height:6, borderRadius:3, background:'#EF4444' }} />}
             </div>
           ))}
         </div>
 
-        {/* Content area */}
+        {/* Content */}
         <div className="dv2-content" key={stepIdx}>
-          <div style={{ fontSize:9, fontFamily:'monospace', color:SIDEBAR_TABS.find(t => t.id === step.tabId)?.color || '#6C7CFF', letterSpacing:1, fontWeight:700, marginBottom:10 }}>
-            {step.titleFr.toUpperCase()}
+          <div className="dv2-content-header" style={{ color: SIDEBAR_TABS.find(t => t.id === step.tabId)?.color || '#6C7CFF' }}>
+            {step.titleFr}
           </div>
-          <DemoContent step={step} />
+          <DemoContent step={step} stepIdx={stepIdx} />
         </div>
 
-        {/* Animated cursor */}
+        {/* Cursor */}
         <div className={`dv2-cursor ${clicking ? 'click' : ''}`} style={{ left: cursorLeft, top: cursorTop }}>
           <div className="dv2-cursor-ring" />
+          <div className="dv2-cursor-dot" />
         </div>
 
-        {/* Explanatory bubble */}
+        {/* Bubble */}
         <div className="dv2-bubble" key={`b-${stepIdx}`} style={{ left: bubbleLeft, top: bubbleTop }}>
+          <div className="dv2-bubble-act" style={{ color: act.color }}>{act.label}</div>
           <div className="dv2-bubble-title">{step.titleFr}</div>
-          <div className="dv2-bubble-text">{isFr ? step.bubbleFr : step.bubbleEn}</div>
-          <div style={{ marginTop:6, fontSize:8, color:'#6B7280' }}>{stepIdx + 1} / {DEMO_STEPS.length}</div>
+          <div className="dv2-bubble-text">{step.bubbleFr}</div>
+          <div className="dv2-bubble-step">
+            <div style={{ flex:1, height:3, background:'#1A2540', borderRadius:2, overflow:'hidden' }}>
+              <div style={{ height:'100%', width:`${((stepIdx+1)/DEMO_STEPS.length)*100}%`, background: act.color, borderRadius:2, transition:'width 0.5s' }} />
+            </div>
+            <span style={{ color:'#4B5563' }}>{stepIdx + 1} / {DEMO_STEPS.length}</span>
+          </div>
         </div>
 
-        {/* Progress bar */}
+        {/* Top progress */}
         <div className="dv2-progress">
-          <div className="dv2-progress-bar" style={{ width: `${((stepIdx + 1) / DEMO_STEPS.length) * 100}%` }} />
+          <div className="dv2-progress-bar" style={{ width:`${actProgress}%`, background:`linear-gradient(90deg, #6C7CFF, ${act.color})` }} />
         </div>
 
-        {/* Navigation */}
-        <div style={{ position:'absolute', bottom:12, left:190, display:'flex', gap:3, zIndex:10 }}>
+        {/* Act labels */}
+        <div className="dv2-acts">
+          {ACTS.map((a, i) => {
+            const isActive = step.act === i
+            return (
+              <div key={i} className="dv2-act-label"
+                style={{ color: isActive ? a.color : '#374151', background: isActive ? `${a.color}12` : 'transparent', border: `1px solid ${isActive ? a.color+'30' : 'transparent'}` }}
+                onClick={() => setStepIdx(a.steps[0])}
+              >
+                {a.label}
+              </div>
+            )
+          })}
+        </div>
+
+        {/* Nav dots */}
+        <div className="dv2-nav">
+          <button className="dv2-nav-btn" onClick={() => setStepIdx(s => Math.max(0, s-1))}>←</button>
           {DEMO_STEPS.map((_, i) => (
-            <div key={i} onClick={() => setStepIdx(i)} style={{ width: i === stepIdx ? 14 : 5, height:5, borderRadius:3, background: i <= stepIdx ? '#6C7CFF' : '#1F2A40', cursor:'pointer', transition:'all 0.3s' }} />
+            <div key={i} className="dv2-dot"
+              onClick={() => setStepIdx(i)}
+              style={{ width: i === stepIdx ? 16 : 4, background: i <= stepIdx ? ACTS[DEMO_STEPS[i].act].color : '#1F2A40' }}
+            />
           ))}
+          <button className="dv2-nav-btn" onClick={() => setStepIdx(s => Math.min(DEMO_STEPS.length-1, s+1))}>→</button>
+          <button className="dv2-nav-btn" onClick={() => setPaused(p => !p)}>{paused ? '▶' : '⏸'}</button>
         </div>
 
         <button className="dv2-close" onClick={onClose}>{t('Fermer', 'Close')} ✕</button>
