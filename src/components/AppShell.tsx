@@ -9,6 +9,8 @@ import { RoleBadge } from './RoleGate'
 import ConnectionStatus from './ConnectionStatus'
 import PulsarGuide from './PulsarGuide'
 import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
+import PulsarLogo from '@/components/PulsarLogo';
+
 
 function AppShellInner({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<string | null>(null)
@@ -49,7 +51,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
         background: 'var(--p-bg)', color: 'var(--p-vps)',
       }}>
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'var(--p-font-mono)', marginBottom: '8px', letterSpacing: '0.1em' }}>PULSAR</div>
+          <div style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'var(--p-font-mono)', marginBottom: '8px', letterSpacing: '0.1em' }}><PulsarLogo size="md" /></div>
           <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>{t('Chargement…', 'Loading…')}</div>
         </div>
       </div>
@@ -94,7 +96,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
             <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={32} height={32}
               style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.4))', display: 'block', objectFit: 'contain' }} />
-            <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--p-vps)', letterSpacing: '0.1em', fontFamily: 'var(--p-font-mono)' }}>PULSAR</span>
+            <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--p-vps)', letterSpacing: '0.1em', fontFamily: 'var(--p-font-mono)' }}><PulsarLogo size="md" /></span>
           </Link>
           <span style={{ color: 'var(--p-text-dim)', fontSize: '11px' }}>›</span>
           <span style={{ fontSize: '12px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>{breadcrumb}</span>
