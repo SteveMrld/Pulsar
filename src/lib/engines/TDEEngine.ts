@@ -11,7 +11,17 @@ export class TDEEngine extends BrainCore {
   constructor() {
     super('TDE')
 
-    // ── Champ 1 : Tableau syndromique ──
+    
+  // ── DOSSIER V3 — Neuroinflammation pédiatrique (2026-03-07) ─────────────────
+  // Niveau de preuve IL-1/FIRES : ÉLEVÉ → boost H1 +3pts
+  // Anakinra réponse tardive J+8–J+14 médiane → J+10 Alejandro dans la norme
+  // Régime cétogène précoce : effet anti-inflammatoire MODÉRÉ
+  // Tocilizumab anti-IL-6 : niveau ÉMERGENT (cas réfractaires)
+  // Axe intestin-cerveau : EXPLORATOIRE — non intégré au scoring
+  // Biomarqueurs validés : S100B, albumine LCR/sérum, calprotectine fécale
+  // Zonuline : INCERTAINE — exclue du scoring différentiel
+  // Source: Dossier_V3_Neuroinflammation_GutBrain (PULSAR ingestion 2026-03-07)
+// ── Champ 1 : Tableau syndromique ──
     this.semanticFields.push(new SemanticField({
       name: 'Tableau syndromique', category: 'syndromic', color: '#5FA8FF',
       signals: [
