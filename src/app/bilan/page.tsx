@@ -4,6 +4,8 @@ import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
+import BrainMonitor from '@/components/BrainMonitor'
+import BrainHeatmap from '@/components/BrainHeatmap'
 import { DEMO_PATIENTS } from '@/lib/data/demoScenarios'
 
 const categories = [
@@ -85,6 +87,7 @@ const statusConfig: Record<Status, { label: string; color: string; bg: string; d
 
 export default function BilanPage() {
   const { t } = useLang()
+  const [activeView, setActiveView] = useState<'examens' | 'monitor' | 'heatmap'>('examens')
   const total = categories.reduce((s, c) => s + c.exams.length, 0)
   const [statuses, setStatuses] = useState<Record<string, Status>>({})
   const [expanded, setExpanded] = useState<string | null>(null)
@@ -131,6 +134,29 @@ export default function BilanPage() {
         ))}
       </div>
 
+      {/* View tabs */}
+      <div style={{ display: 'flex', gap: '4px', marginBottom: 'var(--p-space-4)', borderBottom: '1px solid var(--p-border)' }}>
+        {[
+          { id: 'examens', label: 'Examens diagnostiques', picto: 'clipboard' },
+          { id: 'monitor', label: 'Monitor EEG / ICU', picto: 'eeg' },
+          { id: 'heatmap', label: 'Heatmap cérébrale', picto: 'brain' },
+        ].map(tab => (
+          <button key={tab.id} onClick={() => setActiveView(tab.id as typeof activeView)} style={{
+            display: 'flex', alignItems: 'center', gap: '6px',
+            padding: '8px 14px', border: 'none', cursor: 'pointer',
+            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700,
+            color: activeView === tab.id ? 'var(--p-vps)' : 'var(--p-text-dim)',
+            background: 'transparent',
+            borderBottom: activeView === tab.id ? '2px solid var(--p-vps)' : '2px solid transparent',
+            transition: 'all 0.2s',
+          }}>
+            <Picto name={tab.picto} size={13} />
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
+      {activeView === 'examens' && (<>
       {/* Progress + urgent banner */}
       <div className="glass-card" style={{ padding: 'var(--p-space-4) var(--p-space-5)', marginBottom: 'var(--p-space-5)', display: 'flex', alignItems: 'center', gap: 'var(--p-space-6)', flexWrap: 'wrap' }}>
         <div style={{ flex: 1, minWidth: '200px' }}>
@@ -212,6 +238,42 @@ export default function BilanPage() {
           )
         })}
       </div>
+
+      </>)}
+
+      {/* BrainMonitor */}
+      {activeView === 'monitor' && (
+        <BrainMonitor
+          patientName={DEMO_PATIENTS[scenario]?.label || 'Patient'}
+          age="8 ans"
+          syndrome="FIRES — Febrile-induced Refractory Epileptic Encephalopathy"
+          hospDay={ps.hospDay || 7}
+          gcs={ps.neuro?.gcs ?? 9}
+          seizuresPerHour={ps.neuro?.seizures24h ? Math.round(ps.neuro.seizures24h / 24) : 2}
+          vpsScore={ps.vpsResult ? Math.round((ps.vpsResult as any).score ?? 72) : 72}
+          eegStatus={((ps.neuro?.seizures24h ?? 0) > 5 ? 'seizure' : (ps.neuro?.seizures24h ?? 0) > 0 ? 'slowing' : 'normal') as 'normal' | 'slowing' | 'seizure' | 'burst_suppression' | 'suppressed'}
+          eegBackground="Delta continu bitemporal — fréquence dominante 1-2Hz"
+          ncsePossible={(ps.neuro?.seizures24h ?? 0) > 3}
+          vitals={[
+            { label: 'FC', value: '102', unit: 'bpm', color: '#F43F5E', icon: 'heart', severity: 1, waveform: 'ecg', numericValue: 102, range: [60, 100] },
+            { label: 'SpO2', value: '97', unit: '%', color: '#38BDF8', icon: 'lungs', severity: 0, waveform: 'spo2', numericValue: 97, range: [95, 100] },
+            { label: 'PNI', value: '118/72', unit: 'mmHg', color: '#6C7CFF', icon: 'blood', severity: 0, waveform: 'flat', numericValue: 118, range: [90, 130] },
+            { label: 'Temp', value: '38.4', unit: '°C', color: '#FB923C', icon: 'thermo', severity: 1, waveform: 'flat', numericValue: 38.4, range: [36.5, 37.5] },
+          ]}
+        />
+      )}
+
+      {/* BrainHeatmap */}
+      {activeView === 'heatmap' && (
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: 'var(--p-space-6)' }}>
+          <BrainHeatmap
+            eegStatus={((ps.neuro?.seizures24h ?? 0) > 5 ? 'seizure' : (ps.neuro?.seizures24h ?? 0) > 0 ? 'slowing' : 'normal') as 'normal' | 'slowing' | 'seizure' | 'burst_suppression' | 'suppressed'}
+            channelIntensity={[0.9, 0.75, 0.6, 0.4, 0.8, 0.7]}
+            vpsScore={ps.vpsResult ? Math.round((ps.vpsResult as any).score ?? 72) : 72}
+            size={400}
+          />
+        </div>
+      )}
 
       <div style={{ textAlign: 'center', padding: 'var(--p-space-6)', color: 'var(--p-text-dim)', fontSize: '10px', fontFamily: 'var(--p-font-mono)' }}>
         PULSAR V15 — Bilan diagnostique - Pipeline connecte - Ne se substitue pas au jugement clinique

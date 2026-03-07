@@ -30,7 +30,7 @@ function AnalyseMenu({ pathname }: { pathname: string }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const { t } = useLang()
-  const analyseRoutes = ['/observatory', '/case-matching', '/cross-pathologie']
+  const analyseRoutes = ['/observatory', '/case-matching', '/cross-pathologie', '/bilan']
   const isActive = analyseRoutes.includes(pathname)
 
   useEffect(() => {
@@ -68,6 +68,7 @@ function AnalyseMenu({ pathname }: { pathname: string }) {
             { href: '/observatory', picto: 'chart', label: t('Observatoire', 'Observatory'), desc: t('Vue multi-patients', 'Multi-patient view') },
             { href: '/case-matching', picto: 'cycle', label: 'Case Matching', desc: t('Cas similaires', 'Similar cases') },
             { href: '/cross-pathologie', picto: 'dna', label: t('Cross-Pathologie', 'Cross-Pathology'), desc: t('5 pathologies croisées', '5 cross pathologies') },
+            { href: '/bilan', picto: 'microscope', label: t('Bilan', 'Assessment'), desc: t('Examens diagnostiques', 'Diagnostic workup') },
           ].map(item => (
             <Link key={item.href} href={item.href} onClick={() => setOpen(false)} style={{
               padding: '7px 10px', borderRadius: '6px', textDecoration: 'none',
