@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import ResearchPulse from '@/components/ResearchPulse';
+import EngineStatusBar from '@/components/EngineStatusBar';
 
 // ─── Supabase config ──────────────────────────────────────────────────────────
 const SUPA_URL = 'https://tpefzxyrjebnnzgguktm.supabase.co';
