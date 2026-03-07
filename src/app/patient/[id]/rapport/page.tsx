@@ -142,6 +142,9 @@ export default function RapportPage() {
           <button className="no-print" onClick={exportPDF} style={{ padding: '10px 16px', borderRadius: 'var(--p-radius-lg)', background: '#6C7CFF', color: '#fff', border: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
             <Picto name="export" size={14} /> {t('Exporter PDF', 'Export PDF')}
           </button>
+          <a href="/assets/PULSAR_Alejandro_Rapport_Definitif.pdf" download className="no-print" style={{ padding: '10px 16px', borderRadius: 'var(--p-radius-lg)', background: '#F5A623', color: '#000', border: 'none', fontWeight: 700, fontSize: 'var(--p-text-sm)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 6, marginTop: 4, textDecoration: 'none' }}>
+            <Picto name="pdf-export" size={14} /> {t('Rapport Alejandro (PDF)', 'Alejandro Report (PDF)')}
+          </a>
         </div>
       </div>
 
