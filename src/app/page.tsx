@@ -1,46 +1,45 @@
 'use client'
 import { useLang, LangToggle } from '@/contexts/LanguageContext'
-import { useRef, useEffect, useCallback, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import Picto from '@/components/Picto'
 
-// ══════════════════════════════════════════════════════════════
-// PULSAR SPLASH — Cinematic pre-landing (Design GPT)
-// ══════════════════════════════════════════════════════════════
-
+/* ══════════════════════════════════════════════════════════════
+   PULSAR — Splash cinématique
+   ══════════════════════════════════════════════════════════════ */
 const SPLASH_LETTERS = [
-  { char: 'P', word: 'PEDIATRIC', color: '#6C7CFF' },
-  { char: 'U', word: 'UNIFIED', color: '#8B5CF6' },
-  { char: 'L', word: 'LEARNING', color: '#2FD1C8' },
-  { char: 'S', word: 'SURVEILLANCE', color: '#10B981' },
-  { char: 'A', word: 'ANALYSIS', color: '#F5A623' },
-  { char: 'R', word: 'RESPONSE', color: '#EC4899' },
+  { char: 'P', word: 'PEDIATRIC' },
+  { char: 'U', word: 'UNIFIED' },
+  { char: 'L', word: 'LEARNING' },
+  { char: 'S', word: 'SURVEILLANCE' },
+  { char: 'A', word: 'ANALYSIS' },
+  { char: 'R', word: 'RESPONSE' },
 ]
 
 const SPLASH_CSS = `
-  .splash-root { position:fixed; inset:0; background:#04070F; display:flex; align-items:center; justify-content:center; overflow:hidden; z-index:9999; font-family:-apple-system,BlinkMacSystemFont,sans-serif; }
-  .splash-bg { position:absolute; width:100%; height:100%; object-fit:cover; opacity:.28; }
-  .splash-vignette { position:absolute; inset:0; background:radial-gradient(ellipse 80% 80% at 50% 50%, transparent 40%, rgba(4,7,15,0.85) 100%); pointer-events:none; }
-  .splash-center { position:relative; text-align:center; z-index:2; }
-  .splash-letterBlock { animation: splashFadeUp 0.9s cubic-bezier(.22,1,.36,1); }
-  .splash-letter { font-size:min(38vw,150px); font-weight:900; letter-spacing:-3px; line-height:1; color:#fff; filter:drop-shadow(0 0 40px rgba(255,255,255,0.15)); }
-  .splash-word { margin-top:8px; font-size:13px; letter-spacing:7px; opacity:0.45; color:#fff; text-transform:uppercase; font-weight:300; }
-  .splash-pulsar { font-size:min(28vw,130px); font-weight:900; letter-spacing:-2px; animation: splashAssemble 1.2s cubic-bezier(.22,1,.36,1); line-height:1; }
-  .splash-ring { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(55vw,220px); height:min(55vw,220px); border-radius:50%; border:1px solid rgba(108,124,255,0.18); animation: ringExpand 1.4s cubic-bezier(.22,1,.36,1); pointer-events:none; }
-  .splash-ring2 { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:min(72vw,290px); height:min(72vw,290px); border-radius:50%; border:1px solid rgba(108,124,255,0.07); animation: ringExpand 1.8s cubic-bezier(.22,1,.36,1) 0.2s both; pointer-events:none; }
-  .splash-texts { margin-top:28px; max-width:580px; margin-left:auto; margin-right:auto; animation: splashFadeUp 1.2s cubic-bezier(.22,1,.36,1); padding:0 20px; }
-  .splash-tagline { font-size:min(4.2vw,17px); opacity:.88; color:#E8EAF0; line-height:1.7; margin:0; font-style:italic; font-weight:300; }
-  .splash-subtitle { font-size:min(3vw,12px); color:rgba(108,124,255,0.75); letter-spacing:0.14em; text-transform:uppercase; font-weight:500; margin:0 0 14px; }
-  .splash-memory { margin-top:20px; font-size:15px; color:#F5A623; letter-spacing:0.1em; font-weight:400; text-shadow:0 0 30px rgba(245,166,35,0.5); animation: memorialGlow 3s ease-in-out 1s infinite; }
-  .splash-deploy { margin-top:14px; font-size:11px; color:rgba(108,124,255,0.45); letter-spacing:0.1em; font-weight:300; }
-  .splash-progress { position:absolute; bottom:0; left:0; height:1px; background:linear-gradient(90deg,#6C7CFF,#2FD1C8,#10B981); animation: progressBar 10s linear forwards; transform-origin:left; }
-  .splash-skip { position:absolute; bottom:24px; right:24px; background:transparent; border:1px solid rgba(255,255,255,0.15); color:rgba(255,255,255,0.45); padding:7px 16px; border-radius:20px; cursor:pointer; font-size:11px; z-index:3; letter-spacing:0.06em; transition:all 0.2s; }
-  .splash-skip:hover { border-color:rgba(255,255,255,0.4); color:rgba(255,255,255,0.9); }
-  @keyframes splashFadeUp { from{opacity:0;transform:translateY(24px);filter:blur(10px)} to{opacity:1;transform:translateY(0);filter:blur(0)} }
-  @keyframes splashAssemble { from{transform:scale(.65);opacity:0;filter:blur(20px)} to{transform:scale(1);opacity:1;filter:blur(0)} }
-  @keyframes ringExpand { from{transform:translate(-50%,-50%) scale(0.3);opacity:0} to{transform:translate(-50%,-50%) scale(1);opacity:1} }
-  @keyframes memorialGlow { 0%,100%{text-shadow:0 0 20px rgba(245,166,35,0.4)} 50%{text-shadow:0 0 50px rgba(245,166,35,0.7),0 0 80px rgba(245,166,35,0.2)} }
-  @keyframes progressBar { from{width:0} to{width:100%} }
+  .sp { position:fixed;inset:0;background:#04070F;display:flex;align-items:center;justify-content:center;z-index:9999;overflow:hidden;font-family:-apple-system,sans-serif; }
+  .sp-bg { position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.2; }
+  .sp-vig { position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 50%,transparent 30%,rgba(4,7,15,.95) 100%);pointer-events:none; }
+  .sp-bar { position:absolute;bottom:0;left:0;height:1px;background:linear-gradient(90deg,#6C7CFF,#2FD1C8,#10B981);animation:sp-bar 10s linear forwards; }
+  .sp-c { position:relative;z-index:2;text-align:center; }
+  .sp-lb { animation:sp-up .85s cubic-bezier(.22,1,.36,1); }
+  .sp-l { font-size:min(36vw,148px);font-weight:900;letter-spacing:-4px;line-height:1;color:#fff;filter:drop-shadow(0 0 60px rgba(108,124,255,.2)); }
+  .sp-w { margin-top:6px;font-size:12px;letter-spacing:8px;opacity:.35;color:#fff;text-transform:uppercase;font-weight:300; }
+  .sp-pul { font-size:min(26vw,120px);font-weight:900;letter-spacing:-3px;line-height:1;animation:sp-asm 1.3s cubic-bezier(.22,1,.36,1);background:linear-gradient(135deg,#6C7CFF,#9C6CFF,#2FD1C8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 40px rgba(108,124,255,.35)); }
+  .sp-ring { position:absolute;top:50%;left:50%;border-radius:50%;border:1px solid rgba(108,124,255,.12);pointer-events:none;animation:sp-ring 1.6s cubic-bezier(.22,1,.36,1) both; }
+  .sp-r1 { width:min(54vw,216px);height:min(54vw,216px);transform:translate(-50%,-50%); }
+  .sp-r2 { width:min(70vw,280px);height:min(70vw,280px);transform:translate(-50%,-50%);border-color:rgba(108,124,255,.05);animation-delay:.18s; }
+  .sp-txt { margin-top:34px;max-width:540px;margin-left:auto;margin-right:auto;padding:0 24px;animation:sp-up 1.4s cubic-bezier(.22,1,.36,1); }
+  .sp-sub { font-size:11px;color:rgba(108,124,255,.65);letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin:0 0 14px; }
+  .sp-tag { font-size:min(3.8vw,16px);color:rgba(232,234,240,.85);line-height:1.75;margin:0;font-style:italic;font-weight:300; }
+  .sp-mem { margin-top:24px;font-size:13px;color:#F5A623;letter-spacing:.1em;font-weight:400;animation:sp-mem 3s ease-in-out 1s infinite; }
+  .sp-skip { position:absolute;bottom:22px;right:22px;background:transparent;border:1px solid rgba(255,255,255,.1);color:rgba(255,255,255,.35);padding:6px 14px;border-radius:16px;cursor:pointer;font-size:11px;z-index:3;letter-spacing:.05em;transition:all .2s; }
+  .sp-skip:hover { border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.75); }
+  @keyframes sp-up  { from{opacity:0;transform:translateY(28px);filter:blur(12px)} to{opacity:1;transform:none;filter:none} }
+  @keyframes sp-asm { from{transform:scale(.58);opacity:0;filter:blur(24px)} to{transform:scale(1);opacity:1;filter:none} }
+  @keyframes sp-ring{ from{transform:translate(-50%,-50%) scale(.2);opacity:0} to{transform:translate(-50%,-50%) scale(1);opacity:1} }
+  @keyframes sp-mem { 0%,100%{text-shadow:0 0 16px rgba(245,166,35,.35)} 50%{text-shadow:0 0 48px rgba(245,166,35,.7),0 0 80px rgba(245,166,35,.15)} }
+  @keyframes sp-bar { from{width:0} to{width:100%} }
 `
 
 function PulsarSplash({ onComplete }: { onComplete: () => void }) {
@@ -49,594 +48,464 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
   const [showText, setShowText] = useState(false)
   const { t } = useLang()
 
-  // Ambient cinematic audio
   useEffect(() => {
     let ctx: AudioContext | null = null
     try {
       ctx = new AudioContext()
       const g = ctx.createGain()
       g.gain.setValueAtTime(0, ctx.currentTime)
-      g.gain.linearRampToValueAtTime(0.08, ctx.currentTime + 2)
-      g.gain.linearRampToValueAtTime(0.06, ctx.currentTime + 8)
+      g.gain.linearRampToValueAtTime(0.065, ctx.currentTime + 2.5)
       g.gain.linearRampToValueAtTime(0, ctx.currentTime + 11.5)
       g.connect(ctx.destination)
-
-      // Deep pad: layered oscillators
-      const notes = [55, 82.41, 110, 164.81] // A1, E2, A2, E3
-      notes.forEach((freq, i) => {
-        const osc = ctx!.createOscillator()
-        const oscGain = ctx!.createGain()
-        osc.type = i < 2 ? 'sine' : 'triangle'
-        osc.frequency.setValueAtTime(freq, ctx!.currentTime)
-        // Subtle pitch drift
-        osc.frequency.linearRampToValueAtTime(freq * 1.002, ctx!.currentTime + 6)
-        osc.frequency.linearRampToValueAtTime(freq * 0.998, ctx!.currentTime + 10)
-        oscGain.gain.setValueAtTime(i < 2 ? 0.4 : 0.15, ctx!.currentTime)
-        osc.connect(oscGain)
-        oscGain.connect(g)
-        osc.start()
-        osc.stop(ctx!.currentTime + 12)
+      ;[55, 82.41, 110, 164.81].forEach((f, i) => {
+        const o = ctx!.createOscillator(), og = ctx!.createGain()
+        o.type = i < 2 ? 'sine' : 'triangle'
+        o.frequency.setValueAtTime(f, ctx!.currentTime)
+        o.frequency.linearRampToValueAtTime(f * 1.002, ctx!.currentTime + 6)
+        og.gain.setValueAtTime(i < 2 ? 0.36 : 0.11, ctx!.currentTime)
+        o.connect(og); og.connect(g)
+        o.start(); o.stop(ctx!.currentTime + 12)
       })
-    } catch { /* Web Audio not available */ }
+    } catch { /* noop */ }
     return () => { ctx?.close().catch(() => {}) }
   }, [])
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && sessionStorage.getItem('pulsar-splash-seen')) {
-      onComplete()
-      return
-    }
-
+    if (typeof window !== 'undefined' && sessionStorage.getItem('pulsar-splash-seen')) { onComplete(); return }
     let i = -1
-    const interval = setInterval(() => {
-      i++
-      setIndex(i)
+    const iv = setInterval(() => {
+      i++; setIndex(i)
       if (i === SPLASH_LETTERS.length) {
-        clearInterval(interval)
-        setTimeout(() => setAssembled(true), 800)
-        setTimeout(() => setShowText(true), 2000)
-        setTimeout(() => {
-          sessionStorage.setItem('pulsar-splash-seen', '1')
-          onComplete()
-        }, 12000)
+        clearInterval(iv)
+        setTimeout(() => setAssembled(true), 650)
+        setTimeout(() => setShowText(true), 1800)
+        setTimeout(() => { sessionStorage.setItem('pulsar-splash-seen', '1'); onComplete() }, 11000)
       }
-    }, 1600)
-
-    return () => clearInterval(interval)
+    }, 1450)
+    return () => clearInterval(iv)
   }, [onComplete])
 
-  const skip = () => {
-    if (typeof window !== 'undefined') sessionStorage.setItem('pulsar-splash-seen', '1')
-    onComplete()
-  }
+  const skip = () => { if (typeof window !== 'undefined') sessionStorage.setItem('pulsar-splash-seen', '1'); onComplete() }
 
   return (
     <>
       <style>{SPLASH_CSS}</style>
-      <div className="splash-root">
-        <video className="splash-bg" autoPlay muted loop playsInline src="/assets/videos/neural-bg.mp4" />
-        <div className="splash-vignette" />
-        <div className="splash-progress" />
-        {assembled && <><div className="splash-ring" /><div className="splash-ring2" /></>}
-
-        <div className="splash-center">
+      <div className="sp">
+        <video className="sp-bg" autoPlay muted loop playsInline src="/assets/videos/neural-bg.mp4" />
+        <div className="sp-vig" />
+        <div className="sp-bar" />
+        {assembled && <><div className="sp-ring sp-r1" /><div className="sp-ring sp-r2" /></>}
+        <div className="sp-c">
           {!assembled && index >= 0 && index < SPLASH_LETTERS.length && (
-            <div className="splash-letterBlock" key={index}>
-              <div className="splash-letter" style={{ color: '#FFFFFF' }}>
-                {SPLASH_LETTERS[index].char}
-              </div>
-              <div className="splash-word" style={{ color: 'rgba(255,255,255,0.5)' }}>{SPLASH_LETTERS[index].word}</div>
+            <div className="sp-lb" key={index}>
+              <div className="sp-l">{SPLASH_LETTERS[index].char}</div>
+              <div className="sp-w">{SPLASH_LETTERS[index].word}</div>
             </div>
           )}
-
-          {assembled && (
-            <div className="splash-pulsar" style={{ background: 'linear-gradient(90deg, #6C7CFF, #8B5CF6, #2FD1C8)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', filter: 'drop-shadow(0 0 30px rgba(108,124,255,0.4))' }}>
-              PULSAR
-            </div>
-          )}
-
+          {assembled && <div className="sp-pul">PULSAR</div>}
           {showText && (
-            <div className="splash-texts">
-              <p className="splash-subtitle">
-                {t(
-                  "La première plateforme d'intelligence artificielle dédiée aux urgences neurologiques pédiatriques.",
-                  "The first artificial intelligence platform dedicated to pediatric neurological emergencies."
-                )}
-              </p>
-              <p className="splash-tagline">
-                {t(
-                  "Quand le cerveau d'un enfant s'enflamme, chaque seconde d'avance sauve une vie.",
-                  "When a child's brain ignites, every second ahead saves a life."
-                )}
-              </p>
-              <p className="splash-memory">
-                {t("À la mémoire d'Alejandro", "In memory of Alejandro")}
-              </p>
-              <p className="splash-deploy">
-                {t(
-                  "Bientôt déployé dans les plus grands centres hospitaliers internationaux.",
-                  "Soon deployed in the world's leading hospital centers."
-                )}
-              </p>
+            <div className="sp-txt">
+              <p className="sp-sub">{t('Intelligence clinique pédiatrique', 'Pediatric clinical intelligence')}</p>
+              <p className="sp-tag">{t("Quand le cerveau d'un enfant s'enflamme,", "When a child's brain ignites,")}<br />{t("chaque seconde d'avance sauve une vie.", "every second ahead saves a life.")}</p>
+              <p className="sp-mem">{t("À la mémoire d'Alejandro R. · 2019–2025", "In memory of Alejandro R. · 2019–2025")}</p>
             </div>
           )}
         </div>
-
-        <button className="splash-skip" onClick={skip}>
-          {t('Passer →', 'Skip →')}
-        </button>
+        <button className="sp-skip" onClick={skip}>{t('Passer →', 'Skip →')}</button>
       </div>
     </>
   )
 }
 
-// ── Cycling Video Background ──
-const VIDEOS = [
-  '/assets/videos/data-particles.mp4',
+/* ══════════════════════════════════════════════════════════════
+   PULSAR — Landing page
+   ══════════════════════════════════════════════════════════════ */
+
+const ENGINES = [
+  { id: 'VPS', name: 'Vital Prognosis Score',       color: '#6C7CFF', desc: 'Score sévérité 0–100 · 4 champs sémantiques · 13 critères FIRES' },
+  { id: 'TDE', name: 'Therapeutic Decision Engine', color: '#2FD1C8', desc: 'Escalade thérapeutique · FIRES · PIMS · MOGAD · anti-NMDAR' },
+  { id: 'PVE', name: 'Pharmacovigilance Engine',    color: '#B96BFF', desc: 'Interactions critiques temps réel · polythérapie cardiotoxique' },
+  { id: 'EWE', name: 'Early Warning Engine',        color: '#A78BFA', desc: 'Détection précoce · tendances vitales · pré-décompensation' },
+  { id: 'TPE', name: 'Therapeutic Prospection',     color: '#FFB347', desc: 'Projection J+7/J+14 · recommandations anticipées' },
+  { id: 'CAE', name: 'Cascade Alert Engine',        color: '#FF6B35', desc: 'Effets en chaîne · cascade cardiaque iatrogène' },
 ]
 
-function CyclingVideoBackground() {
-  const videoRef = useRef<HTMLVideoElement>(null)
-  const [currentIndex, setCurrentIndex] = useState(0)
+const DISCOVERY = [
+  { n: 'L1', label: 'Pattern Mining',       color: '#10B981', detail: 'Pearson 34 params · k-means k=3 · z-score 2.5σ' },
+  { n: 'L2', label: 'Literature Scanner',   color: '#3B82F6', detail: '25 publications · 3 NCT actifs · veille PubMed live' },
+  { n: 'L3', label: 'Hypothesis Engine',    color: '#8B5CF6', detail: 'Claude API · H1/H2/H3 · workflow validation' },
+  { n: 'L4', label: 'Treatment Pathfinder', color: '#EC4899', detail: 'anakinra · tocilizumab · KD · rituximab · eligibility scoring' },
+]
 
-  const playNext = useCallback(() => {
-    setCurrentIndex(prev => (prev + 1) % VIDEOS.length)
-  }, [])
+const CSS = `
+  /* ── Layout ── */
+  .lp { min-height:100vh; background:var(--p-bg); color:var(--p-text); }
 
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-    video.src = VIDEOS[currentIndex]
-    video.load()
-    video.play().catch(() => {})
-    const onEnded = () => playNext()
-    video.addEventListener('ended', onEnded)
-    return () => video.removeEventListener('ended', onEnded)
-  }, [currentIndex, playNext])
+  /* ── Nav ── */
+  .lp-nav { display:flex; justify-content:space-between; align-items:center; padding:0 48px; height:60px; position:sticky; top:0; z-index:100; background:rgba(18,18,25,0.9); backdrop-filter:blur(24px) saturate(1.4); border-bottom:1px solid rgba(108,124,255,0.07); }
+  .lp-logo { display:flex; align-items:center; gap:10px; }
+  .lp-logo-text { font-size:16px; font-weight:800; letter-spacing:.14em; }
+  .lp-nav-actions { display:flex; align-items:center; gap:10px; }
+  .lp-btn { padding:8px 20px; border-radius:10px; font-size:13px; font-weight:600; text-decoration:none; cursor:pointer; border:none; transition:all .18s; }
+  .lp-btn-soft { background:transparent; color:var(--p-text-muted); }
+  .lp-btn-soft:hover { color:var(--p-text); background:var(--p-bg-elevated); }
+  .lp-btn-main { background:var(--p-vps); color:#fff; box-shadow:0 0 20px rgba(108,124,255,.2); }
+  .lp-btn-main:hover { box-shadow:0 0 32px rgba(108,124,255,.4); transform:translateY(-1px); }
 
-  return (
-    <>
-      <video
-        ref={videoRef}
-        muted
-        playsInline
-        loop
-        style={{
-          position: 'fixed', inset: 0, width: '100%', height: '100%',
-          objectFit: 'cover', zIndex: 0, opacity: 0.7,
-          transition: 'opacity 1.5s ease',
-        }}
-      />
-      <div style={{
-        position: 'fixed', inset: 0, zIndex: 0,
-        background: 'linear-gradient(180deg, rgba(12,20,36,0.25) 0%, rgba(12,20,36,0.1) 40%, rgba(12,20,36,0.15) 70%, rgba(12,20,36,0.3) 100%)',
-        pointerEvents: 'none',
-      }} />
-    </>
-  )
-}
+  /* ── Sections ── */
+  .lp-wrap { max-width:1000px; margin:0 auto; padding:0 48px; }
+  .lp-hero { padding:96px 0 80px; text-align:center; }
+  .lp-section { padding:72px 0; }
+  .lp-section-alt { padding:64px 0; background:var(--p-bg-card); border-top:1px solid rgba(108,124,255,.06); border-bottom:1px solid rgba(108,124,255,.06); }
 
-// ══════════════════════════════════════════════════════════════
-// PULSAR — Landing
-// La promesse : plus aucun enfant perdu par manque d'intelligence
-// ══════════════════════════════════════════════════════════════
+  /* ── Typography ── */
+  .lp-eyebrow { font-family:var(--p-font-mono); font-size:10px; font-weight:700; letter-spacing:.2em; text-transform:uppercase; color:var(--p-text-dim); margin-bottom:14px; }
+  .lp-h1 { font-size:clamp(2rem,5vw,3.25rem); font-weight:900; line-height:1.12; letter-spacing:-1.5px; margin-bottom:20px; }
+  .lp-h2 { font-size:clamp(1.4rem,3vw,1.9rem); font-weight:800; line-height:1.2; letter-spacing:-.5px; }
+  .lp-lead { font-size:16px; color:var(--p-text-muted); line-height:1.78; font-weight:300; }
 
+  /* ── Tags ── */
+  .lp-badge { display:inline-flex; align-items:center; padding:4px 14px; border-radius:20px; font-family:var(--p-font-mono); font-size:10px; font-weight:700; letter-spacing:.1em; }
 
+  /* ── Cards ── */
+  .lp-card { border-radius:18px; padding:28px 28px; background:var(--p-bg-card); border:1px solid rgba(108,124,255,0.07); transition:border-color .2s,transform .2s; }
+  .lp-card:hover { border-color:rgba(108,124,255,0.18); transform:translateY(-2px); }
+  .lp-card-flat { border-radius:14px; padding:20px 22px; background:var(--p-bg-elevated); border:1px solid transparent; }
+
+  /* ── Grids ── */
+  .lp-g2 { display:grid; grid-template-columns:repeat(auto-fit,minmax(420px,1fr)); gap:16px; }
+  .lp-g3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:12px; }
+  .lp-g4 { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:10px; }
+
+  /* ── Engine row ── */
+  .lp-eng { display:flex; align-items:center; gap:16px; padding:16px 20px; border-radius:12px; background:var(--p-bg-card); border:1px solid rgba(108,124,255,.06); border-left-width:2px; transition:background .15s; }
+  .lp-eng:hover { background:var(--p-bg-elevated); }
+  .lp-eng-id { font-family:var(--p-font-mono); font-size:12px; font-weight:900; min-width:38px; }
+  .lp-eng-name { font-size:13px; font-weight:700; color:var(--p-text); }
+  .lp-eng-desc { font-size:11px; color:var(--p-text-dim); margin-top:2px; font-family:var(--p-font-mono); }
+
+  /* ── Stats bar ── */
+  .lp-stats { display:flex; justify-content:space-around; flex-wrap:wrap; padding:28px 48px; border-top:1px solid rgba(108,124,255,.06); border-bottom:1px solid rgba(108,124,255,.06); background:var(--p-bg-card); }
+  .lp-stat { text-align:center; padding:12px 20px; }
+  .lp-stat-v { font-family:var(--p-font-mono); font-size:clamp(1.5rem,3vw,2rem); font-weight:900; letter-spacing:-1px; line-height:1; }
+  .lp-stat-l { font-size:10.5px; color:var(--p-text-dim); text-transform:uppercase; letter-spacing:.1em; margin-top:4px; font-family:var(--p-font-mono); }
+
+  /* ── Memorial ── */
+  .lp-mem { padding:18px 0; text-align:center; border-bottom:1px solid rgba(245,166,35,.05); }
+  .lp-mem-line { display:inline-flex; align-items:center; gap:12px; }
+  .lp-mem-bar { width:56px; height:1px; }
+  .lp-mem-text { font-size:12px; color:rgba(245,166,35,.6); font-style:italic; letter-spacing:.05em; }
+
+  /* ── Divider ── */
+  .lp-div { max-width:1000px; margin:0 auto; height:1px; background:rgba(108,124,255,.06); }
+
+  /* ── CTA block ── */
+  .lp-cta-box { border-radius:24px; padding:56px 48px; background:var(--p-bg-card); border:1px solid rgba(108,124,255,.1); max-width:700px; margin:0 auto; text-align:center; }
+
+  /* ── Footer ── */
+  .lp-foot { border-top:1px solid rgba(108,124,255,.06); padding:20px 48px; text-align:center; font-family:var(--p-font-mono); font-size:10.5px; color:var(--p-text-dim); }
+
+  /* ── Animations ── */
+  @keyframes lp-in { from{opacity:0;transform:translateY(18px)} to{opacity:1;transform:none} }
+  .lp-a  { animation:lp-in .6s cubic-bezier(.22,1,.36,1) both; }
+  .lp-a1 { animation-delay:.04s } .lp-a2 { animation-delay:.1s }
+  .lp-a3 { animation-delay:.17s } .lp-a4 { animation-delay:.25s }
+`
 
 export default function LandingPage() {
   const { t } = useLang()
   const [splashDone, setSplashDone] = useState(false)
 
-  // Check if splash was already seen this session
   useEffect(() => {
-    if (typeof window !== 'undefined' && sessionStorage.getItem('pulsar-splash-seen')) {
-      setSplashDone(true)
-    }
+    if (typeof window !== 'undefined' && sessionStorage.getItem('pulsar-splash-seen')) setSplashDone(true)
   }, [])
 
-  if (!splashDone) {
-    return <PulsarSplash onComplete={() => setSplashDone(true)} />
-  }
-
-const workflow = [
-  { step: '1', label: 'Admission', desc: 'Intake + Triage P1-P4', color: '#8B5CF6' },
-  { step: '2', label: 'Pipeline', desc: t('11 moteurs activés', '11 engines activated'), color: '#6C7CFF' },
-  { step: '3', label: 'Cockpit', desc: t('Monitoring + alertes', 'Monitoring + alerts'), color: '#2FD1C8' },
-  { step: '4', label: 'Discovery', desc: t('Signaux + hypothèses', 'Signals + hypotheses'), color: '#10B981' },
-  { step: '5', label: 'Export', desc: 'Brief · JSON · BibTeX', color: '#B96BFF' },
-]
-
-  const engines = [
-    { name: 'VPS', full: 'Vital Prognosis Score', color: '#6C7CFF',
-      desc: t("Score de sévérité global via 4 champs sémantiques. Lit les signaux vitaux comme un cerveau clinique.", "Global severity score across 4 semantic fields. Reads vital signs like a clinical brain.") },
-    { name: 'TDE', full: 'Therapeutic Decision Engine', color: '#2FD1C8',
-      desc: t("Escalade thérapeutique adaptée à chaque pathologie. FIRES, anti-NMDAR, MOGAD — chaque pattern, sa logique.", "Therapeutic escalation adapted to each pathology. FIRES, anti-NMDAR, MOGAD — each pattern, its logic.") },
-    { name: 'PVE', full: 'Pharmacovigilance Engine', color: '#B96BFF',
-      desc: t('Interactions critiques en temps réel. Croise traitements, pathologie et terrain.', 'Critical interactions in real time. Cross-references treatments, pathology, and patient profile.') },
-    { name: 'EWE', full: 'Early Warning Engine', color: '#A78BFA',
-      desc: t("Détection précoce des détériorations. Analyse les tendances vitales avant la décompensation.", "Early detection of deterioration. Analyzes vital trends before decompensation.") },
-    { name: 'TPE', full: 'Therapeutic Prospection Engine', color: '#FFB347',
-      desc: t("Projection J+7/J+14. Recommandations thérapeutiques anticipées.", "D+7/D+14 projection. Anticipated therapeutic recommendations.") },
-  ]
-  
-  const discoveryLevels = [
-    { name: 'N1', label: 'Pattern Mining', color: '#10B981', icon: '📊',
-      desc: t('Corrélation de Pearson sur 34 paramètres cliniques. Clustering k-means. Détection d\'anomalies z-score (2.5σ). Chaque patient génère des signaux qui enrichissent le système.', 'Pearson correlation on 34 clinical parameters. K-means clustering. Z-score anomaly detection (2.5σ). Each patient generates signals that enrich the system.'),
-      detail: t('34 paramètres × 8 patients', '34 parameters × 8 patients') },
-    { name: 'N2', label: 'Literature Scanner', color: '#3B82F6', icon: '📡',
-      desc: t('Veille PubMed live (10 requêtes). ClinicalTrials.gov temps réel. Détection automatique de contradictions avec le protocole thérapeutique en cours.', 'Live PubMed monitoring (10 queries). ClinicalTrials.gov real-time. Automatic detection of contradictions with the current therapeutic protocol.'),
-      detail: t('25 publications + 3 essais NCT actifs', '25 publications + 3 active NCT trials') },
-    { name: 'N3', label: 'Hypothesis Engine', color: '#8B5CF6', icon: '💡',
-      desc: t('Croisement N1×N2 via Claude API. Génération d\'hypothèses de recherche. Workflow de validation : Générée → En revue → Validée → Publiée.', 'N1×N2 cross-analysis via Claude API. Research hypothesis generation. Validation workflow: Generated → Under review → Validated → Published.'),
-      detail: t('3 hypothèses calibrées + scoring', '3 calibrated hypotheses + scoring') },
-    { name: 'N4', label: 'Treatment Pathfinder', color: '#EC4899', icon: '🧬',
-      desc: t('Matching patient↔essais cliniques mondiaux. Scoring d\'éligibilité multicritères. Chaque enfant est connecté aux traitements qui pourraient changer sa trajectoire.', 'Patient↔global clinical trial matching. Multi-criteria eligibility scoring. Every child is connected to treatments that could change their trajectory.'),
-      detail: 'anakinra · tocilizumab · KD · combo · rituximab' },
-  ]
-  
-  const epidemioStats = [
-    { value: '~30 000', label: t('enfants/an', 'children/year'), sub: t('touchés par des maladies neuro-inflammatoires dans le monde', 'affected by neuroinflammatory diseases worldwide'), color: '#8B5CF6' },
-    { value: '12–30%', label: t('mortalité', 'mortality'), sub: t('dans les formes réfractaires (FIRES, NORSE, encéphalites sévères)', 'in refractory forms (FIRES, NORSE, severe encephalitis)'), color: '#A78BFA' },
-    { value: '90%', label: t('séquelles', 'sequelae'), sub: t('des survivants gardent des déficits cognitifs ou une épilepsie chronique', 'of survivors retain cognitive deficits or chronic epilepsy'), color: '#FFB347' },
-    { value: '5', label: 'syndromes', sub: 'FIRES · Anti-NMDAR · NORSE · PIMS · MOGAD/ADEM', color: '#6C7CFF' },
-  ]
+  if (!splashDone) return <PulsarSplash onComplete={() => setSplashDone(true)} />
 
   return (
-    <div className="page-enter" style={{ minHeight: '100vh', background: '#0C1424', position: 'relative', color: '#E8EAF0' }}>
-      {/* ── Global cycling video background ── */}
-      <CyclingVideoBackground />
-      {/* ── Cinematic atmosphere layers ── */}
-      {/* Warm golden halo top-left */}
-      <div style={{ position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 0 }}>
-        <div style={{ position: 'absolute', top: '-10%', left: '-5%', width: '50vw', height: '50vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(245,166,35,0.03) 0%, rgba(245,166,35,0.02) 40%, transparent 70%)', filter: 'blur(60px)' }} />
-        <div style={{ position: 'absolute', top: '30%', right: '-10%', width: '40vw', height: '40vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(108,124,255,0.02) 0%, rgba(108,124,255,0.02) 40%, transparent 70%)', filter: 'blur(50px)' }} />
-        <div style={{ position: 'absolute', bottom: '10%', left: '20%', width: '35vw', height: '35vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(16,185,129,0.02) 0%, transparent 60%)', filter: 'blur(40px)' }} />
-        <div style={{ position: 'absolute', bottom: '-5%', right: '10%', width: '30vw', height: '30vh', borderRadius: '50%', background: 'radial-gradient(ellipse, rgba(245,166,35,0.02) 0%, transparent 60%)', filter: 'blur(50px)' }} />
-        {/* Grain overlay */}
-        <div style={{ position: 'absolute', inset: 0, opacity: 0.03, backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 256 256\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noise\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noise)\'/%3E%3C/svg%3E")', backgroundRepeat: 'repeat', backgroundSize: '256px' }} />
-      </div>
+    <>
+      <style>{CSS}</style>
+      <div className="lp">
 
-      {/* ── Floating light particles ── */}
-      <style>{`
-        @keyframes float-particle {
-          0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
-          10% { opacity: 1; }
-          90% { opacity: 1; }
-          100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
-        }
-        @keyframes glow-pulse {
-          0%, 100% { opacity: 0.3; transform: scale(1); }
-          50% { opacity: 0.6; transform: scale(1.1); }
-        }
-      `}</style>
-      {[...Array(12)].map((_, i) => (
-        <div key={i} style={{
-          position: 'fixed', pointerEvents: 'none', zIndex: 0,
-          width: 2 + Math.random() * 3, height: 2 + Math.random() * 3,
-          borderRadius: '50%',
-          background: i % 3 === 0 ? 'rgba(245,166,35,0.5)' : i % 3 === 1 ? 'rgba(108,124,255,0.4)' : 'rgba(47,209,200,0.4)',
-          boxShadow: i % 3 === 0 ? '0 0 6px rgba(245,166,35,0.3)' : i % 3 === 1 ? '0 0 6px rgba(108,124,255,0.3)' : '0 0 6px rgba(47,209,200,0.3)',
-          left: `${5 + Math.random() * 90}%`,
-          bottom: '-5%',
-          animation: `float-particle ${15 + Math.random() * 20}s linear ${Math.random() * 15}s infinite`,
-        }} />
-      ))}
-
-      {/* NAV */}
-      <nav style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: 'var(--p-space-4) var(--p-space-8)', position: 'sticky', top: 0, zIndex: 50, background: 'rgba(12,20,36,0.85)', backdropFilter: 'blur(20px) saturate(1.3)', borderBottom: '1px solid rgba(245,166,35,0.08)' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)' }}>
-          <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={40} height={40} style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.5))', display: 'block', objectFit: 'contain' }} />
-          <span className="text-gradient-brand" style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, letterSpacing: '0.1em' }}>PULSAR</span>
-        </div>
-        <div style={{ display: 'flex', gap: 'var(--p-space-3)' }}>
-          <LangToggle />
-          <Link href="/login" style={{ padding: 'var(--p-space-2) var(--p-space-5)', borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)', textDecoration: 'none', fontSize: 'var(--p-text-sm)' }}>{t('Connexion', 'Sign in')}</Link>
-        </div>
-      </nav>
-
-      {/* ═══════════ MEMORIAL ═══════════ */}
-      <style>{`
-        @keyframes memorial-fade { 0% { opacity: 0; transform: translateY(8px); } 100% { opacity: 1; transform: translateY(0); } }
-        @keyframes star-glow { 0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 4px rgba(245,166,35,0.3)); } 50% { opacity: 1; filter: drop-shadow(0 0 12px rgba(245,166,35,0.6)); } }
-        @keyframes line-grow { 0% { transform: scaleX(0); } 100% { transform: scaleX(1); } }
-        .landing-glass { background: rgba(16,22,40,0.6); backdrop-filter: blur(16px) saturate(1.2); border: 1px solid rgba(245,166,35,0.03); }
-        .landing-glass:hover { border-color: rgba(245,166,35,0.12); }
-      `}</style>
-      <div style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) 0', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '16px', maxWidth: '560px', margin: '0 auto' }}>
-          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, transparent, rgba(245,166,35,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'right' }} />
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px', animation: 'memorial-fade 2s ease-out 0.5s both' }}>
-            <span style={{ fontSize: '16px', lineHeight: 1, animation: 'star-glow 3s ease-in-out 1.5s infinite' }}>✦</span>
-            <p style={{ fontSize: '13px', color: 'rgba(245,166,35,0.7)', margin: 0, fontWeight: 300, letterSpacing: '0.08em', fontStyle: 'italic' }}>
-              {t('À la mémoire d\'Alejandro R.', 'In memory of Alejandro R.')}
-            </p>
-            <p style={{ fontSize: '11px', color: 'var(--p-text-dim)', margin: 0, fontFamily: 'var(--p-font-mono)', fontWeight: 500, letterSpacing: '0.15em' }}>
-              2019 – 2025
-            </p>
-            <p style={{ fontSize: '11px', color: 'rgba(245,166,35,0.85)', margin: '8px 0 0', fontWeight: 300, fontStyle: 'italic', lineHeight: 1.6, maxWidth: 380, textAlign: 'center' }}>
-              {t(
-                'Je t\'avais fait une promesse, mon petit lion. Elle est désormais tenue. Aujourd\'hui, elle protégera d\'autres enfants.',
-                'I made you a promise, my little lion. It is now kept. Today, it will protect other children.'
-              )}
-            </p>
+        {/* ─── NAV ─── */}
+        <nav className="lp-nav">
+          <div className="lp-logo">
+            <img src="/assets/pictos-v17/brain-hero-128.png" alt="" width={32} height={32}
+              style={{ filter: 'drop-shadow(0 0 10px rgba(108,124,255,.55))' }} />
+            <span className="lp-logo-text text-gradient-brand">PULSAR</span>
           </div>
-          <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to left, transparent, rgba(245,166,35,0.3))', animation: 'line-grow 1.8s ease-out 0.3s both', transformOrigin: 'left' }} />
-        </div>
-      </div>
-
-      {/* ═══════════ HERO ═══════════ */}
-      <section className="page-enter" style={{ textAlign: 'center', padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'inline-flex', gap: '8px', marginBottom: 'var(--p-space-6)', flexWrap: 'wrap', justifyContent: 'center' }}>
-          <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: 'var(--p-vps-dim)', color: 'var(--p-vps)', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)' }}>{t('INTELLIGENCE CLINIQUE', 'CLINICAL INTELLIGENCE')}</span>
-          <span style={{ padding: 'var(--p-space-1) var(--p-space-4)', borderRadius: 'var(--p-radius-full)', background: '#10B98112', color: '#10B981', fontSize: 'var(--p-text-xs)', fontWeight: 600, letterSpacing: '0.08em', fontFamily: 'var(--p-font-mono)', border: '1px solid #10B98120' }}>{t('RECHERCHE TRANSLATIONNELLE', 'TRANSLATIONAL RESEARCH')}</span>
-        </div>
-
-        <h1 style={{ fontSize: 'var(--p-text-5xl)', fontWeight: 800, lineHeight: 'var(--p-leading-tight)', marginBottom: 'var(--p-space-6)', color: 'var(--p-text)' }}>
-          {t("Quand le cerveau d'un enfant s'enflamme,", "When a child's brain ignites,")}<br /><span className="text-gradient-vps">{t('chaque seconde d\'avance sauve une vie.', 'every second ahead saves a life.')}</span>
-        </h1>
-
-        <p style={{ fontSize: 'var(--p-text-lg)', color: 'var(--p-text-muted)', lineHeight: 'var(--p-leading-relaxed)', maxWidth: '720px', margin: '0 auto var(--p-space-6)' }}>
-          {t("Chaque année, environ 30 000 enfants dans le monde sont frappés par des maladies neuro-inflammatoires — FIRES, NORSE, encéphalites auto-immunes, ADEM, MOGAD. Des enfants en parfaite santé dont le cerveau s'enflamme sans prévenir.", "Every year, approximately 30,000 children worldwide are struck by neuroinflammatory diseases — FIRES, NORSE, autoimmune encephalitis, ADEM, MOGAD. Perfectly healthy children whose brains ignite without warning.")}
-        </p>
-
-        <p style={{ fontSize: 'var(--p-text-base)', color: 'var(--p-text)', lineHeight: 'var(--p-leading-relaxed)', maxWidth: '720px', margin: '0 auto var(--p-space-10)', fontWeight: 600 }}>
-          {t("PULSAR est le premier système d'intelligence artificielle entièrement dédié à ces pathologies. 11 moteurs qui pensent ensemble, un Discovery Engine qui croise chaque patient avec la recherche mondiale, et un principe fondateur : chaque enfant qui entre dans le système rend le système plus intelligent pour le suivant. Rien de tel n'existe aujourd'hui.", "PULSAR is the first AI system entirely dedicated to these conditions. 11 engines that think together, a Discovery Engine that cross-references each patient with global research, and a founding principle: every child who enters the system makes it smarter for the next one. Nothing like this exists today.")}
-        </p>
-
-
-      </section>
-
-      {/* ═══════════ DOUBLE PROMESSE ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-6) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: 'var(--p-space-6)' }}>
-
-          {/* CÔTÉ CLINIQUE */}
-          <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.02) 0%, rgba(245,166,35,0.03) 100%)', border: '1px solid rgba(108,124,255,0.10)', backdropFilter: 'blur(8px)' }}>
-            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#6C7CFF', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ CLINIQUE', 'CLINICAL SIDE')}</div>
-            <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Comprimer le temps entre', 'Compress the time between')}<br />{t('le premier signal et', 'the first signal and')}<br /><span style={{ color: '#6C7CFF' }}>{t('la bonne décision', 'the right decision')}</span></h3>
-            <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
-              {t("Dans ces maladies, la différence entre séquelles et récupération se joue en heures. Le médecin isolé à 3h du matin ne peut pas connaître les 59 protocoles, les 25 publications récentes, les interactions entre 5 traitements simultanés.", "In these diseases, the difference between lasting damage and recovery is measured in hours. A doctor alone at 3 AM cannot know all 59 protocols, 25 recent publications, and interactions between 5 simultaneous treatments.")}
-            </p>
-            <p style={{ fontSize: '13px', color: 'var(--p-text)', lineHeight: 1.8, fontWeight: 600 }}>
-              {t("PULSAR le peut. 11 moteurs d'analyse qui pensent ensemble — sévérité, escalade thérapeutique, pharmacovigilance, alerte précoce, prospection — pour que chaque clinicien, où qu'il soit, ait la puissance de décision du meilleur service de neuropédiatrie au monde.", "PULSAR can. 11 analysis engines that think together — severity, therapeutic escalation, pharmacovigilance, early warning, prospection — so that every clinician, wherever they are, has the decision-making power of the world's best neuropediatrics unit.")}
-            </p>
-            <div style={{ display: 'flex', gap: '6px', marginTop: 'var(--p-space-4)', flexWrap: 'wrap' }}>
-              {engines.map((e) => (
-                <span key={e.name} style={{ padding: '3px 10px', borderRadius: 'var(--p-radius-full)', background: `${e.color}12`, border: `1px solid ${e.color}25`, fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: e.color }}>{e.name}</span>
-              ))}
-            </div>
+          <div className="lp-nav-actions">
+            <LangToggle />
+            <a href="/login" className="lp-btn lp-btn-soft">{t('Connexion', 'Sign in')}</a>
+            <a href="/login" className="lp-btn lp-btn-main">{t('Accès clinicien', 'Clinician access')}</a>
           </div>
+        </nav>
 
-          {/* CÔTÉ RECHERCHE */}
-          <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', background: 'linear-gradient(135deg, rgba(16,185,129,0.05) 0%, rgba(245,166,35,0.03) 100%)', border: '1px solid rgba(16,185,129,0.10)', backdropFilter: 'blur(8px)' }}>
-            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#10B981', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-3)' }}>{t('CÔTÉ RECHERCHE', 'RESEARCH SIDE')}</div>
-            <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Chaque enfant qui passe dans', 'Every child who passes through')}<br />{t('PULSAR rend le système', 'PULSAR makes the system')}<br /><span style={{ color: '#10B981' }}>{t('plus intelligent pour le suivant', 'smarter for the next one')}</span></h3>
-            <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
-              {t("Le Discovery Engine fait ce que personne ne fait aujourd'hui. Il prend les données cliniques d'un enfant malade, les croise avec toute la littérature mondiale, et génère des hypothèses de recherche. Chaque cas enrichit les corrélations, affine les hypothèses, identifie les essais cliniques.", "The Discovery Engine does what no one does today. It takes clinical data from a sick child, cross-references it with all global literature, and generates research hypotheses. Each case enriches correlations, refines hypotheses, identifies clinical trials.")}
-            </p>
-            <p style={{ fontSize: '13px', color: 'var(--p-text)', lineHeight: 1.8, fontWeight: 600 }}>
-              {t("L'enfant admis à Pointe-à-Pitre enrichit la décision pour l'enfant qui sera admis demain à Lyon, à Dakar ou à Montréal. Chaque tragédie individuelle se transforme en intelligence collective.", "A child admitted in Pointe-à-Pitre enriches decisions for the child who will be admitted tomorrow in Lyon, Dakar, or Montreal. Every individual tragedy transforms into collective intelligence.")}
-            </p>
-            <div style={{ display: 'flex', gap: '6px', marginTop: 'var(--p-space-4)', flexWrap: 'wrap' }}>
-              {discoveryLevels.map((d) => (
-                <span key={d.name} style={{ padding: '3px 10px', borderRadius: 'var(--p-radius-full)', background: `${d.color}12`, border: `1px solid ${d.color}25`, fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: d.color }}>{d.name} {d.label}</span>
-              ))}
-            </div>
+        {/* ─── MÉMORIAL ─── */}
+        <div className="lp-mem">
+          <div className="lp-mem-line">
+            <div className="lp-mem-bar" style={{ background: 'linear-gradient(to right, transparent, rgba(245,166,35,.25))' }} />
+            <span className="lp-mem-text">
+              {t("À la mémoire d'Alejandro R. · 2019–2025", "In memory of Alejandro R. · 2019–2025")}
+            </span>
+            <div className="lp-mem-bar" style={{ background: 'linear-gradient(to left, transparent, rgba(245,166,35,.25))' }} />
           </div>
         </div>
-      </section>
 
-      {/* ═══════════ ÉPIDÉMIOLOGIE ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#F5A623', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('MALADIES NEURO-INFLAMMATOIRES PÉDIATRIQUES', 'PEDIATRIC NEUROINFLAMMATORY DISEASES')}</div>
-          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>{t("Quand le cerveau d'un enfant s'enflamme", "When a child's brain ignites")}</h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'var(--p-space-4)' }}>
-          {epidemioStats.map((s, i) => (
-            <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', borderTop: `3px solid ${s.color}`, textAlign: 'center' }}>
-              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '32px', fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
-              <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--p-text)', marginTop: '6px' }}>{s.label}</div>
-              <div style={{ fontSize: '10px', color: 'var(--p-text-muted)', marginTop: '4px', lineHeight: 1.5 }}>{s.sub}</div>
-            </div>
-          ))}
-        </div>
-        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-5) var(--p-space-8)', marginTop: 'var(--p-space-4)', textAlign: 'center', borderLeft: '4px solid #F5A623' }}>
-          <p style={{ fontSize: '12px', color: 'var(--p-text-muted)', lineHeight: 1.8, margin: 0 }}>
-            <strong style={{ color: 'var(--p-text)' }}>FIRES</strong> (1/million) · <strong style={{ color: 'var(--p-text)' }}>Encéphalites auto-immunes</strong> (jusqu&apos;à 4,2/million) · <strong style={{ color: 'var(--p-text)' }}>NORSE</strong> (~3 200 cas/an aux USA) · <strong style={{ color: 'var(--p-text)' }}>ADEM</strong> (3–6/million) · <strong style={{ color: 'var(--p-text)' }}>MOGAD</strong> · <strong style={{ color: 'var(--p-text)' }}>PIMS/MIS-C</strong> — {t('des enfants en parfaite santé, foudroyés après un simple épisode infectieux. Les traitements de première ligne échouent dans la majorité des cas.', 'perfectly healthy children, struck down after a simple infection. First-line treatments fail in the majority of cases.')}
+        {/* ─── HERO ─── */}
+        <section className="lp-wrap lp-hero">
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 28 }}>
+            <span className="lp-badge lp-a lp-a1" style={{ background: 'rgba(108,124,255,.1)', color: '#6C7CFF', border: '1px solid rgba(108,124,255,.18)' }}>
+              {t('Intelligence clinique', 'Clinical Intelligence')}
+            </span>
+            <span className="lp-badge lp-a lp-a1" style={{ background: 'rgba(16,185,129,.08)', color: '#10B981', border: '1px solid rgba(16,185,129,.14)' }}>
+              {t('Recherche translationnelle', 'Translational Research')}
+            </span>
+          </div>
+
+          <h1 className="lp-h1 lp-a lp-a2">
+            {t("Quand le cerveau d'un enfant s'enflamme,", "When a child's brain ignites,")}<br />
+            <span className="text-gradient-vps">
+              {t("chaque seconde d'avance sauve une vie.", "every second ahead saves a life.")}
+            </span>
+          </h1>
+
+          <p className="lp-lead lp-a lp-a3" style={{ maxWidth: 660, margin: '0 auto 40px' }}>
+            {t(
+              "FIRES, NORSE, anti-NMDAR, MOGAD, PIMS — des pathologies rares, mortelles, où chaque heure compte. PULSAR est le premier système d'intelligence artificielle entièrement dédié à ces urgences neurologiques pédiatriques.",
+              "FIRES, NORSE, anti-NMDAR, MOGAD, PIMS — rare, deadly conditions where every hour matters. PULSAR is the first AI system entirely dedicated to pediatric neurological emergencies."
+            )}
           </p>
-        </div>
-        <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', textAlign: 'center', marginTop: '8px' }}>Sources : Epilepsia 2018, Frontiers in Neurology 2024, Frontiers in Pediatrics 2019, NORD, CHOP, PMC 2021.</div>
-      </section>
 
-      {/* ═══════════ DISCOVERY ENGINE — SHOWCASE ═══════════ */}
-
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-8)' }}>
-          <div style={{ display: 'inline-block', padding: '6px 20px', borderRadius: 'var(--p-radius-full)', background: '#10B98112', border: '1px solid #10B98125', marginBottom: 'var(--p-space-4)' }}>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#10B981', letterSpacing: '1.5px' }}>DISCOVERY ENGINE v4.0</span>
+          <div className="lp-a lp-a4" style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <a href="/login" className="lp-btn lp-btn-main" style={{ fontSize: 15, padding: '13px 36px' }}>
+              {t('Ouvrir un dossier patient', 'Open a patient file')}
+            </a>
+            <a href="/login?demo=1" style={{
+              padding: '13px 28px', borderRadius: 10, border: '1px solid rgba(245,166,35,.22)',
+              color: '#F5A623', textDecoration: 'none', fontSize: 14, fontWeight: 600, transition: 'all .18s'
+            }}>{t('Voir la démo', 'View demo')}</a>
           </div>
-          <h2 style={{ fontSize: 'var(--p-text-3xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-3)' }}>{t('De la donnée clinique', 'From clinical data')}<br />{t('à', 'to')} <span style={{ color: '#10B981' }}>{t("l'hypothèse de recherche", 'the research hypothesis')}</span></h2>
-          <p style={{ fontSize: '14px', color: 'var(--p-text-muted)', maxWidth: '660px', margin: '0 auto', lineHeight: 1.8 }}>
-            {t("4 niveaux d'analyse. PubMed et ClinicalTrials.gov en temps réel. Génération d'hypothèses par intelligence artificielle. Un pipeline de recherche translationnelle complet — du chevet de l'enfant à la publication scientifique.", "4 levels of analysis. PubMed and ClinicalTrials.gov in real time. AI-powered hypothesis generation. A complete translational research pipeline — from the child's bedside to scientific publication.")}
-          </p>
-        </div>
+        </section>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px' }}>
-          {discoveryLevels.map((d) => (
-            <div key={d.name} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', borderTop: `3px solid ${d.color}`, position: 'relative' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
-                <span style={{ fontSize: '20px' }}>{d.icon}</span>
-                <div>
-                  <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 900, fontSize: '14px', color: d.color }}>{d.name}</span>
-                  <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--p-text)', marginLeft: '8px' }}>{d.label}</span>
-                </div>
-              </div>
-              <p style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.7, margin: '0 0 10px 0' }}>{d.desc}</p>
-              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: d.color, fontWeight: 700, padding: '4px 0', borderTop: `1px solid ${d.color}15` }}>{d.detail}</div>
-            </div>
-          ))}
-        </div>
-
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'center', marginTop: 'var(--p-space-6)', flexWrap: 'wrap' }}>
+        {/* ─── STATS ─── */}
+        <div className="lp-stats">
           {[
-            { label: 'Veille PubMed live', color: '#10B981' },
-            { label: 'ClinicalTrials.gov', color: '#3B82F6' },
-            { label: 'Enrichissement TDE', color: '#2FD1C8' },
-            { label: 'Brief FR/EN', color: '#8B5CF6' },
-            { label: 'JSON + BibTeX', color: '#EC4899' },
-          ].map((t, i) => (
-            <span key={i} style={{ padding: '3px 10px', borderRadius: 'var(--p-radius-full)', background: `${t.color}10`, border: `1px solid ${t.color}20`, fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 600, color: t.color }}>{t.label}</span>
+            { v: '12',    l: t('Moteurs actifs', 'Active engines'),   c: '#6C7CFF' },
+            { v: '95/95', l: t('Tests validés', 'Validated tests'),   c: '#10B981' },
+            { v: '81%',   l: 'FIRES détecté H1',                     c: '#8B5CF6' },
+            { v: '5',     l: t('Pathologies', 'Pathologies'),         c: '#FFB347' },
+            { v: '34K+',  l: t('Lignes de code', 'Lines of code'),    c: '#2FD1C8' },
+          ].map((s, i) => (
+            <div key={i} className="lp-stat">
+              <div className="lp-stat-v" style={{ color: s.c }}>{s.v}</div>
+              <div className="lp-stat-l">{s.l}</div>
+            </div>
           ))}
         </div>
 
+        {/* ─── DOUBLE PROMESSE ─── */}
+        <section>
+          <div className="lp-wrap lp-section">
+            <div className="lp-g2">
 
-      </section>
-
-      {/* ═══════════ TREATMENT PATHFINDER — PROMESSE THÉRAPEUTIQUE ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(236,72,153,0.04) 0%, rgba(245,166,35,0.03) 50%, rgba(16,185,129,0.02) 100%)', border: '1px solid rgba(236,72,153,0.10)', position: 'relative', overflow: 'hidden', backdropFilter: 'blur(8px)' }}>
-          <div style={{ position: 'absolute', top: '-30px', right: '-30px', width: '160px', height: '160px', borderRadius: '50%', background: 'radial-gradient(circle, rgba(236,72,153,0.08), transparent 70%)', pointerEvents: 'none' }} />
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--p-space-6)', flexWrap: 'wrap' }}>
-            <div style={{ flex: '1 1 400px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: 'var(--p-space-4)' }}>
-                <Picto name="microscope" size={32} glow glowColor="rgba(236,72,153,0.4)" />
-                <div>
-                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#EC4899', letterSpacing: '2px', fontWeight: 800 }}>TREATMENT PATHFINDER</div>
-                  <div style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>Discovery Engine · Niveau 4</div>
+              {/* Côté clinique */}
+              <div className="glass-card" style={{ borderRadius: 20, padding: '36px 32px', borderTop: '2px solid #6C7CFF' }}>
+                <div className="lp-eyebrow" style={{ color: '#6C7CFF' }}>{t('Côté clinique', 'Clinical side')}</div>
+                <h2 className="lp-h2" style={{ marginBottom: 16 }}>
+                  {t('Comprimer le délai entre', 'Compress the time between')}<br />
+                  {t('le premier signal et', 'the first signal and')}{' '}
+                  <span style={{ color: '#6C7CFF' }}>{t('la bonne décision', 'the right decision')}</span>
+                </h2>
+                <p style={{ fontSize: 13, color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 20 }}>
+                  {t(
+                    "Dans ces maladies, la différence entre séquelles et récupération se joue en heures. 11 moteurs qui pensent ensemble — sévérité, escalade, pharmacovigilance, alerte précoce, prospection — pour que chaque clinicien ait la puissance de décision du meilleur service au monde.",
+                    "In these diseases, the difference between damage and recovery is measured in hours. 11 engines thinking together — severity, escalation, pharmacovigilance, early warning, prospection — so every clinician has world-class decision power."
+                  )}
+                </p>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {ENGINES.map(e => (
+                    <span key={e.id} style={{
+                      padding: '3px 10px', borderRadius: 8,
+                      background: `${e.color}14`, border: `1px solid ${e.color}22`,
+                      fontFamily: 'var(--p-font-mono)', fontSize: 10, fontWeight: 700, color: e.color
+                    }}>{e.id}</span>
+                  ))}
                 </div>
               </div>
-              <h3 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', marginBottom: 'var(--p-space-4)', lineHeight: 1.3 }}>{t('Pour chaque enfant, PULSAR', 'For every child, PULSAR')}<br />{t('cherche activement', 'actively searches for')} <span style={{ color: '#EC4899' }}>{t('des pistes de traitement', 'treatment pathways')}</span></h3>
-              <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 'var(--p-space-4)' }}>
-                {t("Le Treatment Pathfinder ne se contente pas d'analyser — il agit. À partir du profil clinique de chaque patient, il interroge les essais cliniques mondiaux, évalue l'éligibilité à des traitements ciblés, et remonte des pistes thérapeutiques directement dans les recommandations du clinicien.", "The Treatment Pathfinder doesn't just analyze — it acts. From each patient's clinical profile, it queries global clinical trials, evaluates eligibility for targeted treatments, and surfaces therapeutic leads directly in clinician recommendations.")}
-              </p>
-              <p style={{ fontSize: '13px', color: 'var(--p-text)', lineHeight: 1.8, fontWeight: 600 }}>
-                {t("Quand un enfant ne répond plus aux traitements de première ligne, le Pathfinder cherche ce qui pourrait fonctionner — dans la littérature, dans les essais en cours, dans les combinaisons que personne n'a encore testées sur ce profil précis.", "When a child no longer responds to first-line treatments, the Pathfinder searches for what might work — in the literature, in ongoing trials, in combinations no one has yet tested on this specific profile.")}
-              </p>
+
+              {/* Côté recherche */}
+              <div className="glass-card" style={{ borderRadius: 20, padding: '36px 32px', borderTop: '2px solid #10B981' }}>
+                <div className="lp-eyebrow" style={{ color: '#10B981' }}>{t('Côté recherche', 'Research side')}</div>
+                <h2 className="lp-h2" style={{ marginBottom: 16 }}>
+                  {t('Chaque patient rend le système', 'Every patient makes the system')}{' '}
+                  <span style={{ color: '#10B981' }}>{t('plus intelligent', 'smarter')}</span>{' '}
+                  {t('pour le suivant', 'for the next one')}
+                </h2>
+                <p style={{ fontSize: 13, color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 20 }}>
+                  {t(
+                    "Le Discovery Engine croise les données cliniques avec PubMed et ClinicalTrials.gov en temps réel, génère des hypothèses de recherche validables. L'enfant admis à Pointe-à-Pitre enrichit la décision pour l'enfant admis demain à Lyon.",
+                    "The Discovery Engine cross-references clinical data with PubMed and ClinicalTrials.gov in real time, generating validatable research hypotheses. A child admitted in Pointe-à-Pitre enriches the decision for a child admitted tomorrow in Lyon."
+                  )}
+                </p>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {DISCOVERY.map(d => (
+                    <span key={d.n} style={{
+                      padding: '3px 10px', borderRadius: 8,
+                      background: `${d.color}12`, border: `1px solid ${d.color}20`,
+                      fontFamily: 'var(--p-font-mono)', fontSize: 10, fontWeight: 700, color: d.color
+                    }}>{d.n} {d.label}</span>
+                  ))}
+                </div>
+              </div>
+
             </div>
-            <div style={{ flex: '0 0 280px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {[
-                { mol: 'Anakinra', type: 'Anti-IL-1', usage: t('FIRES réfractaire', 'Refractory FIRES'), color: '#EC4899' },
-                { mol: 'Tocilizumab', type: 'Anti-IL-6', usage: t('Encéphalite auto-immune', 'Autoimmune encephalitis'), color: '#8B5CF6' },
-                { mol: t('Régime cétogène', 'Ketogenic diet'), type: t('Métabolique', 'Metabolic'), usage: t('FIRES / épilepsie réfractaire', 'FIRES / refractory epilepsy'), color: '#10B981' },
-                { mol: 'Rituximab', type: 'Anti-CD20', usage: t('Anti-NMDAR réfractaire', 'Refractory anti-NMDAR'), color: '#3B82F6' },
-                { mol: t('Combinaisons', 'Combinations'), type: t('Multi-cibles', 'Multi-target'), usage: t('Profils complexes', 'Complex profiles'), color: '#FFB347' },
-              ].map((t, i) => (
-                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 12px', borderRadius: 'var(--p-radius-lg)', background: `${t.color}08`, border: `1px solid ${t.color}15` }}>
-                  <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: t.color, flexShrink: 0, boxShadow: `0 0 6px ${t.color}60` }} />
-                  <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: '12px', fontWeight: 700, color: 'var(--p-text)' }}>{t.mol} <span style={{ fontWeight: 400, color: 'var(--p-text-dim)', fontSize: '10px' }}>({t.type})</span></div>
-                    <div style={{ fontSize: '9px', color: t.color, fontFamily: 'var(--p-font-mono)', fontWeight: 600 }}>{t.usage}</div>
+          </div>
+        </section>
+
+        {/* ─── MOTEURS ─── */}
+        <section className="lp-section-alt">
+          <div className="lp-wrap">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 32, flexWrap: 'wrap', gap: 12 }}>
+              <div>
+                <div className="lp-eyebrow">{t('Architecture · 12 moteurs actifs', 'Architecture · 12 active engines')}</div>
+                <h2 className="lp-h2">
+                  {t('Un vrai système.', 'A real system.')}{' '}
+                  <span className="text-gradient-brand">{t('Pas un chatbot.', 'Not a chatbot.')}</span>
+                </h2>
+              </div>
+              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: 11, color: 'var(--p-text-dim)' }}>
+                95/95 {t('tests · 0 erreur', 'tests · 0 errors')}
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+              {ENGINES.map(e => (
+                <div key={e.id} className="lp-eng" style={{ borderLeftColor: e.color }}>
+                  <span className="lp-eng-id" style={{ color: e.color }}>{e.id}</span>
+                  <div>
+                    <div className="lp-eng-name">{e.name}</div>
+                    <div className="lp-eng-desc">{e.desc}</div>
                   </div>
                 </div>
               ))}
-              <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', textAlign: 'center', marginTop: '4px', fontFamily: 'var(--p-font-mono)' }}>{t("Scoring d'éligibilité multicritères · ClinicalTrials.gov live", 'Multi-criteria eligibility scoring · ClinicalTrials.gov live')}</div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ═══════════ INGÉNIERIE ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div style={{ textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>
-          <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)', letterSpacing: '2px', fontWeight: 800, marginBottom: 'var(--p-space-2)' }}>{t('CE QUI REND PULSAR UNIQUE', 'WHAT MAKES PULSAR UNIQUE')}</div>
-          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, color: 'var(--p-text)' }}>{t('Un vrai système.', 'A real system.')}<br /><span className="text-gradient-brand">{t('Pas un chatbot.', 'Not a chatbot.')}</span></h2>
-        </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '12px', marginBottom: 'var(--p-space-6)' }}>
-          {[
-            { icon: 'brain', title: t('11 moteurs qui pensent ensemble', '11 engines that think together'), desc: t('Pas 7 outils séparés. Un pipeline intégré où chaque moteur enrichit les autres : la pharmacovigilance tient compte de l\'escalade thérapeutique, l\'alerte précoce intègre le score de sévérité, le Discovery Engine injecte ses signaux dans les recommandations.', 'Not 7 separate tools. An integrated pipeline where each engine enriches the others: pharmacovigilance accounts for therapeutic escalation, early warning integrates the severity score, the Discovery Engine injects its signals into recommendations.'), color: '#6C7CFF' },
-            { icon: 'microscope', title: t("De la donnée brute à l'hypothèse publiable", 'From raw data to publishable hypothesis'), desc: t("Le Discovery Engine fait ce que personne ne fait : il prend les constantes d'un enfant malade, les croise avec PubMed et ClinicalTrials.gov en temps réel, détecte les contradictions avec le protocole en cours, et génère des hypothèses de recherche prêtes à être validées.", 'The Discovery Engine does what no one else does: it takes a sick child\'s vitals, cross-references them with PubMed and ClinicalTrials.gov in real time, detects contradictions with the current protocol, and generates research hypotheses ready for validation.'), color: '#10B981' },
-            { icon: 'shield', title: t('95 scénarios cliniques validés', '95 validated clinical scenarios'), desc: t('FIRES avec drépanocytose. Anti-NMDAR en contexte tropical-VIH. NORSE post-transfert. Chaque moteur est testé contre des cas réels, pas des exemples théoriques. 95 tests, 0 erreur. Ce système ne devine pas — il calcule.', 'FIRES with sickle cell disease. Anti-NMDAR in tropical-HIV context. Post-transfer NORSE. Each engine is tested against real cases, not theoretical examples. 95 tests, 0 errors. This system doesn\'t guess — it calculates.'), color: '#A78BFA' },
-            { icon: 'books', title: t('Connecté à la science mondiale', 'Connected to global science'), desc: t('Veille PubMed automatique (10 requêtes). ClinicalTrials.gov en temps réel. 59 références cliniques intégrées. Export publication en 3 formats. Le savoir n\'est plus enfermé dans des PDF que personne n\'a le temps de lire.', 'Automatic PubMed monitoring (10 queries). ClinicalTrials.gov in real time. 59 integrated clinical references. Publication export in 3 formats. Knowledge is no longer locked in PDFs that no one has time to read.'), color: '#3B82F6' },
-          ].map((item, i) => (
-            <div key={i} className="glass-card" style={{ borderRadius: 'var(--p-radius-xl)', padding: 'var(--p-space-6)', borderLeft: `3px solid ${item.color}` }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
-                <Picto name={item.icon} size={24} glow glowColor={item.color + '60'} />
-                <span style={{ fontSize: '13px', fontWeight: 700, color: item.color }}>{item.title}</span>
-              </div>
-              <p style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.7, margin: 0 }}>{item.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
+        {/* ─── DISCOVERY ENGINE ─── */}
+        <section>
+          <div className="lp-wrap lp-section">
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,.9fr)', gap: 48, alignItems: 'center' }}>
 
-      {/* ═══════════ WORKFLOW ═══════════ */}
-      <section style={{ padding: '0 var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-6)' }}>
-          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>{t("PARCOURS PATIENT — DE L'ADMISSION À LA PUBLICATION", 'PATIENT PATHWAY — FROM ADMISSION TO PUBLICATION')}</div>
-          <div style={{ display: 'flex', gap: '4px', alignItems: 'stretch', marginBottom: 'var(--p-space-4)' }}>
-            {workflow.map((w, i) => (
-              <div key={i} style={{ flex: 1 }}>
-                <div style={{ height: '4px', borderRadius: '2px', background: w.color, boxShadow: `0 0 8px ${w.color}40`, marginBottom: '10px' }} />
-                <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '18px', fontWeight: 900, color: w.color }}>{w.step}</div>
-                <div style={{ fontSize: '11px', fontWeight: 700, color: 'var(--p-text)', marginTop: '2px' }}>{w.label}</div>
-                <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{w.desc}</div>
-              </div>
-            ))}
-          </div>
-
-        </div>
-      </section>
-
-      {/* ═══════════ PIPELINE MOTEURS ═══════════ */}
-
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8) var(--p-space-8)', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <div className="glass-card" style={{ borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-6)' }}>
-          <div style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)', letterSpacing: '1.5px', marginBottom: 'var(--p-space-4)', textAlign: 'center' }}>{t('PIPELINE — 6+1 MOTEURS × 4 COUCHES', 'PIPELINE — 6+1 ENGINES × 4 LAYERS')}</div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', justifyContent: 'center', flexWrap: 'wrap' }}>
-            {engines.map((e) => (
-              <div key={e.name} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <div style={{ padding: '8px 14px', borderRadius: 'var(--p-radius-lg)', background: `${e.color}12`, border: `1px solid ${e.color}25`, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: e.color, boxShadow: `0 0 6px ${e.color}60` }} />
-                  <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: e.color, fontSize: '12px' }}>{e.name}</span>
-                </div>
-                <span style={{ color: 'var(--p-text-dim)', fontSize: '14px' }}>→</span>
-              </div>
-            ))}
-            <div style={{ padding: '8px 14px', borderRadius: 'var(--p-radius-lg)', background: '#10B98112', border: '1px solid #10B98125', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981', boxShadow: '0 0 6px #10B98160' }} />
-              <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: '#10B981', fontSize: '12px' }}>DISC</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════════ MOTEURS DÉTAIL ═══════════ */}
-      <section className="page-enter-stagger" style={{ padding: 'var(--p-space-8) var(--p-space-8)', maxWidth: '1000px', margin: '0 auto', position: 'relative', zIndex: 1 }}>
-        <h2 className="text-gradient-brand" style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, textAlign: 'center', marginBottom: 'var(--p-space-6)' }}>{t('6+1 moteurs qui pensent ensemble', '6+1 engines that think together')}</h2>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {engines.map((e) => (
-            <div key={e.name} className="glass-card" style={{ display: 'flex', alignItems: 'flex-start', gap: 'var(--p-space-5)', borderLeft: `3px solid ${e.color}`, borderRadius: 'var(--p-radius-lg)', padding: 'var(--p-space-5) var(--p-space-6)' }}>
-              <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: 'var(--p-text-base)', color: e.color, minWidth: '3rem' }}>{e.name}</span>
+              {/* Texte gauche */}
               <div>
-                <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--p-text)', marginBottom: '2px' }}>{e.full}</div>
-                <p style={{ fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6, margin: 0 }}>{e.desc}</p>
+                <span className="lp-badge" style={{ background: 'rgba(16,185,129,.08)', color: '#10B981', border: '1px solid rgba(16,185,129,.14)', marginBottom: 16, display: 'inline-flex' }}>
+                  DISCOVERY ENGINE v4.0
+                </span>
+                <h2 className="lp-h2" style={{ marginBottom: 16 }}>
+                  {t('De la donnée clinique à', 'From clinical data to')}<br />
+                  <span style={{ color: '#10B981' }}>{t("l'hypothèse de recherche", 'the research hypothesis')}</span>
+                </h2>
+                <p style={{ fontSize: 13, color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 24 }}>
+                  {t(
+                    "4 niveaux d'analyse en cascade. PubMed et ClinicalTrials.gov en temps réel. Génération d'hypothèses par intelligence artificielle. Export Brief FR/EN · JSON · BibTeX.",
+                    "4 cascading levels of analysis. PubMed and ClinicalTrials.gov in real time. AI-powered hypothesis generation. Brief FR/EN · JSON · BibTeX export."
+                  )}
+                </p>
+                <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+                  {['PubMed live', 'ClinicalTrials.gov', 'Claude API', 'TDE Enrichment'].map(tag => (
+                    <span key={tag} style={{ padding: '4px 12px', borderRadius: 8, background: 'var(--p-bg-elevated)', border: '1px solid rgba(108,124,255,.1)', fontFamily: 'var(--p-font-mono)', fontSize: 10, color: 'var(--p-text-dim)' }}>{tag}</span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Niveaux droite */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {DISCOVERY.map((d, i) => (
+                  <div key={d.n} style={{
+                    display: 'flex', alignItems: 'center', gap: 14,
+                    padding: '16px 18px', borderRadius: 12,
+                    background: 'var(--p-bg-card)',
+                    border: `1px solid ${d.color}18`,
+                    borderLeft: `3px solid ${d.color}`
+                  }}>
+                    <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: 15, fontWeight: 900, color: d.color, minWidth: 28 }}>{d.n}</span>
+                    <div>
+                      <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--p-text)', marginBottom: 2 }}>{d.label}</div>
+                      <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: 10, color: 'var(--p-text-dim)' }}>{d.detail}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+            </div>
+          </div>
+        </section>
+
+        {/* ─── ÉPIDÉMIO ─── */}
+        <section className="lp-section-alt">
+          <div className="lp-wrap">
+            <div style={{ textAlign: 'center', marginBottom: 36 }}>
+              <div className="lp-eyebrow" style={{ color: '#F5A623' }}>{t('Maladies neuro-inflammatoires pédiatriques', 'Pediatric neuroinflammatory diseases')}</div>
+              <h2 className="lp-h2">{t('Le problème que personne', 'The problem no one')}<br />{t("n'a encore résolu", 'has solved yet')}</h2>
+            </div>
+            <div className="lp-g3">
+              {[
+                { v: '~30 000', l: t('enfants/an', 'children/year'), sub: t('touchés par des maladies neuro-inflammatoires dans le monde', 'affected by neuroinflammatory diseases worldwide'), c: '#8B5CF6' },
+                { v: '12–30%',  l: t('mortalité',  'mortality'),     sub: t('dans les formes réfractaires — FIRES, NORSE, encéphalites', 'in refractory forms — FIRES, NORSE, encephalitis'), c: '#A78BFA' },
+                { v: '90%',     l: t('séquelles',  'sequelae'),      sub: t('des survivants gardent des déficits cognitifs ou une épilepsie chronique', 'of survivors retain cognitive deficits or chronic epilepsy'), c: '#FFB347' },
+              ].map((s, i) => (
+                <div key={i} style={{
+                  textAlign: 'center', padding: '32px 24px', borderRadius: 16,
+                  background: `${s.c}07`, border: `1px solid ${s.c}1A`
+                }}>
+                  <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: 'clamp(1.7rem,3vw,2.1rem)', fontWeight: 900, color: s.c, lineHeight: 1, marginBottom: 8 }}>{s.v}</div>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--p-text)', marginBottom: 6 }}>{s.l}</div>
+                  <div style={{ fontSize: 11, color: 'var(--p-text-dim)', lineHeight: 1.55 }}>{s.sub}</div>
+                </div>
+              ))}
+            </div>
+            <p style={{ textAlign: 'center', marginTop: 20, fontFamily: 'var(--p-font-mono)', fontSize: 10, color: 'var(--p-text-dim)' }}>
+              FIRES · Anti-NMDAR · NORSE · PIMS · MOGAD/ADEM — {t('Sources : Epilepsia 2018 · Frontiers Neurology 2024 · NORD', 'Sources: Epilepsia 2018 · Frontiers Neurology 2024 · NORD')}
+            </p>
+          </div>
+        </section>
+
+        {/* ─── CTA ─── */}
+        <section>
+          <div className="lp-wrap lp-section">
+            <div className="lp-cta-box">
+              <h2 className="lp-h2" style={{ marginBottom: 14 }}>
+                {t('La bonne information.', 'The right information.')}<br />
+                {t('Au bon endroit.', 'In the right place.')}{' '}
+                <span className="text-gradient-vps">{t('Au bon moment.', 'At the right time.')}</span>
+              </h2>
+              <p style={{ fontSize: 13, color: 'var(--p-text-muted)', maxWidth: 480, margin: '0 auto 32px', lineHeight: 1.75 }}>
+                {t(
+                  '95/95 tests validés · 12 moteurs actifs · Discovery Engine v4.0 · Veille PubMed live · Déployable dans tout centre hospitalier',
+                  '95/95 validated tests · 12 active engines · Discovery Engine v4.0 · Live PubMed monitoring · Deployable in any hospital center'
+                )}
+              </p>
+              <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
+                <a href="/login" className="lp-btn lp-btn-main" style={{ fontSize: 15, padding: '13px 40px' }}>
+                  {t('Accéder à PULSAR', 'Access PULSAR')}
+                </a>
+                <a href="/login?demo=1" style={{
+                  padding: '13px 28px', borderRadius: 10,
+                  border: '1px solid rgba(245,166,35,.2)', color: '#F5A623',
+                  textDecoration: 'none', fontSize: 14, fontWeight: 600
+                }}>{t('Voir la démo', 'View demo')}</a>
               </div>
             </div>
-          ))}
-        </div>
-      </section>
-
-      {/* ═══════════ CTA FINAL ═══════════ */}
-
-      <section className="page-enter-stagger" style={{ textAlign: 'center', padding: 'var(--p-space-4) var(--p-space-8)', position: 'relative', zIndex: 1 }}>
-        <div style={{ maxWidth: '700px', margin: '0 auto', borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-10) var(--p-space-8)', background: 'linear-gradient(135deg, rgba(108,124,255,0.04) 0%, rgba(245,166,35,0.04) 50%, rgba(16,185,129,0.02) 100%)', border: '1px solid rgba(245,166,35,0.08)', backdropFilter: 'blur(12px)' }}>
-          <h2 style={{ fontSize: 'var(--p-text-2xl)', fontWeight: 800, marginBottom: 'var(--p-space-4)', color: 'var(--p-text)', lineHeight: 1.3 }}>{t('La bonne information.', 'The right information.')}<br />{t('Au bon endroit.', 'In the right place.')} <span className="text-gradient-vps">{t('Au bon moment.', 'At the right time.')}</span></h2>
-          <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', maxWidth: '560px', margin: '0 auto var(--p-space-8)', lineHeight: 1.8 }}>
-            {t('95/95 tests. 59 références cliniques. 25 publications Discovery. Veille PubMed live. 5 pathologies. 15 tables de données. Parce que chaque minute gagnée peut changer une vie.', '95/95 tests. 59 clinical references. 25 Discovery publications. Live PubMed monitoring. 5 pathologies. 15 data tables. Because every minute saved can change a life.')}
-          </p>
-          <div style={{ display: 'flex', gap: 'var(--p-space-4)', justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/login" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'var(--p-vps)', color: '#fff', textDecoration: 'none', fontWeight: 700, fontSize: 'var(--p-text-lg)', boxShadow: 'var(--p-shadow-glow-vps)' }}>{t('Accéder à PULSAR', 'Access PULSAR')}</Link>
-            <Link href="/login?demo=1" style={{ padding: 'var(--p-space-4) var(--p-space-10)', borderRadius: 'var(--p-radius-lg)', background: 'transparent', border: '2px solid rgba(245,166,35,0.3)', color: '#F5A623', textDecoration: 'none', fontWeight: 600, fontSize: 'var(--p-text-lg)' }}>{t('Voir la démo', 'View demo')}</Link>
-
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* ═══════════ MÉMORIAL + FOOTER ═══════════ */}
-      <footer style={{ borderTop: '1px solid rgba(245,166,35,0.08)', padding: 'var(--p-space-6) var(--p-space-8)', textAlign: 'center', color: 'var(--p-text-dim)', fontSize: 'var(--p-text-xs)', position: 'relative', zIndex: 1 }}>
-        {t('PULSAR · Intelligence clinique pédiatrique · Discovery Engine v4.0 · 11 moteurs · 30 000+ lignes · © 2026 Steve Moradel', 'PULSAR · Pediatric Clinical Intelligence · Discovery Engine v4.0 · © 2026 Steve Moradel')}
-      </footer>
-    </div>
+        {/* ─── FOOTER ─── */}
+        <footer className="lp-foot">
+          PULSAR · {t('Intelligence clinique pédiatrique', 'Pediatric Clinical Intelligence')} · Discovery Engine v4.0 · 12 {t('moteurs', 'engines')} · © 2026 Steve Moradel
+        </footer>
+
+      </div>
+    </>
   )
 }
