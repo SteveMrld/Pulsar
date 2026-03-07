@@ -7,6 +7,62 @@
 
 import type { LiteratureArticle } from '@/lib/engines/LiteratureScanner'
 
+
+  // ── DOSSIER V3 — Neuroinflammation pédiatrique (ingestion 2026-03-07) ──────
+  {
+    pmid: 'V3-001',
+    title: 'NORSE/FIRES — dysrégulation immunitaire IL-1/IL-6 dans l'épilepsie réfractaire',
+    authors: 'Dossier Scientifique V3',
+    journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
+    year: '2026',
+    evidence: 'élevé',
+    tags: ['FIRES', 'NORSE', 'IL-1', 'IL-6', 'Épilepsie réfractaire'],
+  },
+  {
+    pmid: 'V3-002',
+    title: 'Anakinra antagoniste IL-1 dans FIRES/NORSE — niveau de preuve modéré',
+    authors: 'Dossier Scientifique V3',
+    journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
+    year: '2026',
+    evidence: 'modéré',
+    tags: ['Anakinra', 'IL-1', 'Immunomodulation', 'FIRES'],
+  },
+  {
+    pmid: 'V3-003',
+    title: 'Tocilizumab anti-IL-6 dans les cas réfractaires FIRES — niveau émergent',
+    authors: 'Dossier Scientifique V3',
+    journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
+    year: '2026',
+    evidence: 'émergent',
+    tags: ['Tocilizumab', 'IL-6', 'Réfractaire', 'FIRES'],
+  },
+  {
+    pmid: 'V3-004',
+    title: 'Régime cétogène précoce — effets anticonvulsivants et anti-inflammatoires',
+    authors: 'Dossier Scientifique V3',
+    journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
+    year: '2026',
+    evidence: 'modéré',
+    tags: ['Régime cétogène', 'KD', 'Anti-inflammatoire', 'FIRES'],
+  },
+  {
+    pmid: 'V3-005',
+    title: 'Axe microbiote-intestin-cerveau comme modulateur de la neuroinflammation',
+    authors: 'Dossier Scientifique V3',
+    journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
+    year: '2026',
+    evidence: 'exploratoire',
+    tags: ['Microbiote', 'Axe intestin-cerveau', 'Neuroinflammation'],
+  },
+  {
+    pmid: 'V3-006',
+    title: 'Biomarqueurs FIRES/NORSE : S100B, albumine LCR/sérum, calprotectine fécale',
+    authors: 'Dossier Scientifique V3',
+    journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
+    year: '2026',
+    evidence: 'modéré',
+    tags: ['S100B', 'BHE', 'Calprotectine', 'Biomarqueurs'],
+  },
 export const SEED_ARTICLES: LiteratureArticle[] = [
 
   // ═══════════ FIRES / NORSE — Fondamentaux ═══════════
