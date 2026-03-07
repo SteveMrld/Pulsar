@@ -13,6 +13,9 @@ import { computeTriageFromPipeline } from '@/lib/engines/IntakeAnalyzer'
 import type { Patient, Alert } from '@/lib/types/database'
 import dynamic from 'next/dynamic'
 import { UseCaseButton } from '@/components/UseCaseButton';
+import EngineStatusBar from '@/components/EngineStatusBar';
+import ResearchPulse from '@/components/ResearchPulse';
+import AlertBadge from '@/components/AlertBadge';
 
 const AlejandroCasePage = dynamic(() => import('@/app/usecase/alejandro/page'), { ssr: false })
 
