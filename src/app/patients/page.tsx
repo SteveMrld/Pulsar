@@ -18,18 +18,19 @@ function UseCaseGate() {
   }
   if (showCase) return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'var(--p-bg, #0C1424)', overflowY: 'auto' }}>
-      <button onClick={() => setShowCase(false)} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>Fermer ✕</button>
+      <HypothesisGauges />
+      <button onClick={() => setShowCase(false)} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>Fermer â</button>
       <AlejandroCasePage />
     </div>
   )
   return (
     <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-lg)', border: '1px solid var(--p-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span style={{ fontSize: 14 }}>🔒</span>
-        <div><div style={{ fontSize: 12, fontWeight: 700, color: 'var(--p-text)' }}>Use Case — Accès protégé</div><div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique réel</div></div>
+        <span style={{ fontSize: 14 }}>ð</span>
+        <div><div style={{ fontSize: 12, fontWeight: 700, color: 'var(--p-text)' }}>Use Case â AccÃ¨s protÃ©gÃ©</div><div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique rÃ©el</div></div>
       </div>
       {!showInput ? (
-        <button onClick={() => setShowInput(true)} style={{ padding: '5px 14px', borderRadius: 8, background: '#F5A62315', border: '1px solid #F5A62325', color: '#F5A623', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Accéder</button>
+        <button onClick={() => setShowInput(true)} style={{ padding: '5px 14px', borderRadius: 8, background: '#F5A62315', border: '1px solid #F5A62325', color: '#F5A623', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>AccÃ©der</button>
       ) : (
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           <input type="password" value={code} onChange={e => { setCode(e.target.value); setError(false) }} onKeyDown={e => e.key === 'Enter' && handleSubmit()} placeholder="Code" maxLength={4} style={{ width: 72, padding: '5px 8px', borderRadius: 6, background: 'var(--p-bg-surface)', border: '1px solid ' + (error ? '#EF4444' : 'var(--p-border)'), color: 'var(--p-text)', fontSize: 14, fontFamily: 'var(--p-font-mono)', textAlign: 'center', letterSpacing: 4 }} autoFocus />
@@ -51,11 +52,12 @@ import { patientService } from '@/lib/services'
 import { intakePersistenceService } from '@/lib/services/intakePersistenceService'
 import { computeTriageFromPipeline } from '@/lib/engines/IntakeAnalyzer'
 import { UseCaseButton } from '@/components/UseCaseButton';
+import HypothesisGauges from '@/components/HypothesisGauges';
 
-/* ══════════════════════════════════════════════════════════════
-   FILE ACTIVE — PULSAR V17
-   Tour de contrôle · Avatars · Phases · Quick access · Démo
-   ══════════════════════════════════════════════════════════════ */
+/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+   FILE ACTIVE â PULSAR V17
+   Tour de contrÃ´le Â· Avatars Â· Phases Â· Quick access Â· DÃ©mo
+   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 interface PatientCard {
   id: string; name: string; age: string; sex: 'male' | 'female'
@@ -67,10 +69,10 @@ interface PatientCard {
 }
 
 const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 'male' | 'female'; room: string; syndrome: string; avatar: string }> = {
-  FIRES:    { id: 'ines',  name: 'Inès M.',  age: '4 ans',  sex: 'female', room: 'Réa Neuro — Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/female-ines.png' },
-  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'Réa Neuro — Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/male-lucas.png' },
-  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'Neuropéd. — Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/female-amara.png' },
-  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. — Lit 5',  syndrome: 'Épil. focale', avatar: '/assets/avatars/male-noah.png' },
+  FIRES:    { id: 'ines',  name: 'InÃ¨s M.',  age: '4 ans',  sex: 'female', room: 'RÃ©a Neuro â Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/female-ines.png' },
+  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'RÃ©a Neuro â Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/male-lucas.png' },
+  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'NeuropÃ©d. â Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/female-amara.png' },
+  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'NeuropÃ©d. â Lit 5',  syndrome: 'Ãpil. focale', avatar: '/assets/avatars/male-noah.png' },
 }
 
 function detectPhase(hospDay: number, vps: number): ClinicalPhase {
@@ -97,7 +99,7 @@ function buildDemoPatients(): PatientCard[] {
       gcs: ps.neuro.gcs,
       critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
       phase: detectPhase(ps.hospDay, vps),
-      lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status réfractaire en cours'
+      lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status rÃ©fractaire en cours'
         : ps.neuro.seizures24h > 3 ? `${ps.neuro.seizures24h} crises/24h`
         : ps.neuro.gcs <= 8 ? 'GCS critique'
         : 'Stable',
@@ -111,7 +113,7 @@ function buildDemoPatients(): PatientCard[] {
   }).filter(Boolean) as PatientCard[]
 }
 
-/* ── Mini Avatar SVG ── */
+/* ââ Mini Avatar SVG ââ */
 function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size?: number; name?: string; sex?: 'male' | 'female' }) {
   const avatarKey = sex === 'male'
     ? (name?.startsWith('Lucas') ? 'male-lucas' : 'male-noah')
@@ -137,7 +139,7 @@ function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size
   )
 }
 
-/* ── Mini VPS Sparkline ── */
+/* ââ Mini VPS Sparkline ââ */
 function VPSSparkline({ data, color }: { data: number[]; color: string }) {
   if (data.length < 2) return null
   const max = Math.max(...data, 100)
@@ -151,7 +153,7 @@ function VPSSparkline({ data, color }: { data: number[]; color: string }) {
   )
 }
 
-/* ── Phase Bar ── */
+/* ââ Phase Bar ââ */
 function PhaseBar({ phase }: { phase: ClinicalPhase }) {
   const p = PHASES[phase]
   return (
@@ -165,7 +167,7 @@ function PhaseBar({ phase }: { phase: ClinicalPhase }) {
   )
 }
 
-/* ── Patient Card Row ── */
+/* ââ Patient Card Row ââ */
 function PatientRow({ p }: { p: PatientCard }) {
   const { t } = useLang()
   const vpsColor = p.vps >= 70 ? '#8B5CF6' : p.vps >= 50 ? '#FFA502' : p.vps >= 30 ? '#FFB347' : '#2ED573'
@@ -188,14 +190,14 @@ function PatientRow({ p }: { p: PatientCard }) {
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '14px', color: 'var(--p-text)' }}>{p.name}</span>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{p.age} · {p.room}</span>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{p.age} Â· {p.room}</span>
             {p.isDemo && (
               <span style={{
                 fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 700,
                 padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
                 background: 'rgba(108,124,255,0.08)', color: 'var(--p-text-dim)',
                 border: '1px solid rgba(108,124,255,0.1)',
-              }}>{t('DÉMO', 'DEMO')}</span>
+              }}>{t('DÃMO', 'DEMO')}</span>
             )}
           </div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{p.lastEvent}</div>
@@ -246,7 +248,7 @@ function PatientRow({ p }: { p: PatientCard }) {
   )
 }
 
-/* ── Pulsing Brain Animation ── */
+/* ââ Pulsing Brain Animation ââ */
 function PulsingBrain() {
   return (
     <div className="animate-breathe" style={{
@@ -263,7 +265,7 @@ function PulsingBrain() {
   )
 }
 
-/* ── Empty State ── */
+/* ââ Empty State ââ */
 function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }) {
   const { t } = useLang()
   return (
@@ -274,8 +276,8 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
         {t('Aucun patient actif', 'No active patients')}
       </h2>
       <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: '32px' }}>
-        Lancez l&apos;analyse intelligente pour un nouveau patient —
-        {t('diagnostic différentiel, red flags et parcours clinique en', 'differential diagnosis, red flags and clinical pathway in')} {t('temps réel.', 'real time.')}
+        Lancez l&apos;analyse intelligente pour un nouveau patient â
+        {t('diagnostic diffÃ©rentiel, red flags et parcours clinique en', 'differential diagnosis, red flags and clinical pathway in')} {t('temps rÃ©el.', 'real time.')}
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
@@ -298,7 +300,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
           color: 'var(--p-text-muted)', letterSpacing: '0.3px', width: '300px',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
         }}>
-          <span style={{ fontSize: '14px' }}>▶</span> {t('Explorer avec des cas fictifs', 'Explore with demo cases')}
+          <span style={{ fontSize: '14px' }}>â¶</span> {t('Explorer avec des cas fictifs', 'Explore with demo cases')}
         </button>
       </div>
 
@@ -309,7 +311,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
       }}>
         {[
           { value: '5', label: t('Moteurs IA', 'AI Engines') },
-          { value: '59', label: t('Références', 'References') },
+          { value: '59', label: t('RÃ©fÃ©rences', 'References') },
           { value: '5', label: t('Pathologies', 'Pathologies') },
           { value: '15', label: t('Cas registre', 'Registry cases') },
         ].map((s, i) => (
@@ -345,7 +347,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
   )
 }
 
-/* ── Main ── */
+/* ââ Main ââ */
 export default function FileActivePage() {
   const { t } = useLang()
   const router = useRouter()
@@ -379,14 +381,14 @@ export default function FileActivePage() {
             name: p.display_name,
             age: `${Math.floor(p.age_months / 12)} ans`,
             sex: p.sex,
-            syndrome: p.syndrome || 'En évaluation',
+            syndrome: p.syndrome || 'En Ã©valuation',
             hospDay: p.hosp_day,
-            room: p.room || 'Non assigné',
+            room: p.room || 'Non assignÃ©',
             vps,
             gcs: ps.neuro.gcs,
             critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
             phase: detectPhase(p.hosp_day, vps),
-            lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status réfractaire en cours'
+            lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status rÃ©fractaire en cours'
               : ps.neuro.seizures24h > 3 ? `${ps.neuro.seizures24h} crises/24h`
               : ps.neuro.gcs <= 8 ? 'GCS critique'
               : 'Admis via Analyse Intelligente',
@@ -450,7 +452,7 @@ export default function FileActivePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)', padding: '0' }}>
-      {/* ── TOP BAR ── */}
+      {/* ââ TOP BAR ââ */}
       <div style={{
         padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         borderBottom: '1px solid var(--p-border)', background: 'var(--p-bg-card)',
@@ -476,7 +478,7 @@ export default function FileActivePage() {
               background: showDemo ? '#6C7CFF' : 'var(--p-text-dim)',
               boxShadow: showDemo ? '0 0 6px rgba(108,124,255,0.5)' : 'none',
             }} />
-            Démo
+            DÃ©mo
           </button>
           {/* Observatory link */}
           <Link href="/observatory" style={{
@@ -511,7 +513,7 @@ export default function FileActivePage() {
         </div>
       </div>
 
-      {/* ── CONTENT ── */}
+      {/* ââ CONTENT ââ */}
       {!hasPatients ? (
         <EmptyState onDemo={() => setShowDemo(true)} onNew={() => router.push('/patients/intake')} />
       ) : (
@@ -562,7 +564,7 @@ export default function FileActivePage() {
                 }}>
                   <Picto name={opt.icon} size={10} />
                   {opt.label}
-                  {active && <span style={{ fontSize: '7px', opacity: 0.7 }}>▼</span>}
+                  {active && <span style={{ fontSize: '7px', opacity: 0.7 }}>â¼</span>}
                 </button>
               )
             })}
@@ -580,7 +582,7 @@ export default function FileActivePage() {
                   {totalAlerts} ALERTE{totalAlerts > 1 ? 'S' : ''} CRITIQUE{totalAlerts > 1 ? 'S' : ''}
                 </div>
                 <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>
-                  {filtered.filter(p => p.critAlerts > 0).map(p => p.name).join(' · ')}
+                  {filtered.filter(p => p.critAlerts > 0).map(p => p.name).join(' Â· ')}
                 </div>
               </div>
             </div>
@@ -623,14 +625,14 @@ export default function FileActivePage() {
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
               <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>
-                Mode démo actif — {demoPatients.length} cas fictifs
+                Mode dÃ©mo actif â {demoPatients.length} cas fictifs
               </span>
               <button onClick={() => setShowDemo(false)} style={{
                 padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
                 background: 'rgba(108,124,255,0.08)', border: '1px solid rgba(108,124,255,0.15)',
                 cursor: 'pointer', fontFamily: 'var(--p-font-mono)', fontSize: '9px',
                 color: '#6C7CFF', fontWeight: 600,
-              }}>{t(t('Masquer la démo', 'Hide demo'), 'Hide demo')}</button>
+              }}>{t(t('Masquer la dÃ©mo', 'Hide demo'), 'Hide demo')}</button>
             </div>
           )}
         </div>
