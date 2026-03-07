@@ -5,7 +5,7 @@ import { usePatient } from '@/contexts/PatientContext'
 import { createClient } from '@/lib/supabase/client'
 import Picto from '@/components/Picto'
 import RoleGate, { AccessDenied } from '@/components/RoleGate'
-import { UseCaseButton } from '@/components/UseCaseButton';
+import UseCaseButton from '@/components/UseCaseButton';
 
 /* ══════════════════════════════════════════════════════════════
    AUDIT TRAIL — Journal complet des actions (admin)

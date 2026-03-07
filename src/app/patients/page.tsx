@@ -51,7 +51,7 @@ import { PHASES, type ClinicalPhase } from '@/contexts/PatientContext'
 import { patientService } from '@/lib/services'
 import { intakePersistenceService } from '@/lib/services/intakePersistenceService'
 import { computeTriageFromPipeline } from '@/lib/engines/IntakeAnalyzer'
-import { UseCaseButton } from '@/components/UseCaseButton';
+import UseCaseButton from '@/components/UseCaseButton';
 import HypothesisGauges from '@/components/HypothesisGauges';
 import PatientTimeline from '@/components/PatientTimeline';
 import AlertBadge from '@/components/AlertBadge';
