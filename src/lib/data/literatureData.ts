@@ -8,10 +8,11 @@
 import type { LiteratureArticle } from '@/lib/engines/LiteratureScanner'
 
 
+export const LITERATURE_SEED_DATA = [
   // ── DOSSIER V3 -- Neuroinflammation pédiatrique (ingestion 2026-03-07) ──────
   {
     pmid: 'V3-001',
-    title: 'NORSE/FIRES -- dysrégulation immunitaire IL-1/IL-6 dans l'épilepsie réfractaire',
+    title: "NORSE/FIRES -- dysrégulation immunitaire IL-1/IL-6 dans l'épilepsie réfractaire",
     authors: 'Dossier Scientifique V3',
     journal: 'Neuroinflammation pédiatrique FIRES/NORSE',
     year: '2026',
@@ -63,6 +64,8 @@ import type { LiteratureArticle } from '@/lib/engines/LiteratureScanner'
     evidence: 'modéré',
     tags: ['S100B', 'BHE', 'Calprotectine', 'Biomarqueurs'],
   },
+]
+
 export const SEED_ARTICLES: LiteratureArticle[] = [
 
   // ═══════════ FIRES / NORSE -- Fondamentaux ═══════════
