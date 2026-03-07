@@ -11,17 +11,17 @@ import PulsarGuide from './PulsarGuide'
 import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
 import PulsarLogo from '@/components/PulsarLogo'
 import PulsarAI from '@/components/PulsarAI'
+import Picto from '@/components/Picto'
 
 function NavLink({ href, label, color = '#6C7CFF', pathname }: { href: string; label: string; color?: string; pathname: string }) {
   const active = pathname === href
   return (
     <Link href={href} style={{
-      padding: '3px 8px', borderRadius: '4px', textDecoration: 'none',
+      padding: '3px 10px', borderRadius: '4px', textDecoration: 'none',
       fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
       color: active ? color : 'var(--p-text-dim)',
       background: active ? `${color}18` : 'transparent',
-      transition: 'all 0.15s',
-      whiteSpace: 'nowrap',
+      transition: 'all 0.15s', whiteSpace: 'nowrap',
     }}>{label}</Link>
   )
 }
@@ -43,18 +43,18 @@ function AnalyseMenu({ pathname }: { pathname: string }) {
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
-      <button
-        onClick={() => setOpen(o => !o)}
-        style={{
-          padding: '3px 8px', borderRadius: '4px', border: 'none',
-          fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
-          color: isActive ? '#F59E0B' : 'var(--p-text-dim)',
-          background: isActive ? '#F59E0B18' : 'transparent',
-          cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '3px',
-          transition: 'all 0.15s',
-        }}
-      >
-        {t('Analyse', 'Analysis')} <span style={{ fontSize: '8px', opacity: 0.7 }}>▾</span>
+      <button onClick={() => setOpen(o => !o)} style={{
+        padding: '3px 10px', borderRadius: '4px', border: 'none',
+        fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+        color: isActive ? '#F59E0B' : 'var(--p-text-dim)',
+        background: isActive ? '#F59E0B18' : 'transparent',
+        cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px',
+        transition: 'all 0.15s',
+      }}>
+        {t('Analyse', 'Analysis')}
+        <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
+          <path d="M1 2.5L4 5.5L7 2.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
       </button>
       {open && (
         <div style={{
@@ -62,21 +62,23 @@ function AnalyseMenu({ pathname }: { pathname: string }) {
           background: '#0F1525', border: '1px solid rgba(108,124,255,0.15)',
           borderRadius: '8px', padding: '4px', zIndex: 200,
           boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-          display: 'flex', flexDirection: 'column', gap: '2px',
-          minWidth: '160px',
+          display: 'flex', flexDirection: 'column', gap: '2px', minWidth: '180px',
         }}>
           {[
-            { href: '/observatory', label: t('🔭 Observatoire', '🔭 Observatory'), desc: t('Vue multi-patients', 'Multi-patient view') },
-            { href: '/case-matching', label: t('🔗 Case Matching', '🔗 Case Matching'), desc: t('Cas similaires', 'Similar cases') },
-            { href: '/cross-pathologie', label: t('⚡ Cross-Pathologie', '⚡ Cross-Pathology'), desc: t('5 pathologies croisées', '5 cross pathologies') },
+            { href: '/observatory', picto: 'chart', label: t('Observatoire', 'Observatory'), desc: t('Vue multi-patients', 'Multi-patient view') },
+            { href: '/case-matching', picto: 'cycle', label: 'Case Matching', desc: t('Cas similaires', 'Similar cases') },
+            { href: '/cross-pathologie', picto: 'dna', label: t('Cross-Pathologie', 'Cross-Pathology'), desc: t('5 pathologies croisées', '5 cross pathologies') },
           ].map(item => (
             <Link key={item.href} href={item.href} onClick={() => setOpen(false)} style={{
               padding: '7px 10px', borderRadius: '6px', textDecoration: 'none',
-              background: pathname === item.href ? '#F59E0B12' : 'transparent',
-              transition: 'background 0.15s',
+              background: pathname === item.href ? '#F59E0B0A' : 'transparent',
+              display: 'flex', alignItems: 'center', gap: '10px', transition: 'background 0.15s',
             }}>
-              <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: pathname === item.href ? '#F59E0B' : '#E2E8F0' }}>{item.label}</div>
-              <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '1px' }}>{item.desc}</div>
+              <Picto name={item.picto} size={14} style={{ opacity: pathname === item.href ? 1 : 0.5 }} />
+              <div>
+                <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700, color: pathname === item.href ? '#F59E0B' : '#E2E8F0' }}>{item.label}</div>
+                <div style={{ fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '1px' }}>{item.desc}</div>
+              </div>
             </Link>
           ))}
         </div>
@@ -103,30 +105,27 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
       if (inviteMatch) {
         const nameMatch = document.cookie.match(/pulsar-invite-name=([^;]+)/)
         setUser(nameMatch ? decodeURIComponent(nameMatch[1]) : 'Invité')
-        setLoading(false)
-        return
+        setLoading(false); return
       }
     }
     const supabase = createClient()
     supabase.auth.getUser().then(({ data }) => {
-      if (data.user) { setUser(data.user.email || 'Utilisateur') }
-      else { router.push('/login') }
+      if (data.user) setUser(data.user.email || 'Utilisateur')
+      else router.push('/login')
       setLoading(false)
     })
   }, [isPublic, router])
 
   if (isPublic) return <>{children}</>
 
-  if (loading) {
-    return (
-      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--p-bg)', color: 'var(--p-vps)' }}>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '2rem', fontWeight: 800, fontFamily: 'var(--p-font-mono)', marginBottom: '8px', letterSpacing: '0.1em' }}><PulsarLogo size="md" /></div>
-          <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)' }}>{t('Chargement…', 'Loading…')}</div>
-        </div>
+  if (loading) return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--p-bg)' }}>
+      <div style={{ textAlign: 'center' }}>
+        <PulsarLogo size="md" />
+        <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', marginTop: '8px', fontFamily: 'var(--p-font-mono)' }}>{t('Chargement…', 'Loading…')}</div>
       </div>
-    )
-  }
+    </div>
+  )
 
   const handleLogout = async () => {
     document.cookie = 'pulsar-invite=; path=/; max-age=0'
@@ -136,17 +135,14 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
     router.push('/')
   }
 
-  if (isPatient) {
-    return (
-      <ProfileProvider>
-        <div style={{ minHeight: '100vh', background: 'var(--p-bg)', backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(108,124,255,0.03) 0%, transparent 70%)' }}>
-          {children}
-          {/* PulsarAI flottant même en fiche patient */}
-          <PulsarAIFloat open={aiOpen} setOpen={setAiOpen} />
-        </div>
-      </ProfileProvider>
-    )
-  }
+  if (isPatient) return (
+    <ProfileProvider>
+      <div style={{ minHeight: '100vh', background: 'var(--p-bg)', backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(108,124,255,0.03) 0%, transparent 70%)' }}>
+        {children}
+        <PulsarAIFloat open={aiOpen} setOpen={setAiOpen} />
+      </div>
+    </ProfileProvider>
+  )
 
   const breadcrumb = pathname === '/patients' ? t('File active', 'Active Patients')
     : pathname === '/dashboard' ? 'Dashboard'
@@ -164,24 +160,25 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   return (
     <ProfileProvider>
       <div style={{ minHeight: '100vh', background: 'var(--p-bg)', backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(108,124,255,0.03) 0%, transparent 70%)', display: 'flex', flexDirection: 'column' }}>
+
         <header className="glass" style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
           padding: '0 var(--p-space-5)',
           borderBottom: '1px solid rgba(108,124,255,0.06)',
           height: '52px', position: 'sticky', top: 0, zIndex: 100,
         }}>
-          {/* LEFT — logo + breadcrumb */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-3)', minWidth: '160px' }}>
-            <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={28} height={28}
+          {/* LEFT */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '170px' }}>
+            <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={26} height={26}
                 style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.4))', display: 'block', objectFit: 'contain' }} />
-              <span style={{ fontSize: '15px', fontWeight: 800, color: 'var(--p-vps)', letterSpacing: '0.1em', fontFamily: 'var(--p-font-mono)' }}><PulsarLogo size="md" /></span>
+              <PulsarLogo size="md" />
             </Link>
-            <span style={{ color: 'var(--p-text-dim)', fontSize: '11px' }}>›</span>
+            <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1l4 4-4 4" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round"/></svg>
             <span style={{ fontSize: '11px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>{breadcrumb}</span>
           </div>
 
-          {/* CENTER — navigation principale */}
+          {/* CENTER */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
             <NavLink href="/dashboard" label="Dashboard" pathname={pathname} />
             <NavLink href="/patients" label={t('File active', 'Patients')} pathname={pathname} />
@@ -191,33 +188,37 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
             <NavLink href="/neurocore" label="NeuroCore" color="#8B5CF6" pathname={pathname} />
           </div>
 
-          {/* RIGHT — outils */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--p-space-2)', minWidth: '160px', justifyContent: 'flex-end' }}>
-            {/* Staff icon */}
+          {/* RIGHT */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: '170px', justifyContent: 'flex-end' }}>
+
+            {/* Staff */}
             <Link href="/staff" title={t('Équipe soignante', 'Care Team')} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: '28px', height: '28px', borderRadius: '6px', textDecoration: 'none',
               background: pathname === '/staff' ? '#6C7CFF18' : 'transparent',
-              color: pathname === '/staff' ? '#6C7CFF' : 'var(--p-text-dim)',
-              fontSize: '14px', transition: 'all 0.15s',
-            }}>👥</Link>
+              transition: 'all 0.15s',
+            }}>
+              <img src="/assets/pictos-v17/staff-group-128.png" alt="Staff" width={16} height={16}
+                style={{ opacity: pathname === '/staff' ? 1 : 0.45, objectFit: 'contain' }} />
+            </Link>
 
-            {/* PulsarAI bouton flottant */}
+            {/* PulsarAI */}
             <button onClick={() => setAiOpen(o => !o)} title="PulsarAI" style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: '28px', height: '28px', borderRadius: '6px', border: 'none',
               background: aiOpen ? '#10B98118' : 'transparent',
-              color: aiOpen ? '#10B981' : 'var(--p-text-dim)',
-              cursor: 'pointer', fontSize: '14px', transition: 'all 0.15s',
-            }}>🤖</button>
+              cursor: 'pointer', transition: 'all 0.15s',
+            }}>
+              <img src="/assets/pictos-v17/pulsar-ai-icon-128.png" alt="AI" width={16} height={16}
+                style={{ opacity: aiOpen ? 1 : 0.45, objectFit: 'contain' }} />
+            </button>
 
             <LangToggle />
             <ThemeToggle />
             <RoleBadge />
-            <span style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', maxWidth: '80px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user}</span>
+            <span style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', maxWidth: '72px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user}</span>
             <button onClick={handleLogout} style={{
-              padding: '3px 8px',
-              background: 'var(--p-bg-elevated)', border: 'var(--p-border)',
+              padding: '3px 8px', background: 'var(--p-bg-elevated)', border: 'var(--p-border)',
               borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)',
               cursor: 'pointer', fontSize: '9px', fontFamily: 'var(--p-font-mono)', transition: 'all 0.2s',
             }}>{t('Déco', 'Out')}</button>
@@ -236,30 +237,32 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   )
 }
 
-// ── PulsarAI panneau flottant ────────────────────────────────────────────────
 function PulsarAIFloat({ open, setOpen }: { open: boolean; setOpen: (v: boolean) => void }) {
   if (!open) return null
   return (
     <div style={{
       position: 'fixed', bottom: '20px', right: '20px', zIndex: 500,
       width: '380px', maxHeight: '560px',
-      background: '#0F1525', border: '1px solid rgba(16,185,129,0.25)',
+      background: '#0F1525', border: '1px solid rgba(16,185,129,0.2)',
       borderRadius: '16px', boxShadow: '0 24px 64px rgba(0,0,0,0.5)',
       display: 'flex', flexDirection: 'column', overflow: 'hidden',
     }}>
       <div style={{
-        padding: '12px 16px', borderBottom: '1px solid rgba(16,185,129,0.12)',
+        padding: '12px 16px', borderBottom: '1px solid rgba(16,185,129,0.1)',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        background: 'rgba(16,185,129,0.05)',
+        background: 'rgba(16,185,129,0.04)',
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ fontSize: '16px' }}>🤖</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <img src="/assets/pictos-v17/pulsar-ai-icon-128.png" alt="AI" width={22} height={22} style={{ objectFit: 'contain' }} />
           <div>
             <div style={{ fontSize: '11px', fontWeight: 700, color: '#10B981', fontFamily: 'monospace' }}>PULSAR AI</div>
             <div style={{ fontSize: '9px', color: '#64748B' }}>Assistant neurologique</div>
           </div>
         </div>
-        <button onClick={() => setOpen(false)} style={{ background: 'transparent', border: 'none', color: '#64748B', cursor: 'pointer', fontSize: '16px', lineHeight: 1 }}>×</button>
+        <button onClick={() => setOpen(false)} style={{
+          background: 'transparent', border: 'none', color: '#64748B',
+          cursor: 'pointer', fontSize: '18px', lineHeight: 1, padding: '2px 6px',
+        }}>×</button>
       </div>
       <div style={{ flex: 1, overflow: 'hidden' }}>
         <PulsarAI />

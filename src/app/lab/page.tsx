@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import ResearchPulse from '@/components/ResearchPulse';
 import EngineStatusBar from '@/components/EngineStatusBar';
+import Picto from '@/components/Picto';
 
 // ─── Supabase config ──────────────────────────────────────────────────────────
 const SUPA_URL = 'https://tpefzxyrjebnnzgguktm.supabase.co';
@@ -446,13 +447,13 @@ export default function ResearchLabPage() {
 
   // ─── Discovery Engine — 7 onglets ────────────────────────────────────────
   const tabs = [
-    { id: 'patternminer',   label: '📊 PatternMiner',        color: '#10B981' },
-    { id: 'literature',     label: '📚 LiteratureScanner',   color: '#3B82F6' },
-    { id: 'hypothesis',     label: '💡 HypothesisEngine',    color: '#8B5CF6' },
-    { id: 'treatment',      label: '💊 TreatmentPathfinder', color: '#F59E0B' },
-    { id: 'visualisations', label: '🧠 Visualisations',      color: '#EC4899' },
-    { id: 'export',         label: '📤 Export',              color: '#64748B' },
-    { id: 'settings',       label: '⚙️ Settings',            color: '#64748B' },
+    { id: 'patternminer',   label: 'PatternMiner',        color: '#10B981' },
+    { id: 'literature',     label: 'LiteratureScanner',   color: '#3B82F6' },
+    { id: 'hypothesis',     label: 'HypothesisEngine',    color: '#8B5CF6' },
+    { id: 'treatment',      label: 'TreatmentPathfinder', color: '#F59E0B' },
+    { id: 'visualisations', label: 'Visualisations',      color: '#EC4899' },
+    { id: 'export',         label: 'Export',              color: '#64748B' },
+    { id: 'settings',       label: 'Settings',            color: '#64748B' },
   ];
 
   return (
@@ -468,7 +469,7 @@ export default function ResearchLabPage() {
       <div style={S.header}>
         <div style={S.headerTop}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: C.accentDim, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '20px' }}>🔬</div>
+            <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: C.accentDim, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><img src="/assets/organs/microscope.png" width={22} height={22} style={{ objectFit: 'contain', opacity: 0.9 }} /></div>
             <div>
               <h1 style={{ margin: 0, fontSize: '20px', fontWeight: 800, fontFamily: 'monospace', color: C.text, letterSpacing: '0.05em' }}>
                 DISCOVERY ENGINE <span style={{ color: C.accent }}>v4.0</span>
@@ -509,12 +510,12 @@ export default function ResearchLabPage() {
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px', marginBottom: '24px' }}>
               {[
-                { label: 'Corrélation Pearson', val: '34 params', icon: '📈', color: C.accent, desc: 'r > 0.65 sur cohorte FIRES 2024' },
-                { label: 'Clustering k-means', val: 'k = 3', icon: '🔵', color: '#3B82F6', desc: 'Phénotypes A / B / C identifiés' },
-                { label: 'Anomalies z-score', val: '2.5σ seuil', icon: '⚡', color: C.warning, desc: '12 outliers détectés cette semaine' },
+                { label: 'Corrélation Pearson', val: '34 params', icon: 'chart', color: C.accent, desc: 'r > 0.65 sur cohorte FIRES 2024' },
+                { label: 'Clustering k-means', val: 'k = 3', icon: 'cycle', color: '#3B82F6', desc: 'Phénotypes A / B / C identifiés' },
+                { label: 'Anomalies z-score', val: '2.5σ seuil', icon: 'alert', color: C.warning, desc: '12 outliers détectés cette semaine' },
               ].map(m => (
                 <div key={m.label} style={S.card}>
-                  <div style={{ fontSize: '10px', color: m.color, fontWeight: 700, fontFamily: 'monospace', marginBottom: '4px' }}>{m.icon} {m.label}</div>
+                  <div style={{ fontSize: '10px', color: m.color, fontWeight: 700, fontFamily: 'monospace', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}><Picto name={m.icon} size={12} style={{ opacity: 0.9 }} />{m.label}</div>
                   <div style={{ fontSize: '22px', fontWeight: 800, color: C.text }}>{m.val}</div>
                   <div style={{ fontSize: '11px', color: C.textMuted, marginTop: '4px' }}>{m.desc}</div>
                 </div>
@@ -564,18 +565,18 @@ export default function ResearchLabPage() {
           <div>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: '16px', marginBottom: '24px' }}>
               {[
-                { label: 'Publications PULSAR', val: '25', icon: '📄', color: '#3B82F6' },
-                { label: 'Essais NCT actifs', val: '3', icon: '🧪', color: C.accent },
+                { label: 'Publications PULSAR', val: '25', icon: 'books', color: '#3B82F6' },
+                { label: 'Essais NCT actifs', val: '3', icon: 'microscope', color: C.accent },
                 { label: 'Nouvelles ce cycle', val: String(articles.filter((a: any) => a.isNew).length || 3), icon: '🆕', color: C.warning },
               ].map(m => (
                 <div key={m.label} style={S.card}>
-                  <div style={{ fontSize: '10px', color: m.color, fontWeight: 700, fontFamily: 'monospace', marginBottom: '4px' }}>{m.icon} {m.label}</div>
+                  <div style={{ fontSize: '10px', color: m.color, fontWeight: 700, fontFamily: 'monospace', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '5px' }}><Picto name={m.icon} size={12} style={{ opacity: 0.9 }} />{m.label}</div>
                   <div style={{ fontSize: '28px', fontWeight: 800, color: C.text }}>{m.val}</div>
                 </div>
               ))}
             </div>
             <div style={S.card}>
-              <div style={S.cardTitle}>📄 Bibliographie PULSAR</div>
+              <div style={S.cardTitle}>Bibliographie PULSAR</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '320px', overflowY: 'auto' }}>
                 {(articles.length > 0 ? articles : [
                   { title: 'FIRES: An Acute Encephalitis With Refractory Status Epilepticus', journal: 'Epilepsia', date: '2020', isNew: true },
@@ -597,7 +598,7 @@ export default function ResearchLabPage() {
               </div>
             </div>
             <div style={{ ...S.card, marginTop: '16px' }}>
-              <div style={S.cardTitle}>🧪 Essais NCT actifs</div>
+              <div style={S.cardTitle}>Essais NCT actifs</div>
               {[
                 { id: 'NCT05234567', title: 'Anakinra in Pediatric FIRES — Phase II', status: 'Recruiting', n: 48, end: '2026-09' },
                 { id: 'NCT04891234', title: 'IL-6 Blockade in Refractory SE', status: 'Active', n: 32, end: '2025-12' },
@@ -620,7 +621,7 @@ export default function ResearchLabPage() {
           <div>
             <div style={{ ...S.card, marginBottom: '16px', background: '#8B5CF608', border: '1px solid #8B5CF622' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ fontSize: '16px' }}>🤖</span>
+                
                 <div style={S.cardTitle}>HypothesisEngine · Claude Sonnet · L3</div>
                 <span style={S.tag('#8B5CF6')}>Active</span>
               </div>
@@ -647,7 +648,7 @@ export default function ResearchLabPage() {
               </div>
             ))}
             <div style={{ ...S.card, marginTop: '8px' }}>
-              <div style={S.cardTitle}>💬 Dialogues inter-moteurs</div>
+              <div style={S.cardTitle}>Dialogues inter-moteurs</div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxHeight: '220px', overflowY: 'auto', marginTop: '8px' }}>
                 {(dialogues.length > 0 ? dialogues : DIALOGUES).map((d: any, i: number) => (
                   <div key={i} style={{ padding: '8px 10px', background: d.isEngine ? `${C.purple}08` : C.surface, borderRadius: '6px', border: `1px solid ${d.isEngine ? C.purple + '22' : C.border}` }}>
@@ -690,8 +691,8 @@ export default function ResearchLabPage() {
                   <div style={{ width: `${tx.score}%`, height: '100%', background: tx.color, borderRadius: '2px' }} />
                 </div>
                 <div style={{ fontSize: '10px', color: C.textMuted, lineHeight: 1.5 }}>{tx.moa}</div>
-                <div style={{ fontSize: '10px', color: C.textDim, marginTop: '4px' }}>💊 {tx.dose}</div>
-                <div style={{ fontSize: '9px', color: C.textMuted, marginTop: '4px', fontStyle: 'italic' }}>📎 {tx.evidence}</div>
+                <div style={{ fontSize: '10px', color: C.textDim, marginTop: '4px' }}>{tx.dose}</div>
+                <div style={{ fontSize: '9px', color: C.textMuted, marginTop: '4px', fontStyle: 'italic' }}>{tx.evidence}</div>
               </div>
             ))}
           </div>
@@ -701,7 +702,7 @@ export default function ResearchLabPage() {
         {activeTab === 'visualisations' && (
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
             <div style={S.card}>
-              <div style={S.cardTitle}>🧠 Heatmap cérébrale FIRES</div>
+              <div style={S.cardTitle}>Heatmap cérébrale FIRES</div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: '4px', marginTop: '12px' }}>
                 {[
                   { zone: 'Hippocampe', val: 0.92, color: C.danger },
@@ -721,7 +722,7 @@ export default function ResearchLabPage() {
               </div>
             </div>
             <div style={S.card}>
-              <div style={S.cardTitle}>📡 Radar Discovery Engine</div>
+              <div style={S.cardTitle}>Radar Discovery Engine</div>
               <div style={{ display: 'flex', justifyContent: 'center', padding: '8px 0' }}>
                 <svg width="200" height="200" viewBox="-100 -100 200 200">
                   {[20,40,60,80].map(r => <circle key={r} r={r} fill="none" stroke="#1E2A3A" strokeWidth="1"/>)}
@@ -736,7 +737,7 @@ export default function ResearchLabPage() {
               </div>
             </div>
             <div style={{ ...S.card, gridColumn: '1 / -1' }}>
-              <div style={S.cardTitle}>📈 Waveform EEG — FIRES phénotype A</div>
+              <div style={S.cardTitle}>Waveform EEG — FIRES phénotype A</div>
               <svg width="100%" height="70" style={{ display: 'block' }}>
                 {(() => {
                   const pts: string[]=[];
@@ -762,12 +763,12 @@ export default function ResearchLabPage() {
                   <div style={{ fontSize: '13px', fontWeight: 800, color: C.text, marginBottom: '4px' }}>{e.format}</div>
                   <span style={{ ...S.tag(e.color), display: 'inline-block', marginBottom: '8px' }}>.{e.ext}</span>
                   <div style={{ fontSize: '10px', color: C.textMuted, lineHeight: 1.5, marginBottom: '12px' }}>{e.desc}</div>
-                  <button style={{ width: '100%', padding: '8px', background: `${e.color}18`, border: `1px solid ${e.color}44`, borderRadius: '6px', color: e.color, cursor: 'pointer', fontFamily: 'monospace', fontSize: '10px', fontWeight: 700 }}>⬇ Exporter</button>
+                  <button style={{ width: '100%', padding: '8px', background: `${e.color}18`, border: `1px solid ${e.color}44`, borderRadius: '6px', color: e.color, cursor: 'pointer', fontFamily: 'monospace', fontSize: '10px', fontWeight: 700 }}>Exporter</button>
                 </div>
               ))}
             </div>
             <div style={S.card}>
-              <div style={S.cardTitle}>📅 Historique CRON</div>
+              <div style={S.cardTitle}>Historique CRON</div>
               {[
                 { date: '2026-03-02 03:00', articles: 3, alerts: 1, duration: '4m32s', status: 'OK' },
                 { date: '2026-02-23 03:00', articles: 7, alerts: 0, duration: '5m18s', status: 'OK' },
@@ -783,7 +784,7 @@ export default function ResearchLabPage() {
               ))}
               <div style={{ ...S.cardAccent, marginTop: 16, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <div style={S.cardTitle}>⏰ Prochaine exécution</div>
+                  <div style={S.cardTitle}>Prochaine exécution</div>
                   <div style={{ fontSize: '14px', fontWeight: 600, color: C.text }}>Dimanche 8 mars 2026 · 03h00 UTC</div>
                 </div>
                 <div style={{ textAlign: 'right', fontSize: '11px', color: C.textMuted }}>Requêtes PubMed : 10<br/>Moteurs : VPS · TDE · PVE · CAE · HypothesisEngine</div>
@@ -796,7 +797,7 @@ export default function ResearchLabPage() {
         {activeTab === 'settings' && (
           <div style={{ maxWidth: '600px' }}>
             <div style={S.card}>
-              <div style={S.cardTitle}>⚙️ Paramètres Discovery Engine v4.0</div>
+              <div style={S.cardTitle}>Paramètres Discovery Engine v4.0</div>
               {[
                 { key: 'Seuil z-score', val: '2.5σ', desc: 'Détection anomalies PatternMiner (L1)' },
                 { key: 'Pearson minimum', val: 'r = 0.65', desc: 'Corrélation minimale retenue' },
