@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next'
 import '@/styles/tokens.css'
 import AppShell from '@/components/AppShell'
+import ResearchPulse from '@/components/ResearchPulse';
 
 export const viewport: Viewport = {
   width: 'device-width',
