@@ -53,6 +53,8 @@ import { intakePersistenceService } from '@/lib/services/intakePersistenceServic
 import { computeTriageFromPipeline } from '@/lib/engines/IntakeAnalyzer'
 import { UseCaseButton } from '@/components/UseCaseButton';
 import HypothesisGauges from '@/components/HypothesisGauges';
+import PatientTimeline from '@/components/PatientTimeline';
+import AlertBadge from '@/components/AlertBadge';
 
 /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
    FILE ACTIVE â PULSAR V17
