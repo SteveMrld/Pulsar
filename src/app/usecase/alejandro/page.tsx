@@ -11,9 +11,31 @@ import Link from 'next/link'
 // ══════════════════════════════════════════════════════════════
 
 const TIMELINE = [
-  { day: -3, date: '31/03', place: 'Eaubonne', title: 'Admission — Fièvre', vps: 30, gcs: 15, crises: 0, cardiacRisk: 5, color: '#F59E0B',
-    facts: ['Fièvre mal tolérée, T° max 40°C', 'Céphalées, douleurs abdominales, toux, rhinite', 'Hospitalisation pour surveillance'],
-    pulsar: ['VPS 30 — modéré', 'Profil prodromique à monitorer', 'Si crises → penser FIRES immédiatement'] },
+  { day: -30, date: 'Semaines avant', place: 'Domicile', title: 'Antécédents — Profil inflammatoire récurrent', vps: 10, gcs: 15, crises: 0, cardiacRisk: 0, color: '#6C7CFF',
+    facts: [
+      'Rhinite plusieurs semaines avant l\'hospitalisation (signalée par la mère)',
+      'Constipation chronique sévère — pleurait aux toilettes, symptôme récurrent depuis longtemps',
+      'Antécédent récurrent documenté : à chaque épisode fébrile, douleurs intenses aux membres inférieurs (surtout les jambes, parfois les bras)',
+      'Impossibilité de marcher lors des montées de température — la mère devait le porter',
+      'Ce pattern fièvre → myalgies des membres inférieurs s\'était reproduit plusieurs fois avant l\'épisode fatal',
+    ],
+    pulsar: [
+      'Myalgie listée comme symptôme officiel FIRES (NIH/HPO)',
+      'Pattern récurrent fièvre→myalgies = hyper-réponse inflammatoire répétée aux infections virales',
+      'Compatible avec BACM (Benign Acute Childhood Myositis) récurrente sur terrain FIRES',
+      'Constipation chronique → signal dysautonomie / axe gut-brain neuroinflammation',
+      'Rhinite précédente = primo-activation immunitaire (voies respiratoires supérieures, profil FIRES classique)',
+      'PULSAR : ce profil antécédent aurait déclenché un score de vulnérabilité préalable',
+    ]
+  },
+  { day: -3, date: '31/03', place: 'Eaubonne', title: 'Admission — Fièvre persistante', vps: 30, gcs: 15, crises: 0, cardiacRisk: 5, color: '#F59E0B',
+    facts: [
+      'Fièvre mal tolérée, T° max 40°C depuis J-3, n\'arrivait pas à baisser',
+      'Céphalées, douleurs abdominales, toux, rhinite',
+      'Douleurs aux jambes — ne pouvait presque plus marcher (pattern récurrent activé)',
+      'Hospitalisation pour surveillance',
+    ],
+    pulsar: ['VPS 30 — modéré', 'Profil prodromique à monitorer — antécédents myalgies récurrentes critiques', 'Si crises → penser FIRES immédiatement'] },
   { day: -1, date: '02-03/04', place: 'Eaubonne', title: 'Kalinox + Sévoflurane → Effondrement', vps: 75, gcs: 8, crises: 3, cardiacRisk: 15, color: '#EF4444',
     facts: ['Amélioration, T° en baisse', 'Kalinox + Sévoflurane pour prélèvement sanguin', 'Effondrement brutal : désaturation, perte de conscience', 'Premières convulsions', 'Glasgow chute à 8', 'Transfert SAMU → Robert-Debré'],
     pulsar: ['CASCADE CRITIQUE : Kalinox+Sévoflurane × Prodrome FIRES', '2 dépresseurs SNC sur cerveau en neuroinflammation latente', 'ALTERNATIVE : Emla + Paracétamol'] },
