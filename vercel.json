@@ -1,4 +1,10 @@
 {
+  "crons": [
+    {
+      "path": "/api/research-lab",
+      "schedule": "0 3 * * 0"
+    }
+  ],
   "headers": [
     {
       "source": "/assets/avatars/(.*)",
