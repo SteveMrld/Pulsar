@@ -2,6 +2,18 @@
 
 import { useState, useEffect } from 'react';
 
+// ─── Supabase config ──────────────────────────────────────────────────────────
+const SUPA_URL = 'https://tpefzxyrjebnnzgguktm.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRwZWZ6eHlyamVibm56Z2d1a3RtIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MjAzNTM1OSwiZXhwIjoyMDg3NjExMzU5fQ.TCjs9D3ECEsTm4n5JQy4PLeiZmBTzQu-cvzuobNQQyQ';
+
+async function sbFetch(table: string, params = '') {
+  const res = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}&limit=50`, {
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`, 'Content-Type': 'application/json' },
+  });
+  if (!res.ok) return [];
+  return res.json();
+}
+
 // ─── Design tokens (PULSAR palette) ──────────────────────────────────────────
 const C = {
   bg:        '#0A0E1A',
@@ -404,14 +416,61 @@ export default function ResearchLabPage() {
   const [expandedHyp, setExpandedHyp] = useState<string | null>('H1');
   const [matrixHover, setMatrixHover] = useState<[number,number] | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [dbArticles, setDbArticles] = useState<typeof PUBMED_ARTICLES>([]);
+  const [dbHypotheses, setDbHypotheses] = useState<typeof HYPOTHESES>([]);
+  const [dbDialogues, setDbDialogues] = useState<typeof DIALOGUES>([]);
+  const [dbCron, setDbCron] = useState<typeof CRON_HISTORY>([]);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+    // Charger depuis Supabase
+    sbFetch('research_lab_articles', 'order=created_at.desc').then((rows: any[]) => {
+      if (rows.length > 0) {
+        setDbArticles(rows.map((r: any) => ({
+          pmid: r.pmid || '', title: r.title, journal: r.journal || '',
+          date: r.pub_date || '', relevance: r.relevance || 0,
+          tags: r.tags || [], engines: r.engines || [], isNew: r.is_new ?? false,
+        })));
+      }
+    });
+    sbFetch('research_hypotheses', 'order=confidence.desc').then((rows: any[]) => {
+      if (rows.length > 0) {
+        setDbHypotheses(rows.map((r: any) => ({
+          id: r.hypothesis_id || r.id, name: r.name, confidence: r.confidence || 0,
+          color: r.color || C.danger, status: r.status || '',
+          evidence: r.evidence || [], engines: r.engines || [], pubmedSupport: r.pubmed_support || 0,
+        })));
+      }
+    });
+    sbFetch('research_dialogues', 'order=created_at.asc').then((rows: any[]) => {
+      if (rows.length > 0) {
+        setDbDialogues(rows.map((r: any) => ({
+          engine: r.engine, msg: r.message, time: '', isEngine: r.is_engine ?? false,
+        })));
+      }
+    });
+    sbFetch('research_cron_history', 'order=run_date.desc').then((rows: any[]) => {
+      if (rows.length > 0) {
+        setDbCron(rows.map((r: any) => ({
+          date: r.run_date?.slice(0,16).replace('T',' ') || '',
+          articles: r.articles_found || 0, hypothesisUpdate: r.hypothesis_updated || false,
+          alerts: r.alerts || 0, duration: r.duration || '', status: r.status || 'OK',
+        })));
+      }
+    });
+  }, []);
+
+  // Utiliser données Supabase si disponibles, sinon fallback mockées
+  const articles = dbArticles.length > 0 ? dbArticles : PUBMED_ARTICLES;
+  const hypotheses = dbHypotheses.length > 0 ? dbHypotheses : HYPOTHESES;
+  const dialogues = dbDialogues.length > 0 ? dbDialogues : DIALOGUES;
+  const cronHistory = dbCron.length > 0 ? dbCron : CRON_HISTORY;
 
   const tabs = [
-    { id: 'veille',       label: '🔬 Veille PubMed',     count: PUBMED_ARTICLES.filter(a => a.isNew).length },
+    { id: 'veille',       label: '🔬 Veille PubMed',     count: articles.filter(a => a.isNew).length },
     { id: 'hypotheses',   label: '💡 Hypothèses',         count: 3 },
     { id: 'croisements',  label: '🔗 Croisements',        count: null },
-    { id: 'dialogues',    label: '💬 Dialogues moteurs',  count: DIALOGUES.length },
+    { id: 'dialogues',    label: '💬 Dialogues moteurs',  count: dialogues.length },
     { id: 'historique',   label: '📅 Historique CRON',    count: null },
   ];
 
@@ -512,7 +571,7 @@ export default function ResearchLabPage() {
             <div style={S.sectionTitle}>
               Articles récents <span style={{ ...S.tag(C.accent), marginLeft: 4 }}>3 nouveaux</span>
             </div>
-            {PUBMED_ARTICLES.map(a => (
+            {articles.map(a => (
               <div
                 key={a.pmid}
                 className="pubrow"
@@ -568,7 +627,7 @@ export default function ResearchLabPage() {
               </div>
             </div>
 
-            {HYPOTHESES.map(h => (
+            {hypotheses.map(h => (
               <div
                 key={h.id}
                 className="hyp-card"
@@ -724,7 +783,7 @@ export default function ResearchLabPage() {
               minHeight: '400px',
               background: `linear-gradient(180deg, ${C.surface} 0%, ${C.bg}88 100%)`,
             }}>
-              {DIALOGUES.map((d, i) => (
+              {dialogues.map((d, i) => (
                 <div key={i} style={S.dialogBubble(d.isEngine)}>
                   <div style={{ fontSize: '10px', color: C.textMuted, marginBottom: 3, padding: '0 4px' }}>
                     {d.engine}
@@ -765,7 +824,7 @@ export default function ResearchLabPage() {
                 <span>Date</span><span>Articles</span><span>Hypothèses</span><span>Alertes</span><span>Durée</span><span>Statut</span>
               </div>
 
-              {CRON_HISTORY.map((run, i) => (
+              {cronHistory.map((run, i) => (
                 <div key={i} style={{
                   display: 'grid',
                   gridTemplateColumns: '180px 80px 120px 80px 80px 60px',
