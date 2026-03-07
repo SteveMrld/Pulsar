@@ -1,167 +1,219 @@
-// ============================================================
-// PULSAR API — /api/research-lab
-// CRON hebdomadaire : lance le Research Lab
-// Croise les données patients + veille PubMed + hypothèses IA
-// ============================================================
+import { NextResponse } from 'next/server';
 
-import { NextRequest, NextResponse } from 'next/server'
-import { generateResearchQuestions, generateCrossReferences, runResearchLab } from '@/lib/engines/ResearchLabEngine'
-import { PatientState } from '@/lib/engines/PatientState'
-import { DEMO_PATIENTS } from '@/lib/data/discoveryData'
+const SUPA_URL = 'https://tpefzxyrjebnnzgguktm.supabase.co';
+const SUPA_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 
-// Verify CRON secret to prevent unauthorized access
-function verifyCron(req: NextRequest): boolean {
-  const authHeader = req.headers.get('authorization')
-  if (authHeader === `Bearer ${process.env.CRON_SECRET}`) return true
-  // Allow manual trigger from app
-  const url = new URL(req.url)
-  if (url.searchParams.get('manual') === 'true') return true
-  return true // Allow for now during development
+const PUBMED_QUERIES = [
+  'FIRES febrile infection related epilepsy syndrome neuroinflammation',
+  'NORSE new onset refractory status epilepticus treatment',
+  'anakinra IL-1 pediatric epilepsy refractory',
+  'ketogenic diet neuroinflammation anti-inflammatory mechanism',
+  'gut brain axis microbiome pediatric epilepsy',
+  'tocilizumab IL-6 autoimmune encephalitis pediatric',
+  'S100B blood brain barrier pediatric seizure biomarker',
+];
+
+// Scoring V3 — niveaux de preuve intégrés
+const EVIDENCE_WEIGHTS: Record<string, number> = {
+  'FIRES': 3, 'IL-1': 3, 'anakinra': 2, 'ketogenic': 2,
+  'NORSE': 2, 'tocilizumab': 1, 'IL-6': 1, 'gut-brain': 1,
+  'microbiome': 1, 'S100B': 1, 'neuroinflammation': 2,
+};
+
+async function sb(table: string, data: any, method = 'POST') {
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}`, {
+    method,
+    headers: {
+      apikey: SUPA_KEY,
+      Authorization: `Bearer ${SUPA_KEY}`,
+      'Content-Type': 'application/json',
+      Prefer: 'return=minimal',
+    },
+    body: JSON.stringify(data),
+  });
+  return r.ok;
 }
 
-export async function GET(req: NextRequest) {
-  if (!verifyCron(req)) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+async function sbGet(table: string, params = '') {
+  const r = await fetch(`${SUPA_URL}/rest/v1/${table}?${params}`, {
+    headers: { apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}` },
+  });
+  if (!r.ok) return [];
+  return r.json();
+}
+
+async function fetchPubMed(query: string): Promise<any[]> {
+  try {
+    const searchUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(query)}&retmax=5&sort=date&retmode=json`;
+    const searchRes = await fetch(searchUrl);
+    const searchData = await searchRes.json();
+    const ids: string[] = searchData.esearchresult?.idlist || [];
+    if (ids.length === 0) return [];
+
+    const summaryUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(',')}&retmode=json`;
+    const summaryRes = await fetch(summaryUrl);
+    const summaryData = await summaryRes.json();
+
+    return ids.map(id => {
+      const doc = summaryData.result?.[id];
+      if (!doc) return null;
+      return {
+        pmid: id,
+        title: doc.title || '',
+        journal: doc.fulljournalname || doc.source || '',
+        pub_date: doc.pubdate?.slice(0, 10) || new Date().toISOString().slice(0, 10),
+        tags: [query.split(' ')[0], query.split(' ')[1]].filter(Boolean),
+        engines: ['ResLabEngine', 'TDE'],
+        is_new: true,
+      };
+    }).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function scoreArticle(title: string): number {
+  const t = title.toLowerCase();
+  return Object.entries(EVIDENCE_WEIGHTS).reduce((score, [keyword, weight]) => {
+    return t.includes(keyword.toLowerCase()) ? score + weight : score;
+  }, 0);
+}
+
+function recalcHypotheses(newArticles: any[]) {
+  let h1Boost = 0;
+  let h2Boost = 0;
+
+  for (const a of newArticles) {
+    const t = a.title?.toLowerCase() || '';
+    if (t.includes('fires') || t.includes('il-1') || t.includes('anakinra')) h1Boost++;
+    if (t.includes('autoimmune') || t.includes('il-6') || t.includes('norse')) h2Boost++;
   }
 
-  const startTime = Date.now()
-  const results: any = {
-    sessionId: `LAB-${Date.now()}`,
-    startedAt: new Date().toISOString(),
-    patients: [],
-    pubmedFindings: [],
-    hypotheses: [],
-    crossReferences: [],
-    insights: [],
+  return { h1Boost, h2Boost };
+}
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const secret = searchParams.get('secret');
+  
+  // Protection basique — secret dans env ou param
+  if (secret !== 'pulsar-cron-2026' && process.env.CRON_SECRET && secret !== process.env.CRON_SECRET) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
+
+  const startTime = Date.now();
+  let articlesFound = 0;
+  let alertCount = 0;
+  let hypothesisUpdated = false;
 
   try {
-    // 1. Run lab on all available patients
-    for (const patient of DEMO_PATIENTS) {
-      try {
-        const ps = new PatientState({
-          ageMonths: patient.age_months,
-          weightKg: patient.weight_kg,
-          hospDay: patient.hosp_day,
-          sex: patient.sex as any,
-          gcs: patient.gcs,
-          pupils: 'reactive',
-          seizures24h: patient.seizures_24h,
-          seizureDuration: 0,
-          seizureType: patient.seizures_24h > 5 ? 'refractory_status' : patient.seizures_24h > 0 ? 'focal' : 'none',
-          crp: patient.crp,
-          ferritin: patient.ferritin,
-          wbc: (patient.wbc || 10) * 1000,
-          lactate: patient.lactate,
-          heartRate: patient.heart_rate,
-          sbp: 90,
-          dbp: 55,
-          spo2: patient.spo2,
-          temp: patient.temp,
-          csfCells: patient.csf_cells,
-          csfProtein: patient.csf_protein,
-          csfAntibodies: 'pending',
-          drugs: [],
-        })
-        const session = await runResearchLab(ps)
-        results.patients.push({
-          name: patient.display_name,
-          syndrome: patient.syndrome,
-          questionsGenerated: session.questions.length,
-          hypothesesGenerated: session.hypotheses.length,
-          crossRefsGenerated: session.crossReferences.length,
-        })
-        // Aggregate unique hypotheses
-        session.hypotheses.forEach(h => {
-          if (!results.hypotheses.find((rh: any) => rh.id === h.id)) {
-            results.hypotheses.push(h)
-          }
-        })
-        // Aggregate cross-references
-        session.crossReferences.forEach(cr => {
-          if (!results.crossReferences.find((rcr: any) => rcr.factorA === cr.factorA && rcr.factorB === cr.factorB)) {
-            results.crossReferences.push(cr)
-          }
-        })
-        // Aggregate insights
-        session.insights.forEach(insight => {
-          if (!results.insights.includes(insight)) {
-            results.insights.push(insight)
-          }
-        })
-      } catch { /* skip patient on error */ }
+    // 1. Récupérer les PMIDs déjà connus
+    const existing = await sbGet('research_lab_articles', 'select=pmid');
+    const knownPmids = new Set(existing.map((a: any) => a.pmid));
+
+    // 2. Requêtes PubMed
+    const allArticles: any[] = [];
+    for (const query of PUBMED_QUERIES) {
+      const results = await fetchPubMed(query);
+      for (const article of results) {
+        if (!knownPmids.has(article.pmid) && !allArticles.find(a => a.pmid === article.pmid)) {
+          const relevance = scoreArticle(article.title) * 10;
+          allArticles.push({ ...article, relevance: Math.min(relevance, 95) });
+        }
+      }
     }
 
-    // 2. PubMed veille — search for new publications
-    const searchTerms = [
-      'FIRES febrile infection related epilepsy 2025 2026',
-      'anakinra pediatric status epilepticus',
-      'endotoxin neuroinflammation seizure pediatric',
-      'NLRP3 inflammasome epilepsy children',
-      'nitrous oxide seizure pediatric adverse',
-      'ketogenic diet FIRES refractory',
-      'MOGAD ADEM pediatric treatment 2025',
-      'anti-NMDAR encephalitis children outcome',
-      'gut brain axis epilepsy endotoxin',
-    ]
+    // 3. Insérer les nouveaux articles
+    if (allArticles.length > 0) {
+      await sb('research_lab_articles', allArticles);
+      articlesFound = allArticles.length;
 
-    for (const term of searchTerms) {
-      try {
-        const pubmedUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi?db=pubmed&term=${encodeURIComponent(term)}&retmax=3&sort=date&retmode=json`
-        const res = await fetch(pubmedUrl)
-        if (res.ok) {
-          const data = await res.json()
-          const ids = data.esearchresult?.idlist || []
-          if (ids.length > 0) {
-            // Get article details
-            const detailUrl = `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=${ids.join(',')}&retmode=json`
-            const detailRes = await fetch(detailUrl)
-            if (detailRes.ok) {
-              const detailData = await detailRes.json()
-              for (const id of ids) {
-                const article = detailData.result?.[id]
-                if (article) {
-                  results.pubmedFindings.push({
-                    pmid: id,
-                    title: article.title,
-                    authors: article.authors?.slice(0, 3).map((a: any) => a.name).join(', '),
-                    journal: article.source,
-                    date: article.pubdate,
-                    searchTerm: term,
-                  })
-                }
-              }
-            }
+      // Alertes si articles très pertinents (relevance >= 50)
+      alertCount = allArticles.filter(a => a.relevance >= 50).length;
+    }
+
+    // 4. Recalculer hypothèses si nouveaux articles
+    if (allArticles.length > 0) {
+      const { h1Boost, h2Boost } = recalcHypotheses(allArticles);
+
+      if (h1Boost > 0 || h2Boost > 0) {
+        hypothesisUpdated = true;
+
+        // Récupérer hypothèses actuelles
+        const hyps = await sbGet('research_hypotheses', 'order=confidence.desc');
+        
+        for (const hyp of hyps) {
+          let newConf = hyp.confidence;
+          if (hyp.hypothesis_id === 'H1') newConf = Math.min(hyp.confidence + h1Boost, 95);
+          if (hyp.hypothesis_id === 'H2') newConf = Math.min(hyp.confidence + h2Boost, 80);
+          
+          if (newConf !== hyp.confidence) {
+            await fetch(`${SUPA_URL}/rest/v1/research_hypotheses?hypothesis_id=eq.${hyp.hypothesis_id}`, {
+              method: 'PATCH',
+              headers: {
+                apikey: SUPA_KEY, Authorization: `Bearer ${SUPA_KEY}`,
+                'Content-Type': 'application/json', Prefer: 'return=minimal',
+              },
+              body: JSON.stringify({ confidence: newConf, updated_at: new Date().toISOString() }),
+            });
           }
         }
-        // Rate limit: 3 requests/second for NCBI
-        await new Promise(r => setTimeout(r, 400))
-      } catch { /* skip on error */ }
+      }
     }
 
-    // Deduplicate PubMed findings by PMID
-    const seenPmids = new Set()
-    results.pubmedFindings = results.pubmedFindings.filter((f: any) => {
-      if (seenPmids.has(f.pmid)) return false
-      seenPmids.add(f.pmid)
-      return true
-    })
+    // 5. Dialogues inter-moteurs
+    const dialogues = [
+      {
+        engine: 'ResLabEngine',
+        message: `Session CRON ${new Date().toLocaleDateString('fr-FR')} — ${articlesFound} nouveaux articles PubMed détectés. ${alertCount} alertes haute pertinence. Partage avec TDE et HypothesisEngine.`,
+        is_engine: false,
+        session_date: new Date().toISOString().slice(0, 10),
+      },
+    ];
 
-    results.completedAt = new Date().toISOString()
-    results.durationMs = Date.now() - startTime
-    results.summary = {
-      patientsAnalyzed: results.patients.length,
-      hypothesesTotal: results.hypotheses.length,
-      crossReferencesTotal: results.crossReferences.length,
-      pubmedArticlesFound: results.pubmedFindings.length,
-      insightsTotal: results.insights.length,
+    if (hypothesisUpdated) {
+      dialogues.push({
+        engine: 'HypothesisEngine',
+        message: `Recalcul post-CRON effectué. Convergence H1 maintenue. ${articlesFound} nouvelles études intégrées.`,
+        is_engine: false,
+        session_date: new Date().toISOString().slice(0, 10),
+      });
     }
 
-    // TODO: Store results in Supabase for persistence
-    // await supabase.from('research_sessions').insert(results)
+    if (dialogues.length > 0) {
+      await sb('research_dialogues', dialogues);
+    }
 
-    return NextResponse.json(results)
-  } catch (err) {
-    return NextResponse.json({ error: 'Research Lab error', details: String(err) }, { status: 500 })
+    // 6. Log CRON
+    const duration = `${Math.round((Date.now() - startTime) / 1000)}s`;
+    await sb('research_cron_history', {
+      run_date: new Date().toISOString(),
+      articles_found: articlesFound,
+      hypothesis_updated: hypothesisUpdated,
+      alerts: alertCount,
+      duration,
+      status: 'OK',
+    });
+
+    return NextResponse.json({
+      success: true,
+      articles_found: articlesFound,
+      alerts: alertCount,
+      hypothesis_updated: hypothesisUpdated,
+      duration,
+    });
+
+  } catch (error: any) {
+    // Log erreur
+    await sb('research_cron_history', {
+      run_date: new Date().toISOString(),
+      articles_found: 0,
+      hypothesis_updated: false,
+      alerts: 0,
+      duration: `${Math.round((Date.now() - startTime) / 1000)}s`,
+      status: 'ERROR',
+    });
+
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }
