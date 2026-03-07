@@ -1,16 +1,8 @@
 {
   "crons": [
     {
-      "path": "/api/research-lab",
+      "path": "/api/research-lab?secret=pulsar-cron-2026",
       "schedule": "0 3 * * 0"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/assets/avatars/(.*)",
-      "headers": [
-        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
-      ]
     }
   ]
 }
