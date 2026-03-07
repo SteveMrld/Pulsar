@@ -3,6 +3,8 @@ import { useLang, LangToggle } from '@/contexts/LanguageContext'
 import { useRef, useEffect, useCallback, useState } from 'react'
 import Link from 'next/link'
 import Picto from '@/components/Picto'
+import EngineFlowHero from '@/components/EngineFlowHero';
+
 
 // ══════════════════════════════════════════════════════════════
 // PULSAR SPLASH — Cinematic pre-landing (Design GPT)
@@ -109,6 +111,7 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
     <>
       <style>{SPLASH_CSS}</style>
       <div className="splash-root">
+      <EngineFlowHero />
         <video className="splash-bg" autoPlay muted loop playsInline src="/assets/videos/neural-bg.mp4" />
 
         <div className="splash-center">
