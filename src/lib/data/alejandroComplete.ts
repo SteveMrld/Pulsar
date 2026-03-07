@@ -36,12 +36,48 @@ export const ALEJANDRO_COMPLETE = {
     sickleCellTrait: true,
     recentDigestiveSymptoms: true,
     recentRhinopharyngitis: true,
+
+    // ── DONNÉES MATERNELLES — Témoignage mars 2026 ──
+    maternalTestimony: {
+      date: '2026-03-08',
+      source: 'Mère d\'Alejandro R.',
+      chronicConstipation: {
+        present: true,
+        description: 'Constipation chronique sévère depuis bas âge — pleurait aux toilettes. Symptôme récurrent et persistant.',
+        clinicalSignificance: 'Signal dysautonomie / axe gut-brain neuroinflammation. De plus en plus documenté dans les syndromes neuroinflammation pédiatrique.',
+      },
+      rhinitisPreHospitalization: {
+        present: true,
+        timing: 'Plusieurs semaines avant l\'hospitalisation',
+        description: 'Rhinite documentée par la mère quelques semaines avant l\'épisode fatal.',
+        clinicalSignificance: 'Compatible avec primo-activation immunitaire des voies respiratoires supérieures — profil FIRES classique (infection VRS précédente dans >70% des cas FIRES).',
+      },
+      recurrentFeverMyalgiaPattern: {
+        present: true,
+        description: 'Pattern récurrent documenté sur plusieurs épisodes antérieurs : à CHAQUE montée de température, Alejandro présentait des douleurs intenses aux membres inférieurs (surtout les jambes, parfois les bras). Ce pattern s\'était reproduit plusieurs fois avant l\'épisode fatal.',
+        severity: 'SÉVÈRE — impossibilité de marcher lors des épisodes. La mère devait le porter.',
+        distribution: 'Membres inférieurs prédominants (jambes), parfois membres supérieurs (bras)',
+        lastEpisode: '3 jours avant l\'hospitalisation — ne pouvait presque plus marcher',
+        clinicalSignificance: [
+          'Myalgia = symptôme officiel FIRES selon NIH/HPO (HPO:0003326)',
+          'Pattern récurrent fièvre→myalgies MI = hyper-réponse inflammatoire musculaire préexistante aux infections virales',
+          'Compatible avec BACM (Benign Acute Childhood Myositis) récurrente sur terrain de susceptibilité FIRES',
+          'La récurrence sur plusieurs épisodes = marqueur de vulnérabilité immunologique sous-jacente',
+          'Ce pattern non documenté dans le dossier médical hospitalier = information clinique manquante critique',
+        ],
+        pulsarImplication: 'PULSAR aurait intégré ce pattern dans le score de vulnérabilité préalable (IntakeAnalyzer). Antécédents de myalgies récurrentes fébriles = critère additionnel FIRES.',
+        references: ['NIH/GARD FIRES phenotype HPO:0003326 (Myalgia)', 'BACM — Lundberg 1957, Viral Myositis PMC 2017, PMC 2024'],
+      },
+    },
   },
 
   // ── CHRONOLOGIE CORRIGÉE ──
   timeline: [
+    // PHASE ANTÉCÉDENTS — PROFIL INFLAMMATOIRE RÉCURRENT
+    { date: 'Semaines avant', day: 'J-X', events: 'Rhinite plusieurs semaines avant l\'hospitalisation. Constipation chronique sévère (pleurait aux toilettes). Pattern récurrent documenté : à chaque épisode fébrile antérieur, myalgies intenses des membres inférieurs avec impossibilité de marcher — la mère devait le porter.', exams: null, treatments: 'Paracétamol selon épisodes fébriles', decisions: 'Aucun bilan neurologique. Pattern myalgies-fièvre non documenté médicalement.', vitals: null, pulsarAlert: 'PULSAR : antécédents myalgies febriles récurrentes = critère additif FIRES. Score vulnérabilité préalable activé. Rhinite = primo-activation VRS compatible FIRES.', source: 'Témoignage maternel — mars 2026' },
+
     // PHASE PRODROMIQUE
-    { date: '2025-03-29', day: 'J-5', events: 'Fièvre isolée (38.5°C). Enfant somnolent, irritabilité.', exams: 'T° élevée, pas de foyer infectieux clair.', treatments: 'Paracétamol', decisions: 'Début du suivi. Hypothèse virale commune.', vitals: null },
+    { date: '2025-03-29', day: 'J-5', events: 'Fièvre isolée (38.5°C). Enfant somnolent, irritabilité. Douleurs aux jambes réapparaissent — pattern récurrent activé. La mère devait le porter.', exams: 'T° élevée, pas de foyer infectieux clair.', treatments: 'Paracétamol', decisions: 'Début du suivi. Hypothèse virale commune. Pattern myalgies non signalé médicalement.', vitals: null, pulsarAlert: 'PULSAR J-5 : fièvre + myalgies membres inférieurs récurrentes = VPS précoce activé. Si antécédents connus → FIRES suspect dès J-5.' },
     { date: '2025-03-30', day: 'J-4', events: 'Fièvre persistante.', exams: null, treatments: 'Aucun changement', decisions: 'Pas de signes associés.', vitals: null },
     { date: '2025-03-31', day: 'J-3/J-2', events: 'État stable, fébrile fluctuant, aucune anomalie clinique.', exams: null, treatments: 'Paracétamol', decisions: 'Suivi ambulatoire.', vitals: null },
 
@@ -150,6 +186,8 @@ export const ALEJANDRO_COMPLETE = {
         { alert: 'Phénytoïne continue 14 jours + Thiopental + polythérapie → risque cardiaque cumulatif', severity: 'critical' },
       ],
       whatPulsarWouldHaveChangedNow: [
+        '(J-X) Rhinite + constipation chronique + myalgies récurrentes febriles → score de vulnérabilité FIRES préalable activé',
+        '(J-X) IntakeAnalyzer : antécédents myalgies-fièvre récurrentes = critère additif FIRES (HPO:0003326). Famille alertée.',
         'Diagnostic FIRES à J0 (score composite ≥ 8/13) au lieu de J+5',
         'IVIG + Corticoïdes à J0 (au lieu de J+2/J+3) — gain de 48-72h',
         'Régime cétogène à J+2 (au lieu de J+5) — gain de 72h',
