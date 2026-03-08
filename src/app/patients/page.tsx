@@ -72,10 +72,10 @@ interface PatientCard {
 }
 
 const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 'male' | 'female'; room: string; syndrome: string; avatar: string }> = {
-  FIRES:    { id: 'ines',  name: 'Inès M.',  age: '4 ans',  sex: 'female', room: 'Réa Neuro · Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/female-ines.png' },
-  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'Réa Neuro · Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/male-lucas.png' },
-  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'Neuropéd. · Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/female-amara.png' },
-  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. · Lit 5',  syndrome: 'Épil. focale', avatar: '/assets/avatars/male-noah.png' },
+  FIRES:    { id: 'ines',  name: 'Inès M.',  age: '4 ans',  sex: 'female', room: 'Réa Neuro · Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/avatar-ines.png' },
+  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'Réa Neuro · Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/avatar-lucas.png' },
+  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'Neuropéd. · Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/avatar-amara.png' },
+  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. · Lit 5',  syndrome: 'Épil. focale', avatar: '/assets/avatars/avatar-noah.png' },
 }
 
 function detectPhase(hospDay: number, vps: number): ClinicalPhase {
@@ -119,8 +119,8 @@ function buildDemoPatients(): PatientCard[] {
 /* ââ Mini Avatar SVG ââ */
 function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size?: number; name?: string; sex?: 'male' | 'female' }) {
   const avatarKey = sex === 'male'
-    ? (name?.startsWith('Lucas') ? 'male-lucas' : 'male-noah')
-    : (name?.startsWith('Amara') ? 'female-amara' : 'female-ines')
+    ? (name?.startsWith('Lucas') ? 'avatar-lucas' : 'avatar-noah')
+    : (name?.startsWith('Amara') ? 'avatar-amara' : 'avatar-ines')
   const avatarSrc = AVATAR_DATA[avatarKey] || ''
   return (
     <div style={{

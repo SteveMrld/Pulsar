@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 
 // ═══════════════════════════════════════════════════════════════════
 // PULSAR DEMO PLAYER — Cinematic product tour
@@ -27,9 +27,18 @@ const SCENES = [
     ui: 'vps',
   },
   {
+    id: 'physio',
+    chapter: 'Visual Physiology',
+    chapterN: '03',
+    color: '#B96BFF',
+    headline: 'Le corps d\'Inès. Zones d\'alerte. En temps réel.',
+    narration: 'PULSAR visualise instantanément les systèmes atteints — neurologique, cardiaque, inflammatoire. Le clinicien voit en un coup d\'œil où le corps est en train de céder.',
+    ui: 'physio',
+  },
+    {
     id: 'diagnostic',
     chapter: 'Diagnostic TDE',
-    chapterN: '03',
+    chapterN: '04',
     color: '#8B5CF6',
     headline: 'FIRES 87% de probabilité. En 4 minutes.',
     narration: 'Le moteur TDE croise les symptômes, l\'EEG, les biomarqueurs et les délais. Là où un médecin seul aurait besoin de 48h, PULSAR pose l\'hypothèse en 4 minutes.',
@@ -47,7 +56,7 @@ const SCENES = [
     {
     id: 'cascade',
     chapter: 'Alertes CAE',
-    chapterN: '05',
+    chapterN: '06',
     color: '#FF6B35',
     headline: '2 cascades critiques détectées avant qu\'elles se produisent.',
     narration: 'Le Cascade Alert Engine modélise les effets en chaîne. Il détecte que l\'association MEOPA + midazolam va provoquer une dépression respiratoire dans les 20 prochaines minutes.',
@@ -56,7 +65,7 @@ const SCENES = [
   {
     id: 'traitement',
     chapter: 'Protocole TPE',
-    chapterN: '06',
+    chapterN: '07',
     color: '#10B981',
     headline: 'Anakinra. Score 94/100. Fenêtre : 6h restantes.',
     narration: 'Le moteur TPE score chaque protocole sur l\'éligibilité, les interactions, et l\'urgence. La fenêtre thérapeutique est calculée en temps réel. Attendre, c\'est perdre.',
@@ -65,16 +74,25 @@ const SCENES = [
   {
     id: 'oracle',
     chapter: 'Simulation ORACLE',
-    chapterN: '07',
+    chapterN: '08',
     color: '#E879F9',
     headline: '5 scénarios simulés. Voir le futur avant d\'agir.',
     narration: 'ORACLE simule l\'évolution du patient selon chaque décision thérapeutique. Le médecin voit à J+30 l\'impact de ce qu\'il décide maintenant.',
     ui: 'oracle',
   },
   {
+    id: 'irm',
+    chapter: 'Cartographie IRM',
+    chapterN: '08',
+    color: '#2FD1C8',
+    headline: 'Barrière hémato-encéphalique. +340% de perméabilité.',
+    narration: 'PULSAR croise les données biologiques avec les modèles anatomiques pour cartographier l\'inflammation cérébrale. Ce que l\'IRM montre en 48h, PULSAR l\'estime en minutes.',
+    ui: 'irm',
+  },
+    {
     id: 'discovery',
     chapter: 'Discovery Engine',
-    chapterN: '08',
+    chapterN: '09',
     color: '#2FD1C8',
     headline: 'Chaque patient enrichit la science mondiale.',
     narration: 'Le Discovery Engine croise les données anonymisées avec PubMed et ClinicalTrials.gov. L\'enfant traité à Pointe-à-Pitre améliore la décision prise demain à Lyon.',
@@ -435,11 +453,140 @@ function ScreenBrain() {
   )
 }
 
+
+function ScreenVisualPhysio() {
+  const [tick, setTick] = React.useState(0)
+  React.useEffect(() => {
+    const t = setInterval(() => setTick(x => x + 1), 1200)
+    return () => clearInterval(t)
+  }, [])
+  const zones = [
+    { label: 'NEURO', icon: '🧠', x: 48, y: 18, color: '#EF4444', level: 2 },
+    { label: 'CARDIO', icon: '❤️', x: 48, y: 42, color: '#FF6B35', level: 2 },
+    { label: 'RESP', icon: '🫁', x: 48, y: 55, color: '#F59E0B', level: 1 },
+    { label: 'INFLAM', icon: '🔥', x: 75, y: 38, color: '#EF4444', level: 2 },
+    { label: 'TEMP', icon: '🌡', x: 75, y: 52, color: '#10B981', level: 0 },
+  ]
+  return (
+    <div style={{ height: "100%", display: "flex", flexDirection: "column", fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ height: 36, background: "rgba(108,124,255,0.08)", borderBottom: "1px solid rgba(108,124,255,0.15)", display: "flex", alignItems: "center", padding: "0 12px", gap: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 900, color: "#6C7CFF", fontFamily: "monospace" }}>✦ PULSAR</div>
+        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)" }}>/</div>
+        <div style={{ fontSize: 9, color: "#B96BFF", fontWeight: 700, fontFamily: "monospace" }}>Inès M. · Visual Physiology System</div>
+      </div>
+      <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+        {/* Left panel */}
+        <div style={{ width: 130, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 7, borderRight: "1px solid rgba(255,255,255,0.04)" }}>
+          {[
+            { l: "NEURO", ic: "🧠", c: "#EF4444", dots: [2,2] },
+            { l: "CARDIO", ic: "❤️", c: "#FF6B35", dots: [2,2] },
+            { l: "RESP", ic: "🫁", c: "#F59E0B", dots: [1,2] },
+          ].map((z, i) => (
+            <div key={i} style={{ padding: "7px 10px", borderRadius: 8, background: `${z.c}10`, border: `1px solid ${z.c}22`, display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 12 }}>{z.ic}</span>
+              <span style={{ fontSize: 9, fontWeight: 800, color: z.c, fontFamily: "monospace", flex: 1 }}>{z.l}</span>
+              <div style={{ display: "flex", gap: 3 }}>
+                {[0,1,2].map(j => <div key={j} style={{ width: 5, height: 5, borderRadius: "50%", background: j <= z.dots[0] ? z.c : "rgba(255,255,255,0.1)", boxShadow: j <= z.dots[0] ? `0 0 5px ${z.c}` : "none", transition: "all 0.4s" }} />)}
+              </div>
+            </div>
+          ))}
+          <div style={{ marginTop: "auto", padding: "8px 10px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
+            <div style={{ fontSize: 8, color: "#EF4444", fontWeight: 800, marginBottom: 4 }}>VPS</div>
+            <div style={{ fontSize: 22, fontWeight: 900, color: "#EF4444", fontFamily: "monospace" }}>92</div>
+            <div style={{ fontSize: 7, color: "rgba(255,255,255,0.35)" }}>CRITIQUE</div>
+          </div>
+        </div>
+        {/* Center: patient silhouette */}
+        <div style={{ flex: 1, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: 8 }}>
+          <div style={{ position: "relative", height: "100%", maxHeight: 280 }}>
+            <img src="/assets/avatars/avatar-girl-new.png" alt="patient" style={{ height: "100%", objectFit: "contain", opacity: 0.92 }} />
+            {/* Hotspots */}
+            {[
+              { top: "12%", left: "48%", c: "#EF4444" },
+              { top: "38%", left: "44%", c: "#FF6B35" },
+              { top: "52%", left: "52%", c: "#F59E0B" },
+            ].map((h, i) => (
+              <div key={i} style={{ position: "absolute", top: h.top, left: h.left, transform: "translate(-50%,-50%)" }}>
+                <div style={{ width: 14, height: 14, borderRadius: "50%", background: `${h.c}30`, border: `2px solid ${h.c}`, boxShadow: `0 0 ${tick % 2 === 0 ? 10 : 16}px ${h.c}`, transition: "box-shadow 0.4s" }} />
+              </div>
+            ))}
+          </div>
+        </div>
+        {/* Right panel */}
+        <div style={{ width: 120, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 7, borderLeft: "1px solid rgba(255,255,255,0.04)" }}>
+          {[
+            { l: "INFLAM", ic: "🔥", c: "#EF4444", dots: [2,2] },
+            { l: "TEMP", ic: "🌡", c: "#10B981", dots: [0,2] },
+          ].map((z, i) => (
+            <div key={i} style={{ padding: "7px 10px", borderRadius: 8, background: `${z.c}10`, border: `1px solid ${z.c}22`, display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 12 }}>{z.ic}</span>
+              <span style={{ fontSize: 9, fontWeight: 800, color: z.c, fontFamily: "monospace", flex: 1 }}>{z.l}</span>
+              <div style={{ display: "flex", gap: 3 }}>
+                {[0,1,2].map(j => <div key={j} style={{ width: 5, height: 5, borderRadius: "50%", background: j <= z.dots[0] ? z.c : "rgba(255,255,255,0.1)", boxShadow: j <= z.dots[0] ? `0 0 5px ${z.c}` : "none" }} />)}
+              </div>
+            </div>
+          ))}
+          {/* EEG mini */}
+          <div style={{ marginTop: "auto", padding: "8px 10px", borderRadius: 8, background: "rgba(108,124,255,0.08)", border: "1px solid rgba(108,124,255,0.2)" }}>
+            <div style={{ fontSize: 8, color: "#6C7CFF", fontWeight: 700, marginBottom: 4, fontFamily: "monospace" }}>EEG</div>
+            <svg viewBox="0 0 80 20" style={{ width: "100%", height: 20 }}>
+              <polyline points="0,10 8,10 10,2 12,18 14,10 22,10 24,4 26,16 28,10 36,10 38,3 40,17 42,10 50,10 52,5 54,15 56,10 64,10 66,2 68,18 70,10 78,10 80,10" fill="none" stroke="#EF4444" strokeWidth="1.2" opacity="0.8"/>
+            </svg>
+            <div style={{ fontSize: 7, color: "#EF4444", fontWeight: 700 }}>SEIZURE</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ScreenIRM() {
+  return (
+    <div style={{ height: "100%", display: "flex", flexDirection: "column", fontFamily: "system-ui, sans-serif" }}>
+      <div style={{ height: 36, background: "rgba(47,209,200,0.08)", borderBottom: "1px solid rgba(47,209,200,0.15)", display: "flex", alignItems: "center", padding: "0 12px", gap: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 900, color: "#6C7CFF", fontFamily: "monospace" }}>✦ PULSAR</div>
+        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)" }}>/</div>
+        <div style={{ fontSize: 9, color: "#2FD1C8", fontWeight: 700, fontFamily: "monospace" }}>Inès M. · Cartographie cérébrale</div>
+      </div>
+      <div style={{ flex: 1, padding: 12, overflow: "auto", display: "flex", flexDirection: "column", gap: 10 }}>
+        {/* BBB illustration */}
+        <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(47,209,200,0.2)" }}>
+          <img src="/assets/illustrations/PULSAR_BBB_FIRES_detailed.png" alt="Barrière hémato-encéphalique" style={{ width: "100%", display: "block", opacity: 0.9 }} />
+        </div>
+        {/* Brain zones heatmap */}
+        <div style={{ padding: "10px 12px", background: "rgba(47,209,200,0.06)", borderRadius: 9, border: "1px solid rgba(47,209,200,0.15)" }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: "#2FD1C8", marginBottom: 8, letterSpacing: 1 }}>CARTOGRAPHIE — ZONES INFLAMMATOIRES</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+            {[
+              { z: "Temporal G", v: 94, c: "#EF4444" },
+              { z: "Temporal D", v: 89, c: "#EF4444" },
+              { z: "Hippocampe", v: 78, c: "#FF6B35" },
+              { z: "Thalamus", v: 61, c: "#F59E0B" },
+              { z: "Frontal", v: 38, c: "#6C7CFF" },
+              { z: "Occipital", v: 12, c: "#10B981" },
+            ].map((z, i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ fontSize: 8, color: "rgba(255,255,255,0.5)", minWidth: 62 }}>{z.z}</div>
+                <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,0.05)", borderRadius: 2, overflow: "hidden" }}>
+                  <div style={{ width: `${z.v}%`, height: "100%", background: z.c, borderRadius: 2 }} />
+                </div>
+                <div style={{ fontSize: 8, color: z.c, fontFamily: "monospace", minWidth: 24, textAlign: "right", fontWeight: 700 }}>{z.v}%</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const UI_MAP: Record<string, () => JSX.Element> = {
   admission: ScreenAdmission,
   vps: ScreenVPS,
   diagnostic: ScreenDiagnostic,
   brain: ScreenBrain,
+  physio: ScreenVisualPhysio,
+  irm: ScreenIRM,
   cascade: ScreenCascade,
   traitement: ScreenTraitement,
   oracle: ScreenOracle,
