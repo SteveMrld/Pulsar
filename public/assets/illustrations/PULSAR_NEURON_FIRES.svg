@@ -1,0 +1,306 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="40%"><stop offset="0%" stop-color="#0D1535"/><stop offset="100%" stop-color="#04070F"/></radialGradient>
+  <radialGradient id="gSoma" cx="50%" cy="45%"><stop offset="0%" stop-color="#8B5CF6"/><stop offset="60%" stop-color="#6C7CFF"/><stop offset="100%" stop-color="#3730A3"/></radialGradient>
+  <radialGradient id="gIL" cx="50%" cy="50%"><stop offset="0%" stop-color="#FF6B35"/><stop offset="100%" stop-color="#DC2626"/></radialGradient>
+  <radialGradient id="gTNF" cx="50%" cy="50%"><stop offset="0%" stop-color="#FFB347"/><stop offset="100%" stop-color="#F59E0B"/></radialGradient>
+  <radialGradient id="gBBB" cx="50%" cy="50%"><stop offset="0%" stop-color="#EF4444"/><stop offset="100%" stop-color="#991B1B"/></radialGradient>
+  <linearGradient id="axon" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#6C7CFF"/><stop offset="100%" stop-color="#2FD1C8"/></linearGradient>
+  <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+    <feGaussianBlur stdDeviation="6" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="glow2" x="-100%" y="-100%" width="300%" height="300%">
+    <feGaussianBlur stdDeviation="14" result="blur"/>
+    <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+  <filter id="softGlow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L8,3 z" fill="#EF4444" opacity="0.8"/>
+  </marker>
+  <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
+    <path d="M0,0 L0,6 L8,3 z" fill="#10B981" opacity="0.8"/>
+  </marker>
+</defs>
+
+<!-- Background -->
+<rect width="1400" height="900" fill="url(#bg)"/>
+
+<!-- Title -->
+<text x="50" y="52" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#6C7CFF" letter-spacing="3" opacity="0.7">PULSAR · NEUROCORE · FIRES NEUROINFLAMMATION</text>
+<text x="50" y="85" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">Cascade neuro-inflammatoire FIRES</text>
+<text x="50" y="112" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">IL-1β × 420% · Barrière Hémato-Encéphalique compromise · Activité épileptique réfractaire</text>
+
+<!-- === BLOOD-BRAIN BARRIER (top band) === -->
+<rect x="0" y="145" width="1400" height="28" fill="rgba(239,68,68,0.06)" rx="0"/>
+<text x="50" y="163" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#EF4444" letter-spacing="2" opacity="0.7">BARRIÈRE HÉMATO-ENCÉPHALIQUE — COMPROMISE</text>
+<!-- BBB cells - disrupted tight junctions -->
+<g opacity="0.8">
+  <rect x="0" y="170" width="1400" height="18" fill="none" stroke="rgba(239,68,68,0.3)" stroke-width="1"/>
+  <!-- Normal tight junctions -->
+  <g fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.4)" stroke-width="1">
+    <rect x="20" y="172" width="60" height="14" rx="3"/>
+    <rect x="90" y="172" width="55" height="14" rx="3"/>
+    <rect x="155" y="172" width="65" height="14" rx="3"/>
+    <rect x="230" y="172" width="50" height="14" rx="3"/>
+    <rect x="290" y="172" width="70" height="14" rx="3"/>
+    <rect x="370" y="172" width="45" height="14" rx="3"/>
+    <rect x="425" y="172" width="60" height="14" rx="3"/>
+    <rect x="496" y="172" width="55" height="14" rx="3"/>
+    <rect x="561" y="172" width="65" height="14" rx="3"/>
+    <rect x="636" y="172" width="50" height="14" rx="3"/>
+    <rect x="696" y="172" width="60" height="14" rx="3"/>
+    <rect x="766" y="172" width="55" height="14" rx="3"/>
+    <rect x="831" y="172" width="45" height="14" rx="3"/>
+    <rect x="886" y="172" width="65" height="14" rx="3"/>
+    <rect x="961" y="172" width="50" height="14" rx="3"/>
+    <rect x="1021" y="172" width="70" height="14" rx="3"/>
+    <rect x="1101" y="172" width="55" height="14" rx="3"/>
+    <rect x="1166" y="172" width="45" height="14" rx="3"/>
+    <rect x="1221" y="172" width="60" height="14" rx="3"/>
+    <rect x="1291" y="172" width="50" height="14" rx="3"/>
+    <rect x="1351" y="172" width="45" height="14" rx="3"/>
+  </g>
+  <!-- Gaps/breaks in BBB (red hot zones) -->
+  <circle cx="400" cy="179" r="12" fill="rgba(239,68,68,0.25)" filter="url(#softGlow)"/>
+  <line x1="400" y1="170" x2="400" y2="188" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="3,2" opacity="0.7"/>
+  <circle cx="780" cy="179" r="10" fill="rgba(239,68,68,0.25)" filter="url(#softGlow)"/>
+  <line x1="780" y1="170" x2="780" y2="188" stroke="#EF4444" stroke-width="2" stroke-dasharray="3,2" opacity="0.6"/>
+  <circle cx="1150" cy="179" r="11" fill="rgba(239,68,68,0.2)" filter="url(#softGlow)"/>
+  <line x1="1150" y1="170" x2="1150" y2="188" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="3,2" opacity="0.5"/>
+</g>
+
+<!-- === SOMA (cell body) === -->
+<g transform="translate(420, 530)">
+  <!-- Outer glow -->
+  <circle cx="0" cy="0" r="112" fill="rgba(108,124,255,0.08)" filter="url(#glow2)"/>
+  <!-- Soma body -->
+  <circle cx="0" cy="0" r="85" fill="url(#gSoma)" opacity="0.9" filter="url(#softGlow)"/>
+  <!-- Nucleus -->
+  <circle cx="0" cy="0" r="38" fill="rgba(139,92,246,0.4)" stroke="rgba(167,139,250,0.6)" stroke-width="1.5"/>
+  <circle cx="0" cy="0" r="22" fill="rgba(109,40,217,0.5)" stroke="rgba(167,139,250,0.4)" stroke-width="1"/>
+  <!-- Nucleolus -->
+  <circle cx="5" cy="-5" r="9" fill="rgba(196,181,253,0.5)" stroke="rgba(196,181,253,0.6)" stroke-width="1"/>
+  <!-- Chromatin dots -->
+  <circle cx="-12" cy="8" r="4" fill="rgba(196,181,253,0.3)"/>
+  <circle cx="14" cy="10" r="3" fill="rgba(196,181,253,0.25)"/>
+  <circle cx="-5" cy="-18" r="3.5" fill="rgba(196,181,253,0.3)"/>
+  <!-- ER membranes -->
+  <path d="M-60,-20 Q-35,0 -60,20" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+  <path d="M-65,-15 Q-40,0 -65,15" fill="none" stroke="rgba(167,139,250,0.3)" stroke-width="1"/>
+  <path d="M55,-25 Q30,0 55,25" fill="none" stroke="rgba(167,139,250,0.4)" stroke-width="1.5"/>
+  <!-- Mitochondria -->
+  <ellipse cx="-50" cy="45" rx="18" ry="9" fill="rgba(16,185,129,0.25)" stroke="rgba(16,185,129,0.5)" stroke-width="1.5" transform="rotate(-30,-50,45)"/>
+  <path d="M-62,42 Q-50,48 -38,42" fill="none" stroke="rgba(16,185,129,0.4)" stroke-width="1"/>
+  <ellipse cx="52" cy="40" rx="16" ry="8" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.4)" stroke-width="1.5" transform="rotate(20,52,40)"/>
+  <!-- Soma label -->
+  <text x="0" y="105" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#A78BFA" letter-spacing="1">NEURONE</text>
+</g>
+
+<!-- === DENDRITES === -->
+<!-- Dendrite 1 (up-left) -->
+<path d="M345,450 Q280,390 220,320 Q180,270 155,210" fill="none" stroke="#6C7CFF" stroke-width="7" stroke-linecap="round" opacity="0.7"/>
+<path d="M220,320 Q185,295 160,260" fill="none" stroke="#6C7CFF" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+<!-- Spines on dendrite 1 -->
+<g stroke="#8B5CF6" stroke-width="2.5" opacity="0.7">
+  <line x1="278" y1="393" x2="268" y2="378"/>
+  <line x1="253" y1="360" x2="240" y2="348"/>
+  <line x1="228" y1="328" x2="213" y2="317"/>
+  <line x1="200" y1="295" x2="185" y2="282"/>
+  <line x1="175" y1="258" x2="161" y2="244"/>
+  <circle cx="268" cy="376" r="4" fill="#8B5CF6" opacity="0.8"/>
+  <circle cx="239" cy="346" r="4" fill="#8B5CF6" opacity="0.8"/>
+  <circle cx="212" cy="314" r="3.5" fill="#8B5CF6"/>
+  <circle cx="183" cy="280" r="3.5" fill="#8B5CF6"/>
+  <circle cx="159" cy="242" r="3" fill="#8B5CF6"/>
+</g>
+<!-- Dendrite 2 (left) -->
+<path d="M340,510 Q265,490 190,480 Q145,476 100,462" fill="none" stroke="#6C7CFF" stroke-width="6" stroke-linecap="round" opacity="0.65"/>
+<path d="M190,480 Q165,460 140,438" fill="none" stroke="#6C7CFF" stroke-width="3.5" stroke-linecap="round" opacity="0.5"/>
+<!-- Dendrite 3 (down-left) -->
+<path d="M350,610 Q285,660 220,700 Q165,735 120,755" fill="none" stroke="#6C7CFF" stroke-width="5.5" stroke-linecap="round" opacity="0.6"/>
+<!-- Dendrite 4 (up-right-apical) -->
+<path d="M500,445 Q555,370 600,290 Q635,225 660,165" fill="none" stroke="#6C7CFF" stroke-width="7.5" stroke-linecap="round" opacity="0.75"/>
+<path d="M600,290 Q640,265 675,245" fill="none" stroke="#6C7CFF" stroke-width="4" stroke-linecap="round" opacity="0.5"/>
+<path d="M635,225 Q660,205 682,182" fill="none" stroke="#6C7CFF" stroke-width="3.5" stroke-linecap="round" opacity="0.45"/>
+<!-- Spines on apical dendrite -->
+<g stroke="#8B5CF6" stroke-width="2.5" opacity="0.65">
+  <line x1="554" y1="372" x2="565" y2="358"/>
+  <line x1="578" y1="334" x2="589" y2="319"/>
+  <line x1="602" y1="296" x2="614" y2="280"/>
+  <line x1="623" y1="258" x2="636" y2="243"/>
+  <line x1="642" y1="218" x2="655" y2="201"/>
+  <circle cx="565" cy="356" r="4.5" fill="#B96BFF" opacity="0.9"/>
+  <circle cx="589" cy="317" r="4.5" fill="#B96BFF" opacity="0.9"/>
+  <circle cx="614" cy="278" r="4" fill="#B96BFF" opacity="0.9"/>
+  <circle cx="636" cy="241" r="4" fill="#B96BFF" opacity="0.9"/>
+  <circle cx="655" cy="199" r="3.5" fill="#B96BFF" opacity="0.9"/>
+</g>
+
+<!-- === AXON HILLOCK + AXON === -->
+<path d="M505,540 Q600,540 700,543 Q850,547 1000,552 Q1130,556 1300,558" fill="none" stroke="url(#axon)" stroke-width="12" stroke-linecap="round" opacity="0.85" filter="url(#softGlow)"/>
+<!-- Myelin sheaths -->
+<g fill="rgba(47,209,200,0.18)" stroke="rgba(47,209,200,0.5)" stroke-width="1.5">
+  <ellipse cx="640" cy="545" rx="40" ry="18"/>
+  <ellipse cx="730" cy="548" rx="38" ry="17"/>
+  <ellipse cx="818" cy="550" rx="40" ry="18"/>
+  <ellipse cx="908" cy="552" rx="38" ry="17"/>
+  <ellipse cx="998" cy="553" rx="40" ry="18"/>
+  <ellipse cx="1086" cy="555" rx="38" ry="17"/>
+  <ellipse cx="1174" cy="556" rx="40" ry="18"/>
+  <ellipse cx="1262" cy="557" rx="35" ry="16"/>
+</g>
+<!-- Nodes of Ranvier (gaps = yellow dots) -->
+<g fill="#FFB347" filter="url(#softGlow)">
+  <circle cx="685" cy="546" r="5" opacity="0.9"/>
+  <circle cx="773" cy="549" r="5" opacity="0.9"/>
+  <circle cx="862" cy="551" r="5" opacity="0.9"/>
+  <circle cx="951" cy="552" r="5" opacity="0.9"/>
+  <circle cx="1040" cy="554" r="5" opacity="0.9"/>
+  <circle cx="1129" cy="555" r="5" opacity="0.9"/>
+  <circle cx="1218" cy="556" r="5" opacity="0.9"/>
+</g>
+<!-- Axon label -->
+<text x="850" y="595" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" fill="rgba(47,209,200,0.6)" letter-spacing="1">AXONE MYÉLINISÉ</text>
+
+<!-- === ACTION POTENTIAL (epileptic) === -->
+<polyline points="600,525 610,525 614,490 620,560 626,525 636,525" fill="none" stroke="#EF4444" stroke-width="2.5" opacity="0.9" filter="url(#softGlow)"/>
+<polyline points="700,528 710,528 714,492 720,563 726,528 736,528" fill="none" stroke="#EF4444" stroke-width="2.5" opacity="0.85" filter="url(#softGlow)"/>
+<polyline points="800,531 810,531 814,495 820,566 826,531 836,531" fill="none" stroke="#EF4444" stroke-width="2" opacity="0.8" filter="url(#softGlow)"/>
+<polyline points="900,533 910,533 914,496 920,568 926,533 936,533" fill="none" stroke="#EF4444" stroke-width="2" opacity="0.7" filter="url(#softGlow)"/>
+
+<!-- === SYNAPTIC TERMINAL === -->
+<ellipse cx="1340" cy="558" rx="28" ry="20" fill="rgba(47,209,200,0.2)" stroke="rgba(47,209,200,0.6)" stroke-width="2" filter="url(#softGlow)"/>
+<g fill="rgba(47,209,200,0.5)">
+  <circle cx="1328" cy="553" r="5"/>
+  <circle cx="1340" cy="550" r="5"/>
+  <circle cx="1352" cy="553" r="5"/>
+  <circle cx="1328" cy="563" r="5"/>
+  <circle cx="1340" cy="566" r="5"/>
+  <circle cx="1352" cy="563" r="5"/>
+</g>
+<text x="1340" y="595" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(47,209,200,0.7)" letter-spacing="1">SYNAPSE</text>
+
+<!-- === IL-1β MOLECULES === -->
+<!-- Large aggressive cluster around soma -->
+<g filter="url(#glow)">
+  <!-- Hexagonal IL-1β molecules (simplified as hexagons) -->
+  <g transform="translate(280,390)" opacity="0.95">
+    <polygon points="0,-16 14,-8 14,8 0,16 -14,8 -14,-8" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#FF6B35">IL-1β</text>
+  </g>
+  <g transform="translate(560,360)" opacity="0.9">
+    <polygon points="0,-18 15.5,-9 15.5,9 0,18 -15.5,9 -15.5,-9" fill="rgba(239,68,68,0.35)" stroke="#EF4444" stroke-width="2.5"/>
+    <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#FF6B35">IL-1β</text>
+  </g>
+  <g transform="translate(310,650)" opacity="0.85">
+    <polygon points="0,-14 12,-7 12,7 0,14 -12,7 -12,-7" fill="rgba(239,68,68,0.25)" stroke="#EF4444" stroke-width="1.8"/>
+    <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="#FF6B35">IL-1β</text>
+  </g>
+  <g transform="translate(545,700)" opacity="0.8">
+    <polygon points="0,-16 14,-8 14,8 0,16 -14,8 -14,-8" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#FF6B35">IL-1β</text>
+  </g>
+  <g transform="translate(200,580)" opacity="0.8">
+    <polygon points="0,-13 11,-6.5 11,6.5 0,13 -11,6.5 -11,-6.5" fill="rgba(239,68,68,0.25)" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="#FF6B35">IL-1β</text>
+  </g>
+
+  <!-- TNF-α (star shape) -->
+  <g transform="translate(650,670)" opacity="0.9">
+    <polygon points="0,-18 4.5,-6.2 17,-5.6 7.3,3.8 10.5,17 0,9.6 -10.5,17 -7.3,3.8 -17,-5.6 -4.5,-6.2" fill="rgba(255,179,71,0.3)" stroke="#FFB347" stroke-width="2"/>
+    <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="#FFB347">TNF-α</text>
+  </g>
+  <g transform="translate(150,440)" opacity="0.85">
+    <polygon points="0,-16 4,-5.5 15,-5 6.5,3.4 9.5,15 0,8.5 -9.5,15 -6.5,3.4 -15,-5 -4,-5.5" fill="rgba(255,179,71,0.25)" stroke="#FFB347" stroke-width="1.8"/>
+    <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="#FFB347">TNF-α</text>
+  </g>
+
+  <!-- IL-6 -->
+  <g transform="translate(160,720)" opacity="0.75">
+    <circle r="15" fill="rgba(185,107,255,0.2)" stroke="#B96BFF" stroke-width="2"/>
+    <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="#B96BFF">IL-6</text>
+  </g>
+  <g transform="translate(620,400)" opacity="0.8">
+    <circle r="13" fill="rgba(185,107,255,0.2)" stroke="#B96BFF" stroke-width="2"/>
+    <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="#B96BFF">IL-6</text>
+  </g>
+</g>
+
+<!-- Arrows from IL-1β to soma -->
+<line x1="296" y1="408" x2="338" y2="445" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6" marker-end="url(#arr)"/>
+<line x1="544" y1="378" x2="510" y2="440" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.6" marker-end="url(#arr)"/>
+<line x1="326" y1="643" x2="362" y2="615" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="4,3" opacity="0.5" marker-end="url(#arr)"/>
+
+<!-- === NF-kB ACTIVATION inside soma === -->
+<text x="420" y="575" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="rgba(239,68,68,0.85)">NF-κB ↑</text>
+
+<!-- === STAT PANEL (right side) === -->
+<rect x="820" y="240" width="270" height="260" rx="14" fill="rgba(10,14,35,0.85)" stroke="rgba(239,68,68,0.25)" stroke-width="1.5"/>
+<text x="955" y="272" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#EF4444" letter-spacing="2">BIOMARQUEURS FIRES</text>
+<line x1="840" y1="282" x2="1070" y2="282" stroke="rgba(239,68,68,0.2)" stroke-width="1"/>
+
+<!-- Stat bars -->
+<g font-family="'JetBrains Mono', monospace" font-size="10">
+  <!-- IL-1β -->
+  <text x="845" y="308" fill="rgba(255,255,255,0.6)">IL-1β</text>
+  <rect x="910" y="295" width="140" height="12" rx="6" fill="rgba(255,255,255,0.06)"/>
+  <rect x="910" y="295" width="133" height="12" rx="6" fill="#EF4444" opacity="0.75"/>
+  <text x="1055" y="307" fill="#EF4444" font-weight="700">+420%</text>
+
+  <!-- BBB permeabilité -->
+  <text x="845" y="334" fill="rgba(255,255,255,0.6)">BBB perm.</text>
+  <rect x="910" y="321" width="140" height="12" rx="6" fill="rgba(255,255,255,0.06)"/>
+  <rect x="910" y="321" width="126" height="12" rx="6" fill="#FF6B35" opacity="0.75"/>
+  <text x="1055" y="333" fill="#FF6B35" font-weight="700">+340%</text>
+
+  <!-- Seizure freq -->
+  <text x="845" y="360" fill="rgba(255,255,255,0.6)">Crises/24h</text>
+  <rect x="910" y="347" width="140" height="12" rx="6" fill="rgba(255,255,255,0.06)"/>
+  <rect x="910" y="347" width="110" height="12" rx="6" fill="#B96BFF" opacity="0.75"/>
+  <text x="1055" y="359" fill="#B96BFF" font-weight="700">×8</text>
+
+  <!-- Microglial activation -->
+  <text x="845" y="386" fill="rgba(255,255,255,0.6)">Microglie</text>
+  <rect x="910" y="373" width="140" height="12" rx="6" fill="rgba(255,255,255,0.06)"/>
+  <rect x="910" y="373" width="98" height="12" rx="6" fill="#FFB347" opacity="0.75"/>
+  <text x="1055" y="385" fill="#FFB347" font-weight="700">ACTIF</text>
+
+  <!-- Mort neuronale -->
+  <text x="845" y="412" fill="rgba(255,255,255,0.6)">Mort neuro.</text>
+  <rect x="910" y="399" width="140" height="12" rx="6" fill="rgba(255,255,255,0.06)"/>
+  <rect x="910" y="399" width="80" height="12" rx="6" fill="#6C7CFF" opacity="0.75"/>
+  <text x="1055" y="411" fill="#6C7CFF" font-weight="700">CRITIQUE</text>
+</g>
+
+<!-- Alert box -->
+<rect x="840" y="440" width="210" height="48" rx="9" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.4)" stroke-width="1.5"/>
+<text x="855" y="461" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#EF4444">⚡ STATUS EPILEPTICUS</text>
+<text x="855" y="478" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.5)">Réfractaire · FIRES confirmé</text>
+
+<!-- === PULSAR DETECTION TAG === -->
+<rect x="950" y="680" width="230" height="55" rx="10" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.3)" stroke-width="1.5"/>
+<text x="1065" y="703" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#10B981">✦ PULSAR DETECT</text>
+<text x="1065" y="720" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.5)">Seuil IL-1β franchi · Alerte J+0</text>
+<text x="1065" y="733" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.6)">Anakinra recommandé — Fenêtre: 6h</text>
+
+<!-- === LEGEND === -->
+<g transform="translate(50,790)">
+  <rect width="780" height="80" rx="10" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+  <g font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.5)">
+    <circle cx="25" cy="40" r="8" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="40" y="44">IL-1β (Interleukine-1 bêta)</text>
+    <polygon points="155,40 160,49 164,43 168,49 172,40 168,31 164,37 160,31" transform="translate(0,-9)" fill="rgba(255,179,71,0.3)" stroke="#FFB347" stroke-width="1.5"/>
+    <text x="185" y="44">TNF-α</text>
+    <circle cx="255" cy="40" r="8" fill="rgba(185,107,255,0.2)" stroke="#B96BFF" stroke-width="1.5"/>
+    <text x="270" y="44">IL-6</text>
+    <ellipse cx="340" cy="40" rx="20" ry="9" fill="rgba(47,209,200,0.18)" stroke="rgba(47,209,200,0.5)" stroke-width="1.5"/>
+    <text x="367" y="44">Gaine de myéline</text>
+    <circle cx="475" cy="40" r="5" fill="#FFB347"/>
+    <text x="487" y="44">Nœud de Ranvier</text>
+    <polyline points="570,36 575,28 580,44 585,36" fill="none" stroke="#EF4444" stroke-width="2"/>
+    <text x="593" y="44">Potentiel d'action épileptique</text>
+  </g>
+  <text x="395" y="68" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.2)">PULSAR · Modèle neuronal FIRES · Référence: Epilepsia 2018 · Frontiers Neurology 2024</text>
+</g>
+</svg>

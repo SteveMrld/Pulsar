@@ -1,0 +1,298 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="35%"><stop offset="0%" stop-color="#07111F"/><stop offset="100%" stop-color="#04070F"/></radialGradient>
+  <radialGradient id="gutBg" cx="50%" cy="50%"><stop offset="0%" stop-color="#1A0A05"/><stop offset="100%" stop-color="#0A0705"/></radialGradient>
+  <radialGradient id="brainBg" cx="50%" cy="50%"><stop offset="0%" stop-color="#0A0519"/><stop offset="100%" stop-color="#070510"/></radialGradient>
+  <linearGradient id="vagusPulse" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#2FD1C8"/><stop offset="50%" stop-color="#6C7CFF"/><stop offset="100%" stop-color="#B96BFF"/></linearGradient>
+  <linearGradient id="bloodVessel" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#EF4444"/><stop offset="100%" stop-color="#DC2626"/></linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="softg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="bigglow"><feGaussianBlur stdDeviation="16" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arrC" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4 z" fill="#2FD1C8"/></marker>
+  <marker id="arrP" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4 z" fill="#B96BFF"/></marker>
+  <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#EF4444"/></marker>
+  <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#10B981"/></marker>
+</defs>
+
+<rect width="1400" height="900" fill="url(#bg)"/>
+
+<!-- Header -->
+<text x="50" y="48" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#2FD1C8" letter-spacing="3" opacity="0.7">PULSAR · DISCOVERY ENGINE L3 · HYPOTHÈSE TRANSLATIONNELLE</text>
+<text x="50" y="80" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">Axe Intestin–Cerveau</text>
+<text x="50" y="108" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">Dysbiose intestinale → Activation microgliale → Neuroinflammation FIRES</text>
+
+<!-- ════ PANEL 1: GUT (left) ════ -->
+<rect x="40" y="130" width="360" height="680" rx="18" fill="rgba(30,15,5,0.7)" stroke="rgba(255,107,53,0.2)" stroke-width="1.5"/>
+<text x="220" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="rgba(255,107,53,0.85)" letter-spacing="2">MICROBIOME INTESTINAL</text>
+
+<!-- Intestinal wall cross-section -->
+<!-- Mucosa layer -->
+<rect x="60" y="180" width="320" height="200" rx="8" fill="rgba(139,69,30,0.2)" stroke="rgba(200,100,40,0.3)" stroke-width="1.5"/>
+<text x="70" y="197" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(200,100,40,0.6)">MUQUEUSE</text>
+
+<!-- Intestinal villi (finger-like projections) -->
+<g fill="rgba(200,100,40,0.25)" stroke="rgba(200,100,40,0.45)" stroke-width="1.5">
+  <!-- Villi -->
+  <path d="M80,370 L80,290 Q85,275 90,265 Q95,255 100,265 Q105,275 105,290 L105,370 Z"/>
+  <path d="M115,370 L115,285 Q120,268 127,257 Q134,268 134,285 L134,370 Z"/>
+  <path d="M152,370 L152,280 Q157,262 164,250 Q170,237 178,250 Q184,262 184,280 L184,370 Z"/>
+  <path d="M196,370 L196,288 Q202,272 208,260 Q214,272 214,288 L214,370 Z"/>
+  <path d="M228,370 L228,282 Q233,266 240,254 Q247,266 247,282 L247,370 Z"/>
+  <path d="M260,370 L260,290 Q266,274 272,262 Q278,274 278,290 L278,370 Z"/>
+  <path d="M292,370 L292,285 Q298,270 304,258 Q310,270 310,285 L310,370 Z"/>
+  <path d="M323,370 L323,292 Q328,277 333,265 Q338,277 338,292 L338,370 Z"/>
+</g>
+
+<!-- Epithelial cells (top of mucosa) -->
+<rect x="64" y="368" width="312" height="12" rx="2" fill="rgba(200,100,40,0.35)" stroke="rgba(200,100,40,0.5)" stroke-width="1"/>
+<!-- Tight junctions -->
+<g stroke="rgba(200,100,40,0.7)" stroke-width="2">
+  <line x1="105" y1="368" x2="105" y2="380"/>
+  <line x1="134" y1="368" x2="134" y2="380"/>
+  <line x1="184" y1="368" x2="184" y2="380"/>
+  <line x1="214" y1="368" x2="214" y2="380"/>
+  <line x1="247" y1="368" x2="247" y2="380"/>
+  <line x1="278" y1="368" x2="278" y2="380"/>
+  <line x1="310" y1="368" x2="310" y2="380"/>
+  <line x1="338" y1="368" x2="338" y2="380"/>
+</g>
+<!-- Leaky junction (broken) - dysbiosis zone -->
+<circle cx="247" cy="374" r="8" fill="rgba(239,68,68,0.2)" stroke="#EF4444" stroke-width="1.5" filter="url(#softg)"/>
+<text x="247" y="356" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#EF4444">LEAKY</text>
+
+<!-- Bacteria in gut lumen -->
+<text x="220" y="210" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,107,53,0.5)" letter-spacing="1">LUMEN INTESTINAL</text>
+
+<!-- Healthy bacteria (green) -->
+<g fill="rgba(16,185,129,0.5)" stroke="rgba(16,185,129,0.7)" stroke-width="1">
+  <ellipse cx="90" cy="235" rx="14" ry="7" transform="rotate(30,90,235)"/>
+  <ellipse cx="125" cy="220" rx="12" ry="6" transform="rotate(-20,125,220)"/>
+  <ellipse cx="175" cy="240" rx="13" ry="6.5" transform="rotate(10,175,240)"/>
+  <ellipse cx="255" cy="225" rx="14" ry="7" transform="rotate(-15,255,225)"/>
+  <ellipse cx="300" cy="235" rx="12" ry="6" transform="rotate(25,300,235)"/>
+</g>
+<!-- Pathogenic bacteria (red) - dysbiosis -->
+<g fill="rgba(239,68,68,0.45)" stroke="rgba(239,68,68,0.65)" stroke-width="1">
+  <circle cx="215" cy="218" r="9"/>
+  <ellipse cx="240" cy="230" rx="12" ry="6"/>
+  <circle cx="155" cy="235" r="8"/>
+  <ellipse cx="330" cy="222" rx="10" ry="5" transform="rotate(20,330,222)"/>
+</g>
+<!-- Flagella on pathogenic -->
+<g stroke="rgba(239,68,68,0.4)" stroke-width="1" fill="none">
+  <path d="M215,209 Q220,200 225,192"/>
+  <path d="M215,227 Q220,235 225,242"/>
+  <path d="M240,224 Q248,215 254,208"/>
+</g>
+
+<!-- Metabolites / LPS leaking (arrows through leaky junction) -->
+<line x1="247" y1="382" x2="247" y2="420" stroke="#EF4444" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+<text x="265" y="408" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">LPS</text>
+
+<!-- Submucosa + immune cells -->
+<rect x="60" y="380" width="320" height="80" rx="0" fill="rgba(139,92,246,0.06)" stroke="rgba(139,92,246,0.15)" stroke-width="1"/>
+<text x="70" y="397" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(139,92,246,0.5)">SOUS-MUQUEUSE</text>
+<!-- Immune cells -->
+<g transform="translate(0,415)">
+  <!-- Macrophage (irregular shape) -->
+  <path d="M100,0 Q115,-8 125,-2 Q138,5 135,18 Q128,28 115,26 Q100,25 94,14 Z" fill="rgba(185,107,255,0.3)" stroke="#B96BFF" stroke-width="1.5"/>
+  <text x="114" y="14" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#B96BFF">Mφ</text>
+  <!-- T cell -->
+  <circle cx="200" cy="12" r="12" fill="rgba(108,124,255,0.25)" stroke="#6C7CFF" stroke-width="1.5"/>
+  <text x="200" y="16" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#6C7CFF">T</text>
+  <!-- Dendritic cell -->
+  <path d="M290,12 Q300,-5 308,2 Q316,8 314,18 Q308,30 298,28 Q286,22 286,14 Z" fill="rgba(47,209,200,0.25)" stroke="#2FD1C8" stroke-width="1.5"/>
+  <text x="300" y="16" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#2FD1C8">DC</text>
+</g>
+
+<!-- Dysbiosis indicator -->
+<rect x="60" y="480" width="320" height="55" rx="8" fill="rgba(239,68,68,0.07)" stroke="rgba(239,68,68,0.3)" stroke-width="1.5"/>
+<text x="220" y="500" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#EF4444">DYSBIOSE DÉTECTÉE J−7</text>
+<text x="220" y="518" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)">Firmicutes ↓ · Bacteroidetes ↑ · LPS ↑</text>
+<text x="220" y="530" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.65)">Corrèle avec activation microgliale</text>
+
+<!-- Enteric nervous system -->
+<text x="220" y="570" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(255,179,71,0.8)">SYSTÈME NERVEUX ENTÉRIQUE</text>
+<path d="M75,585 Q140,578 175,590 Q220,602 265,585 Q305,572 365,580" fill="none" stroke="rgba(255,179,71,0.5)" stroke-width="3" stroke-linecap="round"/>
+<!-- ENS ganglia -->
+<g fill="rgba(255,179,71,0.3)" stroke="rgba(255,179,71,0.6)" stroke-width="1.5">
+  <circle cx="120" cy="583" r="8"/>
+  <circle cx="180" cy="590" r="7"/>
+  <circle cx="240" cy="584" r="8"/>
+  <circle cx="300" cy="578" r="7"/>
+  <circle cx="345" cy="580" r="6"/>
+</g>
+<!-- SCFAs (Short Chain Fatty Acids) -->
+<rect x="60" y="620" width="320" height="60" rx="8" fill="rgba(16,185,129,0.06)" stroke="rgba(16,185,129,0.2)" stroke-width="1"/>
+<text x="220" y="643" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#10B981">ACIDES GRAS À CHAÎNE COURTE</text>
+<text x="220" y="660" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.45)">Butyrate · Propionate · Acétate</text>
+<text x="220" y="673" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.6)">→ Effet neuroprotecteur potentiel</text>
+
+<!-- ════ PANEL 2: CENTRAL PATHWAY ════ -->
+<!-- Vagus nerve (central, sinuous) -->
+<text x="700" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="rgba(47,209,200,0.8)" letter-spacing="2">VOIES DE COMMUNICATION</text>
+
+<!-- Vagus nerve path (bidirectional) -->
+<path d="M405,450 Q480,400 540,440 Q600,480 660,430 Q720,380 780,420 Q840,460 900,420 Q960,380 1000,430" 
+      fill="none" stroke="url(#vagusPulse)" stroke-width="8" stroke-linecap="round" opacity="0.75" filter="url(#softg)"/>
+<!-- Nerve axons (inner lines) -->
+<path d="M405,450 Q480,400 540,440 Q600,480 660,430 Q720,380 780,420 Q840,460 900,420 Q960,380 1000,430" 
+      fill="none" stroke="rgba(47,209,200,0.4)" stroke-width="3" stroke-linecap="round" stroke-dasharray="10,6"/>
+<!-- Vagus nerve label -->
+<text x="700" y="390" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#2FD1C8">NERF VAGUE</text>
+<text x="700" y="404" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(47,209,200,0.6)">80% afférent · 20% efférent</text>
+
+<!-- Signal arrows on vagus -->
+<!-- Gut → Brain signal (left to right) -->
+<path d="M420,445 Q560,400 680,430" fill="none" stroke="#2FD1C8" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrC)" opacity="0.7"/>
+<text x="540" y="415" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(47,209,200,0.6)">Signaux afférents</text>
+<!-- Brain → Gut signal (right to left) -->
+<path d="M1000,440 Q860,475 720,455" fill="none" stroke="#B96BFF" stroke-width="2" stroke-dasharray="6,4" marker-end="url(#arrP)" opacity="0.6"/>
+<text x="860" y="480" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(185,107,255,0.6)">Modulation efférente</text>
+
+<!-- Blood-borne pathway (blood vessel) -->
+<path d="M420,550 Q560,550 700,550 Q840,550 1000,550" fill="none" stroke="#DC2626" stroke-width="6" stroke-linecap="round" opacity="0.6"/>
+<path d="M420,550 Q560,550 700,550 Q840,550 1000,550" fill="none" stroke="rgba(239,68,68,0.3)" stroke-width="12" opacity="0.3"/>
+<text x="700" y="540" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(239,68,68,0.7)">CIRCULATION SYSTÉMIQUE · LPS · Cytokines</text>
+<!-- Blood flow arrows -->
+<line x1="500" y1="550" x2="580" y2="550" stroke="#EF4444" stroke-width="2" marker-end="url(#arrR)" opacity="0.7"/>
+<line x1="700" y1="550" x2="780" y2="550" stroke="#EF4444" stroke-width="2" marker-end="url(#arrR)" opacity="0.7"/>
+
+<!-- Lymphatic pathway -->
+<path d="M420,610 Q560,625 700,615 Q840,605 1000,618" fill="none" stroke="rgba(16,185,129,0.5)" stroke-width="4" stroke-linecap="round" stroke-dasharray="8,5"/>
+<text x="700" y="606" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.5)">VOIE LYMPHATIQUE</text>
+
+<!-- Immune cell trafficking -->
+<g transform="translate(700,660)">
+  <circle cx="-80" cy="0" r="10" fill="rgba(185,107,255,0.3)" stroke="#B96BFF" stroke-width="1.5"/>
+  <text x="-80" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#B96BFF">Mφ</text>
+  <circle cx="0" cy="0" r="10" fill="rgba(108,124,255,0.3)" stroke="#6C7CFF" stroke-width="1.5"/>
+  <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#6C7CFF">Th17</text>
+  <circle cx="80" cy="0" r="10" fill="rgba(47,209,200,0.3)" stroke="#2FD1C8" stroke-width="1.5"/>
+  <text x="80" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#2FD1C8">DC</text>
+  <!-- Arrows between cells -->
+  <line x1="-65" y1="0" x2="-15" y2="0" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="15" y1="0" x2="65" y2="0" stroke="rgba(255,255,255,0.2)" stroke-width="1.5" stroke-dasharray="3,3"/>
+</g>
+
+<!-- PULSAR Discovery finding -->
+<rect x="540" y="710" width="320" height="80" rx="12" fill="rgba(10,14,35,0.9)" stroke="rgba(47,209,200,0.4)" stroke-width="2"/>
+<text x="700" y="733" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#2FD1C8">✦ HYPOTHÈSE DISCOVERY L3</text>
+<line x1="555" y1="742" x2="845" y2="742" stroke="rgba(47,209,200,0.2)" stroke-width="1"/>
+<text x="700" y="757" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">Dysbiose J−7 → Activation microglie J0</text>
+<text x="700" y="773" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">Corrélation: r=0.78 (p&lt;0.001)</text>
+<text x="700" y="785" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(47,209,200,0.6)">3 NCT actifs · Ciblage axe gut-brain</text>
+
+<!-- ════ PANEL 3: BRAIN (right) ════ -->
+<rect x="1000" y="130" width="360" height="680" rx="18" fill="rgba(10,5,25,0.7)" stroke="rgba(139,92,246,0.2)" stroke-width="1.5"/>
+<text x="1180" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="rgba(139,92,246,0.85)" letter-spacing="2">NEUROINFLAMMATION</text>
+
+<!-- Blood-brain barrier -->
+<rect x="1018" y="180" width="324" height="90" rx="8" fill="rgba(185,107,255,0.06)" stroke="rgba(185,107,255,0.3)" stroke-width="1.5"/>
+<text x="1030" y="198" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(185,107,255,0.6)">BARRIÈRE HÉMATO-ENCÉPHALIQUE</text>
+<!-- BBB endothelial cells -->
+<g fill="rgba(139,92,246,0.2)" stroke="rgba(139,92,246,0.4)" stroke-width="1.2">
+  <rect x="1022" y="205" width="50" height="12" rx="3"/>
+  <rect x="1080" y="205" width="55" height="12" rx="3"/>
+  <rect x="1143" y="205" width="48" height="12" rx="3"/>
+  <rect x="1199" y="205" width="52" height="12" rx="3"/>
+  <rect x="1259" y="205" width="50" height="12" rx="3"/>
+  <rect x="1317" y="205" width="25" height="12" rx="3"/>
+</g>
+<!-- BBB disruption zone -->
+<circle cx="1180" cy="211" r="16" fill="rgba(239,68,68,0.15)" stroke="#EF4444" stroke-width="1.5" filter="url(#softg)"/>
+<text x="1180" y="195" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#EF4444">BBB ↓</text>
+<!-- LPS crossing BBB -->
+<line x1="1180" y1="225" x2="1180" y2="265" stroke="#EF4444" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrR)" opacity="0.7"/>
+
+<!-- Brain parenchyma -->
+<rect x="1018" y="270" width="324" height="300" rx="0" fill="rgba(139,92,246,0.04)"/>
+<!-- Brain tissue texture (gyri pattern) -->
+<path d="M1030,320 Q1080,300 1130,320 Q1180,340 1230,318 Q1280,298 1330,320" fill="none" stroke="rgba(139,92,246,0.12)" stroke-width="8" stroke-linecap="round"/>
+<path d="M1030,370 Q1090,355 1150,375 Q1210,395 1270,372 Q1310,358 1340,370" fill="none" stroke="rgba(139,92,246,0.1)" stroke-width="8" stroke-linecap="round"/>
+<path d="M1030,430 Q1080,415 1140,432 Q1190,448 1250,428 Q1300,410 1340,428" fill="none" stroke="rgba(139,92,246,0.09)" stroke-width="8" stroke-linecap="round"/>
+
+<!-- Microglia (activated, ramified morphology) -->
+<!-- Activated microglia (ameboid, plump, larger) -->
+<g transform="translate(1120,320)">
+  <ellipse rx="18" ry="14" fill="rgba(239,68,68,0.35)" stroke="#EF4444" stroke-width="1.5" filter="url(#softg)"/>
+  <line x1="18" y1="0" x2="32" y2="-8" stroke="#EF4444" stroke-width="2"/>
+  <line x1="18" y1="0" x2="30" y2="8" stroke="#EF4444" stroke-width="2"/>
+  <line x1="-18" y1="0" x2="-30" y2="-5" stroke="#EF4444" stroke-width="2"/>
+  <line x1="0" y1="-14" x2="5" y2="-26" stroke="#EF4444" stroke-width="2"/>
+  <line x1="0" y1="14" x2="-5" y2="26" stroke="#EF4444" stroke-width="2"/>
+  <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="#fff">MG</text>
+</g>
+<text x="1120" y="360" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.7)">ACTIVÉ</text>
+
+<!-- Microglia 2 -->
+<g transform="translate(1270,350)">
+  <ellipse rx="16" ry="12" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="1.5" filter="url(#softg)"/>
+  <line x1="16" y1="0" x2="28" y2="-6" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="-16" y1="0" x2="-28" y2="4" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="0" y1="-12" x2="6" y2="-22" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="0" y1="12" x2="-4" y2="22" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#fff">MG</text>
+</g>
+
+<!-- Astrocytes (star-shaped, reactive) -->
+<g transform="translate(1185,410)">
+  <circle r="14" fill="rgba(255,179,71,0.2)" stroke="rgba(255,179,71,0.5)" stroke-width="1.5"/>
+  <g stroke="rgba(255,179,71,0.5)" stroke-width="2">
+    <line x1="0" y1="-14" x2="0" y2="-28"/>
+    <line x1="0" y1="14" x2="0" y2="28"/>
+    <line x1="14" y1="0" x2="28" y2="0"/>
+    <line x1="-14" y1="0" x2="-28" y2="0"/>
+    <line x1="10" y1="-10" x2="20" y2="-20"/>
+    <line x1="-10" y1="10" x2="-20" y2="20"/>
+    <line x1="10" y1="10" x2="20" y2="20"/>
+    <line x1="-10" y1="-10" x2="-20" y2="-20"/>
+  </g>
+  <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,179,71,0.9)">A★</text>
+</g>
+<text x="1185" y="450" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,179,71,0.6)">RÉACTIF</text>
+
+<!-- Inflammatory cytokines released in brain -->
+<g transform="translate(1120,480)">
+  <polygon points="0,-12 10,-4 10,8 0,14 -10,8 -10,-4" fill="rgba(239,68,68,0.25)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="0" y="3" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#EF4444">IL-1β</text>
+</g>
+<g transform="translate(1240,490)">
+  <polygon points="0,-12 10,-4 10,8 0,14 -10,8 -10,-4" fill="rgba(255,107,53,0.25)" stroke="#FF6B35" stroke-width="1.5"/>
+  <text x="0" y="3" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#FF6B35">TNF-α</text>
+</g>
+<g transform="translate(1320,475)">
+  <circle r="11" fill="rgba(185,107,255,0.2)" stroke="#B96BFF" stroke-width="1.5"/>
+  <text x="0" y="3" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#B96BFF">IL-6</text>
+</g>
+
+<!-- Epileptic activity zone -->
+<rect x="1025" y="540" width="310" height="60" rx="8" fill="rgba(239,68,68,0.07)" stroke="rgba(239,68,68,0.3)" stroke-width="1.5"/>
+<text x="1180" y="560" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#EF4444">STATUS EPILEPTICUS</text>
+<svg x="1040" y="568" width="280" height="25">
+  <polyline points="0,12 15,12 18,2 22,22 26,12 42,12 46,3 50,21 54,12 70,12 74,4 78,20 82,12 98,12 102,3 106,20 110,12 126,12 130,2 134,22 138,12 154,12 158,3 162,21 166,12 182,12 186,4 190,20 194,12 210,12 214,2 218,22 222,12 238,12 242,4 246,20 250,12 270,12 275,12 280,12" fill="none" stroke="#EF4444" stroke-width="1.8" opacity="0.75"/>
+</svg>
+
+<!-- Neuronal death -->
+<rect x="1025" y="615" width="310" height="45" rx="8" fill="rgba(239,68,68,0.05)" stroke="rgba(239,68,68,0.2)" stroke-width="1"/>
+<text x="1180" y="636" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.7)">Mort neuronale · Déficits cognitifs</text>
+<text x="1180" y="651" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">90% séquelles si non traité</text>
+
+<!-- ════ LEGEND ════ -->
+<rect x="50" y="820" width="1300" height="60" rx="8" fill="rgba(255,255,255,0.015)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+<g transform="translate(80,845)" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.4)">
+  <path d="M0,0 Q15,-12 30,0 Q45,12 60,0" fill="none" stroke="url(#vagusPulse)" stroke-width="3"/>
+  <text x="70" y="4">Nerf vague (bidirectionnel)</text>
+  <path d="M230,0 L290,0" fill="none" stroke="#DC2626" stroke-width="4"/>
+  <text x="300" y="4">Circulation systémique</text>
+  <ellipse cx="465" cy="0" rx="15" ry="8" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="488" y="4">Microglie activée</text>
+  <circle cx="625" cy="0" r="8" fill="rgba(255,179,71,0.2)" stroke="rgba(255,179,71,0.6)" stroke-width="1.5"/>
+  <text x="640" y="4">Astrocyte réactif</text>
+  <ellipse cx="775" cy="0" rx="18" ry="8" fill="rgba(16,185,129,0.3)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="800" y="4">Bactéries commensales</text>
+  <circle cx="980" cy="0" r="8" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="996" y="4">Pathogènes (dysbiose)</text>
+</g>
+<text x="700" y="873" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.18)">PULSAR Discovery Engine · Axe Microbiome-Cerveau · Ref: Cryan JF, Nat Rev 2019 · Lyte M, Brain Behav Immun 2023</text>
+</svg>

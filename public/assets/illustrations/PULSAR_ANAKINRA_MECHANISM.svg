@@ -1,0 +1,212 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="30%"><stop offset="0%" stop-color="#080F1F"/><stop offset="100%" stop-color="#04070F"/></radialGradient>
+  <linearGradient id="membrane" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#3730A3"/><stop offset="40%" stop-color="#4C1D95"/><stop offset="60%" stop-color="#6D28D9"/><stop offset="100%" stop-color="#3730A3"/></linearGradient>
+  <radialGradient id="cellInner" cx="50%" cy="60%"><stop offset="0%" stop-color="#0D1035"/><stop offset="100%" stop-color="#060912"/></radialGradient>
+  <radialGradient id="IL1b" cx="40%" cy="35%"><stop offset="0%" stop-color="#FF8C47"/><stop offset="100%" stop-color="#DC2626"/></radialGradient>
+  <radialGradient id="anakinraGrad" cx="40%" cy="35%"><stop offset="0%" stop-color="#34D399"/><stop offset="100%" stop-color="#059669"/></radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="softg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="blkglow"><feGaussianBlur stdDeviation="15" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arrR" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4 z" fill="#EF4444" opacity="0.85"/></marker>
+  <marker id="arrG" markerWidth="10" markerHeight="10" refX="8" refY="4" orient="auto"><path d="M0,0 L0,8 L10,4 z" fill="#10B981" opacity="0.85"/></marker>
+  <marker id="arrW" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,255,255,0.5)"/></marker>
+</defs>
+
+<rect width="1400" height="900" fill="url(#bg)"/>
+
+<!-- Header -->
+<text x="50" y="48" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#10B981" letter-spacing="3" opacity="0.75">PULSAR · TPE · THERAPEUTIC PROSPECTION ENGINE</text>
+<text x="50" y="80" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">Mécanisme d'action — Anakinra</text>
+<text x="50" y="108" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">Inhibiteur IL-1R · Blocage de la cascade neuro-inflammatoire · Score PULSAR: 94/100</text>
+
+<!-- ════ PANEL LEFT: WITHOUT ANAKINRA (inflamed) ════ -->
+<text x="210" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="rgba(239,68,68,0.8)" letter-spacing="2">SANS ANAKINRA</text>
+<text x="210" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">Cascade inflammatoire active</text>
+
+<!-- Cell membrane (left panel) -->
+<path d="M50,260 Q120,250 200,258 Q280,264 360,256" fill="none" stroke="url(#membrane)" stroke-width="28" stroke-linecap="round" filter="url(#softg)"/>
+<text x="205" y="240" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(139,92,246,0.7)" letter-spacing="1">MEMBRANE CELLULAIRE</text>
+
+<!-- IL-1R receptor (left, unblocked) -->
+<!-- Transmembrane domain -->
+<rect x="168" y="245" width="15" height="50" rx="4" fill="rgba(139,92,246,0.6)" stroke="rgba(167,139,250,0.7)" stroke-width="1.5"/>
+<!-- Extracellular domain (Y-shape receptor) -->
+<path d="M175,245 L155,195 M175,245 L195,195" fill="none" stroke="rgba(167,139,250,0.8)" stroke-width="7" stroke-linecap="round"/>
+<path d="M155,195 L140,170 M155,195 L165,168" fill="none" stroke="rgba(167,139,250,0.7)" stroke-width="5" stroke-linecap="round"/>
+<path d="M195,195 L185,168 M195,195 L210,170" fill="none" stroke="rgba(167,139,250,0.7)" stroke-width="5" stroke-linecap="round"/>
+<!-- Binding site opening indicator -->
+<path d="M145,175 Q175,158 205,175" fill="none" stroke="rgba(239,68,68,0.6)" stroke-width="2" stroke-dasharray="4,3"/>
+<!-- Intracellular domain -->
+<path d="M168,295 L150,340 M183,295 L200,340" fill="none" stroke="rgba(139,92,246,0.6)" stroke-width="6" stroke-linecap="round"/>
+<path d="M150,340 L140,380 M200,340 L210,380" fill="none" stroke="rgba(139,92,246,0.5)" stroke-width="4" stroke-linecap="round"/>
+<text x="175" y="395" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(139,92,246,0.6)">IL-1R</text>
+
+<!-- IL-1β molecule attacking (left) -->
+<g transform="translate(175,120)" filter="url(#softg)">
+  <!-- Protein-like blob shape -->
+  <ellipse rx="32" ry="28" fill="url(#IL1b)" opacity="0.9"/>
+  <ellipse cx="-10" cy="-8" rx="12" ry="10" fill="rgba(255,140,70,0.4)" opacity="0.8"/>
+  <ellipse cx="12" cy="6" rx="10" ry="8" fill="rgba(220,38,38,0.3)" opacity="0.7"/>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="900" fill="#fff">IL-1β</text>
+</g>
+<!-- Arrow: IL-1β binding to receptor -->
+<line x1="175" y1="152" x2="175" y2="170" stroke="#EF4444" stroke-width="3" marker-end="url(#arrR)" filter="url(#softg)"/>
+
+<!-- Activated signaling cascade (intracellular) -->
+<!-- NF-kB activation -->
+<rect x="125" y="415" width="100" height="38" rx="8" fill="rgba(239,68,68,0.2)" stroke="rgba(239,68,68,0.5)" stroke-width="1.5" filter="url(#softg)"/>
+<text x="175" y="432" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#EF4444">NF-κB</text>
+<text x="175" y="446" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">ACTIVÉ ↑↑↑</text>
+<line x1="175" y1="395" x2="175" y2="413" stroke="#EF4444" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+
+<!-- Downstream effects (inflammation) -->
+<g transform="translate(175,500)">
+  <line x1="-50" y1="0" x2="-50" y2="40" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="0" y1="0" x2="0" y2="40" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="50" y1="0" x2="50" y2="40" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+  <rect x="-85" y="40" width="70" height="35" rx="6" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.4)" stroke-width="1"/>
+  <text x="-50" y="57" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EF4444">IL-6 ↑</text>
+  <text x="-50" y="70" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.6)">+280%</text>
+
+  <rect x="-35" y="40" width="70" height="35" rx="6" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.4)" stroke-width="1"/>
+  <text x="0" y="57" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EF4444">TNF-α ↑</text>
+  <text x="0" y="70" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.6)">+340%</text>
+
+  <rect x="15" y="40" width="70" height="35" rx="6" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.4)" stroke-width="1"/>
+  <text x="50" y="57" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EF4444">COX-2 ↑</text>
+  <text x="50" y="70" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.6)">→ Douleur</text>
+</g>
+
+<!-- Outcome: seizure -->
+<rect x="105" y="620" width="140" height="50" rx="10" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.5)" stroke-width="2" filter="url(#softg)"/>
+<text x="175" y="643" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#EF4444">⚡ STATUS</text>
+<text x="175" y="659" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.7)">EPILEPTICUS</text>
+
+<!-- ════ CENTER DIVIDER ════ -->
+<line x1="420" y1="140" x2="420" y2="840" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+<!-- ════ PANEL CENTER: ANAKINRA MOLECULE ════ -->
+<text x="700" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="#10B981" letter-spacing="2">ANAKINRA</text>
+<text x="700" y="174" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">Antagoniste recombinant IL-1R · 153 acides aminés</text>
+
+<!-- Anakinra 3D protein structure visualization -->
+<g transform="translate(700, 440)" filter="url(#blkglow)">
+  <!-- Main protein body -->
+  <ellipse rx="90" ry="72" fill="url(#anakinraGrad)" opacity="0.85"/>
+  <!-- Alpha helices (ribbons) -->
+  <ellipse cx="-35" cy="-25" rx="22" ry="10" fill="rgba(52,211,153,0.4)" stroke="rgba(110,231,183,0.6)" stroke-width="1.5" transform="rotate(-25,-35,-25)"/>
+  <ellipse cx="35" cy="-20" rx="20" ry="9" fill="rgba(52,211,153,0.35)" stroke="rgba(110,231,183,0.5)" stroke-width="1.5" transform="rotate(20,35,-20)"/>
+  <ellipse cx="0" cy="28" rx="25" ry="10" fill="rgba(52,211,153,0.3)" stroke="rgba(110,231,183,0.5)" stroke-width="1.5"/>
+  <!-- Beta sheets -->
+  <path d="M-70,10 L-50,-15 L-30,0 L-50,15 Z" fill="rgba(52,211,153,0.35)" stroke="rgba(110,231,183,0.5)" stroke-width="1"/>
+  <path d="M50,5 L70,-20 L80,0 L70,20 Z" fill="rgba(52,211,153,0.3)" stroke="rgba(110,231,183,0.4)" stroke-width="1"/>
+  <!-- Beta strands (beta barrel β-trefoil) -->
+  <path d="M-25,-55 L-15,-40 M0,-60 L0,-44 M25,-55 L15,-40" fill="none" stroke="rgba(110,231,183,0.7)" stroke-width="3" stroke-linecap="round"/>
+  <!-- Surface features -->
+  <circle cx="-20" cy="-35" r="8" fill="rgba(110,231,183,0.2)" stroke="rgba(110,231,183,0.3)" stroke-width="1"/>
+  <circle cx="25" cy="-30" r="7" fill="rgba(110,231,183,0.15)" stroke="rgba(110,231,183,0.25)" stroke-width="1"/>
+  <!-- IL-1R binding site label -->
+  <text x="0" y="-68" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(110,231,183,0.8)" letter-spacing="1">SITE DE LIAISON IL-1R</text>
+  <!-- Protein label -->
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#fff">ANAKINRA</text>
+  <text x="0" y="20" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.6)">IL-1Ra recombinant</text>
+</g>
+
+<!-- Drug info box -->
+<rect x="560" y="580" width="280" height="130" rx="12" fill="rgba(10,14,35,0.9)" stroke="rgba(16,185,129,0.4)" stroke-width="2"/>
+<text x="700" y="603" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#10B981" letter-spacing="1">PARAMÈTRES CLINIQUES</text>
+<line x1="575" y1="612" x2="825" y2="612" stroke="rgba(16,185,129,0.2)" stroke-width="1"/>
+<g font-family="'JetBrains Mono', monospace" font-size="10" fill="rgba(255,255,255,0.6)">
+  <text x="580" y="632">Posologie</text>    <text x="720" y="632" fill="#10B981" font-weight="700">2–4 mg/kg/j IV</text>
+  <text x="580" y="650">Fenêtre</text>     <text x="720" y="650" fill="#FFB347" font-weight="700">6h post-alerte</text>
+  <text x="580" y="668">Onset</text>       <text x="720" y="668" fill="#2FD1C8" font-weight="700">12–24h</text>
+  <text x="580" y="686">Score PULSAR</text><text x="720" y="686" fill="#10B981" font-weight="700">94 / 100</text>
+  <text x="580" y="704">Indication</text>  <text x="720" y="704" fill="rgba(255,255,255,0.5)">FIRES réfractaire</text>
+</g>
+
+<!-- ════ PANEL RIGHT: WITH ANAKINRA (blocked) ════ -->
+<text x="1190" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="rgba(16,185,129,0.8)" letter-spacing="2">AVEC ANAKINRA</text>
+<text x="1190" y="172" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">Cascade inflammatoire bloquée</text>
+
+<!-- Cell membrane (right panel) -->
+<path d="M1010,260 Q1090,250 1170,258 Q1250,264 1350,256" fill="none" stroke="url(#membrane)" stroke-width="28" stroke-linecap="round" filter="url(#softg)" opacity="0.8"/>
+
+<!-- IL-1R receptor (right, blocked by Anakinra) -->
+<rect x="1138" y="245" width="15" height="50" rx="4" fill="rgba(139,92,246,0.5)" stroke="rgba(167,139,250,0.6)" stroke-width="1.5"/>
+<path d="M1145,245 L1125,195 M1145,245 L1165,195" fill="none" stroke="rgba(167,139,250,0.7)" stroke-width="7" stroke-linecap="round"/>
+<path d="M1125,195 L1110,170 M1125,195 L1135,168" fill="none" stroke="rgba(167,139,250,0.6)" stroke-width="5" stroke-linecap="round"/>
+<path d="M1165,195 L1155,168 M1165,195 L1180,170" fill="none" stroke="rgba(167,139,250,0.6)" stroke-width="5" stroke-linecap="round"/>
+<!-- Anakinra BLOCKING the receptor -->
+<ellipse cx="1145" cy="165" rx="34" ry="28" fill="url(#anakinraGrad)" opacity="0.9" filter="url(#softg)"/>
+<text x="1145" y="160" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#fff">ANA</text>
+<text x="1145" y="173" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.8)">BLOCKED</text>
+<!-- "No entry" symbol for IL-1β -->
+<g transform="translate(1095,120)">
+  <ellipse rx="30" ry="24" fill="rgba(239,68,68,0.3)" stroke="rgba(239,68,68,0.6)" stroke-width="2" opacity="0.7"/>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.8)">IL-1β</text>
+</g>
+<!-- Blocked arrow (with X) -->
+<line x1="1120" y1="148" x2="1130" y2="158" stroke="#EF4444" stroke-width="2" opacity="0.5" stroke-dasharray="4,3"/>
+<!-- Large X/block indicator -->
+<text x="1113" y="142" font-family="Arial, sans-serif" font-size="22" font-weight="900" fill="rgba(239,68,68,0.8)" filter="url(#softg)">⊗</text>
+
+<!-- Intracellular domain (right) -->
+<path d="M1138,295 L1120,340 M1153,295 L1170,340" fill="none" stroke="rgba(139,92,246,0.4)" stroke-width="6" stroke-linecap="round"/>
+<path d="M1120,340 L1110,380 M1170,340 L1180,380" fill="none" stroke="rgba(139,92,246,0.35)" stroke-width="4" stroke-linecap="round"/>
+
+<!-- NF-kB BLOCKED -->
+<rect x="1095" y="415" width="100" height="38" rx="8" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.4)" stroke-width="1.5"/>
+<text x="1145" y="432" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#10B981">NF-κB</text>
+<text x="1145" y="446" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.7)">INHIBÉ ✓</text>
+<!-- Blocked line (dashed no arrow) -->
+<line x1="1145" y1="395" x2="1145" y2="413" stroke="rgba(255,255,255,0.15)" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="1145" y="404" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="rgba(16,185,129,0.7)">⊘</text>
+
+<!-- Anti-inflammatory downstream effects -->
+<g transform="translate(1145,500)">
+  <line x1="-50" y1="0" x2="-50" y2="40" stroke="rgba(16,185,129,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="0" y1="0" x2="0" y2="40" stroke="rgba(16,185,129,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <line x1="50" y1="0" x2="50" y2="40" stroke="rgba(16,185,129,0.4)" stroke-width="1.5" stroke-dasharray="3,3"/>
+  <rect x="-85" y="40" width="70" height="35" rx="6" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
+  <text x="-50" y="57" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#10B981">IL-6 ↓</text>
+  <text x="-50" y="70" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.6)">−85%</text>
+  <rect x="-35" y="40" width="70" height="35" rx="6" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
+  <text x="0" y="57" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#10B981">TNF-α ↓</text>
+  <text x="0" y="70" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.6)">−72%</text>
+  <rect x="15" y="40" width="70" height="35" rx="6" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.3)" stroke-width="1"/>
+  <text x="50" y="57" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#10B981">COX-2 ↓</text>
+  <text x="50" y="70" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.6)">→ Contrôle</text>
+</g>
+
+<!-- Outcome: seizure controlled -->
+<rect x="1075" y="620" width="140" height="50" rx="10" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.4)" stroke-width="2" filter="url(#softg)"/>
+<text x="1145" y="643" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#10B981">✓ CRISES</text>
+<text x="1145" y="659" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(16,185,129,0.7)">CONTRÔLÉES</text>
+
+<!-- Right panel line -->
+<line x1="980" y1="140" x2="980" y2="840" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+
+<!-- Central arrow (left to right: treatment path) -->
+<path d="M430,440 Q560,440 560,440" fill="none" stroke="rgba(16,185,129,0.5)" stroke-width="3" marker-end="url(#arrG)" stroke-dasharray="8,5"/>
+<text x="495" y="425" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(16,185,129,0.6)">TRAITEMENT</text>
+
+<path d="M845,440 Q960,440 960,440" fill="none" stroke="rgba(16,185,129,0.5)" stroke-width="3" marker-end="url(#arrG)" stroke-dasharray="8,5"/>
+
+<!-- Legend / footer -->
+<rect x="50" y="810" width="1300" height="70" rx="10" fill="rgba(255,255,255,0.015)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+<g transform="translate(80,835)" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.4)">
+  <ellipse cx="15" cy="0" rx="20" ry="12" fill="rgba(239,68,68,0.2)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="42" y="4">IL-1β (Interleukine-1 bêta)</text>
+  <ellipse cx="245" cy="0" rx="20" ry="12" fill="rgba(16,185,129,0.2)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="272" y="4">Anakinra (IL-1Ra recombinant)</text>
+  <rect x="485" y="-8" width="30" height="18" rx="5" fill="rgba(139,92,246,0.3)" stroke="#8B5CF6" stroke-width="1.5"/>
+  <text x="522" y="4">Récepteur IL-1R</text>
+  <rect x="655" y="-8" width="30" height="18" rx="5" fill="rgba(239,68,68,0.15)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="692" y="4">NF-κB (voie pro-inflam.)</text>
+  <rect x="880" y="-8" width="30" height="18" rx="5" fill="rgba(16,185,129,0.15)" stroke="#10B981" stroke-width="1.5"/>
+  <text x="917" y="4">Voie anti-inflammatoire</text>
+</g>
+<text x="700" y="868" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.18)">PULSAR · Mécanisme moléculaire — Réf: Dinarello CA, N Engl J Med 2018 · FIRES consensus 2018 · NCT03936504</text>
+</svg>

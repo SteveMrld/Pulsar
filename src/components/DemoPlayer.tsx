@@ -476,7 +476,7 @@ function ScreenVisualPhysio() {
         {/* Center: patient silhouette */}
         <div style={{ flex: 1, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: 8 }}>
           <div style={{ position: "relative", height: "100%", maxHeight: 280 }}>
-            <img src="/assets/avatars/body-girl.jpg" alt="patient" style={{ height: "100%", objectFit: "contain", opacity: 0.92 }} />
+            <svg height="100%" style={{ display:"block", height:"100%", maxHeight: 280 }} xmlns="http://www.w3.org/2000/svg"><defs><filter id="rmwhite"><feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -8 -8 -8 24 0"/></filter></defs><image href="/assets/avatars/body-girl.jpg" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" filter="url(#rmwhite)"/></svg>
             {/* Hotspots */}
             {[
               { top: "12%", left: "48%", c: "#EF4444" },

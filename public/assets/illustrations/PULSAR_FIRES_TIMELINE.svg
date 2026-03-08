@@ -1,0 +1,254 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#070B1A"/>
+    <stop offset="100%" stop-color="#04070F"/>
+  </linearGradient>
+  <linearGradient id="tlGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#10B981" stop-opacity="0.8"/>
+    <stop offset="25%" stop-color="#FFB347" stop-opacity="0.9"/>
+    <stop offset="55%" stop-color="#EF4444" stop-opacity="0.9"/>
+    <stop offset="75%" stop-color="#8B5CF6" stop-opacity="0.9"/>
+    <stop offset="100%" stop-color="#2FD1C8" stop-opacity="0.8"/>
+  </linearGradient>
+  <linearGradient id="dangerZone" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#EF4444" stop-opacity="0.25"/>
+    <stop offset="100%" stop-color="#EF4444" stop-opacity="0.03"/>
+  </linearGradient>
+  <linearGradient id="pulsarZone" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#10B981" stop-opacity="0.15"/>
+    <stop offset="100%" stop-color="#10B981" stop-opacity="0.02"/>
+  </linearGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="softg"><feGaussianBlur stdDeviation="2.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#EF4444"/></marker>
+  <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#10B981"/></marker>
+  <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#FFB347"/></marker>
+  <marker id="arrP" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#8B5CF6"/></marker>
+</defs>
+
+<rect width="1400" height="900" fill="url(#bgGrad)"/>
+
+<!-- Header -->
+<text x="50" y="52" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#6C7CFF" letter-spacing="3" opacity="0.7">PULSAR · DDD ENGINE · DIAGNOSTIC DELAY DETECTOR</text>
+<text x="50" y="84" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">Chronologie FIRES — Fenêtres thérapeutiques</text>
+<text x="50" y="112" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">Reconstruction heure par heure · 3 délais évitables identifiés · Inès M. · 4 ans</text>
+
+<!-- Day labels at top -->
+<g font-family="'JetBrains Mono', monospace" font-size="11" text-anchor="middle">
+  <!-- Days: J-7 J-5 J-3 J-1 J0 J+1 J+2 J+3 J+5 J+7 J+10 J+14 -->
+  <text x="80"   y="160" fill="rgba(255,255,255,0.4)">J−7</text>
+  <text x="190"  y="160" fill="rgba(255,255,255,0.4)">J−5</text>
+  <text x="300"  y="160" fill="rgba(255,255,255,0.45)">J−3</text>
+  <text x="420"  y="160" fill="rgba(255,255,255,0.45)">J−1</text>
+  <text x="500"  y="160" fill="#FFB347" font-weight="700">J 0</text>
+  <text x="590"  y="160" fill="#EF4444" font-weight="700">J+1</text>
+  <text x="680"  y="160" fill="#EF4444" font-weight="700">J+2</text>
+  <text x="770"  y="160" fill="#EF4444" font-weight="700">J+3</text>
+  <text x="900"  y="160" fill="#8B5CF6" font-weight="700">J+5</text>
+  <text x="1020" y="160" fill="#8B5CF6" font-weight="700">J+7</text>
+  <text x="1180" y="160" fill="rgba(47,209,200,0.8)" font-weight="700">J+10</text>
+  <text x="1330" y="160" fill="rgba(47,209,200,0.8)" font-weight="700">J+14</text>
+</g>
+
+<!-- Grid lines -->
+<g stroke="rgba(255,255,255,0.04)" stroke-width="1">
+  <line x1="80"   y1="170" x2="80"   y2="820"/>
+  <line x1="190"  y1="170" x2="190"  y2="820"/>
+  <line x1="300"  y1="170" x2="300"  y2="820"/>
+  <line x1="420"  y1="170" x2="420"  y2="820"/>
+  <line x1="500"  y1="170" x2="500"  y2="820"/>
+  <line x1="590"  y1="170" x2="590"  y2="820"/>
+  <line x1="680"  y1="170" x2="680"  y2="820"/>
+  <line x1="770"  y1="170" x2="770"  y2="820"/>
+  <line x1="900"  y1="170" x2="900"  y2="820"/>
+  <line x1="1020" y1="170" x2="1020" y2="820"/>
+  <line x1="1180" y1="170" x2="1180" y2="820"/>
+  <line x1="1330" y1="170" x2="1330" y2="820"/>
+</g>
+
+<!-- DANGER ZONE rect (J0 → J+3) -->
+<rect x="488" y="168" width="295" height="520" fill="url(#dangerZone)" rx="0"/>
+<text x="632" y="194" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(239,68,68,0.6)" letter-spacing="2">ZONE CRITIQUE</text>
+
+<!-- PULSAR INTERVENTION ZONE (J+5 onward) -->
+<rect x="862" y="168" width="496" height="520" fill="url(#pulsarZone)" rx="0"/>
+<text x="1100" y="194" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(16,185,129,0.5)" letter-spacing="2">ZONE PULSAR</text>
+
+<!-- Main timeline bar -->
+<rect x="60" y="390" width="1300" height="26" rx="13" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+<rect x="60" y="390" width="1300" height="26" rx="13" fill="url(#tlGrad)" opacity="0.6"/>
+
+<!-- === EVENT MARKERS === -->
+
+<!-- E1: Prodromes / fièvre J-3 (missed signal) -->
+<g transform="translate(300,390)">
+  <line x1="0" y1="0" x2="0" y2="-120" stroke="rgba(255,179,71,0.5)" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <circle cy="-120" r="10" fill="rgba(255,179,71,0.15)" stroke="#FFB347" stroke-width="2" filter="url(#softg)"/>
+  <text x="0" y="-116" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#FFB347">!</text>
+  <!-- Label box above -->
+  <rect x="-85" y="-210" width="170" height="75" rx="8" fill="rgba(10,14,35,0.92)" stroke="rgba(255,179,71,0.35)" stroke-width="1.5"/>
+  <text x="0" y="-191" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#FFB347">SIGNAL PRÉCOCE</text>
+  <text x="0" y="-175" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">Fièvre prolongée + agitation</text>
+  <text x="0" y="-159" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">CRP légèrement élevée</text>
+  <text x="0" y="-145" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">✗ Non capturé</text>
+  <!-- Missed window indicator -->
+  <rect x="-5" y="-135" width="70" height="12" rx="4" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.4)" stroke-width="1"/>
+  <text x="30" y="-126" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#EF4444">FENÊTRE 1 MANQUÉE</text>
+</g>
+
+<!-- E2: Admission urgences J0 -->
+<g transform="translate(500,390)">
+  <line x1="0" y1="0" x2="0" y2="-120" stroke="rgba(255,179,71,0.7)" stroke-width="2" stroke-dasharray="5,3"/>
+  <circle cy="-120" r="12" fill="rgba(255,179,71,0.2)" stroke="#FFB347" stroke-width="2.5" filter="url(#softg)"/>
+  <text x="0" y="-115" text-anchor="middle" font-family="Arial, sans-serif" font-size="13" font-weight="700" fill="#FFB347">⚕</text>
+  <rect x="-80" y="-215" width="160" height="80" rx="8" fill="rgba(10,14,35,0.95)" stroke="rgba(255,179,71,0.45)" stroke-width="1.5"/>
+  <text x="0" y="-196" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#FFB347">ADMISSION J0</text>
+  <text x="0" y="-180" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">Status epilepticus inaugural</text>
+  <text x="0" y="-164" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">GCS 11 · Fièvre 39.8°C</text>
+  <text x="0" y="-148" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#FFB347">VPS initial: 62</text>
+</g>
+
+<!-- E3: Status epilepticus réfractaire J+1 (missed window 2) -->
+<g transform="translate(590,390)">
+  <line x1="0" y1="26" x2="0" y2="160" stroke="rgba(239,68,68,0.7)" stroke-width="2" stroke-dasharray="5,3"/>
+  <circle cy="160" r="12" fill="rgba(239,68,68,0.2)" stroke="#EF4444" stroke-width="2.5" filter="url(#glow)"/>
+  <text x="0" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#EF4444">✗</text>
+  <rect x="-95" y="180" width="190" height="90" rx="8" fill="rgba(10,14,35,0.95)" stroke="rgba(239,68,68,0.45)" stroke-width="1.5"/>
+  <text x="0" y="199" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#EF4444">SE RÉFRACTAIRE J+1</text>
+  <text x="0" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">Diag. différentiel retardé 18h</text>
+  <text x="0" y="231" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">8 crises/24h · GCS 7</text>
+  <text x="0" y="247" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.8)">FENÊTRE 2 MANQUÉE</text>
+  <text x="0" y="261" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.35)">VPS → 89 (critique)</text>
+</g>
+
+<!-- E4: Anakinra initié trop tard J+2 (missed window 3) -->
+<g transform="translate(680,390)">
+  <line x1="0" y1="26" x2="0" y2="160" stroke="rgba(239,68,68,0.6)" stroke-width="2" stroke-dasharray="5,3"/>
+  <circle cy="160" r="12" fill="rgba(239,68,68,0.18)" stroke="#EF4444" stroke-width="2" filter="url(#softg)"/>
+  <text x="0" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" fill="#EF4444">✗</text>
+  <rect x="-90" y="180" width="180" height="85" rx="8" fill="rgba(10,14,35,0.92)" stroke="rgba(239,68,68,0.4)" stroke-width="1.5"/>
+  <text x="0" y="199" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#EF4444">ANAKINRA J+2</text>
+  <text x="0" y="215" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">Initié après fermeture</text>
+  <text x="0" y="231" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">de la fenêtre optimale</text>
+  <text x="0" y="247" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">FENÊTRE 3 MANQUÉE</text>
+</g>
+
+<!-- E5: PULSAR ALERTE J+5 (what could have been) -->
+<g transform="translate(900,390)">
+  <line x1="0" y1="0" x2="0" y2="-150" stroke="rgba(16,185,129,0.7)" stroke-width="2.5"/>
+  <circle cy="-150" r="14" fill="rgba(16,185,129,0.2)" stroke="#10B981" stroke-width="3" filter="url(#glow)"/>
+  <text x="0" y="-145" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" fill="#10B981">✦</text>
+  <rect x="-90" y="-245" width="180" height="80" rx="8" fill="rgba(10,14,35,0.95)" stroke="rgba(16,185,129,0.5)" stroke-width="2"/>
+  <text x="0" y="-225" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#10B981">PULSAR ALERT J+5</text>
+  <text x="0" y="-208" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.7)">Anakinra recommandé H+0</text>
+  <text x="0" y="-192" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.7)">Score FIRES: 94/100</text>
+  <text x="0" y="-178" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.7)">✓ Fenêtre identifiée</text>
+</g>
+
+<!-- E6: Traitement initié J+7 -->
+<g transform="translate(1020,390)">
+  <line x1="0" y1="0" x2="0" y2="-130" stroke="rgba(16,185,129,0.6)" stroke-width="2"/>
+  <circle cy="-130" r="11" fill="rgba(16,185,129,0.18)" stroke="#10B981" stroke-width="2" filter="url(#softg)"/>
+  <text x="0" y="-125" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#10B981">💊</text>
+  <rect x="-80" y="-210" width="160" height="70" rx="8" fill="rgba(10,14,35,0.92)" stroke="rgba(16,185,129,0.4)" stroke-width="1.5"/>
+  <text x="0" y="-192" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#10B981">TRAITEMENT J+7</text>
+  <text x="0" y="-175" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">Anakinra + tocilizumab</text>
+  <text x="0" y="-159" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">Protocole kétogène</text>
+</g>
+
+<!-- E7: Stabilisation J+10 -->
+<g transform="translate(1180,390)">
+  <line x1="0" y1="26" x2="0" y2="130" stroke="rgba(47,209,200,0.6)" stroke-width="2"/>
+  <circle cy="130" r="11" fill="rgba(47,209,200,0.18)" stroke="#2FD1C8" stroke-width="2" filter="url(#softg)"/>
+  <text x="0" y="135" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#2FD1C8">↓</text>
+  <rect x="-75" y="150" width="150" height="65" rx="8" fill="rgba(10,14,35,0.92)" stroke="rgba(47,209,200,0.4)" stroke-width="1.5"/>
+  <text x="0" y="168" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#2FD1C8">STABILISATION J+10</text>
+  <text x="0" y="184" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">0 crise/48h · GCS 14</text>
+  <text x="0" y="200" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">VPS: 38 (modéré)</text>
+</g>
+
+<!-- === VPS CURVE === -->
+<!-- Separate track for VPS evolution -->
+<rect x="60" y="490" width="1300" height="200" rx="10" fill="rgba(255,255,255,0.015)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+<text x="75" y="512" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(108,124,255,0.7)" letter-spacing="2">VPS · VITAL PROGNOSIS SCORE</text>
+
+<!-- VPS axis labels -->
+<g font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)" text-anchor="end">
+  <text x="78" y="530">100</text>
+  <text x="78" y="555">75</text>
+  <text x="78" y="578">50</text>
+  <text x="78" y="602">25</text>
+  <text x="78" y="625">0</text>
+</g>
+<g stroke="rgba(255,255,255,0.04)" stroke-width="0.5" stroke-dasharray="4,4">
+  <line x1="82" y1="530" x2="1350" y2="530"/>
+  <line x1="82" y1="555" x2="1350" y2="555"/>
+  <line x1="82" y1="578" x2="1350" y2="578"/>
+  <line x1="82" y1="602" x2="1350" y2="602"/>
+  <line x1="82" y1="625" x2="1350" y2="625"/>
+</g>
+
+<!-- VPS curve points: J-7=20, J-5=22, J-3=28, J-1=35, J0=62, J+1=82, J+2=89, J+3=92, J+5=88, J+7=75, J+10=52, J+14=38 -->
+<!-- Y scale: 0→625, 100→525 ; y = 625 - score -->
+<polyline 
+  points="80,605 190,603 300,597 420,590 500,563 590,543 680,537 770,533 900,537 1020,550 1180,573 1330,587"
+  fill="none" stroke="url(#tlGrad)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="0.9" filter="url(#softg)"/>
+
+<!-- VPS fill area -->
+<polygon 
+  points="80,605 190,603 300,597 420,590 500,563 590,543 680,537 770,533 900,537 1020,550 1180,573 1330,587 1330,625 80,625"
+  fill="url(#tlGrad)" opacity="0.12"/>
+
+<!-- VPS dots at key moments -->
+<g filter="url(#softg)">
+  <circle cx="500" cy="563" r="5" fill="#FFB347" stroke="rgba(10,14,35,0.8)" stroke-width="1.5"/>
+  <circle cx="770" cy="533" r="6" fill="#EF4444" stroke="rgba(10,14,35,0.8)" stroke-width="1.5"/>
+  <circle cx="900" cy="537" r="5" fill="#8B5CF6" stroke="rgba(10,14,35,0.8)" stroke-width="1.5"/>
+  <circle cx="1330" cy="587" r="5" fill="#2FD1C8" stroke="rgba(10,14,35,0.8)" stroke-width="1.5"/>
+</g>
+
+<!-- Critical threshold line (VPS=70) -->
+<line x1="82" y1="555" x2="1350" y2="555" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="6,4" opacity="0.5"/>
+<text x="1355" y="558" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">VPS 70</text>
+
+<!-- VPS labels at key points -->
+<text x="500" y="553" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#FFB347">62</text>
+<text x="770" y="523" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#EF4444">92</text>
+<text x="1330" y="577" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#2FD1C8">38</text>
+
+<!-- === INFLAMMATORY CURVE === -->
+<text x="75" y="660" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(239,68,68,0.7)" letter-spacing="2">IL-1β · ACTIVITÉ INFLAMMATOIRE</text>
+<!-- IL-1β curve: low then spikes J0-J+3, then treated -->
+<polyline 
+  points="80,720 190,718 300,715 420,710 500,695 590,672 680,665 770,662 900,668 1020,680 1180,698 1330,712"
+  fill="none" stroke="#EF4444" stroke-width="2" stroke-linejoin="round" opacity="0.7"/>
+<polygon 
+  points="80,720 190,718 300,715 420,710 500,695 590,672 680,665 770,662 900,668 1020,680 1180,698 1330,712 1330,728 80,728"
+  fill="#EF4444" opacity="0.08"/>
+
+<!-- Normal IL-1β baseline -->
+<line x1="82" y1="718" x2="420" y2="718" stroke="rgba(255,255,255,0.15)" stroke-width="1" stroke-dasharray="4,4"/>
+<text x="85" y="715" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">NORMAL</text>
+
+<!-- === MISSED WINDOWS INDICATORS === -->
+<rect x="60" y="745" width="1300" height="55" rx="8" fill="rgba(255,255,255,0.02)"/>
+<text x="75" y="765" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(239,68,68,0.7)" letter-spacing="1">FENÊTRES THÉRAPEUTIQUES MANQUÉES</text>
+<!-- Window 1 -->
+<rect x="270" y="772" width="120" height="20" rx="4" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.4)" stroke-width="1"/>
+<text x="330" y="786" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EF4444">✗ FENÊTRE 1 · J−3</text>
+<!-- Window 2 -->
+<rect x="530" y="772" width="120" height="20" rx="4" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.4)" stroke-width="1"/>
+<text x="590" y="786" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EF4444">✗ FENÊTRE 2 · J+1</text>
+<!-- Window 3 -->
+<rect x="640" y="772" width="120" height="20" rx="4" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.4)" stroke-width="1"/>
+<text x="700" y="786" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EF4444">✗ FENÊTRE 3 · J+2</text>
+<!-- PULSAR window -->
+<rect x="840" y="772" width="200" height="20" rx="4" fill="rgba(16,185,129,0.12)" stroke="rgba(16,185,129,0.4)" stroke-width="1.5"/>
+<text x="940" y="786" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#10B981">✦ PULSAR: ALERTE J+5 · TRAITEMENT J+7</text>
+
+<!-- Footer -->
+<rect x="50" y="820" width="1300" height="55" rx="8" fill="rgba(255,255,255,0.015)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+<text x="700" y="843" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.25)">PULSAR · DDD Engine — Diagnostic Delay Detector · Reconstruction rétroactive heure par heure</text>
+<text x="700" y="860" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.18)">Sources: Epilepsia 2018 · Frontiers Neurology 2024 · FIRES consensus 2018 · données patient anonymisées</text>
+</svg>

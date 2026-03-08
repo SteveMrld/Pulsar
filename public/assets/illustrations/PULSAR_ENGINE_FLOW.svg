@@ -1,0 +1,272 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="45%"><stop offset="0%" stop-color="#060C1C"/><stop offset="100%" stop-color="#04070F"/></radialGradient>
+  <radialGradient id="centerHub" cx="50%" cy="45%"><stop offset="0%" stop-color="#1A1F40"/><stop offset="70%" stop-color="#0E1232"/><stop offset="100%" stop-color="#080C22"/></radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="softg"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="verysoft"><feGaussianBlur stdDeviation="1.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="bigglow"><feGaussianBlur stdDeviation="20" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+
+<rect width="1400" height="900" fill="url(#bg)"/>
+
+<!-- Header -->
+<text x="50" y="48" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#6C7CFF" letter-spacing="3" opacity="0.7">PULSAR · ARCHITECTURE · 12 MOTEURS IA ACTIFS</text>
+<text x="50" y="80" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">Flux de décision clinique</text>
+<text x="50" y="108" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">Données patient → 12 moteurs en parallèle → Décision clinique temps réel</text>
+
+<!-- ════ PATIENT DATA INPUT (far left) ════ -->
+<rect x="30" y="340" width="145" height="220" rx="16" fill="rgba(108,124,255,0.08)" stroke="rgba(108,124,255,0.3)" stroke-width="2"/>
+<text x="102" y="368" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(108,124,255,0.9)" letter-spacing="1">ENTRÉES</text>
+<text x="102" y="382" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(108,124,255,0.6)">PATIENT DATA</text>
+<line x1="45" y1="390" x2="160" y2="390" stroke="rgba(108,124,255,0.15)" stroke-width="1"/>
+
+<!-- Input data items -->
+<g font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.45)">
+  <text x="48" y="408">◉ Constantes vitales</text>
+  <text x="48" y="422">◉ Bilan biologique</text>
+  <text x="48" y="436">◉ Tracé EEG</text>
+  <text x="48" y="450">◉ Imagerie (IRM/TDM)</text>
+  <text x="48" y="464">◉ Traitement en cours</text>
+  <text x="48" y="478">◉ Antécédents</text>
+  <text x="48" y="492">◉ Génomique</text>
+  <text x="48" y="506">◉ Score entrée</text>
+  <text x="48" y="520">◉ Symptômes</text>
+  <text x="48" y="534">◉ Âge / poids</text>
+</g>
+
+<!-- Arrow from data to hub -->
+<line x1="177" y1="450" x2="340" y2="450" stroke="rgba(108,124,255,0.6)" stroke-width="3" stroke-dasharray="8,5"/>
+<polygon points="337,443 350,450 337,457" fill="rgba(108,124,255,0.8)"/>
+
+<!-- ════ CENTRAL HUB ════ -->
+<!-- Hub glow -->
+<circle cx="450" cy="450" r="125" fill="rgba(108,124,255,0.06)" filter="url(#bigglow)"/>
+<!-- Hub outer ring -->
+<circle cx="450" cy="450" r="105" fill="none" stroke="rgba(108,124,255,0.12)" stroke-width="18"/>
+<!-- Hub inner ring -->
+<circle cx="450" cy="450" r="88" fill="none" stroke="rgba(108,124,255,0.2)" stroke-width="8"/>
+<!-- Hub body -->
+<circle cx="450" cy="450" r="80" fill="url(#centerHub)" stroke="rgba(108,124,255,0.45)" stroke-width="2.5" filter="url(#softg)"/>
+<!-- Hub logo -->
+<text x="450" y="438" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="15" font-weight="900" fill="#6C7CFF" letter-spacing="1">✦ PULSAR</text>
+<text x="450" y="456" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(108,124,255,0.7)">INFERENCE</text>
+<text x="450" y="470" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(108,124,255,0.7)">ENGINE</text>
+<!-- Hub stats -->
+<text x="450" y="490" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.25)">95/95 tests · 0 err</text>
+<!-- Rotating indicator (static simulation) -->
+<circle cx="450" cy="450" r="95" fill="none" stroke="none"/>
+<circle cx="545" cy="450" r="5" fill="#6C7CFF" opacity="0.7" filter="url(#verysoft)"/>
+<circle cx="450" cy="356" r="5" fill="#6C7CFF" opacity="0.5" filter="url(#verysoft)"/>
+<circle cx="355" cy="450" r="4" fill="#6C7CFF" opacity="0.4" filter="url(#verysoft)"/>
+
+<!-- ════ ENGINE NODES (connected to hub) ════ -->
+
+<!-- Helper: define engine positions radially around hub -->
+<!-- Engines arranged in semicircle on the right (output side) -->
+
+<!-- ENGINE 1: VPS - top -->
+<g transform="translate(450,220)">
+  <rect x="-55" y="-30" width="110" height="60" rx="12" fill="rgba(108,124,255,0.12)" stroke="#6C7CFF" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="900" fill="#6C7CFF">VPS</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(108,124,255,0.7)">Vital Prognosis</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Score 0–100 · 34 params</text>
+  <!-- Connection line to hub -->
+  <line x1="0" y1="30" x2="0" y2="85" stroke="rgba(108,124,255,0.5)" stroke-width="2"/>
+  <polygon points="-5,80 5,80 0,88" fill="rgba(108,124,255,0.7)"/>
+</g>
+
+<!-- ENGINE 2: TDE - top right -->
+<g transform="translate(700,265)">
+  <rect x="-55" y="-30" width="110" height="60" rx="12" fill="rgba(47,209,200,0.12)" stroke="#2FD1C8" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="900" fill="#2FD1C8">TDE</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(47,209,200,0.7)">Therapeutic Decision</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Escalade · 5 pathologies</text>
+</g>
+<!-- Connection TDE → hub (diagonal) -->
+<line x1="645" y1="295" x2="535" y2="370" stroke="rgba(47,209,200,0.45)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 3: PVE - right -->
+<g transform="translate(840,390)">
+  <rect x="-55" y="-30" width="110" height="60" rx="12" fill="rgba(185,107,255,0.12)" stroke="#B96BFF" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="900" fill="#B96BFF">PVE</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(185,107,255,0.7)">Pharmacovigilance</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Interactions · iatrogène</text>
+</g>
+<!-- Connection PVE → hub -->
+<line x1="784" y1="418" x2="537" y2="445" stroke="rgba(185,107,255,0.45)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 4: EWE - right -->
+<g transform="translate(840,510)">
+  <rect x="-55" y="-30" width="110" height="60" rx="12" fill="rgba(167,139,250,0.12)" stroke="#A78BFA" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="900" fill="#A78BFA">EWE</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(167,139,250,0.7)">Early Warning</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Tendances · pré-décomp.</text>
+</g>
+<!-- Connection EWE → hub -->
+<line x1="784" y1="510" x2="537" y2="465" stroke="rgba(167,139,250,0.45)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 5: TPE - bottom right -->
+<g transform="translate(700,630)">
+  <rect x="-55" y="-30" width="110" height="60" rx="12" fill="rgba(255,179,71,0.12)" stroke="#FFB347" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="900" fill="#FFB347">TPE</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(255,179,71,0.7)">Therapeutic Prosp.</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">J+7 · J+14 pronostic</text>
+</g>
+<!-- Connection TPE → hub -->
+<line x1="645" y1="605" x2="535" y2="522" stroke="rgba(255,179,71,0.45)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 6: CAE - bottom -->
+<g transform="translate(450,680)">
+  <rect x="-55" y="-30" width="110" height="60" rx="12" fill="rgba(255,107,53,0.12)" stroke="#FF6B35" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="900" fill="#FF6B35">CAE</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(255,107,53,0.7)">Cascade Alert</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Effets en chaîne · MEOPA</text>
+</g>
+<!-- Connection CAE → hub -->
+<line x1="450" y1="648" x2="450" y2="532" stroke="rgba(255,107,53,0.5)" stroke-width="2"/>
+<polygon points="443,533 457,533 450,541" fill="rgba(255,107,53,0.7)"/>
+
+<!-- ENGINE 7: DDD (above VPS) - top left -->
+<g transform="translate(220,265)">
+  <rect x="-55" y="-30" width="110" height="60" rx="12" fill="rgba(239,68,68,0.12)" stroke="#EF4444" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="900" fill="#EF4444">DDD</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(239,68,68,0.7)">Delay Detector</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">3 fenêtres évitables</text>
+</g>
+<!-- Connection DDD → hub (from top-left) -->
+<line x1="257" y1="298" x2="368" y2="375" stroke="rgba(239,68,68,0.45)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 8: IntakeAnalyzer (left) -->
+<g transform="translate(220,450)">
+  <rect x="-58" y="-30" width="116" height="60" rx="12" fill="rgba(16,185,129,0.1)" stroke="#10B981" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="900" fill="#10B981">INTAKE AI</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(16,185,129,0.7)">Intake Analyzer</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Triage automatique</text>
+</g>
+<!-- Connection IntakeAnalyzer → hub -->
+<line x1="280" y1="450" x2="368" y2="450" stroke="rgba(16,185,129,0.45)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 9: ORACLE (bottom left) -->
+<g transform="translate(220,635)">
+  <rect x="-55" y="-30" width="110" height="60" rx="12" fill="rgba(232,121,249,0.1)" stroke="#E879F9" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="900" fill="#E879F9">ORACLE</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(232,121,249,0.7)">Simulation prédictive</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Scénarios J+1→J+30</text>
+</g>
+<!-- Connection ORACLE → hub -->
+<line x1="277" y1="607" x2="370" y2="521" stroke="rgba(232,121,249,0.4)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 10: Discovery Engine L1-L4 (large, right side far) -->
+<g transform="translate(1050,300)">
+  <rect x="-70" y="-45" width="140" height="90" rx="14" fill="rgba(16,185,129,0.1)" stroke="#10B981" stroke-width="2.5" filter="url(#softg)"/>
+  <text x="0" y="-22" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(16,185,129,0.6)">DISCOVERY</text>
+  <text x="0" y="-8" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="900" fill="#10B981">L1→L4</text>
+  <text x="0" y="10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.6)">PatternMiner</text>
+  <text x="0" y="23" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.6)">LitScanner</text>
+  <text x="0" y="36" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.6)">Hypothesis·Therapy</text>
+</g>
+<line x1="978" y1="303" x2="840" y2="388" stroke="rgba(16,185,129,0.4)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 11: BrainMonitor -->
+<g transform="translate(1050,450)">
+  <rect x="-60" y="-30" width="120" height="60" rx="12" fill="rgba(139,92,246,0.1)" stroke="#8B5CF6" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="900" fill="#8B5CF6">NEUROCORE</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(139,92,246,0.7)">Brain Monitor</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">EEG heatmap · BHE</text>
+</g>
+<line x1="988" y1="450" x2="840" y2="505" stroke="rgba(139,92,246,0.4)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ENGINE 12: Cross-Pathologie -->
+<g transform="translate(1050,600)">
+  <rect x="-60" y="-30" width="120" height="60" rx="12" fill="rgba(255,179,71,0.1)" stroke="#FFB347" stroke-width="2" filter="url(#verysoft)"/>
+  <text x="0" y="-10" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="900" fill="#FFB347">CROSS-PATHO</text>
+  <text x="0" y="5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(255,179,71,0.7)">Cross-Pathologie</text>
+  <text x="0" y="18" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">5 pathologies croisées</text>
+</g>
+<line x1="988" y1="598" x2="840" y2="530" stroke="rgba(255,179,71,0.4)" stroke-width="2" stroke-dasharray="6,4"/>
+
+<!-- ════ OUTPUT (far right) ════ -->
+<!-- Main output arrow from hub -->
+<line x1="845" y1="450" x2="930" y2="450" stroke="rgba(16,185,129,0.7)" stroke-width="4"/>
+<polygon points="927,441 942,450 927,459" fill="rgba(16,185,129,0.9)"/>
+<text x="888" y="435" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(16,185,129,0.5)">OUTPUT</text>
+
+<!-- Output panel -->
+<rect x="1185" y="220" width="195" height="465" rx="18" fill="rgba(10,14,35,0.9)" stroke="rgba(16,185,129,0.4)" stroke-width="2"/>
+<text x="1282" y="252" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#10B981" letter-spacing="1">DÉCISION</text>
+<text x="1282" y="266" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Clinique temps réel</text>
+<line x1="1200" y1="275" x2="1370" y2="275" stroke="rgba(16,185,129,0.2)" stroke-width="1"/>
+
+<!-- Output items -->
+<g font-family="'JetBrains Mono', monospace" font-size="9">
+  <!-- VPS score output -->
+  <rect x="1202" y="285" width="165" height="40" rx="8" fill="rgba(108,124,255,0.1)" stroke="rgba(108,124,255,0.3)" stroke-width="1.5"/>
+  <text x="1212" y="302" fill="rgba(108,124,255,0.7)">VPS Score</text>
+  <text x="1352" y="302" text-anchor="end" font-weight="700" fill="#6C7CFF">92 / 100</text>
+  <text x="1212" y="318" font-size="8" fill="rgba(255,255,255,0.3)">→ Critique P1</text>
+
+  <!-- Triage -->
+  <rect x="1202" y="335" width="165" height="40" rx="8" fill="rgba(139,92,246,0.1)" stroke="rgba(139,92,246,0.3)" stroke-width="1.5"/>
+  <text x="1212" y="352" fill="rgba(139,92,246,0.7)">Triage</text>
+  <text x="1352" y="352" text-anchor="end" font-weight="700" fill="#8B5CF6">P1</text>
+  <text x="1212" y="368" font-size="8" fill="rgba(255,255,255,0.3)">→ Réa immédiate</text>
+
+  <!-- Treatment -->
+  <rect x="1202" y="385" width="165" height="40" rx="8" fill="rgba(16,185,129,0.12)" stroke="rgba(16,185,129,0.4)" stroke-width="1.5"/>
+  <text x="1212" y="402" fill="rgba(16,185,129,0.7)">Traitement</text>
+  <text x="1352" y="402" text-anchor="end" font-weight="700" fill="#10B981">ANA 94</text>
+  <text x="1212" y="418" font-size="8" fill="rgba(255,255,255,0.3)">→ Anakinra · 6h</text>
+
+  <!-- Alerts -->
+  <rect x="1202" y="435" width="165" height="40" rx="8" fill="rgba(255,107,53,0.1)" stroke="rgba(255,107,53,0.3)" stroke-width="1.5"/>
+  <text x="1212" y="452" fill="rgba(255,107,53,0.7)">Alertes CAE</text>
+  <text x="1352" y="452" text-anchor="end" font-weight="700" fill="#FF6B35">×2</text>
+  <text x="1212" y="468" font-size="8" fill="rgba(255,255,255,0.3)">→ MEOPA + MDZ</text>
+
+  <!-- Prognosis -->
+  <rect x="1202" y="485" width="165" height="40" rx="8" fill="rgba(255,179,71,0.08)" stroke="rgba(255,179,71,0.25)" stroke-width="1.5"/>
+  <text x="1212" y="502" fill="rgba(255,179,71,0.7)">Prognosis J+7</text>
+  <text x="1352" y="502" text-anchor="end" font-weight="700" fill="#FFB347">78%</text>
+  <text x="1212" y="518" font-size="8" fill="rgba(255,255,255,0.3)">→ Stabilisation</text>
+
+  <!-- Research -->
+  <rect x="1202" y="535" width="165" height="40" rx="8" fill="rgba(47,209,200,0.08)" stroke="rgba(47,209,200,0.25)" stroke-width="1.5"/>
+  <text x="1212" y="552" fill="rgba(47,209,200,0.7)">Discovery</text>
+  <text x="1352" y="552" text-anchor="end" font-weight="700" fill="#2FD1C8">H1-H3</text>
+  <text x="1212" y="568" font-size="8" fill="rgba(255,255,255,0.3)">→ 3 hypothèses</text>
+
+  <!-- Export -->
+  <rect x="1202" y="585" width="165" height="40" rx="8" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="1212" y="602" fill="rgba(255,255,255,0.4)">Export</text>
+  <text x="1352" y="602" text-anchor="end" font-size="8" fill="rgba(255,255,255,0.4)">MD · JSON</text>
+  <text x="1212" y="618" font-size="8" fill="rgba(255,255,255,0.25)">BibTeX · PDF</text>
+
+  <!-- Processing time -->
+  <text x="1282" y="660" text-anchor="middle" font-size="8" fill="rgba(16,185,129,0.4)">⚡ Temps réel · &lt;200ms</text>
+  <text x="1282" y="673" text-anchor="middle" font-size="8" fill="rgba(255,255,255,0.2)">95/95 tests · 0 erreur</text>
+</g>
+
+<!-- Connection from hub right side to output panel -->
+<path d="M845,390 Q1050,350 1183,340" fill="none" stroke="rgba(16,185,129,0.3)" stroke-width="1.5" stroke-dasharray="5,4"/>
+<path d="M845,510 Q1050,550 1183,540" fill="none" stroke="rgba(16,185,129,0.25)" stroke-width="1.5" stroke-dasharray="5,4"/>
+
+<!-- ════ TEST BADGE ════ -->
+<rect x="560" y="830" width="280" height="40" rx="10" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.25)" stroke-width="1.5"/>
+<text x="700" y="847" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#10B981">✓ 95/95 TESTS VALIDÉS</text>
+<text x="700" y="861" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Build propre · 0 erreur · PULSAR V21.3</text>
+
+<!-- ════ LEGEND ════ -->
+<rect x="30" y="820" width="520" height="55" rx="8" fill="rgba(255,255,255,0.015)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+<g transform="translate(50,840)" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.35)">
+  <rect x="0" y="-6" width="20" height="12" rx="3" fill="rgba(108,124,255,0.2)" stroke="rgba(108,124,255,0.5)" stroke-width="1.5"/>
+  <text x="28" y="4">Moteur IA actif</text>
+  <rect x="120" y="-6" width="20" height="12" rx="3" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.5)" stroke-width="1.5"/>
+  <text x="148" y="4">Moteur spécialisé</text>
+  <line x1="280" y1="0" x2="310" y2="0" stroke="rgba(108,124,255,0.5)" stroke-width="2" stroke-dasharray="4,3"/>
+  <text x="318" y="4">Flux données</text>
+  <line x1="420" y1="0" x2="450" y2="0" stroke="rgba(16,185,129,0.7)" stroke-width="3"/>
+  <text x="460" y="4">Décision output</text>
+</g>
+<text x="285" y="868" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(255,255,255,0.18)">PULSAR · Architecture 12 moteurs · VPS · TDE · PVE · EWE · TPE · CAE · DDD · IntakeAI · ORACLE · Discovery L4 · NeuroCore · Cross-Patho</text>
+</svg>
