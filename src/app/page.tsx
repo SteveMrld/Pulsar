@@ -135,7 +135,7 @@ const ENGINES = [
 
 const DISCOVERY = [
   { n: 'L1', label: 'Pattern Mining',       color: '#10B981', detail: 'Pearson 34 params · k-means k=3 · z-score 2.5σ' },
-  { n: 'L2', label: 'Literature Scanner',   color: '#3B82F6', detail: '25 publications · 3 NCT actifs · veille PubMed live' },
+  { n: 'L2', label: 'Literature Scanner',   color: '#3B82F6', detail: '100+ publications · 3 NCT actifs · veille PubMed live' },
   { n: 'L3', label: 'Hypothesis Engine',    color: '#8B5CF6', detail: 'Claude API · H1/H2/H3 · workflow validation' },
   { n: 'L4', label: 'Treatment Pathfinder', color: '#EC4899', detail: 'anakinra · tocilizumab · KD · rituximab · eligibility scoring' },
 ]
@@ -157,7 +157,7 @@ const CSS = `
 
   /* ── Sections ── */
   .lp-wrap { max-width:1000px; margin:0 auto; padding:0 48px; }
-  .lp-hero { padding:96px 0 80px; text-align:center; }
+  .lp-hero { padding:40px 0 72px; text-align:center; }
   .lp-section { padding:72px 0; }
   .lp-section-alt { padding:64px 0; background:var(--p-bg-card); border-top:1px solid rgba(108,124,255,.06); border-bottom:1px solid rgba(108,124,255,.06); }
 
@@ -337,15 +337,7 @@ export default function LandingPage() {
                   label: t('Espace clinicien', 'Clinician space'),
                   sub: t('Ouvrir un dossier patient. Accéder aux 12 moteurs.', 'Open a patient file. Access all 12 engines.'),
                   tag: t('Connexion requise', 'Login required'),
-                },
-                {
-                  href: '/lab',
-                  color: '#2FD1C8',
-                  icon: '◎',
-                  label: 'Discovery Engine',
-                  sub: t('PubMed live. Hypothèses. Essais cliniques. Recherche translationnelle.', 'Live PubMed. Hypotheses. Clinical trials. Translational research.'),
-                  tag: 'Public',
-                },
+                }
               ].map((card, i) => (
                 <a key={i} href={(card as any).onClick ? '#' : card.href} onClick={(card as any).onClick} style={{ textDecoration: 'none' }}>
                   <div style={{
@@ -387,8 +379,8 @@ export default function LandingPage() {
                 </h2>
                 <p style={{ fontSize: 13, color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 20 }}>
                   {t(
-                    "Dans ces maladies, la différence entre séquelles et récupération se joue en heures. 11 moteurs qui pensent ensemble — sévérité, escalade, pharmacovigilance, alerte précoce, prospection — pour que chaque clinicien ait la puissance de décision du meilleur service au monde.",
-                    "In these diseases, the difference between damage and recovery is measured in hours. 11 engines thinking together — severity, escalation, pharmacovigilance, early warning, prospection — so every clinician has world-class decision power."
+                    "Dans ces maladies, la différence entre séquelles et récupération se joue en heures. 12 moteurs qui pensent ensemble — sévérité, escalade, pharmacovigilance, alerte précoce, prospection — pour que chaque clinicien ait la puissance de décision du meilleur service au monde.",
+                    "In these diseases, the difference between damage and recovery is measured in hours. 12 engines thinking together — severity, escalation, pharmacovigilance, early warning, prospection — so every clinician has world-class decision power."
                   )}
                 </p>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
