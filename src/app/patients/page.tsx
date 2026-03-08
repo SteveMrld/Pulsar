@@ -58,7 +58,7 @@ import AlertBadge from '@/components/AlertBadge';
 
 /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
    FILE ACTIVE â PULSAR V17
-   Tour de contrÃ´le Â· Avatars Â· Phases Â· Quick access Â· DÃ©mo
+   Tour de contrôle · Avatars · Phases · Quick access · Démo
    ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
 interface PatientCard {
@@ -71,10 +71,10 @@ interface PatientCard {
 }
 
 const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 'male' | 'female'; room: string; syndrome: string; avatar: string }> = {
-  FIRES:    { id: 'ines',  name: 'InÃ¨s M.',  age: '4 ans',  sex: 'female', room: 'RÃ©a Neuro â Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/female-ines.png' },
-  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'RÃ©a Neuro â Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/male-lucas.png' },
-  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'NeuropÃ©d. â Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/female-amara.png' },
-  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'NeuropÃ©d. â Lit 5',  syndrome: 'Ãpil. focale', avatar: '/assets/avatars/male-noah.png' },
+  FIRES:    { id: 'ines',  name: 'Inès M.',  age: '4 ans',  sex: 'female', room: 'Réa Neuro â Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/female-ines.png' },
+  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'Réa Neuro â Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/male-lucas.png' },
+  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'Neuropéd. â Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/female-amara.png' },
+  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. â Lit 5',  syndrome: 'Ãpil. focale', avatar: '/assets/avatars/male-noah.png' },
 }
 
 function detectPhase(hospDay: number, vps: number): ClinicalPhase {
@@ -192,14 +192,14 @@ function PatientRow({ p }: { p: PatientCard }) {
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '14px', color: 'var(--p-text)' }}>{p.name}</span>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{p.age} Â· {p.room}</span>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{p.age} · {p.room}</span>
             {p.isDemo && (
               <span style={{
                 fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800,
                 padding: '2px 7px', borderRadius: 4,
                 background: 'rgba(108,124,255,0.15)', color: '#6C7CFF',
                 border: '1px solid rgba(108,124,255,0.3)',
-              }}>{t('DÃMO', 'DEMO')}</span>
+              }}>{t('DÉMO', 'DEMO')}</span>
             )}
           </div>
           <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>{p.lastEvent}</div>
@@ -313,7 +313,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
       }}>
         {[
           { value: '5', label: t('Moteurs IA', 'AI Engines') },
-          { value: '59', label: t('RÃ©fÃ©rences', 'References') },
+          { value: '59', label: t('Références', 'References') },
           { value: '5', label: t('Pathologies', 'Pathologies') },
           { value: '15', label: t('Cas registre', 'Registry cases') },
         ].map((s, i) => (
@@ -460,13 +460,9 @@ export default function FileActivePage() {
         borderBottom: '1px solid var(--p-border)', background: 'var(--p-bg-card)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <div>
-            <h1 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--p-text)', margin: 0, lineHeight: 1.2 }}>PULSAR</h1>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '1px' }}>{t('FILE ACTIVE', 'ACTIVE CASELOAD')}</span>
-          </div>
+          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: 'var(--p-text)', letterSpacing: '1px' }}>{t('FILE ACTIVE', 'ACTIVE CASELOAD')}</span>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <LangToggle />
           <button onClick={() => setShowDemo(!showDemo)} style={{
             padding: '6px 14px', borderRadius: 'var(--p-radius-full)',
             background: showDemo ? 'rgba(108,124,255,0.12)' : 'transparent',
@@ -480,7 +476,7 @@ export default function FileActivePage() {
               background: showDemo ? '#6C7CFF' : 'var(--p-text-dim)',
               boxShadow: showDemo ? '0 0 6px rgba(108,124,255,0.5)' : 'none',
             }} />
-            DÃ©mo
+            Démo
           </button>
           {/* Observatory link */}
           <Link href="/observatory" style={{
@@ -584,7 +580,7 @@ export default function FileActivePage() {
                   {totalAlerts} ALERTE{totalAlerts > 1 ? 'S' : ''} CRITIQUE{totalAlerts > 1 ? 'S' : ''}
                 </div>
                 <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', marginTop: '2px' }}>
-                  {filtered.filter(p => p.critAlerts > 0).map(p => p.name).join(' Â· ')}
+                  {filtered.filter(p => p.critAlerts > 0).map(p => p.name).join(' · ')}
                 </div>
               </div>
             </div>
