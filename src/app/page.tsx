@@ -245,6 +245,12 @@ export default function LandingPage() {
           </div>
           <div className="lp-nav-actions">
             <LangToggle />
+            <button onClick={startTour} className="lp-btn lp-btn-soft" style={{ color: '#6C7CFF' }}>
+              {t('▶ Parcours guidé', '▶ Guided tour')}
+            </button>
+            <button onClick={() => setDemoOpen(true)} className="lp-btn lp-btn-soft">
+              {t('Voir la démo', 'View demo')}
+            </button>
           </div>
         </nav>
 
