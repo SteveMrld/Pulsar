@@ -9,96 +9,73 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 
 const SCENES = [
   {
-    id: 'intro',
-    chapter: 'Situation',
-    chapterN: '01',
-    color: '#6C7CFF',
+    id: 'intro', chapter: 'Admission', chapterN: '01', color: '#6C7CFF',
     headline: 'Un enfant arrive aux urgences. Le temps compte.',
-    narration: 'PULSAR reçoit les premières données à l\'admission. En quelques secondes, 12 moteurs d\'analyse s\'activent simultanément sur le dossier.',
+    narration: 'PULSAR reçoit les premières données à l\'admission. En quelques secondes, 12 moteurs s\'activent simultanément.',
     ui: 'admission',
   },
   {
-    id: 'vps',
-    chapter: 'Score VPS',
-    chapterN: '02',
-    color: '#EF4444',
+    id: 'vps', chapter: 'Score VPS', chapterN: '02', color: '#EF4444',
     headline: 'VPS 92 — Alerte critique déclenchée automatiquement.',
-    narration: 'Le Vital Prognosis Score agrège 34 paramètres cliniques. Un score > 85 déclenche une cascade d\'alertes et place le patient en P1 immédiat.',
+    narration: 'Le Vital Prognosis Score agrège 34 paramètres. Un score > 85 place le patient en P1 immédiat et déclenche la cascade d\'alertes.',
     ui: 'vps',
   },
   {
-    id: 'physio',
-    chapter: 'Visual Physiology',
-    chapterN: '03',
-    color: '#B96BFF',
-    headline: 'Le corps d\'Inès. Zones d\'alerte. En temps réel.',
-    narration: 'PULSAR visualise instantanément les systèmes atteints — neurologique, cardiaque, inflammatoire. Le clinicien voit en un coup d\'œil où le corps est en train de céder.',
+    id: 'physio', chapter: 'Corps · Zones d\'alerte', chapterN: '03', color: '#B96BFF',
+    headline: 'Le corps d\'Inès. Chaque système atteint visualisé.',
+    narration: 'PULSAR cartographie les systèmes en défaillance en temps réel. Neurologique, cardiaque, inflammatoire — le clinicien voit tout d\'un coup d\'œil.',
     ui: 'physio',
   },
-    {
-    id: 'diagnostic',
-    chapter: 'Diagnostic TDE',
-    chapterN: '04',
-    color: '#8B5CF6',
-    headline: 'FIRES 87% de probabilité. En 4 minutes.',
-    narration: 'Le moteur TDE croise les symptômes, l\'EEG, les biomarqueurs et les délais. Là où un médecin seul aurait besoin de 48h, PULSAR pose l\'hypothèse en 4 minutes.',
-    ui: 'diagnostic',
+  {
+    id: 'neuron', chapter: 'Neurones FIRES', chapterN: '04', color: '#B96BFF',
+    headline: 'Ce que FIRES fait aux neurones. Heure par heure.',
+    narration: 'L\'inflammation IL-1β est 4 fois supérieure à la norme. La barrière hémato-encéphalique cède. PULSAR quantifie ce que l\'œil ne voit pas.',
+    ui: 'neuron',
   },
   {
-    id: 'brain',
-    chapter: 'Cerveau FIRES',
-    chapterN: '04',
-    color: '#FF6B35',
-    headline: 'Ce que FIRES fait au cerveau. Visualisé en temps réel.',
-    narration: 'PULSAR génère une carte thermique des zones inflammatoires à partir des données EEG et biologiques. Le clinicien voit ce qu\'il ne pouvait pas voir à l\'œil nu.',
+    id: 'brain', chapter: 'Cerveau · Heatmap', chapterN: '05', color: '#FF6B35',
+    headline: 'Carte thermique cérébrale. Cortex temporal : 94%.',
+    narration: 'NeuroCore génère une heatmap des zones inflammatoires à partir de l\'EEG et des biomarqueurs. Ce que l\'IRM montre en 48h, PULSAR l\'estime en minutes.',
     ui: 'brain',
   },
-    {
-    id: 'cascade',
-    chapter: 'Alertes CAE',
-    chapterN: '06',
-    color: '#FF6B35',
+  {
+    id: 'timeline', chapter: 'Timeline DDD', chapterN: '06', color: '#EF4444',
+    headline: '3 fenêtres thérapeutiques manquées. Identifiées rétrospectivement.',
+    narration: 'Le moteur DDD reconstruit la chronologie heure par heure. Chaque délai évitable est nommé, daté, sourcé. Pour que ça n\'arrive plus.',
+    ui: 'timeline',
+  },
+  {
+    id: 'cascade', chapter: 'Alertes CAE', chapterN: '07', color: '#FF6B35',
     headline: '2 cascades critiques détectées avant qu\'elles se produisent.',
-    narration: 'Le Cascade Alert Engine modélise les effets en chaîne. Il détecte que l\'association MEOPA + midazolam va provoquer une dépression respiratoire dans les 20 prochaines minutes.',
+    narration: 'Le Cascade Alert Engine modélise les effets en chaîne. Il détecte que l\'association MEOPA + midazolam va provoquer une dépression respiratoire dans 18 minutes.',
     ui: 'cascade',
   },
   {
-    id: 'traitement',
-    chapter: 'Protocole TPE',
-    chapterN: '07',
-    color: '#10B981',
-    headline: 'Anakinra. Score 94/100. Fenêtre : 6h restantes.',
-    narration: 'Le moteur TPE score chaque protocole sur l\'éligibilité, les interactions, et l\'urgence. La fenêtre thérapeutique est calculée en temps réel. Attendre, c\'est perdre.',
-    ui: 'traitement',
+    id: 'anakinra', chapter: 'Mécanisme Anakinra', chapterN: '08', color: '#10B981',
+    headline: 'Anakinra. Score 94. Mécanisme d\'action visualisé.',
+    narration: 'PULSAR ne se contente pas de recommander — il explique. Le mécanisme d\'action, la posologie, les interactions, la fenêtre. Le médecin comprend pourquoi.',
+    ui: 'anakinra',
   },
   {
-    id: 'oracle',
-    chapter: 'Simulation ORACLE',
-    chapterN: '08',
-    color: '#E879F9',
-    headline: '5 scénarios simulés. Voir le futur avant d\'agir.',
-    narration: 'ORACLE simule l\'évolution du patient selon chaque décision thérapeutique. Le médecin voit à J+30 l\'impact de ce qu\'il décide maintenant.',
+    id: 'oracle', chapter: 'Simulation ORACLE', chapterN: '09', color: '#E879F9',
+    headline: '5 scénarios. Voir le futur avant d\'agir.',
+    narration: 'ORACLE simule l\'évolution à J+30 selon chaque décision. Le médecin voit l\'impact de ce qu\'il décide maintenant — avant d\'agir.',
     ui: 'oracle',
   },
   {
-    id: 'irm',
-    chapter: 'Cartographie IRM',
-    chapterN: '08',
-    color: '#2FD1C8',
-    headline: 'Barrière hémato-encéphalique. +340% de perméabilité.',
-    narration: 'PULSAR croise les données biologiques avec les modèles anatomiques pour cartographier l\'inflammation cérébrale. Ce que l\'IRM montre en 48h, PULSAR l\'estime en minutes.',
-    ui: 'irm',
+    id: 'gutbrain', chapter: 'Axe intestin-cerveau', chapterN: '10', color: '#2FD1C8',
+    headline: 'Nouvelle hypothèse. Axe intestin-cerveau. 3 essais NCT actifs.',
+    narration: 'Le Discovery Engine L3 génère des hypothèses que la littérature n\'a pas encore validées. Dysbiose intestinale J-7 corrèle avec l\'activation microgliale chez Inès.',
+    ui: 'gutbrain',
   },
-    {
-    id: 'discovery',
-    chapter: 'Discovery Engine',
-    chapterN: '09',
-    color: '#2FD1C8',
+  {
+    id: 'discovery', chapter: 'Discovery Engine', chapterN: '11', color: '#10B981',
     headline: 'Chaque patient enrichit la science mondiale.',
-    narration: 'Le Discovery Engine croise les données anonymisées avec PubMed et ClinicalTrials.gov. L\'enfant traité à Pointe-à-Pitre améliore la décision prise demain à Lyon.',
+    narration: 'Les données anonymisées d\'Inès enrichissent 847 dossiers dans 12 pays. L\'enfant traité à Pointe-à-Pitre améliore la décision prise demain à Lyon.',
     ui: 'discovery',
   },
 ]
+
 
 // ── UI SCREENS ─────────────────────────────────────────────────────
 
@@ -580,16 +557,122 @@ function ScreenIRM() {
   )
 }
 
+function ScreenTimeline() {
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ height: 36, background: 'rgba(239,68,68,0.08)', borderBottom: '1px solid rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
+        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
+        <div style={{ fontSize: 9, color: '#EF4444', fontWeight: 700, fontFamily: 'monospace' }}>DDD · Chronologie FIRES</div>
+      </div>
+      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>Le moteur DDD reconstruit chaque heure. Chaque délai évitable est identifié.</div>
+        <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(239,68,68,0.2)' }}>
+          <img src="/assets/illustrations/PULSAR_FIRES_TIMELINE.png" alt="Timeline FIRES" style={{ width: '100%', display: 'block', opacity: 0.93 }} />
+        </div>
+        <div style={{ padding: '10px 12px', background: 'rgba(239,68,68,0.06)', borderRadius: 9, border: '1px solid rgba(239,68,68,0.15)' }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: '#EF4444', marginBottom: 6 }}>3 FENÊTRES THÉRAPEUTIQUES MANQUÉES</div>
+          {['J-3 : Signal pro-inflammatoire précoce non capturé','J0→J+1 : Diagnostic différentiel FIRES retardé 18h','J+2 : Anakinra initié après fermeture de la fenêtre optimale'].map((t,i) => (
+            <div key={i} style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)', marginBottom: 4, display: 'flex', gap: 6 }}>
+              <span style={{ color: '#EF4444' }}>✗</span>{t}
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ScreenNeuron() {
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ height: 36, background: 'rgba(185,107,255,0.08)', borderBottom: '1px solid rgba(185,107,255,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
+        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
+        <div style={{ fontSize: 9, color: '#B96BFF', fontWeight: 700, fontFamily: 'monospace' }}>NeuroCore · Ce que FIRES fait aux neurones</div>
+      </div>
+      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(185,107,255,0.2)' }}>
+          <img src="/assets/illustrations/PULSAR_NEURON_FIRES.png" alt="Neurones FIRES" style={{ width: '100%', display: 'block', opacity: 0.93 }} />
+        </div>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+          {[
+            { l: 'Activité épileptique', v: '8 crises/24h', c: '#EF4444' },
+            { l: 'Inflammation IL-1β', v: '+420%', c: '#FF6B35' },
+            { l: 'Perméabilité BBB', v: '+340%', c: '#B96BFF' },
+            { l: 'Mort neuronale', v: 'Zone critique', c: '#F59E0B' },
+          ].map((s,i) => (
+            <div key={i} style={{ padding: '8px 10px', borderRadius: 8, background: `${s.c}08`, border: `1px solid ${s.c}18` }}>
+              <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', marginBottom: 3 }}>{s.l}</div>
+              <div style={{ fontSize: 13, fontWeight: 800, color: s.c, fontFamily: 'monospace' }}>{s.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ScreenAnakinra() {
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ height: 36, background: 'rgba(16,185,129,0.08)', borderBottom: '1px solid rgba(16,185,129,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
+        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
+        <div style={{ fontSize: 9, color: '#10B981', fontWeight: 700, fontFamily: 'monospace' }}>TPE · Mécanisme Anakinra — Score 94/100</div>
+      </div>
+      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(16,185,129,0.2)' }}>
+          <img src="/assets/illustrations/PULSAR_ANAKINRA_MECHANISM.png" alt="Mécanisme Anakinra" style={{ width: '100%', display: 'block', opacity: 0.93 }} />
+        </div>
+        <div style={{ padding: '10px 12px', background: 'rgba(16,185,129,0.07)', borderRadius: 9, border: '1px solid rgba(16,185,129,0.18)' }}>
+          <div style={{ fontSize: 10, fontWeight: 800, color: '#10B981', marginBottom: 6 }}>PULSAR RECOMMANDE · Anakinra · Score 94</div>
+          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
+            Inhibiteur IL-1 · Bloque la cascade inflammatoire à la source · 2–4 mg/kg/j IV · <span style={{ color: '#FF6B35', fontWeight: 700 }}>Fenêtre : 6h restantes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ScreenGutBrain() {
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ height: 36, background: 'rgba(47,209,200,0.08)', borderBottom: '1px solid rgba(47,209,200,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
+        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
+        <div style={{ fontSize: 9, color: '#2FD1C8', fontWeight: 700, fontFamily: 'monospace' }}>Discovery · Axe intestin-cerveau</div>
+      </div>
+      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(47,209,200,0.2)' }}>
+          <img src="/assets/illustrations/PULSAR_GUT_BRAIN_AXIS.png" alt="Axe intestin-cerveau" style={{ width: '100%', display: 'block', opacity: 0.93 }} />
+        </div>
+        <div style={{ padding: '10px 12px', background: 'rgba(47,209,200,0.06)', borderRadius: 9, border: '1px solid rgba(47,209,200,0.15)' }}>
+          <div style={{ fontSize: 9, fontWeight: 800, color: '#2FD1C8', marginBottom: 5 }}>HYPOTHÈSE DISCOVERY ENGINE L3</div>
+          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
+            Dysbiose intestinale détectée J-7 corrèle avec l'activation microgliale. Nouvelle piste thérapeutique identifiée dans 3 études NCT actives.
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const UI_MAP: Record<string, () => JSX.Element> = {
   admission: ScreenAdmission,
   vps: ScreenVPS,
-  diagnostic: ScreenDiagnostic,
-  brain: ScreenBrain,
   physio: ScreenVisualPhysio,
+  neuron: ScreenNeuron,
+  diagnostic: ScreenDiagnostic,
+  timeline: ScreenTimeline,
+  brain: ScreenBrain,
   irm: ScreenIRM,
   cascade: ScreenCascade,
   traitement: ScreenTraitement,
+  anakinra: ScreenAnakinra,
   oracle: ScreenOracle,
+  gutbrain: ScreenGutBrain,
   discovery: ScreenDiscovery,
 }
 
