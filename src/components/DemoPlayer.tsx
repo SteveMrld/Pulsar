@@ -36,9 +36,18 @@ const SCENES = [
     ui: 'diagnostic',
   },
   {
+    id: 'brain',
+    chapter: 'Cerveau FIRES',
+    chapterN: '04',
+    color: '#FF6B35',
+    headline: 'Ce que FIRES fait au cerveau. Visualisé en temps réel.',
+    narration: 'PULSAR génère une carte thermique des zones inflammatoires à partir des données EEG et biologiques. Le clinicien voit ce qu\'il ne pouvait pas voir à l\'œil nu.',
+    ui: 'brain',
+  },
+    {
     id: 'cascade',
     chapter: 'Alertes CAE',
-    chapterN: '04',
+    chapterN: '05',
     color: '#FF6B35',
     headline: '2 cascades critiques détectées avant qu\'elles se produisent.',
     narration: 'Le Cascade Alert Engine modélise les effets en chaîne. Il détecte que l\'association MEOPA + midazolam va provoquer une dépression respiratoire dans les 20 prochaines minutes.',
@@ -47,7 +56,7 @@ const SCENES = [
   {
     id: 'traitement',
     chapter: 'Protocole TPE',
-    chapterN: '05',
+    chapterN: '06',
     color: '#10B981',
     headline: 'Anakinra. Score 94/100. Fenêtre : 6h restantes.',
     narration: 'Le moteur TPE score chaque protocole sur l\'éligibilité, les interactions, et l\'urgence. La fenêtre thérapeutique est calculée en temps réel. Attendre, c\'est perdre.',
@@ -56,7 +65,7 @@ const SCENES = [
   {
     id: 'oracle',
     chapter: 'Simulation ORACLE',
-    chapterN: '06',
+    chapterN: '07',
     color: '#E879F9',
     headline: '5 scénarios simulés. Voir le futur avant d\'agir.',
     narration: 'ORACLE simule l\'évolution du patient selon chaque décision thérapeutique. Le médecin voit à J+30 l\'impact de ce qu\'il décide maintenant.',
@@ -65,7 +74,7 @@ const SCENES = [
   {
     id: 'discovery',
     chapter: 'Discovery Engine',
-    chapterN: '07',
+    chapterN: '08',
     color: '#2FD1C8',
     headline: 'Chaque patient enrichit la science mondiale.',
     narration: 'Le Discovery Engine croise les données anonymisées avec PubMed et ClinicalTrials.gov. L\'enfant traité à Pointe-à-Pitre améliore la décision prise demain à Lyon.',
@@ -381,10 +390,56 @@ function ScreenDiscovery() {
   )
 }
 
+function ScreenBrain() {
+  return (
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
+      <div style={{ height: 36, background: 'rgba(255,107,53,0.08)', borderBottom: '1px solid rgba(255,107,53,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
+        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
+        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
+        <div style={{ fontSize: 9, color: '#FF6B35', fontWeight: 700, fontFamily: 'monospace' }}>Inès M. · NeuroCore — Carte cérébrale</div>
+      </div>
+      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {/* Brain illustration */}
+        <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,107,53,0.2)', background: 'rgba(0,0,0,0.3)' }}>
+          <img src="/assets/illustrations/PULSAR_BRAIN_NORMAL_VS_FIRES.png" alt="Cerveau FIRES" style={{ width: '100%', display: 'block', opacity: 0.92 }} />
+          <div style={{ position: 'absolute', top: 8, left: 8, padding: '3px 9px', borderRadius: 5, background: 'rgba(0,0,0,0.75)', border: '1px solid rgba(255,107,53,0.3)', fontSize: 8, fontWeight: 800, color: '#FF6B35', fontFamily: 'monospace' }}>PULSAR NEUROCORE · FIRES J+4</div>
+        </div>
+        {/* Heatmap zones */}
+        <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.5)', marginBottom: 2 }}>ZONES D'INFLAMMATION DÉTECTÉES</div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {[
+            { zone: 'Cortex temporal bilatéral', level: 94, color: '#EF4444', status: 'CRITIQUE' },
+            { zone: 'Hippocampe gauche', level: 78, color: '#FF6B35', status: 'SÉVÈRE' },
+            { zone: 'Thalamus', level: 61, color: '#F59E0B', status: 'MODÉRÉ' },
+            { zone: 'Cortex frontal', level: 38, color: '#6C7CFF', status: 'SURVEILLÉ' },
+          ].map((z, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 10px', borderRadius: 7, background: `${z.color}08`, border: `1px solid ${z.color}18` }}>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 10, fontWeight: 600, color: '#fff' }}>{z.zone}</div>
+              </div>
+              <div style={{ width: 70, height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2, overflow: 'hidden' }}>
+                <div style={{ width: `${z.level}%`, height: '100%', background: z.color, borderRadius: 2 }} />
+              </div>
+              <span style={{ fontSize: 8, fontWeight: 800, color: z.color, fontFamily: 'monospace', minWidth: 32, textAlign: 'right' }}>{z.level}%</span>
+              <span style={{ fontSize: 7, color: z.color, background: `${z.color}12`, border: `1px solid ${z.color}20`, padding: '1px 5px', borderRadius: 3, fontFamily: 'monospace', fontWeight: 700 }}>{z.status}</span>
+            </div>
+          ))}
+        </div>
+        {/* BBB */}
+        <div style={{ padding: '8px 12px', background: 'rgba(139,92,246,0.07)', borderRadius: 8, border: '1px solid rgba(139,92,246,0.15)' }}>
+          <div style={{ fontSize: 9, fontWeight: 700, color: '#8B5CF6', marginBottom: 4 }}>BARRIÈRE HÉMATO-ENCÉPHALIQUE</div>
+          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>Perméabilité estimée : <span style={{ color: '#EF4444', fontWeight: 700 }}>+340% vs norme</span> · Infiltration lymphocytaire détectée</div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 const UI_MAP: Record<string, () => JSX.Element> = {
   admission: ScreenAdmission,
   vps: ScreenVPS,
   diagnostic: ScreenDiagnostic,
+  brain: ScreenBrain,
   cascade: ScreenCascade,
   traitement: ScreenTraitement,
   oracle: ScreenOracle,
