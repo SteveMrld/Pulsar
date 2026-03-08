@@ -1544,7 +1544,7 @@ function LiteratureView({ scanResult, articles }: { scanResult: ScanResult; arti
             boxShadow: scanning !== 'idle' ? `0 0 12px ${DISC}` : 'none',
             animation: scanning !== 'idle' ? 'pulse 1s infinite' : 'none',
           }} />
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: DISC, letterSpacing: '1px' }}>
+          <span className="page-subtitle">
             VEILLE LIVE {scanning !== 'idle' ? '— SCAN EN COURS...' : ''}
           </span>
           {scanStats && (

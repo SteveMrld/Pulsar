@@ -39,7 +39,7 @@ export default function DDDPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 'var(--p-space-6)' }}>
         <div style={{ width: 40, height: 40, borderRadius: 12, background: `${DDD_COLOR}15`, border: `2px solid ${DDD_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Picto name="urgence-chrono" size={20} glow /></div>
         <div>
-          <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Diagnostic Delay Detector</h1>
+          <h1>Diagnostic Delay Detector</h1>
           <p style={{ fontSize: 'var(--p-text-sm)', color: DDD_COLOR, margin: 0, fontFamily: 'var(--p-font-mono)' }}>
             {t('Le garde-fou contre l\'inertie clinique', 'The safeguard against clinical inertia')}
           </p>

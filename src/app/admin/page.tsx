@@ -48,13 +48,11 @@ export default function AdminPage() {
 
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px' }}>
-        <Picto name="shield" size={28} glow glowColor="rgba(139,92,246,0.5)" />
-        <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Administration</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
-            Gestion des rôles · {profiles.length} utilisateur{profiles.length > 1 ? 's' : ''} · Vous : {roleLabel}
-          </span>
+      <div className="page-header" style={{ marginBottom: '24px' }}>
+        <div className="page-header-icon"><Picto name="shield" size={28} glow glowColor="rgba(139,92,246,0.5)" /></div>
+        <div className="page-header-text">
+          <h1>Administration</h1>
+          <span className="page-subtitle">Gestion des rôles · {profiles.length} utilisateur{profiles.length > 1 ? 's' : ''} · Vous : {roleLabel}</span>
         </div>
       </div>
 

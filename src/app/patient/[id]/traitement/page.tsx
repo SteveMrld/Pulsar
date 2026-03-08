@@ -56,8 +56,8 @@ export default function TraitementPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="pill" size={28} glow glowColor="rgba(47,209,200,0.5)" />
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Traitement</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+          <h1>Traitement</h1>
+          <span className="page-subtitle">
             TDE + PVE · {info.displayName} · J+{info.hospDay}
           </span>
         </div>

@@ -67,8 +67,8 @@ export default function AuditPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="shield" size={28} glow glowColor="rgba(108,124,255,0.5)" />
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Audit trail</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+          <h1>Audit trail</h1>
+          <span className="page-subtitle">
             Traçabilité complète {'\u00b7'} {info.displayName} {'\u00b7'} {entries.length} actions
           </span>
         </div>

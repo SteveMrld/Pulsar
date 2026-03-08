@@ -26,8 +26,8 @@ export default function SynthesePage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="clipboard" size={28} glow glowColor="rgba(46,213,115,0.5)" />
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Synth\u00e8se Clinique</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+          <h1>Synth\u00e8se Clinique</h1>
+          <span className="page-subtitle">
             Staff & Transmission {'\u00b7'} {info.displayName} {'\u00b7'} J+{info.hospDay}
           </span>
         </div>
@@ -183,7 +183,7 @@ export default function SynthesePage() {
                 background: e.active ? e.color : 'var(--p-text-dim)',
                 boxShadow: e.active ? `0 0 6px ${e.color}50` : 'none',
               }} />
-              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: e.active ? e.color : 'var(--p-text-dim)' }}>{e.name}</span>
+              <span className="page-subtitle">{e.name}</span>
             </div>
           ))}
         </div>

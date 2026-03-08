@@ -87,7 +87,7 @@ export default function DiscoveryPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 'var(--p-space-6)' }}>
         <div style={{ width: 40, height: 40, borderRadius: 12, background: `${DISC_COLOR}15`, border: `2px solid ${DISC_COLOR}25`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Picto name="microscope" size={20} glow /></div>
         <div>
-          <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Discovery Engine</h1>
+          <h1>Discovery Engine</h1>
           <p style={{ fontSize: 'var(--p-text-sm)', color: DISC_COLOR, margin: 0, fontFamily: 'var(--p-font-mono)' }}>
             {t('Recherche personnalisée pour', 'Personalized research for')} {info.displayName} — {searchTerms[0]}
           </p>

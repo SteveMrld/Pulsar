@@ -40,11 +40,11 @@ export default function UrgencePage() {
   return (
     <div className="page-enter-stagger">
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+      <div className="page-header">
         <Picto name="alert" size={28} glow glowColor="rgba(139,92,246,0.5)" />
-        <div style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Mode Urgence</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+        <div className="page-header-text">
+          <h1>Mode Urgence</h1>
+          <span className="page-subtitle">
             Protocole 0–3h · {info.displayName} · J+{info.hospDay}
           </span>
         </div>
@@ -63,7 +63,7 @@ export default function UrgencePage() {
         <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderTop: '3px solid #8B5CF6' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '1px' }}>STABILISATION ABCDE</span>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{done}/5</span>
+            <span className="page-subtitle">{done}/5</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {ABCDE.map((a, i) => (
@@ -118,7 +118,7 @@ export default function UrgencePage() {
           <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderTop: '3px solid #FFB347', flex: 1 }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
               <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#FFB347', letterSpacing: '1px' }}>BUNDLE INITIAL</span>
-              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{bundleDone}/{bundles.length}</span>
+              <span className="page-subtitle">{bundleDone}/{bundles.length}</span>
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
               {bundles.map((b, i) => (

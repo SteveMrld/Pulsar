@@ -233,7 +233,7 @@ export default function OraclePage() {
           <Picto name="chart" size={20} glow glowColor={ORACLE_COLOR} />
         </div>
         <div>
-          <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0, display: 'flex', alignItems: 'center', gap: 8 }}>
+          <h1>
             ORACLE
             <span style={{ fontSize: 10, fontWeight: 500, color: ORACLE_COLOR, padding: '2px 8px', borderRadius: 12, background: `${ORACLE_COLOR}12` }}>
               Clinical Foresight

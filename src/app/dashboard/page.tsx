@@ -246,8 +246,8 @@ export default function DashboardPage() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <Picto name="chart" size={28} glow glowColor="rgba(108,124,255,0.5)" />
           <div>
-            <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Dashboard</h1>
-            <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+            <h1>Dashboard</h1>
+            <span className="page-subtitle">
               Vue d'ensemble du service · Neuropédiatrie
             </span>
           </div>
@@ -308,7 +308,7 @@ export default function DashboardPage() {
               </div>
               {critAlerts.slice(0, 5).map(a => (
                 <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--p-dark-4)' }}>
-                  <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#8B5CF6', fontWeight: 700 }}>
+                  <span className="page-subtitle">
                     {a.title}
                   </span>
                   <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)' }}>

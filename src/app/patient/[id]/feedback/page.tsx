@@ -21,7 +21,7 @@ export default function FeedbackPage() {
           <Picto name="cycle" size={20} glow />
         </div>
         <div>
-          <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>FeedbackLoop</h1>
+          <h1>FeedbackLoop</h1>
           <p style={{ fontSize: 'var(--p-text-sm)', color: FB_COLOR, margin: 0, fontFamily: 'var(--p-font-mono)' }}>
             {t('Chaque enfant rend le système plus intelligent pour le suivant', 'Every child makes the system smarter for the next one')}
           </p>

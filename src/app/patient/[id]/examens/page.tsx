@@ -33,8 +33,8 @@ export default function ExamensPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="microscope" size={28} glow glowColor="rgba(185,107,255,0.5)" />
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Examens &amp; Biomarqueurs</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+          <h1>Examens &amp; Biomarqueurs</h1>
+          <span className="page-subtitle">
             NeuroCore {'\u00b7'} {info.displayName} {'\u00b7'} J+{info.hospDay}
           </span>
         </div>
@@ -166,9 +166,9 @@ export default function ExamensPage() {
 
       <SectionTitle title={'EXAMENS RECOMMAND\u00c9S'} color="#FFB347" icon="shield" />
       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
-        {!ps.eeg && <span style={{ padding: '6px 14px', borderRadius: 'var(--p-radius-full)', background: 'rgba(255,179,71,0.08)', border: '1px solid rgba(255,179,71,0.15)', fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FFB347', fontWeight: 600 }}>EEG urgent</span>}
-        {!ps.mri && <span style={{ padding: '6px 14px', borderRadius: 'var(--p-radius-full)', background: 'rgba(255,179,71,0.08)', border: '1px solid rgba(255,179,71,0.15)', fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#FFB347', fontWeight: 600 }}>{`IRM c\u00e9r\u00e9brale`}</span>}
-        {ps.eeg && ps.mri && <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: '#2ED573' }}>{`Examens cl\u00e9s r\u00e9alis\u00e9s`}</span>}
+        {!ps.eeg && <span className="page-subtitle">EEG urgent</span>}
+        {!ps.mri && <span className="page-subtitle">{`IRM c\u00e9r\u00e9brale`}</span>}
+        {ps.eeg && ps.mri && <span className="page-subtitle">{`Examens cl\u00e9s r\u00e9alis\u00e9s`}</span>}
       </div>
     </div>
   )

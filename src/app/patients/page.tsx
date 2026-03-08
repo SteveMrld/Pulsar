@@ -193,7 +193,7 @@ function PatientRow({ p }: { p: PatientCard }) {
         <div>
           <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
             <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 800, fontSize: '14px', color: 'var(--p-text)' }}>{p.name}</span>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{p.age} · {p.room}</span>
+            <span className="page-subtitle">{p.age} · {p.room}</span>
             {p.isDemo && (
               <span style={{
                 fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800,
@@ -230,7 +230,7 @@ function PatientRow({ p }: { p: PatientCard }) {
         <VPSSparkline data={p.vpsHistory} color={vpsColor} />
 
         {/* Day */}
-        <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: vpsColor }}>J+{p.hospDay}</span>
+        <span className="page-subtitle">J+{p.hospDay}</span>
 
         {/* GCS */}
         <div style={{ textAlign: 'center' }}>
@@ -513,11 +513,7 @@ export default function FileActivePage() {
           </div>
 
           {totalAlerts > 0 && (
-            <div style={{
-              padding: '12px 16px', borderRadius: 'var(--p-radius-lg)',
-              background: 'rgba(139,92,246,0.04)', border: '1px solid rgba(139,92,246,0.12)',
-              marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '12px',
-            }}>
+            <div className="page-header">
               <Picto name="alert" size={18} glow glowColor="rgba(139,92,246,0.4)" />
               <div style={{ flex: 1 }}>
                 <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '0.5px' }}>
@@ -566,7 +562,7 @@ export default function FileActivePage() {
               background: 'rgba(108,124,255,0.04)', border: '1px solid rgba(108,124,255,0.1)',
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
-              <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>
+              <span className="page-subtitle">
                 Mode démo actif · {demoPatients.length} cas fictifs
               </span>
               <button onClick={() => setShowDemo(false)} style={{

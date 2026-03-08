@@ -19,8 +19,8 @@ export default function SuiviPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="chart" size={28} glow glowColor="rgba(255,179,71,0.5)" />
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Suivi & Monitoring</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+          <h1>Suivi & Monitoring</h1>
+          <span className="page-subtitle">
             EWE {'\u00b7'} {info.displayName} {'\u00b7'} J+{info.hospDay} {'\u00b7'} {info.phaseInfo.label}
           </span>
         </div>

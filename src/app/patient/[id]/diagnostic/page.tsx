@@ -64,11 +64,11 @@ export default function DiagnosticPage() {
 
   return (
     <div className="page-enter-stagger">
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+      <div className="page-header">
         <Picto name="brain" size={28} glow glowColor="rgba(108,124,255,0.5)" />
-        <div style={{ flex: 1 }}>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Diagnostic</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+        <div className="page-header-text">
+          <h1>Diagnostic</h1>
+          <span className="page-subtitle">
             Raisonnement clinique · {info.displayName}
           </span>
         </div>

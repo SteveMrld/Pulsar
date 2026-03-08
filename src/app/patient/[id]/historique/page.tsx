@@ -42,7 +42,7 @@ function ScoreChart({ points, color, label, maxScore = 100 }: {
   return (
     <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', flex: '1 1 200px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-        <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color, letterSpacing: '0.5px' }}>
+        <span className="page-subtitle">
           {label}
         </span>
         <div style={{ display: 'flex', alignItems: 'baseline', gap: '4px' }}>
@@ -50,7 +50,7 @@ function ScoreChart({ points, color, label, maxScore = 100 }: {
             {latest.score}
           </span>
           {trend !== 0 && (
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: trend > 0 ? '#8B5CF6' : '#2ED573' }}>
+            <span className="page-subtitle">
               {trend > 0 ? '▲' : '▼'}{Math.abs(trend)}
             </span>
           )}
@@ -217,8 +217,8 @@ export default function HistoriquePage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="clipboard" size={28} glow glowColor="rgba(108,124,255,0.5)" />
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Historique patient</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+          <h1>Historique patient</h1>
+          <span className="page-subtitle">
             Timeline · Évolution · Dossier {'\u00b7'} {info.displayName} {'\u00b7'} J+{info.hospDay}
           </span>
         </div>
@@ -247,7 +247,7 @@ export default function HistoriquePage() {
 
           {/* Stats bar */}
           <div className="glass-card" style={{ padding: '10px 14px', borderRadius: 'var(--p-radius-lg)', marginBottom: '14px', display: 'flex', gap: '16px', alignItems: 'center', flexWrap: 'wrap' }}>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: 'var(--p-text-dim)' }}>
+            <span className="page-subtitle">
               {events.length} événements · {sortedDays.length} jours
             </span>
             <div style={{ display: 'flex', gap: '4px' }}>

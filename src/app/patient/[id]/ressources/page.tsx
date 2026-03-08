@@ -91,8 +91,8 @@ export default function RessourcesPage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="books" size={28} glow glowColor="rgba(255,179,71,0.5)" />
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Ressources & Connaissances</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+          <h1>Ressources & Connaissances</h1>
+          <span className="page-subtitle">
             NeuroCore KB {'\u00b7'} 59 r\u00e9f\u00e9rences {'\u00b7'} {info.syndrome}
           </span>
         </div>
@@ -139,7 +139,7 @@ export default function RessourcesPage() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
             <Picto name={section.icon} size={16} glow glowColor={`${section.color}50`} />
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: section.color, letterSpacing: '0.5px' }}>
+            <span className="page-subtitle">
               {section.title.toUpperCase()}
             </span>
           </div>

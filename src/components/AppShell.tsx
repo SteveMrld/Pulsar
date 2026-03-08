@@ -232,7 +232,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
             }
           `}</style>
           {/* LEFT */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '120px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '130px', flexShrink: 0 }}>
             <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <PulsarLogo size="md" />
             </Link>
@@ -241,7 +241,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* CENTER — masqué sur mobile */}
-          <div className="hdr-center" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+          <div className="hdr-center" style={{ display: 'flex', alignItems: 'center', gap: '2px', overflow: 'hidden', flexShrink: 1, minWidth: 0 }}>
             <NavLink href="/dashboard" label="Dashboard" pathname={pathname} />
             <NavLink href="/patients" label={t('File active', 'Patients')} pathname={pathname} />
             <NavLink href="/research" label="Discovery" color="#10B981" pathname={pathname} />
@@ -250,7 +250,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* RIGHT */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: '80px', justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: '120px', flexShrink: 0, justifyContent: 'flex-end' }}>
 
             {/* Staff — masqué sur petit mobile */}
             <Link className="hdr-staff" href="/staff" title={t('Équipe soignante', 'Care Team')} style={{

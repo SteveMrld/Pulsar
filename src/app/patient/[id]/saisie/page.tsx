@@ -160,8 +160,8 @@ export default function SaisiePage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="edit" size={28} glow glowColor="rgba(167,139,250,0.5)" />
         <div>
-          <h1 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>Saisie temps réel</h1>
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>
+          <h1>Saisie temps réel</h1>
+          <span className="page-subtitle">
             Constantes · Biologie · Notes {'\u00b7'} {info.displayName} {'\u00b7'} J+{info.hospDay}
           </span>
         </div>

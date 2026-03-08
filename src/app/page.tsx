@@ -145,15 +145,20 @@ const CSS = `
   .lp { min-height:100vh; background:var(--p-bg); color:var(--p-text); }
 
   /* ── Nav ── */
-  .lp-nav { display:flex; justify-content:space-between; align-items:center; padding:0 48px; height:60px; position:sticky; top:0; z-index:100; background:rgba(18,18,25,0.9); backdrop-filter:blur(24px) saturate(1.4); border-bottom:1px solid rgba(108,124,255,0.07); }
-  .lp-logo { display:flex; align-items:center; gap:10px; }
-  .lp-logo-text { font-size:16px; font-weight:800; letter-spacing:.14em; }
-  .lp-nav-actions { display:flex; align-items:center; gap:10px; }
-  .lp-btn { padding:8px 20px; border-radius:10px; font-size:13px; font-weight:600; text-decoration:none; cursor:pointer; border:none; transition:all .18s; }
+  .lp-nav { display:flex; justify-content:space-between; align-items:center; padding:0 32px; height:60px; position:sticky; top:0; z-index:100; background:rgba(18,18,25,0.9); backdrop-filter:blur(24px) saturate(1.4); border-bottom:1px solid rgba(108,124,255,0.07); gap:12px; }
+  .lp-logo { display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .lp-logo-text { font-size:16px; font-weight:800; letter-spacing:.14em; white-space:nowrap; }
+  .lp-nav-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; }
+  .lp-btn { padding:7px 16px; border-radius:10px; font-size:12px; font-weight:600; text-decoration:none; cursor:pointer; border:none; transition:all .18s; white-space:nowrap; }
   .lp-btn-soft { background:transparent; color:var(--p-text-muted); }
   .lp-btn-soft:hover { color:var(--p-text); background:var(--p-bg-elevated); }
   .lp-btn-main { background:var(--p-vps); color:#fff; box-shadow:0 0 20px rgba(108,124,255,.2); }
   .lp-btn-main:hover { box-shadow:0 0 32px rgba(108,124,255,.4); transform:translateY(-1px); }
+  @media (max-width:640px) {
+    .lp-nav { padding:0 16px; }
+    .lp-btn-soft { display:none; }
+    .lp-btn { font-size:11px; padding:6px 12px; }
+  }
 
   /* ── Sections ── */
   .lp-wrap { max-width:1000px; margin:0 auto; padding:0 48px; }

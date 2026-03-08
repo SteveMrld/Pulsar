@@ -61,18 +61,21 @@ export function LangToggle({ style }: { style?: React.CSSProperties }) {
       onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggleLang(); }}
       title={lang === 'fr' ? 'Switch to English' : 'Passer en français'}
       style={{
-        padding: '6px 14px',
+        padding: '5px 12px',
         borderRadius: '9999px',
         background: lang === 'fr' ? 'rgba(108,124,255,0.12)' : 'rgba(16,185,129,0.12)',
         border: lang === 'fr' ? '2px solid rgba(108,124,255,0.3)' : '2px solid rgba(16,185,129,0.3)',
         color: lang === 'fr' ? '#6C7CFF' : '#10B981',
         cursor: 'pointer',
-        fontSize: '13px',
+        fontSize: '11px',
         fontWeight: 800,
         fontFamily: 'var(--p-font-mono)',
         letterSpacing: '0.05em',
         transition: 'all 0.3s',
-        minWidth: '60px',
+        minWidth: '68px',
+        width: '68px',
+        whiteSpace: 'nowrap',
+        flexShrink: 0,
         textAlign: 'center' as const,
         ...style,
       }}

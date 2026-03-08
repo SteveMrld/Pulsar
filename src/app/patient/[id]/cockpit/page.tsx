@@ -82,7 +82,7 @@ function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; synd
             width: '8px', height: '8px', borderRadius: '50%', background: DISC,
             boxShadow: `0 0 8px ${DISC}80`, animation: 'pulse 2s infinite',
           }} />
-          <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', fontWeight: 800, color: DISC, letterSpacing: '1.5px' }}>
+          <span className="page-subtitle">
             DISCOVERY ENGINE
           </span>
           <span style={{
@@ -304,8 +304,8 @@ export default function PatientCockpit() {
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '4px' }}>
             <Picto name="brain" size={28} glow glowColor="rgba(108,124,255,0.5)" />
             <div>
-              <h1 style={{ fontSize: 'var(--p-text-xl)', fontWeight: 800, color: 'var(--p-text)', margin: 0, lineHeight: 1.2 }}>Cockpit Patient</h1>
-              <span style={{ fontSize: '10px', fontFamily: 'var(--p-font-mono)', color: 'var(--p-text-dim)' }}>Que faire maintenant ?</span>
+              <h1>Cockpit Patient</h1>
+              <span className="page-subtitle">Que faire maintenant ?</span>
             </div>
             {info.triage && (
               <div style={{
@@ -420,7 +420,7 @@ export default function PatientCockpit() {
               borderTop: `3px solid ${e.color}`, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px',
             }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                <span style={{ fontFamily: 'var(--p-font-mono)', fontWeight: 700, color: e.color, fontSize: '10px', letterSpacing: '1px' }}>{e.name}</span>
+                <span className="page-subtitle">{e.name}</span>
                 <div className="dot-alive" />
               </div>
               <MiniGauge score={e.score} color={e.color} />
