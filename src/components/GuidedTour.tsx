@@ -238,23 +238,33 @@ export default function GuidedTour() {
     <button
       onClick={() => setMinimized(false)}
       style={{
-        position: 'fixed', bottom: 80, right: 20, zIndex: 9998,
+        position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+        zIndex: 9998,
         background: step.color, border: 'none', borderRadius: 24,
-        padding: '8px 16px', cursor: 'pointer',
+        padding: '10px 24px', cursor: 'pointer',
         display: 'flex', alignItems: 'center', gap: 8,
-        boxShadow: `0 4px 20px ${step.color}40`,
-        color: '#fff', fontSize: 11, fontFamily: 'var(--p-font-mono)', fontWeight: 700,
+        boxShadow: `0 4px 20px ${step.color}60`,
+        color: '#fff', fontSize: 12, fontFamily: 'var(--p-font-mono)', fontWeight: 700,
       }}
     >
       <span>▶</span>
-      <span>Tour {stepIdx + 1}/{TOUR_STEPS.length}</span>
+      <span>PULSAR TOUR · Étape {stepIdx + 1}/{TOUR_STEPS.length}</span>
     </button>
   )
 
   return (
+    <>
+    {/* Backdrop highlight */}
     <div style={{
-      position: 'fixed', bottom: 80, right: 20, zIndex: 9998,
-      width: 320, maxWidth: 'calc(100vw - 40px)',
+      position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9997,
+      height: 220,
+      background: 'linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 100%)',
+      pointerEvents: 'none',
+    }} />
+    <div style={{
+      position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+      zIndex: 9998,
+      width: '92%', maxWidth: 560,
       background: '#0C1020',
       border: `1px solid ${step.color}35`,
       borderRadius: 16,
@@ -354,5 +364,6 @@ export default function GuidedTour() {
         }
       `}</style>
     </div>
+    </>
   )
 }

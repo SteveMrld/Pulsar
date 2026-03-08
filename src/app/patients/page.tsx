@@ -19,7 +19,7 @@ function UseCaseGate() {
   if (showCase) return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'var(--p-bg, #0C1424)', overflowY: 'auto' }}>
       <HypothesisGauges />
-      <button onClick={() => setShowCase(false)} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>Fermer â</button>
+      <button onClick={() => setShowCase(false)} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>Fermer ×</button>
       <AlejandroCasePage />
     </div>
   )
@@ -27,10 +27,10 @@ function UseCaseGate() {
     <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-lg)', border: '1px solid var(--p-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <span style={{ fontSize: 14 }}>ð</span>
-        <div><div style={{ fontSize: 12, fontWeight: 700, color: 'var(--p-text)' }}>Use Case â AccÃ¨s protÃ©gÃ©</div><div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique rÃ©el</div></div>
+        <div><div style={{ fontSize: 12, fontWeight: 700, color: 'var(--p-text)' }}>Use Case · Accès protégé</div><div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique réel</div></div>
       </div>
       {!showInput ? (
-        <button onClick={() => setShowInput(true)} style={{ padding: '5px 14px', borderRadius: 8, background: '#F5A62315', border: '1px solid #F5A62325', color: '#F5A623', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>AccÃ©der</button>
+        <button onClick={() => setShowInput(true)} style={{ padding: '5px 14px', borderRadius: 8, background: '#F5A62315', border: '1px solid #F5A62325', color: '#F5A623', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Accéder</button>
       ) : (
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           <input type="password" value={code} onChange={e => { setCode(e.target.value); setError(false) }} onKeyDown={e => e.key === 'Enter' && handleSubmit()} placeholder="Code" maxLength={4} style={{ width: 72, padding: '5px 8px', borderRadius: 6, background: 'var(--p-bg-surface)', border: '1px solid ' + (error ? '#EF4444' : 'var(--p-border)'), color: 'var(--p-text)', fontSize: 14, fontFamily: 'var(--p-font-mono)', textAlign: 'center', letterSpacing: 4 }} autoFocus />
@@ -57,7 +57,7 @@ import PatientTimeline from '@/components/PatientTimeline';
 import AlertBadge from '@/components/AlertBadge';
 
 /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   FILE ACTIVE â PULSAR V17
+   FILE ACTIVE · PULSAR V17
    Tour de contrôle · Avatars · Phases · Quick access · Démo
    ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 
@@ -71,10 +71,10 @@ interface PatientCard {
 }
 
 const PATIENT_MAP: Record<string, { id: string; name: string; age: string; sex: 'male' | 'female'; room: string; syndrome: string; avatar: string }> = {
-  FIRES:    { id: 'ines',  name: 'Inès M.',  age: '4 ans',  sex: 'female', room: 'Réa Neuro â Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/female-ines.png' },
-  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'Réa Neuro â Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/male-lucas.png' },
-  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'Neuropéd. â Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/female-amara.png' },
-  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. â Lit 5',  syndrome: 'Ãpil. focale', avatar: '/assets/avatars/male-noah.png' },
+  FIRES:    { id: 'ines',  name: 'Inès M.',  age: '4 ans',  sex: 'female', room: 'Réa Neuro · Lit 3',  syndrome: 'FIRES',       avatar: '/assets/avatars/female-ines.png' },
+  NMDAR:    { id: 'lucas', name: 'Lucas R.', age: '14 ans', sex: 'male',   room: 'Réa Neuro · Lit 7',  syndrome: 'Anti-NMDAR',  avatar: '/assets/avatars/male-lucas.png' },
+  CYTOKINE: { id: 'amara', name: 'Amara T.', age: '8 ans',  sex: 'female', room: 'Neuropéd. · Lit 12', syndrome: 'MOGAD',       avatar: '/assets/avatars/female-amara.png' },
+  STABLE:   { id: 'noah',  name: 'Noah B.',  age: '6 ans',  sex: 'male',   room: 'Neuropéd. · Lit 5',  syndrome: 'Épil. focale', avatar: '/assets/avatars/male-noah.png' },
 }
 
 function detectPhase(hospDay: number, vps: number): ClinicalPhase {
@@ -101,7 +101,7 @@ function buildDemoPatients(): PatientCard[] {
       gcs: ps.neuro.gcs,
       critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
       phase: detectPhase(ps.hospDay, vps),
-      lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status rÃ©fractaire en cours'
+      lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status réfractaire en cours'
         : ps.neuro.seizures24h > 3 ? `${ps.neuro.seizures24h} crises/24h`
         : ps.neuro.gcs <= 8 ? 'GCS critique'
         : 'Stable',
@@ -278,8 +278,8 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
         {t('Aucun patient actif', 'No active patients')}
       </h2>
       <p style={{ fontSize: '13px', color: 'var(--p-text-muted)', lineHeight: 1.6, marginBottom: '32px' }}>
-        Lancez l&apos;analyse intelligente pour un nouveau patient â
-        {t('diagnostic diffÃ©rentiel, red flags et parcours clinique en', 'differential diagnosis, red flags and clinical pathway in')} {t('temps rÃ©el.', 'real time.')}
+        Lancez l&apos;analyse intelligente pour un nouveau patient ·
+        {t('diagnostic différentiel, red flags et parcours clinique en', 'differential diagnosis, red flags and clinical pathway in')} {t('temps réel.', 'real time.')}
       </p>
 
       <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', alignItems: 'center' }}>
@@ -383,14 +383,14 @@ export default function FileActivePage() {
             name: p.display_name,
             age: `${Math.floor(p.age_months / 12)} ans`,
             sex: p.sex,
-            syndrome: p.syndrome || 'En Ã©valuation',
+            syndrome: p.syndrome || 'En évaluation',
             hospDay: p.hosp_day,
-            room: p.room || 'Non assignÃ©',
+            room: p.room || 'Non assigné',
             vps,
             gcs: ps.neuro.gcs,
             critAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
             phase: detectPhase(p.hosp_day, vps),
-            lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status rÃ©fractaire en cours'
+            lastEvent: ps.neuro.seizureType.includes('refractory') ? 'Status réfractaire en cours'
               : ps.neuro.seizures24h > 3 ? `${ps.neuro.seizures24h} crises/24h`
               : ps.neuro.gcs <= 8 ? 'GCS critique'
               : 'Admis via Analyse Intelligente',
@@ -623,14 +623,14 @@ export default function FileActivePage() {
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
               <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>
-                Mode dÃ©mo actif â {demoPatients.length} cas fictifs
+                Mode démo actif · {demoPatients.length} cas fictifs
               </span>
               <button onClick={() => setShowDemo(false)} style={{
                 padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
                 background: 'rgba(108,124,255,0.08)', border: '1px solid rgba(108,124,255,0.15)',
                 cursor: 'pointer', fontFamily: 'var(--p-font-mono)', fontSize: '9px',
                 color: '#6C7CFF', fontWeight: 600,
-              }}>{t(t('Masquer la dÃ©mo', 'Hide demo'), 'Hide demo')}</button>
+              }}>{t(t('Masquer la démo', 'Hide demo'), 'Hide demo')}</button>
             </div>
           )}
         </div>
