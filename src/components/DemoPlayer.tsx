@@ -1,4 +1,56 @@
 'use client'
+
+// Animation CSS injected once
+if (typeof document !== 'undefined' && !document.getElementById('pulsar-illus-anim')) {
+  const style = document.createElement('style')
+  style.id = 'pulsar-illus-anim'
+  style.textContent = `
+    @keyframes pulsarKenBurns {
+      0%   { transform: scale(1.00) translate(0%, 0%); }
+      25%  { transform: scale(1.04) translate(-1%, -0.5%); }
+      50%  { transform: scale(1.07) translate(0.5%, -1%); }
+      75%  { transform: scale(1.04) translate(1%, 0.5%); }
+      100% { transform: scale(1.00) translate(0%, 0%); }
+    }
+    @keyframes pulsarFadeIn {
+      0%   { opacity: 0; transform: scale(0.98) translateY(6px); }
+      100% { opacity: 1; transform: scale(1) translateY(0px); }
+    }
+    @keyframes pulsarGlow {
+      0%,100% { box-shadow: 0 0 0px rgba(108,124,255,0); }
+      50%      { box-shadow: 0 0 24px rgba(108,124,255,0.18), 0 0 48px rgba(108,124,255,0.08); }
+    }
+    @keyframes pulsarScanLine {
+      0%   { top: 0%; opacity: 0.6; }
+      90%  { top: 100%; opacity: 0.1; }
+      100% { top: 100%; opacity: 0; }
+    }
+    .pulsar-illus-wrap {
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      animation: pulsarFadeIn 0.6s ease-out both, pulsarGlow 4s ease-in-out infinite;
+    }
+    .pulsar-illus-wrap img {
+      display: block;
+      width: 100%;
+      transform-origin: center center;
+      animation: pulsarKenBurns 18s ease-in-out infinite;
+      will-change: transform;
+    }
+    .pulsar-illus-wrap::after {
+      content: '';
+      position: absolute;
+      left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(108,124,255,0.5), rgba(47,209,200,0.5), transparent);
+      animation: pulsarScanLine 3.5s linear infinite;
+      pointer-events: none;
+    }
+  `
+  document.head.appendChild(style)
+}
+
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 
 // ═══════════════════════════════════════════════════════════════════
@@ -396,7 +448,9 @@ function ScreenBrain() {
       <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
         {/* Brain illustration */}
         <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,107,53,0.2)', background: 'rgba(0,0,0,0.3)' }}>
-          <img src="/assets/illustrations/PULSAR_BRAIN_NORMAL_VS_FIRES.png" alt="Cerveau FIRES" style={{ width: '100%', display: 'block', opacity: 0.92 }} />
+          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(108,124,255,0.2)' }}>
+            <img src="/assets/illustrations/PULSAR_BRAIN_NORMAL_VS_FIRES.png" alt="Cerveau FIRES" />
+          </div>
           <div style={{ position: 'absolute', top: 8, left: 8, padding: '3px 9px', borderRadius: 5, background: 'rgba(0,0,0,0.75)', border: '1px solid rgba(255,107,53,0.3)', fontSize: 8, fontWeight: 800, color: '#FF6B35', fontFamily: 'monospace' }}>PULSAR NEUROCORE · FIRES J+4</div>
         </div>
         {/* Heatmap zones */}
@@ -527,8 +581,8 @@ function ScreenIRM() {
       </div>
       <div style={{ flex: 1, padding: 12, overflow: "auto", display: "flex", flexDirection: "column", gap: 10 }}>
         {/* BBB illustration */}
-        <div style={{ borderRadius: 10, overflow: "hidden", border: "1px solid rgba(47,209,200,0.2)" }}>
-          <img src="/assets/illustrations/PULSAR_BBB_FIRES_detailed.png" alt="Barrière hémato-encéphalique" style={{ width: "100%", display: "block", opacity: 0.9 }} />
+        <div className="pulsar-illus-wrap" style={{ border: "1px solid rgba(47,209,200,0.25)" }}>
+          <img src="/assets/illustrations/PULSAR_IRM_FIRES.png" alt="IRM cérébrale FIRES — 4 séquences" />
         </div>
         {/* Brain zones heatmap */}
         <div style={{ padding: "10px 12px", background: "rgba(47,209,200,0.06)", borderRadius: 9, border: "1px solid rgba(47,209,200,0.15)" }}>
@@ -568,7 +622,9 @@ function ScreenTimeline() {
       <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>Le moteur DDD reconstruit chaque heure. Chaque délai évitable est identifié.</div>
         <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(239,68,68,0.2)' }}>
-          <img src="/assets/illustrations/PULSAR_FIRES_TIMELINE.png" alt="Timeline FIRES" style={{ width: '100%', display: 'block', opacity: 0.93 }} />
+          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(239,68,68,0.2)' }}>
+            <img src="/assets/illustrations/PULSAR_FIRES_TIMELINE.png" alt="Timeline FIRES" />
+          </div>
         </div>
         <div style={{ padding: '10px 12px', background: 'rgba(239,68,68,0.06)', borderRadius: 9, border: '1px solid rgba(239,68,68,0.15)' }}>
           <div style={{ fontSize: 9, fontWeight: 800, color: '#EF4444', marginBottom: 6 }}>3 FENÊTRES THÉRAPEUTIQUES MANQUÉES</div>
@@ -593,7 +649,9 @@ function ScreenNeuron() {
       </div>
       <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(185,107,255,0.2)' }}>
-          <img src="/assets/illustrations/PULSAR_NEURON_FIRES.png" alt="Neurones FIRES" style={{ width: '100%', display: 'block', opacity: 0.93 }} />
+          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(108,124,255,0.2)' }}>
+            <img src="/assets/illustrations/PULSAR_NEURON_FIRES.png" alt="Neurones FIRES" />
+          </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
           {[
@@ -623,7 +681,9 @@ function ScreenAnakinra() {
       </div>
       <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(16,185,129,0.2)' }}>
-          <img src="/assets/illustrations/PULSAR_ANAKINRA_MECHANISM.png" alt="Mécanisme Anakinra" style={{ width: '100%', display: 'block', opacity: 0.93 }} />
+          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
+            <img src="/assets/illustrations/PULSAR_ANAKINRA_MECHANISM.png" alt="Mécanisme Anakinra" />
+          </div>
         </div>
         <div style={{ padding: '10px 12px', background: 'rgba(16,185,129,0.07)', borderRadius: 9, border: '1px solid rgba(16,185,129,0.18)' }}>
           <div style={{ fontSize: 10, fontWeight: 800, color: '#10B981', marginBottom: 6 }}>PULSAR RECOMMANDE · Anakinra · Score 94</div>
@@ -646,7 +706,12 @@ function ScreenGutBrain() {
       </div>
       <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(47,209,200,0.2)' }}>
-          <img src="/assets/illustrations/PULSAR_GUT_BRAIN_AXIS.png" alt="Axe intestin-cerveau" style={{ width: '100%', display: 'block', opacity: 0.93 }} />
+          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(47,209,200,0.2)' }}>
+            <img src="/assets/illustrations/PULSAR_GUT_BRAIN_AXIS.png" alt="Axe intestin-cerveau" />
+          </div>
+          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(255,107,53,0.25)', marginTop: 8 }}>
+            <img src="/assets/illustrations/PULSAR_INTESTINAL_BARRIER.png" alt="Barrière intestinale — Leaky Gut FIRES" />
+          </div>
         </div>
         <div style={{ padding: '10px 12px', background: 'rgba(47,209,200,0.06)', borderRadius: 9, border: '1px solid rgba(47,209,200,0.15)' }}>
           <div style={{ fontSize: 9, fontWeight: 800, color: '#2FD1C8', marginBottom: 5 }}>HYPOTHÈSE DISCOVERY ENGINE L3</div>

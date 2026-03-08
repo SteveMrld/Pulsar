@@ -1,0 +1,414 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="40%"><stop offset="0%" stop-color="#07111A"/><stop offset="100%" stop-color="#04070F"/></radialGradient>
+  <linearGradient id="mucosaGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#8B4513" stop-opacity="0.5"/><stop offset="100%" stop-color="#5C2D0A" stop-opacity="0.3"/></linearGradient>
+  <linearGradient id="epithelGrad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#C47A3A" stop-opacity="0.8"/><stop offset="100%" stop-color="#8B4513" stop-opacity="0.6"/></linearGradient>
+  <radialGradient id="leakRed" cx="50%" cy="50%"><stop offset="0%" stop-color="#FF2222" stop-opacity="0.9"/><stop offset="50%" stop-color="#FF4444" stop-opacity="0.4"/><stop offset="100%" stop-color="#FF0000" stop-opacity="0"/></radialGradient>
+  <radialGradient id="bacteriaG" cx="40%" cy="35%"><stop offset="0%" stop-color="#4ADE80"/><stop offset="100%" stop-color="#16A34A"/></radialGradient>
+  <radialGradient id="bacteriaR" cx="40%" cy="35%"><stop offset="0%" stop-color="#FF6B6B"/><stop offset="100%" stop-color="#DC2626"/></radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="softg"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="leak"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#EF4444" opacity="0.9"/></marker>
+  <marker id="arrO" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#FF6B35"/></marker>
+  <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#10B981"/></marker>
+</defs>
+
+<rect width="1400" height="900" fill="url(#bg)"/>
+
+<!-- Header -->
+<text x="50" y="48" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#FF6B35" letter-spacing="3" opacity="0.75">PULSAR · DISCOVERY ENGINE L3 · HYPOTHÈSE TRANSLATIONNELLE</text>
+<text x="50" y="80" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">Barrière Intestinale — Porosité &amp; Dysbiose FIRES</text>
+<text x="50" y="108" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">Jonctions serrées · Leaky Gut · LPS · Passage systémique · Activation immune J−7</text>
+
+<!-- ═══ LEFT PANEL: HEALTHY BARRIER ═══ -->
+<text x="240" y="148" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="rgba(16,185,129,0.85)" letter-spacing="2">BARRIÈRE SAINE</text>
+<text x="240" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">Jonctions serrées intactes · Imperméable</text>
+
+<!-- Lumen label (left) -->
+<text x="240" y="205" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(139,69,19,0.6)" letter-spacing="2">LUMEN INTESTINAL</text>
+
+<!-- Mucus layer (healthy, thick) -->
+<rect x="50" y="210" width="380" height="55" rx="4" fill="rgba(139,100,30,0.15)" stroke="rgba(180,130,40,0.3)" stroke-width="1.5"/>
+<text x="58" y="228" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(180,130,40,0.6)">COUCHE MUQUEUSE — épaisse · protectrice</text>
+<!-- Mucin strands -->
+<g stroke="rgba(200,160,60,0.3)" stroke-width="2" fill="none">
+  <path d="M60,245 Q100,238 140,246 Q180,254 220,246 Q260,238 300,246 Q340,254 380,246 Q410,238 430,245"/>
+  <path d="M60,252 Q110,244 155,252 Q200,260 245,252 Q290,244 335,252 Q370,258 430,252"/>
+</g>
+
+<!-- Bacteria in lumen (left, healthy balance) -->
+<!-- Good bacteria (commensals) -->
+<g filter="url(#softg)">
+  <ellipse cx="90" cy="230" rx="16" ry="8" fill="url(#bacteriaG)" opacity="0.85" transform="rotate(25,90,230)"/>
+  <ellipse cx="145" cy="222" rx="14" ry="7" fill="url(#bacteriaG)" opacity="0.8" transform="rotate(-15,145,222)"/>
+  <ellipse cx="200" cy="232" rx="15" ry="7.5" fill="url(#bacteriaG)" opacity="0.85" transform="rotate(10,200,232)"/>
+  <ellipse cx="265" cy="220" rx="15" ry="7" fill="url(#bacteriaG)" opacity="0.8" transform="rotate(-20,265,220)"/>
+  <ellipse cx="320" cy="228" rx="14" ry="7" fill="url(#bacteriaG)" opacity="0.75" transform="rotate(15,320,228)"/>
+  <ellipse cx="380" cy="222" rx="13" ry="6.5" fill="url(#bacteriaG)" opacity="0.8" transform="rotate(-10,380,222)"/>
+</g>
+<!-- Small pathogen (minor) -->
+<circle cx="232" cy="235" r="7" fill="rgba(239,68,68,0.4)" stroke="rgba(239,68,68,0.6)" stroke-width="1.2"/>
+
+<!-- EPITHELIAL CELLS (healthy, left) - 7 cells -->
+<g>
+  <!-- Cell row -->
+  <rect x="50" y="265" width="55" height="80" rx="4" fill="url(#epithelGrad)" stroke="rgba(200,120,50,0.6)" stroke-width="2"/>
+  <rect x="108" y="262" width="55" height="83" rx="4" fill="url(#epithelGrad)" stroke="rgba(200,120,50,0.6)" stroke-width="2"/>
+  <rect x="166" y="265" width="55" height="80" rx="4" fill="url(#epithelGrad)" stroke="rgba(200,120,50,0.6)" stroke-width="2"/>
+  <rect x="224" y="262" width="55" height="83" rx="4" fill="url(#epithelGrad)" stroke="rgba(200,120,50,0.6)" stroke-width="2"/>
+  <rect x="282" y="265" width="55" height="80" rx="4" fill="url(#epithelGrad)" stroke="rgba(200,120,50,0.6)" stroke-width="2"/>
+  <rect x="340" y="262" width="55" height="83" rx="4" fill="url(#epithelGrad)" stroke="rgba(200,120,50,0.6)" stroke-width="2"/>
+  <rect x="398" y="265" width="30" height="80" rx="4" fill="url(#epithelGrad)" stroke="rgba(200,120,50,0.6)" stroke-width="2"/>
+  
+  <!-- Nuclei -->
+  <ellipse cx="77" cy="310" rx="14" ry="10" fill="rgba(100,40,10,0.55)" stroke="rgba(150,80,30,0.5)" stroke-width="1.5"/>
+  <ellipse cx="135" cy="308" rx="14" ry="10" fill="rgba(100,40,10,0.55)" stroke="rgba(150,80,30,0.5)" stroke-width="1.5"/>
+  <ellipse cx="193" cy="310" rx="14" ry="10" fill="rgba(100,40,10,0.55)" stroke="rgba(150,80,30,0.5)" stroke-width="1.5"/>
+  <ellipse cx="251" cy="308" rx="14" ry="10" fill="rgba(100,40,10,0.55)" stroke="rgba(150,80,30,0.5)" stroke-width="1.5"/>
+  <ellipse cx="309" cy="310" rx="14" ry="10" fill="rgba(100,40,10,0.55)" stroke="rgba(150,80,30,0.5)" stroke-width="1.5"/>
+  <ellipse cx="367" cy="308" rx="14" ry="10" fill="rgba(100,40,10,0.55)" stroke="rgba(150,80,30,0.5)" stroke-width="1.5"/>
+
+  <!-- TIGHT JUNCTIONS (healthy = solid, thick) -->
+  <g stroke="#10B981" stroke-width="4" stroke-linecap="round">
+    <line x1="105" y1="265" x2="105" y2="345"/>
+    <line x1="163" y1="262" x2="163" y2="348"/>
+    <line x1="221" y1="265" x2="221" y2="345"/>
+    <line x1="279" y1="262" x2="279" y2="348"/>
+    <line x1="337" y1="265" x2="337" y2="345"/>
+    <line x1="395" y1="262" x2="395" y2="348"/>
+  </g>
+  <!-- TJ protein dots -->
+  <g fill="#10B981" opacity="0.9">
+    <circle cx="105" cy="278" r="5"/><circle cx="105" cy="298" r="5"/><circle cx="105" cy="318" r="5"/><circle cx="105" cy="338" r="5"/>
+    <circle cx="163" cy="275" r="5"/><circle cx="163" cy="295" r="5"/><circle cx="163" cy="315" r="5"/><circle cx="163" cy="335" r="5"/>
+    <circle cx="221" cy="278" r="5"/><circle cx="221" cy="298" r="5"/><circle cx="221" cy="318" r="5"/><circle cx="221" cy="338" r="5"/>
+    <circle cx="279" cy="275" r="5"/><circle cx="279" cy="295" r="5"/><circle cx="279" cy="315" r="5"/><circle cx="279" cy="335" r="5"/>
+    <circle cx="337" cy="278" r="5"/><circle cx="337" cy="298" r="5"/><circle cx="337" cy="318" r="5"/><circle cx="337" cy="338" r="5"/>
+  </g>
+  <!-- TJ protein labels -->
+  <text x="105" y="360" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.7)">ZO-1</text>
+  <text x="163" y="363" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.7)">CLDN-5</text>
+  <text x="221" y="360" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.7)">OCLN</text>
+  <text x="279" y="363" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.7)">ZO-1</text>
+  <text x="337" y="360" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.7)">CLDN-5</text>
+
+  <!-- Microvilli (brush border) on top -->
+  <g stroke="rgba(220,140,60,0.7)" stroke-width="1.5">
+    <line x1="60" y1="265" x2="58" y2="252"/><line x1="65" y1="265" x2="63" y2="252"/><line x1="70" y1="265" x2="68" y2="252"/><line x1="75" y1="265" x2="73" y2="252"/><line x1="80" y1="265" x2="78" y2="252"/><line x1="85" y1="265" x2="83" y2="252"/><line x1="90" y1="265" x2="88" y2="252"/><line x1="95" y1="265" x2="93" y2="252"/><line x1="100" y1="265" x2="98" y2="252"/>
+    <line x1="115" y1="262" x2="113" y2="249"/><line x1="121" y1="262" x2="119" y2="249"/><line x1="127" y1="262" x2="125" y2="249"/><line x1="133" y1="262" x2="131" y2="249"/><line x1="139" y1="262" x2="137" y2="249"/><line x1="145" y1="262" x2="143" y2="249"/><line x1="151" y1="262" x2="149" y2="249"/><line x1="157" y1="262" x2="155" y2="249"/>
+    <line x1="173" y1="265" x2="171" y2="252"/><line x1="179" y1="265" x2="177" y2="252"/><line x1="185" y1="265" x2="183" y2="252"/><line x1="191" y1="265" x2="189" y2="252"/><line x1="197" y1="265" x2="195" y2="252"/><line x1="203" y1="265" x2="201" y2="252"/><line x1="209" y1="265" x2="207" y2="252"/><line x1="215" y1="265" x2="213" y2="252"/>
+    <line x1="231" y1="262" x2="229" y2="249"/><line x1="237" y1="262" x2="235" y2="249"/><line x1="243" y1="262" x2="241" y2="249"/><line x1="249" y1="262" x2="247" y2="249"/><line x1="255" y1="262" x2="253" y2="249"/><line x1="261" y1="262" x2="259" y2="249"/><line x1="267" y1="262" x2="265" y2="249"/><line x1="273" y1="262" x2="271" y2="249"/>
+  </g>
+</g>
+
+<!-- Submucosa (healthy) -->
+<rect x="50" y="345" width="380" height="90" rx="0" fill="rgba(139,92,246,0.05)" stroke="rgba(139,92,246,0.12)" stroke-width="1"/>
+<text x="240" y="362" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(139,92,246,0.45)">LAMINA PROPRIA — SOUS-MUQUEUSE</text>
+<!-- Immune cells (quiescent) -->
+<circle cx="120" cy="390" r="12" fill="rgba(16,185,129,0.2)" stroke="rgba(16,185,129,0.4)" stroke-width="1.5"/>
+<text x="120" y="394" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.8)">Treg</text>
+<circle cx="200" cy="385" r="11" fill="rgba(108,124,255,0.2)" stroke="rgba(108,124,255,0.4)" stroke-width="1.5"/>
+<text x="200" y="389" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(108,124,255,0.8)">IgA</text>
+<circle cx="285" cy="392" r="12" fill="rgba(47,209,200,0.2)" stroke="rgba(47,209,200,0.4)" stroke-width="1.5"/>
+<text x="285" y="396" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(47,209,200,0.8)">DC</text>
+<circle cx="365" cy="386" r="11" fill="rgba(16,185,129,0.18)" stroke="rgba(16,185,129,0.35)" stroke-width="1.5"/>
+<text x="365" y="390" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(16,185,129,0.7)">M2φ</text>
+
+<!-- Healthy status card -->
+<rect x="50" y="445" width="380" height="75" rx="10" fill="rgba(16,185,129,0.06)" stroke="rgba(16,185,129,0.3)" stroke-width="1.5"/>
+<text x="240" y="467" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#10B981">✓ BARRIÈRE INTACTE</text>
+<text x="240" y="485" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.55)">Claudine-5: 100% · ZO-1: 100% · Occludine: 100%</text>
+<text x="240" y="501" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.55)">Perméabilité: Normale · LPS sanguin: &lt;0.05 EU/mL</text>
+<text x="240" y="513" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.5)">Microbiome équilibré · Firmicutes/Bacteroidetes 1:1</text>
+
+<!-- ═══ DIVIDER ═══ -->
+<line x1="470" y1="135" x2="470" y2="860" stroke="rgba(255,255,255,0.06)" stroke-width="1.5"/>
+<text x="470" y="800" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" fill="rgba(255,255,255,0.08)" transform="rotate(-90,470,800)" letter-spacing="4">VS</text>
+
+<!-- ═══ RIGHT PANEL: LEAKY GUT (FIRES J-7) ═══ -->
+<text x="980" y="148" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="rgba(239,68,68,0.85)" letter-spacing="2">LEAKY GUT — FIRES J−7</text>
+<text x="980" y="165" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">Dysbiose sévère · Jonctions compromises · Porosité ↑↑</text>
+
+<text x="980" y="205" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(200,80,30,0.6)" letter-spacing="2">LUMEN INTESTINAL — DYSBIOSE</text>
+
+<!-- Mucus layer (depleted, patchy) -->
+<rect x="490" y="210" width="980" height="35" rx="4" fill="rgba(139,50,10,0.08)" stroke="rgba(180,80,20,0.2)" stroke-width="1" stroke-dasharray="8,5"/>
+<text x="502" y="228" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(200,80,20,0.5)">COUCHE MUQUEUSE — APPAUVRIE −65% · Protection réduite</text>
+<!-- Depleted mucus spots -->
+<g stroke="rgba(160,80,20,0.2)" stroke-width="1.5" fill="none">
+  <path d="M500,235 Q560,230 600,235 Q620,237 640,233"/>
+  <path d="M700,238 Q760,233 800,238"/>
+  <path d="M920,234 Q980,229 1020,234 Q1050,237 1080,233"/>
+</g>
+
+<!-- DYSBIOSIS bacteria cloud -->
+<!-- Massive pathogen overgrowth -->
+<g filter="url(#softg)">
+  <!-- Pathogenic rods (E.coli-like) -->
+  <ellipse cx="540" cy="222" rx="20" ry="9" fill="url(#bacteriaR)" opacity="0.9" transform="rotate(15,540,222)"/>
+  <path d="M522,218 Q520,210 518,205" fill="none" stroke="rgba(239,68,68,0.5)" stroke-width="1.5"/>
+  <path d="M558,226 Q560,232 562,237" fill="none" stroke="rgba(239,68,68,0.4)" stroke-width="1.5"/>
+  <ellipse cx="610" cy="218" rx="18" ry="8" fill="url(#bacteriaR)" opacity="0.85" transform="rotate(-20,610,218)"/>
+  <ellipse cx="680" cy="225" rx="19" ry="9" fill="url(#bacteriaR)" opacity="0.9" transform="rotate(10,680,225)"/>
+  <path d="M662,221 Q658,213 655,207" fill="none" stroke="rgba(239,68,68,0.5)" stroke-width="1.5"/>
+  <path d="M698,229 Q702,235 705,240" fill="none" stroke="rgba(239,68,68,0.4)" stroke-width="1.5"/>
+  <ellipse cx="755" cy="218" rx="20" ry="9" fill="url(#bacteriaR)" opacity="0.88" transform="rotate(-15,755,218)"/>
+  <ellipse cx="840" cy="223" rx="18" ry="8" fill="url(#bacteriaR)" opacity="0.85" transform="rotate(20,840,223)"/>
+  <ellipse cx="920" cy="217" rx="19" ry="9" fill="url(#bacteriaR)" opacity="0.9" transform="rotate(-10,920,217)"/>
+  <ellipse cx="1000" cy="225" rx="17" ry="8" fill="url(#bacteriaR)" opacity="0.82" transform="rotate(25,1000,225)"/>
+  <ellipse cx="1080" cy="220" rx="20" ry="9" fill="url(#bacteriaR)" opacity="0.87" transform="rotate(-18,1080,220)"/>
+  <ellipse cx="1160" cy="224" rx="18" ry="8" fill="url(#bacteriaR)" opacity="0.84" transform="rotate(12,1160,224)"/>
+  <ellipse cx="1250" cy="218" rx="19" ry="8.5" fill="url(#bacteriaR)" opacity="0.88" transform="rotate(-22,1250,218)"/>
+  <ellipse cx="1340" cy="222" rx="16" ry="7.5" fill="url(#bacteriaR)" opacity="0.8" transform="rotate(8,1340,222)"/>
+  
+  <!-- Remaining healthy bacteria (minority) -->
+  <ellipse cx="580" cy="232" rx="11" ry="6" fill="url(#bacteriaG)" opacity="0.5" transform="rotate(-8,580,232)"/>
+  <ellipse cx="880" cy="229" rx="10" ry="5.5" fill="url(#bacteriaG)" opacity="0.45" transform="rotate(12,880,229)"/>
+  <ellipse cx="1200" cy="230" rx="11" ry="5.5" fill="url(#bacteriaG)" opacity="0.4" transform="rotate(-6,1200,230)"/>
+  
+  <!-- LPS particles (yellow hexagons floating) -->
+  <polygon points="720,215 727,211 734,215 734,222 727,226 720,222" fill="rgba(255,179,71,0.5)" stroke="#FFB347" stroke-width="1"/>
+  <polygon points="1020,212 1027,208 1034,212 1034,219 1027,223 1020,219" fill="rgba(255,179,71,0.5)" stroke="#FFB347" stroke-width="1"/>
+  <polygon points="830,212 836,208 842,212 842,219 836,223 830,219" fill="rgba(255,179,71,0.45)" stroke="#FFB347" stroke-width="1"/>
+  <polygon points="1310,214 1316,210 1322,214 1322,221 1316,225 1310,221" fill="rgba(255,179,71,0.45)" stroke="#FFB347" stroke-width="1"/>
+</g>
+<text x="1380" y="228" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(255,179,71,0.7)">LPS ↑↑</text>
+
+<!-- EPITHELIAL CELLS (compromised, right) -->
+<!-- 10 cells with GAPs between some -->
+<g>
+  <!-- Cell 1 normal-ish -->
+  <rect x="492" y="262" width="62" height="80" rx="4" fill="rgba(180,80,30,0.35)" stroke="rgba(200,100,40,0.45)" stroke-width="1.5"/>
+  <ellipse cx="523" cy="308" rx="13" ry="9" fill="rgba(120,50,15,0.5)" stroke="rgba(160,80,30,0.4)" stroke-width="1.2"/>
+  
+  <!-- TJ weakened between cell 1-2 -->
+  <line x1="556" y1="262" x2="556" y2="342" stroke="#FFB347" stroke-width="2" stroke-dasharray="4,3"/>
+  <circle cx="556" cy="275" r="3.5" fill="#FFB347" opacity="0.7"/><circle cx="556" cy="295" r="3" fill="#FFB347" opacity="0.5"/><circle cx="556" cy="315" r="3.5" fill="#FFB347" opacity="0.6"/>
+
+  <!-- Cell 2 swollen -->
+  <rect x="558" y="258" width="65" height="88" rx="4" fill="rgba(200,80,25,0.4)" stroke="rgba(239,68,68,0.5)" stroke-width="2" filter="url(#softg)"/>
+  <ellipse cx="590" cy="307" rx="14" ry="10" fill="rgba(150,30,10,0.55)" stroke="rgba(200,60,20,0.4)" stroke-width="1.5"/>
+  <!-- NF-kB in nucleus -->
+  <text x="590" y="311" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="rgba(239,68,68,0.9)">NFκB↑</text>
+
+  <!-- GAP 1 (open junction - red zone) -->
+  <rect x="625" y="250" width="45" height="110" rx="4" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.6)" stroke-width="2" stroke-dasharray="5,3" filter="url(#leak)"/>
+  <text x="647" y="285" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EF4444">GAP</text>
+  <text x="647" y="298" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.7)">TJ ↓↓</text>
+  <!-- Leaking molecules through gap 1 -->
+  <!-- LPS leaking down -->
+  <g filter="url(#softg)">
+    <polygon points="647,318 654,310 661,318 658,330 647,330 636,330 636,318" fill="rgba(255,179,71,0.5)" stroke="#FFB347" stroke-width="1.5"/>
+    <text x="648" y="323" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#fff">LPS</text>
+    <line x1="648" y1="332" x2="648" y2="365" stroke="#FFB347" stroke-width="2.5" stroke-dasharray="4,3" marker-end="url(#arrO)"/>
+  </g>
+  <!-- IL-1β leaking -->
+  <g transform="translate(630,305)" filter="url(#softg)">
+    <polygon points="0,-10 9,-4 9,6 0,12 -9,6 -9,-4" fill="rgba(239,68,68,0.4)" stroke="#EF4444" stroke-width="1.5"/>
+    <text x="0" y="3" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="#fff">IL-1β</text>
+  </g>
+  <line x1="630" y1="320" x2="620" y2="360" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrR)" opacity="0.7"/>
+
+  <!-- Cell 3 (apoptotic) -->
+  <rect x="672" y="262" width="58" height="80" rx="4" fill="rgba(150,50,20,0.3)" stroke="rgba(180,60,20,0.4)" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <ellipse cx="701" cy="305" rx="12" ry="8" fill="rgba(100,30,10,0.45)"/>
+  <text x="701" y="272" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.6)">Apoptose</text>
+  <!-- Apoptotic fragments -->
+  <circle cx="688" cy="290" r="5" fill="rgba(200,80,30,0.3)" stroke="rgba(200,80,30,0.5)" stroke-width="1"/>
+  <circle cx="712" cy="318" r="4" fill="rgba(200,80,30,0.25)"/>
+
+  <!-- TJ damaged between 3-4 -->
+  <line x1="732" y1="262" x2="732" y2="342" stroke="rgba(239,68,68,0.4)" stroke-width="1.5" stroke-dasharray="3,4"/>
+  <text x="732" y="260" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.5)">↓</text>
+
+  <!-- Cell 4 -->
+  <rect x="734" y="265" width="60" height="77" rx="4" fill="rgba(180,80,30,0.32)" stroke="rgba(200,100,40,0.42)" stroke-width="1.5"/>
+  <ellipse cx="764" cy="308" rx="13" ry="9" fill="rgba(110,45,12,0.5)"/>
+
+  <!-- GAP 2 (large, main breach) -->
+  <rect x="796" y="248" width="58" height="116" rx="4" fill="rgba(239,68,68,0.2)" stroke="rgba(239,68,68,0.7)" stroke-width="2.5" stroke-dasharray="5,3" filter="url(#leak)"/>
+  <text x="825" y="278" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="900" fill="#EF4444">GAP</text>
+  <text x="825" y="292" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.8)">MAJEUR</text>
+  <!-- Multiple molecules leaking through gap 2 -->
+  <g filter="url(#softg)">
+    <!-- Bacterium translocating! -->
+    <ellipse cx="825" cy="318" rx="15" ry="7" fill="url(#bacteriaR)" opacity="0.9" transform="rotate(-5,825,318)"/>
+    <path d="M835,315 Q838,308 840,302" fill="none" stroke="rgba(239,68,68,0.5)" stroke-width="1.2"/>
+    <line x1="825" y1="325" x2="825" y2="368" stroke="rgba(239,68,68,0.7)" stroke-width="2.5" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+    <text x="845" y="348" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(239,68,68,0.8)">Transloc.</text>
+    <!-- LPS2 -->
+    <polygon points="808,310 815,306 822,310 822,317 815,321 808,317" fill="rgba(255,179,71,0.6)" stroke="#FFB347" stroke-width="1.5"/>
+    <line x1="815" y1="323" x2="810" y2="365" stroke="#FFB347" stroke-width="2" stroke-dasharray="3,3" marker-end="url(#arrO)"/>
+  </g>
+
+  <!-- Cells 5-8 (right portion) -->
+  <rect x="856" y="265" width="58" height="77" rx="4" fill="rgba(180,80,30,0.32)" stroke="rgba(200,100,40,0.42)" stroke-width="1.5"/>
+  <ellipse cx="885" cy="308" rx="13" ry="9" fill="rgba(110,45,12,0.5)"/>
+  <line x1="916" y1="265" x2="916" y2="342" stroke="#FFB347" stroke-width="2" stroke-dasharray="4,3"/>
+  <circle cx="916" cy="280" r="3.5" fill="#FFB347" opacity="0.6"/><circle cx="916" cy="300" r="3" fill="#FFB347" opacity="0.45"/><circle cx="916" cy="320" r="3.5" fill="#FFB347" opacity="0.55"/>
+
+  <rect x="918" y="262" width="60" height="82" rx="4" fill="rgba(195,78,28,0.38)" stroke="rgba(220,90,35,0.5)" stroke-width="2" filter="url(#softg)"/>
+  <ellipse cx="948" cy="307" rx="13" ry="9" fill="rgba(130,40,10,0.5)"/>
+  <text x="948" y="311" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="5.5" fill="rgba(239,68,68,0.8)">NFκB↑</text>
+
+  <!-- GAP 3 (small) -->
+  <rect x="980" y="255" width="38" height="105" rx="4" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.5)" stroke-width="1.8" stroke-dasharray="4,3" filter="url(#softg)"/>
+  <text x="999" y="288" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" font-weight="700" fill="rgba(239,68,68,0.8)">GAP</text>
+  <g transform="translate(999,310)" filter="url(#softg)">
+    <circle r="9" fill="rgba(255,179,71,0.4)" stroke="#FFB347" stroke-width="1.2"/>
+    <text x="0" y="3" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="#fff">LPS</text>
+  </g>
+  <line x1="999" y1="321" x2="999" y2="358" stroke="#FFB347" stroke-width="1.5" stroke-dasharray="3,3" marker-end="url(#arrO)"/>
+
+  <rect x="1020" y="265" width="58" height="77" rx="4" fill="rgba(180,80,30,0.28)" stroke="rgba(200,100,40,0.38)" stroke-width="1.5"/>
+  <ellipse cx="1049" cy="308" rx="13" ry="9" fill="rgba(100,40,12,0.45)"/>
+  <line x1="1080" y1="265" x2="1080" y2="342" stroke="#FFB347" stroke-width="2" stroke-dasharray="4,3"/>
+
+  <rect x="1082" y="265" width="60" height="77" rx="4" fill="rgba(180,80,30,0.3)" stroke="rgba(200,100,40,0.4)" stroke-width="1.5"/>
+  <ellipse cx="1112" cy="308" rx="13" ry="9" fill="rgba(110,44,12,0.48)"/>
+  <line x1="1144" y1="265" x2="1144" y2="342" stroke="rgba(16,185,129,0.5)" stroke-width="2.5"/>
+  <circle cx="1144" cy="278" r="4" fill="#10B981" opacity="0.6"/><circle cx="1144" cy="298" r="4" fill="#10B981" opacity="0.5"/><circle cx="1144" cy="318" r="4" fill="#10B981" opacity="0.55"/>
+
+  <rect x="1146" y="265" width="58" height="77" rx="4" fill="rgba(180,80,30,0.28)" stroke="rgba(200,100,40,0.38)" stroke-width="1.5"/>
+  <ellipse cx="1175" cy="308" rx="13" ry="9" fill="rgba(100,40,12,0.45)"/>
+  <line x1="1206" y1="265" x2="1206" y2="342" stroke="#FFB347" stroke-width="1.8" stroke-dasharray="4,3"/>
+
+  <rect x="1208" y="265" width="60" height="77" rx="4" fill="rgba(180,80,30,0.28)" stroke="rgba(200,100,40,0.38)" stroke-width="1.5"/>
+  <ellipse cx="1238" cy="308" rx="12" ry="8" fill="rgba(100,40,12,0.43)"/>
+  <line x1="1270" y1="265" x2="1270" y2="342" stroke="rgba(239,68,68,0.4)" stroke-width="1.5" stroke-dasharray="3,4"/>
+
+  <rect x="1272" y="265" width="96" height="77" rx="4" fill="rgba(180,80,30,0.25)" stroke="rgba(200,100,40,0.35)" stroke-width="1.5"/>
+  <ellipse cx="1320" cy="308" rx="14" ry="9" fill="rgba(100,40,12,0.4)"/>
+</g>
+
+<!-- Microvilli (right - reduced/absent in gaps) -->
+<g stroke="rgba(180,90,30,0.45)" stroke-width="1.2">
+  <line x1="500" y1="262" x2="498" y2="250"/><line x1="505" y1="262" x2="503" y2="250"/><line x1="510" y1="262" x2="508" y2="250"/><line x1="515" y1="262" x2="513" y2="250"/><line x1="520" y1="262" x2="518" y2="250"/><line x1="525" y1="262" x2="523" y2="250"/><line x1="530" y1="262" x2="528" y2="250"/><line x1="535" y1="262" x2="533" y2="250"/><line x1="540" y1="262" x2="538" y2="250"/>
+  <line x1="566" y1="258" x2="564" y2="246"/><line x1="572" y1="258" x2="570" y2="246"/><line x1="578" y1="258" x2="576" y2="246"/><line x1="584" y1="258" x2="582" y2="246"/><line x1="590" y1="258" x2="588" y2="246"/><line x1="596" y1="258" x2="594" y2="246"/><line x1="602" y1="258" x2="600" y2="246"/>
+  <!-- Gap 1 zone: sparse/absent microvilli -->
+  <!-- Cell 3 -->
+  <line x1="680" y1="262" x2="678" y2="252"/><line x1="686" y1="262" x2="684" y2="252"/><line x1="692" y1="262" x2="690" y2="252"/><line x1="698" y1="262" x2="696" y2="252"/><line x1="704" y1="262" x2="702" y2="252"/><line x1="710" y1="262" x2="708" y2="252"/><line x1="716" y1="262" x2="714" y2="252"/><line x1="722" y1="262" x2="720" y2="252"/>
+</g>
+
+<!-- Submucosa INFLAMED (right) -->
+<rect x="490" y="345" width="880" height="110" rx="0" fill="rgba(239,68,68,0.04)" stroke="rgba(239,68,68,0.1)" stroke-width="1"/>
+<text x="930" y="363" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.4)">LAMINA PROPRIA — INFLAMMATION ACTIVE</text>
+
+<!-- Activated immune cells / neutrophils / mast cells -->
+<g filter="url(#softg)">
+  <!-- M1 macrophage (activated) -->
+  <path d="M580,405 Q598,390 616,398 Q628,408 624,422 Q615,432 598,430 Q582,427 577,416 Z" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="600" y="414" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#fff">M1φ</text>
+  <text x="600" y="448" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(239,68,68,0.65)">IL-1β ↑↑</text>
+
+  <!-- Neutrophil -->
+  <ellipse cx="740" cy="408" rx="20" ry="14" fill="rgba(185,107,255,0.3)" stroke="#B96BFF" stroke-width="1.5"/>
+  <circle cx="730" cy="406" r="6" fill="rgba(109,40,217,0.4)" stroke="rgba(139,92,246,0.5)" stroke-width="1"/>
+  <circle cx="745" cy="404" r="5" fill="rgba(109,40,217,0.4)" stroke="rgba(139,92,246,0.5)" stroke-width="1"/>
+  <circle cx="755" cy="408" r="5" fill="rgba(109,40,217,0.4)" stroke="rgba(139,92,246,0.5)" stroke-width="1"/>
+  <text x="742" y="430" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(185,107,255,0.65)">Neutrophile</text>
+
+  <!-- Mast cell (degranulating) -->
+  <circle cx="890" cy="405" r="18" fill="rgba(255,107,53,0.25)" stroke="#FF6B35" stroke-width="1.5"/>
+  <circle cx="890" cy="405" r="10" fill="rgba(220,80,20,0.3)"/>
+  <!-- Granules releasing -->
+  <g fill="#FF6B35" opacity="0.7">
+    <circle cx="868" cy="388" r="4"/><circle cx="908" cy="388" r="3.5"/>
+    <circle cx="858" cy="405" r="3"/><circle cx="920" cy="406" r="4"/>
+    <circle cx="868" cy="422" r="3.5"/><circle cx="908" cy="422" r="3"/>
+  </g>
+  <text x="890" y="432" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(255,107,53,0.65)">Mastocyte ↑</text>
+
+  <!-- Th17 cell -->
+  <circle cx="1060" cy="408" r="14" fill="rgba(108,124,255,0.25)" stroke="#6C7CFF" stroke-width="1.5"/>
+  <ellipse cx="1060" cy="408" rx="7" ry="5" fill="rgba(79,70,229,0.45)"/>
+  <text x="1060" y="412" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#6C7CFF">Th17</text>
+  <text x="1060" y="430" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(108,124,255,0.65)">IL-17 ↑↑</text>
+</g>
+
+<!-- Leaky gut status card -->
+<rect x="490" y="470" width="880" height="85" rx="10" fill="rgba(239,68,68,0.07)" stroke="rgba(239,68,68,0.35)" stroke-width="2"/>
+<text x="930" y="492" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#EF4444">✗ BARRIÈRE COMPROMISE — LEAKY GUT FIRES J−7</text>
+<g font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.55)">
+  <text x="510" y="512">Claudine-5</text><text x="650" y="512" fill="#EF4444" font-weight="700">−72% ↓↓</text>
+  <text x="760" y="512">ZO-1</text><text x="830" y="512" fill="#EF4444" font-weight="700">−68% ↓↓</text>
+  <text x="930" y="512">Occludine</text><text x="1060" y="512" fill="#EF4444" font-weight="700">−55% ↓↓</text>
+  <text x="1170" y="512">LPS sanguin</text><text x="1310" y="512" fill="#EF4444" font-weight="700">+420% ↑↑</text>
+</g>
+<text x="930" y="535" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.5)">3 brèches actives · Translocation bactérienne · IL-1β systémique · Activation microgliale J0</text>
+<text x="930" y="549" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.6)">Firmicutes −58% · Bacteroidetes +240% · Diversité −45% · DÉTECTÉ PAR PULSAR J−7</text>
+
+<!-- ═══ SYSTEMIC CONSEQUENCE PANEL ═══ -->
+<rect x="50" y="575" width="1310" height="170" rx="14" fill="rgba(8,12,28,0.92)" stroke="rgba(255,107,53,0.3)" stroke-width="2"/>
+<text x="705" y="600" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#FF6B35" letter-spacing="2">CASCADE SYSTÉMIQUE — LEAKY GUT → NEUROINFLAMMATION</text>
+<line x1="65" y1="610" x2="1345" y2="610" stroke="rgba(255,107,53,0.15)" stroke-width="1"/>
+
+<!-- Flow diagram: Gut → Blood → BBB → Brain -->
+<!-- Step 1 -->
+<rect x="70" y="622" width="175" height="110" rx="10" fill="rgba(139,69,19,0.15)" stroke="rgba(200,100,40,0.35)" stroke-width="1.5"/>
+<text x="157" y="645" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(200,120,40,0.9)">① LEAKY GUT</text>
+<text x="157" y="663" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.55)">LPS + Bactéries</text>
+<text x="157" y="679" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.55)">traversent muqueuse</text>
+<text x="157" y="695" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.65)">J−7 · Signal précoce</text>
+<text x="157" y="720" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,179,71,0.7)">LPS ×420%</text>
+
+<!-- Arrow 1→2 -->
+<line x1="248" y1="677" x2="295" y2="677" stroke="rgba(255,107,53,0.7)" stroke-width="3" marker-end="url(#arrO)"/>
+
+<!-- Step 2 -->
+<rect x="298" y="622" width="180" height="110" rx="10" fill="rgba(220,38,38,0.1)" stroke="rgba(239,68,68,0.3)" stroke-width="1.5"/>
+<text x="388" y="645" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(239,68,68,0.9)">② CIRCULATION</text>
+<text x="388" y="663" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.55)">LPS + IL-1β + TNF-α</text>
+<text x="388" y="679" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.55)">systémiques</text>
+<text x="388" y="695" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.65)">Endotoxémie sub-clinique</text>
+<text x="388" y="720" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,179,71,0.7)">CRP légère ↑ · J−7</text>
+
+<!-- Arrow 2→3 -->
+<line x1="480" y1="677" x2="527" y2="677" stroke="rgba(255,107,53,0.7)" stroke-width="3" marker-end="url(#arrO)"/>
+
+<!-- Step 3 -->
+<rect x="530" y="622" width="185" height="110" rx="10" fill="rgba(139,92,246,0.1)" stroke="rgba(139,92,246,0.3)" stroke-width="1.5"/>
+<text x="622" y="645" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(139,92,246,0.9)">③ BHE FRAGILISÉE</text>
+<text x="622" y="663" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.55)">LPS active cellules</text>
+<text x="622" y="679" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.55)">endothéliales cérébrales</text>
+<text x="622" y="695" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(139,92,246,0.65)">VCAM-1 ↑ · BBB perméab. ↑</text>
+<text x="622" y="720" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,179,71,0.7)">Claudine-5 cérébrale ↓</text>
+
+<!-- Arrow 3→4 -->
+<line x1="717" y1="677" x2="764" y2="677" stroke="rgba(239,68,68,0.7)" stroke-width="3" marker-end="url(#arrR)"/>
+
+<!-- Step 4 -->
+<rect x="767" y="622" width="185" height="110" rx="10" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.4)" stroke-width="2"/>
+<text x="859" y="645" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(239,68,68,0.95)">④ MICROGLIE M1</text>
+<text x="859" y="663" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.6)">Activation microgliale</text>
+<text x="859" y="679" text-anchor="middle" font-family="Arial, sans-serif" font-size="9.5" fill="rgba(255,255,255,0.6)">NF-κB · IL-1β ×420%</text>
+<text x="859" y="695" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">Corrèle J−7→J0 r=0.78</text>
+<text x="859" y="720" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">DÉTECTÉ PULSAR ✦</text>
+
+<!-- Arrow 4→5 -->
+<line x1="954" y1="677" x2="1001" y2="677" stroke="rgba(239,68,68,0.8)" stroke-width="3.5" marker-end="url(#arrR)"/>
+
+<!-- Step 5: FIRES -->
+<rect x="1004" y="618" width="186" height="118" rx="10" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.6)" stroke-width="2.5" filter="url(#softg)"/>
+<text x="1097" y="643" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="900" fill="#EF4444">⑤ FIRES J0</text>
+<text x="1097" y="663" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.65)">Status Epilepticus</text>
+<text x="1097" y="680" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.65)">Réfractaire</text>
+<text x="1097" y="697" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">VPS: 92/100 · P1</text>
+<!-- EEG mini seizure -->
+<svg x="1015" y="700" width="165" height="28">
+  <polyline points="0,14 12,14 15,3 19,25 23,14 35,14 38,3 42,25 46,14 58,14 61,3 65,25 69,14 81,14 84,3 88,25 92,14 104,14 107,3 111,25 115,14 127,14 130,3 134,25 138,14 150,14 153,3 157,25 161,14 165,14" fill="none" stroke="#EF4444" stroke-width="2" opacity="0.85"/>
+</svg>
+
+<!-- PULSAR ALERT badge -->
+<rect x="1200" y="630" width="145" height="106" rx="10" fill="rgba(16,185,129,0.1)" stroke="rgba(16,185,129,0.45)" stroke-width="2"/>
+<text x="1272" y="654" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#10B981">✦ PULSAR</text>
+<text x="1272" y="670" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(16,185,129,0.8)">ALERTE J−7</text>
+<text x="1272" y="690" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="rgba(255,255,255,0.5)">Fenêtre précoce</text>
+<text x="1272" y="706" text-anchor="middle" font-family="Arial, sans-serif" font-size="9" fill="rgba(255,255,255,0.5)">identifiée</text>
+<text x="1272" y="724" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.6)">−7j avant FIRES</text>
+
+<!-- Footer -->
+<rect x="40" y="760" width="1320" height="35" rx="6" fill="rgba(255,255,255,0.015)" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+<text x="700" y="782" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="rgba(255,255,255,0.2)">PULSAR Discovery Engine L3 · Axe Microbiome-Intestin-Cerveau · Réf: Cryan JF Nat Rev 2019 · Fasano A Lancet 2012 · Zhao Q Brain 2021 · 3 NCT actifs</text>
+</svg>

@@ -1,0 +1,317 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="50%"><stop offset="0%" stop-color="#04060F"/><stop offset="100%" stop-color="#02040A"/></radialGradient>
+
+  <!-- MRI slices: dark background, brain tissue in grays -->
+  <radialGradient id="brainTissue" cx="50%" cy="45%">
+    <stop offset="0%" stop-color="#C8C0B0"/>
+    <stop offset="35%" stop-color="#A89880"/>
+    <stop offset="65%" stop-color="#786858"/>
+    <stop offset="85%" stop-color="#504030"/>
+    <stop offset="100%" stop-color="#100800"/>
+  </radialGradient>
+
+  <!-- FLAIR hyperintensity (inflammation = bright white on FLAIR) -->
+  <radialGradient id="flair1" cx="50%" cy="50%">
+    <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+    <stop offset="40%" stop-color="#FFF0A0" stop-opacity="0.9"/>
+    <stop offset="75%" stop-color="#FFD080" stop-opacity="0.5"/>
+    <stop offset="100%" stop-color="#FF8800" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="flair2" cx="50%" cy="50%">
+    <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/>
+    <stop offset="35%" stop-color="#FFE888" stop-opacity="0.85"/>
+    <stop offset="70%" stop-color="#FFC040" stop-opacity="0.45"/>
+    <stop offset="100%" stop-color="#FF8800" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="flair3" cx="50%" cy="50%">
+    <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.85"/>
+    <stop offset="50%" stop-color="#FFD060" stop-opacity="0.5"/>
+    <stop offset="100%" stop-color="#FF8800" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- T2 bright: edema -->
+  <radialGradient id="t2edema" cx="50%" cy="50%">
+    <stop offset="0%" stop-color="#E0F0FF" stop-opacity="0.85"/>
+    <stop offset="60%" stop-color="#80C0FF" stop-opacity="0.4"/>
+    <stop offset="100%" stop-color="#0080FF" stop-opacity="0"/>
+  </radialGradient>
+
+  <!-- Gadolinium enhancement (ring) -->
+  <radialGradient id="gadoRing" cx="50%" cy="50%">
+    <stop offset="0%" stop-color="#FF6060" stop-opacity="0"/>
+    <stop offset="55%" stop-color="#FF6060" stop-opacity="0.2"/>
+    <stop offset="75%" stop-color="#FF4040" stop-opacity="0.8"/>
+    <stop offset="90%" stop-color="#FF2020" stop-opacity="0.5"/>
+    <stop offset="100%" stop-color="#CC0000" stop-opacity="0"/>
+  </radialGradient>
+
+  <filter id="glow"><feGaussianBlur stdDeviation="10" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="softg"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="mriblur"><feGaussianBlur stdDeviation="2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="bigglow"><feGaussianBlur stdDeviation="20" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="hotspot"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+
+<rect width="1400" height="900" fill="url(#bg)"/>
+
+<!-- Header (PULSAR style) -->
+<text x="50" y="46" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#2FD1C8" letter-spacing="3" opacity="0.7">PULSAR · NEUROCORE · NEUROIMAGERIE FIRES</text>
+<text x="50" y="78" font-family="Arial, sans-serif" font-size="26" font-weight="900" fill="#FFFFFF">IRM Cérébrale — Séquences FIRES</text>
+<text x="50" y="105" font-family="Arial, sans-serif" font-size="13" fill="rgba(255,255,255,0.45)">Inès M. · 4 ans · J+2 · FLAIR · T2 · T1-Gadolinium · DWI · Analyse PULSAR automatique</text>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- MRI SLICE 1: FLAIR (top-left) -->
+<!-- ════════════════════════════════════════════ -->
+<rect x="40" y="125" width="310" height="310" rx="6" fill="#000000" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+<!-- Sequence label -->
+<text x="195" y="148" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="2">FLAIR</text>
+<!-- Brain outline (axial cut) -->
+<ellipse cx="195" cy="295" rx="118" ry="118" fill="url(#brainTissue)" filter="url(#mriblur)"/>
+<!-- Cortical sulci pattern (dark fissures) -->
+<g fill="none" stroke="#1A1008" stroke-width="3" stroke-linecap="round" opacity="0.7">
+  <path d="M125,220 Q150,210 168,222"/>
+  <path d="M105,255 Q125,245 148,258"/>
+  <path d="M100,290 Q122,278 145,292"/>
+  <path d="M105,325 Q128,316 150,328"/>
+  <path d="M125,355 Q145,347 162,358"/>
+  <path d="M258,220 Q278,210 298,222"/>
+  <path d="M272,255 Q293,244 312,257"/>
+  <path d="M278,290 Q298,278 316,292"/>
+  <path d="M272,325 Q292,316 310,328"/>
+  <path d="M258,354 Q277,347 296,358"/>
+  <path d="M160,185 Q190,175 222,185"/>
+  <path d="M150,195 Q190,183 232,195"/>
+  <path d="M155,395 Q190,405 225,395"/>
+  <path d="M152,405 Q190,415 228,405"/>
+  <!-- Longitudinal fissure (center) -->
+  <line x1="195" y1="180" x2="195" y2="408" stroke="#080400" stroke-width="5"/>
+</g>
+<!-- Gray/white matter boundary -->
+<ellipse cx="195" cy="295" rx="85" ry="85" fill="rgba(80,60,40,0.7)" filter="url(#mriblur)"/>
+<!-- Ventricles (dark CSF) -->
+<ellipse cx="184" cy="295" rx="14" ry="22" fill="rgba(5,15,35,0.95)" stroke="rgba(5,15,35,0.8)"/>
+<ellipse cx="206" cy="295" rx="14" ry="22" fill="rgba(5,15,35,0.95)" stroke="rgba(5,15,35,0.8)"/>
+<ellipse cx="195" cy="310" rx="8" ry="12" fill="rgba(5,15,35,0.9)"/>
+<!-- FLAIR HYPERINTENSITIES (bright white = inflammation) -->
+<!-- Right temporal lobe hyperintensity (FIRES hotspot) -->
+<ellipse cx="258" cy="305" rx="32" ry="28" fill="url(#flair1)" filter="url(#glow)"/>
+<!-- Left temporal lobe hyperintensity -->
+<ellipse cx="133" cy="308" rx="28" ry="24" fill="url(#flair2)" filter="url(#glow)"/>
+<!-- Hippocampal hyperintensity bilateral -->
+<ellipse cx="222" cy="330" rx="18" ry="12" fill="url(#flair3)" filter="url(#softg)"/>
+<ellipse cx="168" cy="330" rx="16" ry="11" fill="url(#flair3)" filter="url(#softg)"/>
+<!-- Thalamic involvement -->
+<ellipse cx="195" cy="275" rx="22" ry="16" fill="url(#flair3)" filter="url(#softg)" opacity="0.7"/>
+<!-- Annotation arrows -->
+<line x1="290" y1="305" x2="320" y2="285" stroke="#FFD700" stroke-width="1.5"/>
+<text x="322" y="283" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#FFD700">Temporal D ↑</text>
+<line x1="101" y1="308" x2="72" y2="288" stroke="#FFD700" stroke-width="1.5"/>
+<text x="40" y="286" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#FFD700">Temporal G ↑</text>
+<line x1="195" y1="259" x2="195" y2="152" stroke="#FFD700" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="197" y="160" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,215,0,0.7)">Thalamus ↑</text>
+<!-- FLAIR status badge -->
+<rect x="52" y="406" width="286" height="22" rx="4" fill="rgba(255,215,0,0.08)" stroke="rgba(255,215,0,0.3)" stroke-width="1"/>
+<text x="195" y="421" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#FFD700">FLAIR+ bilatéral · Temporal · Hippocampe · Thalamus</text>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- MRI SLICE 2: T2 (top-center) -->
+<!-- ════════════════════════════════════════════ -->
+<rect x="370" y="125" width="310" height="310" rx="6" fill="#000000" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+<text x="525" y="148" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="2">T2 WEIGHTED</text>
+<!-- Brain outline T2 -->
+<ellipse cx="525" cy="295" rx="118" ry="118" fill="url(#brainTissue)" filter="url(#mriblur)"/>
+<!-- Sulci -->
+<g fill="none" stroke="#1A1008" stroke-width="3" stroke-linecap="round" opacity="0.65">
+  <path d="M455,218 Q478,208 498,220"/><path d="M438,253 Q460,243 480,256"/>
+  <path d="M432,290 Q455,278 476,292"/><path d="M438,325 Q460,316 480,328"/>
+  <path d="M455,355 Q475,347 492,358"/>
+  <path d="M560,218 Q582,208 602,220"/><path d="M572,253 Q594,244 612,257"/>
+  <path d="M578,290 Q598,278 616,292"/><path d="M572,325 Q592,316 610,328"/>
+  <path d="M560,354 Q579,347 598,358"/>
+  <path d="M488,185 Q520,175 554,185"/>
+  <line x1="525" y1="180" x2="525" y2="408" stroke="#080400" stroke-width="5"/>
+</g>
+<ellipse cx="525" cy="295" rx="85" ry="85" fill="rgba(80,60,40,0.65)" filter="url(#mriblur)"/>
+<!-- Ventricles T2 (bright on T2) -->
+<ellipse cx="514" cy="295" rx="14" ry="22" fill="rgba(180,210,255,0.85)" stroke="rgba(150,190,255,0.5)" stroke-width="1"/>
+<ellipse cx="536" cy="295" rx="14" ry="22" fill="rgba(180,210,255,0.85)" stroke="rgba(150,190,255,0.5)" stroke-width="1"/>
+<ellipse cx="525" cy="310" rx="8" ry="12" fill="rgba(170,205,255,0.8)"/>
+<!-- T2 hyperintensities = edema (bright blue-white) -->
+<ellipse cx="588" cy="308" rx="35" ry="30" fill="url(#t2edema)" filter="url(#glow)"/>
+<ellipse cx="463" cy="310" rx="31" ry="26" fill="url(#t2edema)" filter="url(#glow)"/>
+<!-- Hippocampal T2 -->
+<ellipse cx="550" cy="335" rx="20" ry="14" fill="url(#t2edema)" filter="url(#softg)" opacity="0.8"/>
+<ellipse cx="500" cy="335" rx="18" ry="12" fill="url(#t2edema)" filter="url(#softg)" opacity="0.75"/>
+<!-- Periventricular signal -->
+<ellipse cx="525" cy="270" rx="30" ry="18" fill="url(#t2edema)" filter="url(#softg)" opacity="0.55"/>
+<!-- Annotations -->
+<line x1="623" y1="308" x2="650" y2="288" stroke="#80C8FF" stroke-width="1.5"/>
+<text x="652" y="286" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#80C8FF">Œdème T ↑</text>
+<line x1="428" y1="310" x2="400" y2="290" stroke="#80C8FF" stroke-width="1.5"/>
+<text x="348" y="288" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#80C8FF">Œdème G ↑</text>
+<rect x="382" y="406" width="286" height="22" rx="4" fill="rgba(128,200,255,0.08)" stroke="rgba(128,200,255,0.3)" stroke-width="1"/>
+<text x="525" y="421" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#80C8FF">T2+ · Œdème vasogénique · Hypersignal périvent.</text>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- MRI SLICE 3: T1+GAD (top-right) -->
+<!-- ════════════════════════════════════════════ -->
+<rect x="700" y="125" width="310" height="310" rx="6" fill="#000000" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+<text x="855" y="148" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="2">T1 + GADOLINIUM</text>
+<ellipse cx="855" cy="295" rx="118" ry="118" fill="url(#brainTissue)" filter="url(#mriblur)"/>
+<g fill="none" stroke="#1A1008" stroke-width="3" stroke-linecap="round" opacity="0.6">
+  <path d="M785,218 Q808,208 828,220"/><path d="M768,253 Q790,243 810,256"/>
+  <path d="M762,290 Q785,278 806,292"/><path d="M768,325 Q790,316 810,328"/>
+  <path d="M785,355 Q805,347 822,358"/>
+  <path d="M890,218 Q912,208 932,220"/><path d="M902,253 Q924,244 942,257"/>
+  <path d="M908,290 Q928,278 946,292"/><path d="M902,325 Q922,316 940,328"/>
+  <path d="M890,354 Q909,347 928,358"/>
+  <path d="M818,185 Q850,175 884,185"/>
+  <line x1="855" y1="180" x2="855" y2="408" stroke="#080400" stroke-width="5"/>
+</g>
+<ellipse cx="855" cy="295" rx="85" ry="85" fill="rgba(70,52,35,0.7)" filter="url(#mriblur)"/>
+<!-- Ventricles T1 (dark CSF) -->
+<ellipse cx="844" cy="295" rx="13" ry="21" fill="rgba(8,12,30,0.95)"/>
+<ellipse cx="866" cy="295" rx="13" ry="21" fill="rgba(8,12,30,0.95)"/>
+<!-- GADOLINIUM ENHANCEMENT = blood-brain barrier breakdown -->
+<!-- Ring enhancement right temporal -->
+<circle cx="917" cy="308" r="35" fill="url(#gadoRing)" filter="url(#glow)"/>
+<circle cx="917" cy="308" r="18" fill="rgba(0,0,0,0.7)"/><!-- necrotic center -->
+<!-- Ring enhancement left temporal -->
+<circle cx="793" cy="310" r="30" fill="url(#gadoRing)" filter="url(#glow)"/>
+<circle cx="793" cy="310" r="15" fill="rgba(0,0,0,0.65)"/>
+<!-- Leptomeningeal enhancement (bright line along brain surface) -->
+<ellipse cx="855" cy="295" rx="115" ry="115" fill="none" stroke="rgba(255,80,80,0.5)" stroke-width="5" filter="url(#softg)"/>
+<!-- Thalamic enhancement -->
+<ellipse cx="855" cy="278" rx="18" ry="13" fill="url(#gadoRing)" filter="url(#softg)" opacity="0.8"/>
+<!-- Annotations -->
+<line x1="950" y1="295" x2="985" y2="278" stroke="#FF6060" stroke-width="1.5"/>
+<text x="987" y="276" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#FF6060">Ring+BBB ↓</text>
+<line x1="760" y1="305" x2="728" y2="288" stroke="#FF6060" stroke-width="1.5"/>
+<text x="672" y="286" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#FF6060">Ring+ G ↓</text>
+<line x1="855" y1="180" x2="855" y2="152" stroke="#FF6060" stroke-width="1" stroke-dasharray="3,3"/>
+<text x="858" y="160" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,96,96,0.7)">Leptoméningé</text>
+<rect x="712" y="406" width="286" height="22" rx="4" fill="rgba(255,96,96,0.08)" stroke="rgba(255,96,96,0.3)" stroke-width="1"/>
+<text x="855" y="421" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#FF6060">Gadolinium+ · Ring enhance. · BHE compromise</text>
+
+<!-- ════════════════════════════════════════════ -->
+<!-- MRI SLICE 4: DWI (bottom-left) -->
+<!-- ════════════════════════════════════════════ -->
+<rect x="1030" y="125" width="330" height="310" rx="6" fill="#000000" stroke="rgba(255,255,255,0.08)" stroke-width="1.5"/>
+<text x="1195" y="148" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="rgba(255,255,255,0.55)" letter-spacing="2">DWI · ADC MAP</text>
+<!-- DWI brain (darker baseline) -->
+<ellipse cx="1195" cy="295" rx="118" ry="118" fill="rgba(45,35,25,0.95)" filter="url(#mriblur)"/>
+<g fill="none" stroke="#0A0800" stroke-width="3" stroke-linecap="round" opacity="0.6">
+  <path d="M1125,218 Q1148,208 1168,220"/><path d="M1108,253 Q1130,243 1150,256"/>
+  <path d="M1102,290 Q1125,278 1146,292"/><path d="M1108,325 Q1130,316 1150,328"/>
+  <path d="M1125,355 Q1145,347 1162,358"/>
+  <path d="M1230,218 Q1252,208 1272,220"/><path d="M1242,253 Q1264,244 1282,257"/>
+  <path d="M1248,290 Q1268,278 1286,292"/><path d="M1242,325 Q1262,316 1280,328"/>
+  <path d="M1230,354 Q1249,347 1268,358"/>
+  <path d="M1158,185 Q1190,175 1224,185"/>
+  <line x1="1195" y1="180" x2="1195" y2="408" stroke="#040200" stroke-width="5"/>
+</g>
+<!-- White matter (brighter on DWI) -->
+<ellipse cx="1195" cy="295" rx="80" ry="80" fill="rgba(85,65,45,0.65)" filter="url(#mriblur)"/>
+<!-- DWI restriction (cytotoxic edema = bright on DWI) -->
+<radialGradient id="dwiBright" cx="50%" cy="50%"><stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.95"/><stop offset="40%" stop-color="#FFFF80" stop-opacity="0.8"/><stop offset="80%" stop-color="#FFCC00" stop-opacity="0.3"/><stop offset="100%" stop-color="#FF8800" stop-opacity="0"/></radialGradient>
+<ellipse cx="1250" cy="320" rx="25" ry="20" fill="url(#dwiBright)" filter="url(#glow)"/>
+<ellipse cx="1140" cy="322" rx="22" ry="18" fill="url(#dwiBright)" filter="url(#glow)" opacity="0.85"/>
+<!-- Hippocampal cytotoxic edema -->
+<ellipse cx="1215" cy="345" rx="15" ry="10" fill="url(#dwiBright)" filter="url(#softg)" opacity="0.8"/>
+<ellipse cx="1175" cy="345" rx="13" ry="9" fill="url(#dwiBright)" filter="url(#softg)" opacity="0.75"/>
+<!-- Ventricles DWI -->
+<ellipse cx="1184" cy="295" rx="12" ry="20" fill="rgba(0,5,20,0.95)"/>
+<ellipse cx="1206" cy="295" rx="12" ry="20" fill="rgba(0,5,20,0.95)"/>
+<!-- Annotations -->
+<line x1="1272" y1="314" x2="1295" y2="296" stroke="#FFEE00" stroke-width="1.5"/>
+<text x="1297" y="294" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#FFEE00">Restrict. D ↑</text>
+<line x1="1118" y1="318" x2="1097" y2="298" stroke="#FFEE00" stroke-width="1.5"/>
+<text x="1040" y="296" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#FFEE00">Restrict. G ↑</text>
+<rect x="1042" y="406" width="306" height="22" rx="4" fill="rgba(255,238,0,0.08)" stroke="rgba(255,238,0,0.3)" stroke-width="1"/>
+<text x="1195" y="421" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" font-weight="700" fill="#FFEE00">DWI+ · Restriction diffusion · Lésions ischémiques</text>
+
+<!-- ════ PULSAR ANALYSIS PANEL (bottom) ════ -->
+<rect x="40" y="445" width="1350" height="165" rx="14" fill="rgba(8,12,28,0.95)" stroke="rgba(47,209,200,0.35)" stroke-width="2"/>
+<text x="710" y="472" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="12" font-weight="700" fill="#2FD1C8" letter-spacing="2">✦ PULSAR NEUROCORE — ANALYSE AUTOMATIQUE J+2</text>
+<line x1="55" y1="482" x2="1375" y2="482" stroke="rgba(47,209,200,0.15)" stroke-width="1"/>
+
+<!-- 4 finding cards -->
+<!-- Card 1 -->
+<rect x="60" y="492" width="310" height="105" rx="10" fill="rgba(255,215,0,0.06)" stroke="rgba(255,215,0,0.25)" stroke-width="1.5"/>
+<text x="215" y="514" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#FFD700">FLAIR — HYPERINTENSITÉ</text>
+<text x="76" y="534" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Temporal bilatéral: Sévère</text>
+<text x="76" y="550" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Hippocampe: Modéré–Sévère</text>
+<text x="76" y="566" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Thalamus: Modéré</text>
+<text x="76" y="582" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Cortex insulaire: Léger</text>
+<rect x="76" y="586" width="278" height="4" rx="2" fill="rgba(255,255,255,0.05)"/>
+<rect x="76" y="586" width="250" height="4" rx="2" fill="#FFD700" opacity="0.6"/>
+
+<!-- Card 2 -->
+<rect x="385" y="492" width="310" height="105" rx="10" fill="rgba(128,200,255,0.06)" stroke="rgba(128,200,255,0.25)" stroke-width="1.5"/>
+<text x="540" y="514" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#80C8FF">T2 — ŒDÈME VASOGÉNIQUE</text>
+<text x="401" y="534" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Hypersignal T2: +340% baseline</text>
+<text x="401" y="550" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Périventriculaire: Significatif</text>
+<text x="401" y="566" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Volume hippocampe: −35%</text>
+<text x="401" y="582" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Asymétrie D/G: 12%</text>
+<rect x="401" y="586" width="278" height="4" rx="2" fill="rgba(255,255,255,0.05)"/>
+<rect x="401" y="586" width="240" height="4" rx="2" fill="#80C8FF" opacity="0.6"/>
+
+<!-- Card 3 -->
+<rect x="710" y="492" width="310" height="105" rx="10" fill="rgba(255,96,96,0.06)" stroke="rgba(255,96,96,0.25)" stroke-width="1.5"/>
+<text x="865" y="514" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#FF6060">T1+GAD — RUPTURE BHE</text>
+<text x="726" y="534" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Ring enhancement: ×2 zones</text>
+<text x="726" y="550" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Enhancement leptoméningé</text>
+<text x="726" y="566" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Thalamus: Enhancement +</text>
+<text x="726" y="582" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• BBB perméabilité: Critique</text>
+<rect x="726" y="586" width="278" height="4" rx="2" fill="rgba(255,255,255,0.05)"/>
+<rect x="726" y="586" width="265" height="4" rx="2" fill="#FF6060" opacity="0.6"/>
+
+<!-- Card 4 -->
+<rect x="1035" y="492" width="340" height="105" rx="10" fill="rgba(255,238,0,0.06)" stroke="rgba(255,238,0,0.25)" stroke-width="1.5"/>
+<text x="1205" y="514" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="#FFEE00">DWI — RESTRICTION DIFFUSION</text>
+<text x="1051" y="534" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Lésions ischémiques actives</text>
+<text x="1051" y="550" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• ADC réduit: −28% bilatéral</text>
+<text x="1051" y="566" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Hippocampe cytotoxique</text>
+<text x="1051" y="582" font-family="Arial, sans-serif" font-size="10" fill="rgba(255,255,255,0.6)">• Irreversibility risk: Élevé</text>
+<rect x="1051" y="586" width="308" height="4" rx="2" fill="rgba(255,255,255,0.05)"/>
+<rect x="1051" y="586" width="275" height="4" rx="2" fill="#FFEE00" opacity="0.6"/>
+
+<!-- ════ SCORE + RECOMMENDATION ════ -->
+<rect x="40" y="625" width="1350" height="120" rx="14" fill="rgba(8,12,28,0.9)" stroke="rgba(16,185,129,0.4)" stroke-width="2"/>
+
+<!-- VPS from imaging -->
+<rect x="60" y="645" width="180" height="85" rx="10" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.35)" stroke-width="1.5"/>
+<text x="150" y="668" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.7)">VPS IMAGERIE</text>
+<text x="150" y="698" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="32" font-weight="900" fill="#EF4444">92</text>
+<text x="150" y="718" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.5)">CRITIQUE · P1</text>
+
+<!-- FIRES score -->
+<rect x="255" y="645" width="180" height="85" rx="10" fill="rgba(255,179,71,0.08)" stroke="rgba(255,179,71,0.3)" stroke-width="1.5"/>
+<text x="345" y="668" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,179,71,0.7)">FIRES SCORE</text>
+<text x="345" y="698" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="32" font-weight="900" fill="#FFB347">7/8</text>
+<text x="345" y="718" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,179,71,0.5)">CONFIRMÉ</text>
+
+<!-- Recommendation -->
+<rect x="450" y="635" width="920" height="100" rx="10" fill="rgba(16,185,129,0.06)"/>
+<text x="910" y="662" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#10B981">✦ RECOMMANDATION PULSAR NEUROCORE</text>
+<text x="910" y="682" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">Anakinra 4mg/kg/j IV · Initiation immédiate · Fenêtre: 6h</text>
+<text x="910" y="700" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.45)">FLAIR + Ring enhance. + DWI restrict. = FIRES inflammatoire actif confirmé</text>
+<text x="910" y="716" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.45)">Confidence: 97% · 23 études · NCT03936504 éligible</text>
+<text x="910" y="728" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.5)">Export: Brief clinique FR · JSON · BibTeX</text>
+
+<!-- Bottom patient info bar (DICOM style) -->
+<rect x="40" y="758" width="1350" height="32" rx="6" fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+<g font-family="'JetBrains Mono', monospace" font-size="8.5" fill="rgba(255,255,255,0.3)">
+  <text x="58" y="779">Patient: INÈS M. · 4 ans · F</text>
+  <text x="265" y="779">Date: J+2 post-admission</text>
+  <text x="455" y="779">Machine: 3T · Siemens Prisma</text>
+  <text x="660" y="779">Seq: FLAIR · T2 · T1+Gad · DWI · SWI</text>
+  <text x="950" y="779">TR/TE: 9000/90ms · 3000/12ms · 650/9ms</text>
+  <text x="1215" y="779">PULSAR V21 · Auto-analyse</text>
+</g>
+
+<!-- Bottom footer -->
+<text x="710" y="812" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.15)">PULSAR · Neuroimagerie FIRES · Réf: Gaspard N, Neurology 2015 · Van Baalen A, Epilepsia 2017 · Kenney-Jung DL, JAMA Neurol 2016</text>
+<text x="710" y="826" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.12)">Images synthétiques à des fins éducatives · Ne se substitue pas à une lecture radiologique · Données patient anonymisées</text>
+</svg>
