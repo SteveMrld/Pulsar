@@ -1,4 +1,5 @@
 'use client'
+import PulsarLogo from '@/components/PulsarLogo'
 import { useLang, LangToggle } from '@/contexts/LanguageContext'
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
@@ -231,8 +232,7 @@ export default function LandingPage() {
         {/* ─── NAV ─── */}
         <nav className="lp-nav">
           <div className="lp-logo">
-            <img src="/assets/pictos-v17/brain-hero-128.png" alt="" width={32} height={32}
-              style={{ filter: 'drop-shadow(0 0 10px rgba(108,124,255,.55))' }} />
+            
             <span className="lp-logo-text text-gradient-brand">PULSAR</span>
           </div>
           <div className="lp-nav-actions">

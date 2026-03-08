@@ -1,4 +1,5 @@
 'use client'
+import PulsarLogo from '@/components/PulsarLogo'
 import { useEffect, useState, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { validateInvite, setInviteCookie, getInviteFromCookie } from '@/lib/invites'
@@ -77,8 +78,7 @@ function InviteContent() {
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <div style={{ textAlign: 'center', maxWidth: '480px', padding: '40px 24px', width: '100%' }}>
 
-        <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={64} height={64}
-          style={{ filter: 'drop-shadow(0 0 16px rgba(108,124,255,0.5))', margin: '0 auto 24px', display: 'block' }} />
+        
 
         {/* ── CHECKING ── */}
         {status === 'checking' && (

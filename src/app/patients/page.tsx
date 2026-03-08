@@ -1,4 +1,5 @@
 'use client'
+import PulsarLogo from '@/components/PulsarLogo'
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
 import dynamic from 'next/dynamic'
@@ -261,8 +262,7 @@ function PulsingBrain() {
       margin: '0 auto 24px',
       boxShadow: '0 0 40px rgba(108,124,255,0.1), inset 0 0 30px rgba(108,124,255,0.05)',
     }}>
-      <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={52} height={52}
-        style={{ filter: 'drop-shadow(0 0 12px rgba(108,124,255,0.6))', objectFit: 'contain' }} />
+      
     </div>
   )
 }
@@ -292,7 +292,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
           boxShadow: '0 4px 20px rgba(108,124,255,0.3)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
         }}>
-          <img src="/assets/pictos-v17/brain-hero-128.png" alt="" width={16} height={16} style={{ objectFit: 'contain' }} /> {t('Analyse intelligente', 'Smart Analysis')}
+           {t('Analyse intelligente', 'Smart Analysis')}
         </button>
         <button onClick={onDemo} style={{
           padding: '12px 32px', borderRadius: 'var(--p-radius-lg)',
@@ -454,62 +454,6 @@ export default function FileActivePage() {
 
   return (
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)', padding: '0' }}>
-      {/* ââ TOP BAR ââ */}
-      <div style={{
-        padding: '16px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        borderBottom: '1px solid var(--p-border)', background: 'var(--p-bg-card)',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: 'var(--p-text)', letterSpacing: '1px' }}>{t('FILE ACTIVE', 'ACTIVE CASELOAD')}</span>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <button onClick={() => setShowDemo(!showDemo)} style={{
-            padding: '6px 14px', borderRadius: 'var(--p-radius-full)',
-            background: showDemo ? 'rgba(108,124,255,0.12)' : 'transparent',
-            border: showDemo ? '1px solid rgba(108,124,255,0.25)' : '1px solid var(--p-border)',
-            cursor: 'pointer', fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 600,
-            color: showDemo ? '#6C7CFF' : 'var(--p-text-dim)',
-            display: 'flex', alignItems: 'center', gap: '6px', transition: 'all 0.2s',
-          }}>
-            <div style={{
-              width: '6px', height: '6px', borderRadius: '50%',
-              background: showDemo ? '#6C7CFF' : 'var(--p-text-dim)',
-              boxShadow: showDemo ? '0 0 6px rgba(108,124,255,0.5)' : 'none',
-            }} />
-            Démo
-          </button>
-          {/* Observatory link */}
-          <Link href="/observatory" style={{
-            padding: '6px 14px', borderRadius: 'var(--p-radius-full)',
-            background: 'rgba(47,209,200,0.08)', border: '1px solid rgba(47,209,200,0.15)',
-            fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 600,
-            color: '#2FD1C8', textDecoration: 'none',
-            display: 'flex', alignItems: 'center', gap: '6px',
-          }}>
-            <Picto name="dna" size={12} />
-            Observatory
-          </Link>
-          {hasPatients && criticalCount > 0 && (
-            <div className="animate-breathe" style={{
-              padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
-              background: 'rgba(139,92,246,0.1)', border: '1px solid rgba(139,92,246,0.2)',
-              fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#8B5CF6',
-            }}>{criticalCount} critique{criticalCount > 1 ? 's' : ''}</div>
-          )}
-          {hasPatients && warningCount > 0 && (
-            <div style={{
-              padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
-              background: 'rgba(255,165,2,0.08)', border: '1px solid rgba(255,165,2,0.15)',
-              fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 700, color: '#FFA502',
-            }}>{warningCount} vigilance</div>
-          )}
-          <div style={{
-            padding: '4px 12px', borderRadius: 'var(--p-radius-full)',
-            background: 'rgba(108,124,255,0.06)', border: '1px solid rgba(108,124,255,0.1)',
-            fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)',
-          }}>{activePatients.length} patient{activePatients.length > 1 ? 's' : ''}</div>
-        </div>
-      </div>
 
       {/* ââ CONTENT ââ */}
       {!hasPatients ? (
