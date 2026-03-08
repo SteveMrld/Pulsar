@@ -117,7 +117,32 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
     })
   }, [isPublic, router])
 
-  if (isPublic) return <>{children}</>
+  if (isPublic) return (
+    <LanguageProvider>
+      <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>
+        {/* Minimal public nav */}
+        <div style={{
+          position: 'sticky', top: 0, zIndex: 100,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0 20px', height: '44px',
+          background: 'rgba(4,7,15,0.85)', backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(108,124,255,0.06)',
+        }}>
+          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+            <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={22} height={22}
+              style={{ filter: 'drop-shadow(0 0 6px rgba(108,124,255,0.4))', objectFit: 'contain' }} />
+            <span style={{ fontSize: 13, fontWeight: 800, color: '#6C7CFF', fontFamily: 'var(--p-font-mono)', letterSpacing: '0.1em' }}>PULSAR</span>
+          </Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Link href="/usecase/alejandro" style={{ fontSize: 10, color: '#F5A623', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, background: 'rgba(245,166,35,0.08)' }}>Alejandro</Link>
+            <Link href="/lab" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, background: 'rgba(16,185,129,0.08)' }}>Lab</Link>
+            <Link href="/login" style={{ fontSize: 10, color: '#6C7CFF', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(108,124,255,0.2)' }}>Connexion</Link>
+          </div>
+        </div>
+        {children}
+      </div>
+    </LanguageProvider>
+  )
 
   if (loading) return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--p-bg)' }}>
@@ -139,6 +164,32 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   if (isPatient) return (
     <ProfileProvider>
       <div style={{ minHeight: '100vh', background: 'var(--p-bg)', backgroundImage: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(108,124,255,0.03) 0%, transparent 70%)' }}>
+        {/* Patient mini-nav */}
+        <div style={{
+          position: 'sticky', top: 0, zIndex: 100,
+          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          padding: '0 16px', height: '44px',
+          background: 'rgba(4,7,15,0.9)', backdropFilter: 'blur(12px)',
+          borderBottom: '1px solid rgba(108,124,255,0.06)',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, color: '#6C7CFF' }}>
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#6C7CFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
+              <span style={{ fontSize: 10, fontFamily: 'var(--p-font-mono)', fontWeight: 700 }}>File active</span>
+            </Link>
+            <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10 }}>›</span>
+            <span style={{ fontSize: 10, color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>
+              {pathname.split('/').pop()?.toUpperCase() || 'PATIENT'}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+            <Link href="/dashboard" style={{ fontSize: 10, color: 'var(--p-text-dim)', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '3px 8px', borderRadius: 5, background: 'rgba(108,124,255,0.06)' }}>Dashboard</Link>
+            <Link href="/patients" style={{ fontSize: 10, color: 'var(--p-text-dim)', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '3px 8px', borderRadius: 5, background: 'rgba(108,124,255,0.06)' }}>Patients</Link>
+            <button onClick={() => setAiOpen(o => !o)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '3px 6px' }}>
+              <img src="/assets/pictos-v17/pulsar-ai-icon-128.png" alt="AI" width={18} height={18} style={{ opacity: 0.6, objectFit: 'contain' }} />
+            </button>
+          </div>
+        </div>
         {children}
         <PulsarAIFloat open={aiOpen} setOpen={setAiOpen} />
       </div>
