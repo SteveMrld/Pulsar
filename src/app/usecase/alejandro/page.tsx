@@ -239,7 +239,7 @@ function PréludeNarratif() {
           setTimeout(() => setRevealed(r => [...r, i]), i * 600)
         })
       }
-    }, { threshold: 0.15 })
+    }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' })
     if (ref.current) obs.observe(ref.current)
     return () => obs.disconnect()
   }, [started])
@@ -356,9 +356,11 @@ function ReconstitutionCinematique() {
 
   // Scroll-into-view reveals section
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setEntered(true) }, { threshold: 0.15 })
+    // Trigger immediately on mount as fallback for mobile
+    const timer = setTimeout(() => setEntered(true), 300)
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setEntered(true) }, { threshold: 0.05, rootMargin: '0px 0px -30px 0px' })
     if (sectionRef.current) obs.observe(sectionRef.current)
-    return () => obs.disconnect()
+    return () => { obs.disconnect(); clearTimeout(timer) }
   }, [])
 
   // Animate facts one by one when day changes
