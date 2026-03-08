@@ -33,7 +33,7 @@ function InviteContent() {
     const existingCookie = getInviteFromCookie()
     if (existingCookie === code) {
       setStatus('granted')
-      setTimeout(() => router.push('/patients'), 2000)
+      setTimeout(() => router.push('/dashboard'), 2000)
       return
     }
 
@@ -41,7 +41,7 @@ function InviteContent() {
     if (!invite.email) {
       setInviteCookie(invite.code, invite.name)
       setStatus('granted')
-      setTimeout(() => router.push('/patients'), 2500)
+      setTimeout(() => router.push('/dashboard'), 2500)
       return
     }
 
@@ -54,7 +54,7 @@ function InviteContent() {
     if (clean === inviteEmail) {
       setInviteCookie(code, name)
       setStatus('granted')
-      setTimeout(() => router.push('/patients'), 2500)
+      setTimeout(() => router.push('/dashboard'), 2500)
     } else {
       setAttempts(a => a + 1)
       setStatus('wrong_email')

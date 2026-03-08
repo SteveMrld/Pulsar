@@ -185,11 +185,9 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
               {pathname.split('/').pop()?.toUpperCase() || 'PATIENT'}
             </span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Link href="/dashboard" style={{ fontSize: 10, color: 'var(--p-text-dim)', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '3px 8px', borderRadius: 5, background: 'rgba(108,124,255,0.06)' }}>Dashboard</Link>
-            <Link href="/patients" style={{ fontSize: 10, color: 'var(--p-text-dim)', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '3px 8px', borderRadius: 5, background: 'rgba(108,124,255,0.06)' }}>Patients</Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
             <CommandPalette />
-            <button onClick={() => setAiOpen(o => !o)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '3px 6px' }}>
+            <button onClick={() => setAiOpen(o => !o)} title="PulsarAI" style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '3px 6px', display: 'flex', alignItems: 'center' }}>
               <img src="/assets/pictos-v17/pulsar-ai-icon-128.png" alt="AI" width={18} height={18} style={{ opacity: 0.6, objectFit: 'contain' }} />
             </button>
           </div>

@@ -354,7 +354,7 @@ export default function FileActivePage() {
   const { t } = useLang()
   const router = useRouter()
   const [search, setSearch] = useState('')
-  const [showDemo, setShowDemo] = useState(true)
+  const [showDemo, setShowDemo] = useState(false)
   const [sortMode, setSortMode] = useState<'triage' | 'vps' | 'jour' | 'phase' | 'gcs' | 'alertes'>('triage')
 
   const [realPatients, setRealPatients] = useState<PatientCard[]>([])
