@@ -6,6 +6,7 @@ import Link from 'next/link'
 import Picto from '@/components/Picto'
 import dynamic from 'next/dynamic'
 const DemoPlayer = dynamic(() => import('@/components/DemoPlayer'), { ssr: false })
+import { startTour } from '@/components/GuidedTour'
 
 /* ══════════════════════════════════════════════════════════════
    PULSAR — Splash cinématique
@@ -289,9 +290,13 @@ export default function LandingPage() {
             <a href="/login" className="lp-btn lp-btn-main" style={{ fontSize: 15, padding: '13px 36px' }}>
               {t('Ouvrir un dossier patient', 'Open a patient file')}
             </a>
+            <button onClick={startTour} style={{
+              padding: '13px 28px', borderRadius: 10, border: '1px solid rgba(108,124,255,.3)',
+              color: '#6C7CFF', background: 'rgba(108,124,255,.07)', cursor: 'pointer', fontSize: 14, fontWeight: 700, transition: 'all .18s'
+            }}>{t('▶ Parcours guidé', '▶ Guided tour')}</button>
             <button onClick={() => setDemoOpen(true)} style={{
-              padding: '13px 28px', borderRadius: 10, border: '1px solid rgba(245,166,35,.22)',
-              color: '#F5A623', background: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, transition: 'all .18s'
+              padding: '13px 20px', borderRadius: 10, border: '1px solid rgba(245,166,35,.18)',
+              color: '#F5A623', background: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, transition: 'all .18s'
             }}>{t('Voir la démo', 'View demo')}</button>
           </div>
         </section>
@@ -565,10 +570,15 @@ export default function LandingPage() {
                 <a href="/login" className="lp-btn lp-btn-main" style={{ fontSize: 15, padding: '13px 40px' }}>
                   {t('Accéder à PULSAR', 'Access PULSAR')}
                 </a>
+                <button onClick={startTour} style={{
+                  padding: '13px 24px', borderRadius: 10,
+                  border: '1px solid rgba(108,124,255,.3)', color: '#6C7CFF',
+                  background: 'rgba(108,124,255,.07)', cursor: 'pointer', fontSize: 14, fontWeight: 700
+                }}>{t('▶ Parcours guidé', '▶ Guided tour')}</button>
                 <button onClick={() => setDemoOpen(true)} style={{
-                  padding: '13px 28px', borderRadius: 10,
+                  padding: '13px 20px', borderRadius: 10,
                   border: '1px solid rgba(245,166,35,.2)', color: '#F5A623',
-                  background: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600
+                  background: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600
                 }}>{t('Voir la démo', 'View demo')}</button>
               </div>
             </div>
