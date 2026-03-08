@@ -48,10 +48,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from auth pages → file active
+  // Redirect authenticated users away from auth pages → dashboard
   if ((user || isDemo) && isAuthPage) {
     const url = request.nextUrl.clone()
-    url.pathname = '/patients'
+    url.pathname = '/dashboard'
     return NextResponse.redirect(url)
   }
 

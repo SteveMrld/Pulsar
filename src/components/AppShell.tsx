@@ -3,14 +3,12 @@ import { useState, useEffect, useRef } from 'react'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
-import ThemeToggle from './ThemeToggle'
 import { ProfileProvider } from '@/contexts/ProfileContext'
-import { RoleBadge } from './RoleGate'
 import ConnectionStatus from './ConnectionStatus'
 import PulsarGuide from './PulsarGuide'
 import CommandPalette from './CommandPalette'
 import dynamic from 'next/dynamic'
-import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
+import { LanguageProvider, useLang } from '@/contexts/LanguageContext'
 import PulsarLogo from '@/components/PulsarLogo'
 import PulsarAI from '@/components/PulsarAI'
 import Picto from '@/components/Picto'
@@ -225,30 +223,39 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           borderBottom: '1px solid rgba(108,124,255,0.06)',
           height: '52px', position: 'sticky', top: 0, zIndex: 100,
         }}>
+          <style>{`
+            @media (max-width: 768px) {
+              .hdr-center { display: none !important; }
+              .hdr-breadcrumb { display: none !important; }
+              .hdr-username { display: none !important; }
+            }
+            @media (max-width: 640px) {
+              .hdr-staff { display: none !important; }
+            }
+          `}</style>
           {/* LEFT */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '170px' }}>
-            <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '120px' }}>
+            <Link href="/dashboard" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <PulsarLogo size="md" />
             </Link>
-            <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1l4 4-4 4" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round"/></svg>
-            <span style={{ fontSize: '11px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>{breadcrumb}</span>
+            <svg className="hdr-breadcrumb" width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1l4 4-4 4" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            <span className="hdr-breadcrumb" style={{ fontSize: '11px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>{breadcrumb}</span>
           </div>
 
-          {/* CENTER */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
+          {/* CENTER — masqué sur mobile */}
+          <div className="hdr-center" style={{ display: 'flex', alignItems: 'center', gap: '2px' }}>
             <NavLink href="/dashboard" label="Dashboard" pathname={pathname} />
             <NavLink href="/patients" label={t('File active', 'Patients')} pathname={pathname} />
             <NavLink href="/research" label="Discovery" color="#10B981" pathname={pathname} />
             <AnalyseMenu pathname={pathname} />
-            <NavLink href="/lab" label="Lab" color="#10B981" pathname={pathname} />
             <NavLink href="/neurocore" label="NeuroCore" color="#8B5CF6" pathname={pathname} />
           </div>
 
           {/* RIGHT */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: '170px', justifyContent: 'flex-end' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: '80px', justifyContent: 'flex-end' }}>
 
-            {/* Staff */}
-            <Link href="/staff" title={t('Équipe soignante', 'Care Team')} style={{
+            {/* Staff — masqué sur petit mobile */}
+            <Link className="hdr-staff" href="/staff" title={t('Équipe soignante', 'Care Team')} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: '28px', height: '28px', borderRadius: '6px', textDecoration: 'none',
               background: pathname === '/staff' ? '#6C7CFF18' : 'transparent',
@@ -270,10 +277,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
             </button>
 
             <CommandPalette />
-            <LangToggle />
-            <ThemeToggle />
-            <RoleBadge />
-            <span style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', maxWidth: '72px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user}</span>
+            <span className="hdr-username" style={{ fontSize: '10px', color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)', maxWidth: '72px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user}</span>
             <button onClick={handleLogout} style={{
               padding: '3px 8px', background: 'var(--p-bg-elevated)', border: 'var(--p-border)',
               borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)',
