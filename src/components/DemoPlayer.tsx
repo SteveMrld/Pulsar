@@ -437,8 +437,37 @@ function ScreenBrain() {
 
 function ScreenVisualPhysio() {
   const [tick, setTick] = React.useState(0)
+  const canvasRef = React.useRef<HTMLCanvasElement>(null)
+
+  // Canvas: supprime les pixels gris du fond
   React.useEffect(() => {
-    const t = setInterval(() => setTick(x => x + 1), 1200)
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const img = new Image()
+    img.onload = () => {
+      canvas.width = img.width
+      canvas.height = img.height
+      ctx.drawImage(img, 0, 0)
+      const data = ctx.getImageData(0, 0, canvas.width, canvas.height)
+      const d = data.data
+      for (let i = 0; i < d.length; i += 4) {
+        const r = d[i], g = d[i+1], b = d[i+2]
+        const avg = (r + g + b) / 3
+        const diff = Math.max(Math.abs(r-g), Math.abs(r-b), Math.abs(g-b))
+        // Pixel gris: faible saturation et luminosité mid-range
+        if (diff < 30 && avg > 40 && avg < 160) {
+          d[i+3] = 0
+        }
+      }
+      ctx.putImageData(data, 0, 0)
+    }
+    img.src = '/assets/avatars/body-girl.jpg'
+  }, [])
+
+  React.useEffect(() => {
+    const t = setInterval(() => setTick((x: number) => x + 1), 1200)
     return () => clearInterval(t)
   }, [])
   const zones = [
@@ -480,7 +509,7 @@ function ScreenVisualPhysio() {
         {/* Center: patient silhouette */}
         <div style={{ flex: 1, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: 8 }}>
           <div style={{ position: "relative", height: "100%", maxHeight: 280 }}>
-            <svg height="100%" style={{ display:"block", height:"100%", maxHeight: 280 }} xmlns="http://www.w3.org/2000/svg"><defs><filter id="rmwhite"><feColorMatrix type="matrix" values="1 0 0 0 0 0 1 0 0 0 0 0 1 0 0 -8 -8 -8 24 0"/></filter></defs><image href="/assets/avatars/body-girl.jpg" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" filter="url(#rmwhite)"/></svg>
+            <canvas ref={canvasRef} style={{ display: 'block', height: '100%', maxHeight: 280, width: 'auto' }} />
             {/* Hotspots */}
             {[
               { top: "12%", left: "48%", c: "#EF4444" },
