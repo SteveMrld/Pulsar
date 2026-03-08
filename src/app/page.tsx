@@ -11,12 +11,12 @@ const DemoPlayer = dynamic(() => import('@/components/DemoPlayer'), { ssr: false
    PULSAR — Splash cinématique
    ══════════════════════════════════════════════════════════════ */
 const SPLASH_LETTERS = [
-  { char: 'P', word: 'PEDIATRIC' },
-  { char: 'U', word: 'UNIFIED' },
-  { char: 'L', word: 'LEARNING' },
-  { char: 'S', word: 'SURVEILLANCE' },
-  { char: 'A', word: 'ANALYSIS' },
-  { char: 'R', word: 'RESPONSE' },
+  { char: 'P', word: 'PEDIATRIC',    color: '#6C7CFF' },
+  { char: 'U', word: 'UNIFIED',      color: '#2FD1C8' },
+  { char: 'L', word: 'LEARNING',     color: '#10B981' },
+  { char: 'S', word: 'SURVEILLANCE', color: '#B96BFF' },
+  { char: 'A', word: 'ANALYSIS',     color: '#FFB347' },
+  { char: 'R', word: 'RESPONSE',     color: '#FF6B35' },
 ]
 
 const SPLASH_CSS = `
@@ -101,7 +101,7 @@ function PulsarSplash({ onComplete }: { onComplete: () => void }) {
         <div className="sp-c">
           {!assembled && index >= 0 && index < SPLASH_LETTERS.length && (
             <div className="sp-lb" key={index}>
-              <div className="sp-l">{SPLASH_LETTERS[index].char}</div>
+              <div className="sp-l" style={{ color: SPLASH_LETTERS[index].color, filter: `drop-shadow(0 0 60px ${SPLASH_LETTERS[index].color}60)` }}>{SPLASH_LETTERS[index].char}</div>
               <div className="sp-w">{SPLASH_LETTERS[index].word}</div>
             </div>
           )}
