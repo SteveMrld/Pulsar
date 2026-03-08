@@ -41,7 +41,7 @@ export default function LoginPage() {
       setError(error.message)
       setLoading(false)
     } else {
-      router.push('/patients')
+      router.push('/dashboard')
     }
   }
 
@@ -173,7 +173,7 @@ export default function LoginPage() {
                   const invite = validateInvite(inviteCode)
                   if (invite) {
                     setInviteCookie(invite.code, invite.name)
-                    router.push('/patients')
+                    router.push('/dashboard')
                   } else {
                     setError(t('Code d\'invitation invalide', 'Invalid invite code'))
                   }
