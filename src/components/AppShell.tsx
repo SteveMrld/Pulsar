@@ -10,6 +10,8 @@ import ConnectionStatus from './ConnectionStatus'
 import PulsarGuide from './PulsarGuide'
 import CommandPalette from './CommandPalette'
 import GuidedTour from './GuidedTour'
+import dynamic from 'next/dynamic'
+const GuidedTourDynamic = dynamic(() => import('./GuidedTour'), { ssr: false })
 import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
 import PulsarLogo from '@/components/PulsarLogo'
 import PulsarAI from '@/components/PulsarAI'
@@ -144,6 +146,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         {children}
+        <GuidedTourDynamic />
       </div>
     </LanguageProvider>
   )
