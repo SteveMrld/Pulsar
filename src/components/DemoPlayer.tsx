@@ -499,7 +499,7 @@ function ScreenVisualPhysio() {
         {/* Center: patient silhouette */}
         <div style={{ flex: 1, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: 8 }}>
           <div style={{ position: "relative", height: "100%", maxHeight: 280 }}>
-            <img src="/assets/avatars/avatar-girl-new.png" alt="patient" style={{ height: "100%", objectFit: "contain", opacity: 0.92 }} />
+            <img src="/assets/avatars/body-girl.jpg" alt="patient" style={{ height: "100%", objectFit: "contain", opacity: 0.92 }} />
             {/* Hotspots */}
             {[
               { top: "12%", left: "48%", c: "#EF4444" },
