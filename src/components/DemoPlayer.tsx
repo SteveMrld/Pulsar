@@ -762,7 +762,7 @@ export default function DemoPlayer({ open, onClose }: DemoPlayerProps) {
     <>
       <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(10px)' }} />
 
-      <div style={{
+      <div className="demo-modal" style={{
         position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
         zIndex: 9999,
         width: '96%', maxWidth: 860,
@@ -777,7 +777,7 @@ export default function DemoPlayer({ open, onClose }: DemoPlayerProps) {
       }}>
 
         {/* ── LEFT: Narration panel ── */}
-        <div style={{
+        <div className="demo-narration" style={{
           width: 280, flexShrink: 0,
           background: 'rgba(0,0,0,0.4)',
           borderRight: `1px solid ${cur.color}15`,
@@ -840,7 +840,7 @@ export default function DemoPlayer({ open, onClose }: DemoPlayerProps) {
         </div>
 
         {/* ── RIGHT: UI Screen ── */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div className="demo-ui-screen" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
           {/* Progress bar */}
           <div style={{ height: 3, background: 'rgba(255,255,255,0.04)', flexShrink: 0 }}>
             <div style={{ height: '100%', width: `${progress}%`, background: `linear-gradient(90deg, ${cur.color}, ${cur.color}80)`, transition: 'width 0.05s linear' }} />
@@ -860,6 +860,19 @@ export default function DemoPlayer({ open, onClose }: DemoPlayerProps) {
         @keyframes demoIn { from { opacity:0; transform:translate(-50%,-50%) scale(.96) } to { opacity:1; transform:translate(-50%,-50%) scale(1) } }
         @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
         @keyframes load { 0%{width:20%} 50%{width:85%} 100%{width:20%} }
+        @media (max-width: 640px) {
+          .demo-modal {
+            top: 0 !important; left: 0 !important;
+            transform: none !important;
+            width: 100% !important; max-width: 100% !important;
+            max-height: 100% !important; height: 100% !important;
+            border-radius: 0 !important;
+            animation: demoInMobile .3s cubic-bezier(.22,1,.36,1) !important;
+          }
+          @keyframes demoInMobile { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
+          .demo-narration { width: 100% !important; }
+          .demo-ui-screen { display: none !important; }
+        }
       `}</style>
     </>
   )

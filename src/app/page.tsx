@@ -245,8 +245,6 @@ export default function LandingPage() {
           </div>
           <div className="lp-nav-actions">
             <LangToggle />
-            <a href="/login" className="lp-btn lp-btn-soft">{t('Connexion', 'Sign in')}</a>
-            <a href="/login" className="lp-btn lp-btn-main">{t('Accès clinicien', 'Clinician access')}</a>
           </div>
         </nav>
 
@@ -287,16 +285,13 @@ export default function LandingPage() {
           </p>
 
           <div className="lp-a lp-a4" style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <a href="/login" className="lp-btn lp-btn-main" style={{ fontSize: 15, padding: '13px 36px' }}>
-              {t('Ouvrir un dossier patient', 'Open a patient file')}
-            </a>
             <button onClick={startTour} style={{
-              padding: '13px 28px', borderRadius: 10, border: '1px solid rgba(108,124,255,.3)',
-              color: '#6C7CFF', background: 'rgba(108,124,255,.07)', cursor: 'pointer', fontSize: 14, fontWeight: 700, transition: 'all .18s'
+              padding: '13px 32px', borderRadius: 10, border: '1px solid rgba(108,124,255,.35)',
+              color: '#6C7CFF', background: 'rgba(108,124,255,.1)', cursor: 'pointer', fontSize: 15, fontWeight: 700, transition: 'all .18s'
             }}>{t('▶ Parcours guidé', '▶ Guided tour')}</button>
             <button onClick={() => setDemoOpen(true)} style={{
-              padding: '13px 20px', borderRadius: 10, border: '1px solid rgba(245,166,35,.18)',
-              color: '#F5A623', background: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600, transition: 'all .18s'
+              padding: '13px 24px', borderRadius: 10, border: '1px solid rgba(245,166,35,.2)',
+              color: '#F5A623', background: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, transition: 'all .18s'
             }}>{t('Voir la démo', 'View demo')}</button>
           </div>
         </section>
@@ -340,14 +335,6 @@ export default function LandingPage() {
                   tag: t('Démo live', 'Live demo'),
                   onClick: () => setDemoOpen(true),
                 },
-                {
-                  href: '/login',
-                  color: '#10B981',
-                  icon: '⬡',
-                  label: t('Espace clinicien', 'Clinician space'),
-                  sub: t('Ouvrir un dossier patient. Accéder aux 12 moteurs.', 'Open a patient file. Access all 12 engines.'),
-                  tag: t('Connexion requise', 'Login required'),
-                }
               ].map((card, i) => (
                 <a key={i} href={(card as any).onClick ? '#' : card.href} onClick={(card as any).onClick} style={{ textDecoration: 'none' }}>
                   <div style={{
@@ -567,13 +554,10 @@ export default function LandingPage() {
                 )}
               </p>
               <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-                <a href="/login" className="lp-btn lp-btn-main" style={{ fontSize: 15, padding: '13px 40px' }}>
-                  {t('Accéder à PULSAR', 'Access PULSAR')}
-                </a>
                 <button onClick={startTour} style={{
-                  padding: '13px 24px', borderRadius: 10,
-                  border: '1px solid rgba(108,124,255,.3)', color: '#6C7CFF',
-                  background: 'rgba(108,124,255,.07)', cursor: 'pointer', fontSize: 14, fontWeight: 700
+                  padding: '13px 32px', borderRadius: 10,
+                  border: '1px solid rgba(108,124,255,.35)', color: '#6C7CFF',
+                  background: 'rgba(108,124,255,.1)', cursor: 'pointer', fontSize: 15, fontWeight: 700
                 }}>{t('▶ Parcours guidé', '▶ Guided tour')}</button>
                 <button onClick={() => setDemoOpen(true)} style={{
                   padding: '13px 20px', borderRadius: 10,
