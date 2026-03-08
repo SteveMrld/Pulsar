@@ -751,8 +751,8 @@ export default function AlejandroCasePage() {
         <div style={{ width: 2, height: 40, background: 'linear-gradient(180deg, #6C7CFF, #F5A623)', margin: '0 auto var(--p-space-4)', borderRadius: 1 }} />
         <p style={{ fontSize: 'var(--p-text-base)', fontWeight: 700, color: 'var(--p-text)', lineHeight: 1.6, maxWidth: 500, margin: '0 auto' }}>
           {t(
-            "PULSAR n'aurait peut-être pas sauvé Alejandro. Mais il aurait posé les bonnes questions au bon moment, levé les bonnes alertes, et ouvert les bonnes fenêtres thérapeutiques.",
-            "PULSAR might not have saved Alejandro. But it would have asked the right questions at the right time, raised the right alerts, and opened the right therapeutic windows."
+            "Personne ne peut dire si PULSAR aurait sauvé Alejandro. Personne ne peut dire qu'il ne l'aurait pas sauvé non plus. Ce qui est certain, c'est qu'il aurait posé les bonnes questions au bon moment. Levé les bonnes alertes. Ouvert les bonnes fenêtres thérapeutiques avant qu'elles ne se ferment. Dans les syndromes où chaque heure compte, une aide à la décision qui comprime le temps — entre le signal et l'action, entre le doute et la certitude — n'est pas un luxe. C'est peut-être la différence.",
+            "No one can say whether PULSAR would have saved Alejandro. No one can say it wouldn't have either. What is certain is that it would have asked the right questions at the right time. Raised the right alerts. Opened the right therapeutic windows before they closed. In syndromes where every hour matters, a decision-support tool that compresses time — between signal and action, between doubt and certainty — is not a luxury. It may be the difference."
           )}
         </p>
         <p style={{ fontSize: 'var(--p-text-sm)', color: '#F5A623', fontStyle: 'italic', marginTop: 'var(--p-space-4)' }}>
