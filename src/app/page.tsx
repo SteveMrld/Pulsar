@@ -450,11 +450,9 @@ export default function LandingPage() {
               ))}
             </div>
             {/* ENGINE FLOW illustration */}
-            <div style={{ marginTop: 28, borderRadius: 14, overflow: 'hidden', border: '1px solid rgba(108,124,255,0.12)', background: 'rgba(0,0,0,0.3)' }}>
-              <img src="/assets/illustrations/PULSAR_ENGINE_FLOW.png" alt="Flux des 12 moteurs PULSAR" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
-              <div style={{ padding: '10px 16px', fontFamily: 'var(--p-font-mono)', fontSize: 10, color: 'rgba(108,124,255,0.6)', borderTop: '1px solid rgba(108,124,255,0.08)' }}>
-                {t('Flux de décision — 12 moteurs · temps réel', 'Decision flow — 12 engines · real time')}
-              </div>
+            <div className="pulsar-illus-wrap" style={{ marginTop: 28, border: '1px solid rgba(108,124,255,0.15)' }}>
+              <img src="/assets/illustrations/PULSAR_ENGINE_FLOW.png" alt="Flux des 12 moteurs PULSAR" />
+              <div className="pulsar-illus-caption">{t('Flux de décision — 12 moteurs · temps réel', 'Decision flow — 12 engines · real time')}</div>
             </div>
           </div>
         </section>
@@ -507,9 +505,9 @@ export default function LandingPage() {
 
             </div>
             {/* Discovery Funnel */}
-            <div style={{ marginTop: 32, borderRadius: 14, overflow: 'hidden', border: '1px solid rgba(16,185,129,0.15)', background: 'rgba(0,0,0,0.3)' }}>
-              <img src="/assets/illustrations/PULSAR_DISCOVERY_FUNNEL.png" alt="Discovery funnel" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
-              <div style={{ padding: '10px 16px', fontFamily: 'var(--p-font-mono)', fontSize: 10, color: 'rgba(16,185,129,0.6)', borderTop: '1px solid rgba(16,185,129,0.08)' }}>Entonnoir Discovery — L1→L4 · de la donnée brute à l'hypothèse validée</div>
+            <div className="pulsar-illus-wrap" style={{ marginTop: 32, border: '1px solid rgba(16,185,129,0.15)' }}>
+              <img src="/assets/illustrations/PULSAR_DISCOVERY_FUNNEL.png" alt="Discovery funnel" />
+              <div className="pulsar-illus-caption">Entonnoir Discovery — L1→L4 · de la donnée brute à l&apos;hypothèse validée</div>
             </div>
           </div>
         </section>

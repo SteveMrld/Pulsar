@@ -1,55 +1,5 @@
 'use client'
 
-// Animation CSS injected once
-if (typeof document !== 'undefined' && !document.getElementById('pulsar-illus-anim')) {
-  const style = document.createElement('style')
-  style.id = 'pulsar-illus-anim'
-  style.textContent = `
-    @keyframes pulsarKenBurns {
-      0%   { transform: scale(1.00) translate(0%, 0%); }
-      25%  { transform: scale(1.04) translate(-1%, -0.5%); }
-      50%  { transform: scale(1.07) translate(0.5%, -1%); }
-      75%  { transform: scale(1.04) translate(1%, 0.5%); }
-      100% { transform: scale(1.00) translate(0%, 0%); }
-    }
-    @keyframes pulsarFadeIn {
-      0%   { opacity: 0; transform: scale(0.98) translateY(6px); }
-      100% { opacity: 1; transform: scale(1) translateY(0px); }
-    }
-    @keyframes pulsarGlow {
-      0%,100% { box-shadow: 0 0 0px rgba(108,124,255,0); }
-      50%      { box-shadow: 0 0 24px rgba(108,124,255,0.18), 0 0 48px rgba(108,124,255,0.08); }
-    }
-    @keyframes pulsarScanLine {
-      0%   { top: 0%; opacity: 0.6; }
-      90%  { top: 100%; opacity: 0.1; }
-      100% { top: 100%; opacity: 0; }
-    }
-    .pulsar-illus-wrap {
-      position: relative;
-      overflow: hidden;
-      border-radius: 10px;
-      animation: pulsarFadeIn 0.6s ease-out both, pulsarGlow 4s ease-in-out infinite;
-    }
-    .pulsar-illus-wrap img {
-      display: block;
-      width: 100%;
-      transform-origin: center center;
-      animation: pulsarKenBurns 18s ease-in-out infinite;
-      will-change: transform;
-    }
-    .pulsar-illus-wrap::after {
-      content: '';
-      position: absolute;
-      left: 0; right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(108,124,255,0.5), rgba(47,209,200,0.5), transparent);
-      animation: pulsarScanLine 3.5s linear infinite;
-      pointer-events: none;
-    }
-  `
-  document.head.appendChild(style)
-}
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 

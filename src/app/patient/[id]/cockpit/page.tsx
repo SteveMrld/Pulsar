@@ -468,7 +468,9 @@ export default function PatientCockpit() {
 
       {/* ── ILLUSTRATION NEURONE ── */}
       <div style={{ marginBottom: 16, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(185,107,255,0.2)', background: 'rgba(0,0,0,0.3)' }}>
-        <img src="/assets/illustrations/PULSAR_NEURON_FIRES.png" alt="Activité neuronale FIRES" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
+        <div className="pulsar-illus-wrap" style={{ border: "rgba(108,124,255,0.2)" }}>
+          <img src="/assets/illustrations/PULSAR_NEURON_FIRES.png" alt="Activité neuronale FIRES" />
+        </div>
         <div style={{ padding: '8px 14px', fontFamily: 'var(--p-font-mono)', fontSize: 9, color: 'rgba(185,107,255,0.7)', borderTop: '1px solid rgba(185,107,255,0.1)' }}>Activité neuronale · Inflammation IL-1β · NeuroCore Engine</div>
       </div>
     </div>

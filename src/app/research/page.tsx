@@ -445,11 +445,18 @@ export default function ResearchPage() {
         {/* ── ILLUSTRATIONS RESEARCH ── */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, padding: '0 24px 24px' }}>
           <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(10,165,233,0.2)', background: 'rgba(0,0,0,0.3)' }}>
-            <img src="/assets/illustrations/PULSAR_ENGINE_FLOW.png" alt="Flux moteurs PULSAR" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
+            <div className="pulsar-illus-wrap" style={{ border: "rgba(108,124,255,0.15)" }}>
+              <img src="/assets/illustrations/PULSAR_ENGINE_FLOW.png" alt="Flux moteurs PULSAR" />
+            </div>
             <div style={{ padding: '8px 14px', fontFamily: 'var(--p-font-mono)', fontSize: 9, color: 'rgba(10,165,233,0.7)', borderTop: '1px solid rgba(10,165,233,0.1)' }}>Flux décisionnel · 12 moteurs · temps réel</div>
           </div>
           <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(47,209,200,0.2)', background: 'rgba(0,0,0,0.3)' }}>
-            <img src="/assets/illustrations/PULSAR_GUT_BRAIN_AXIS.png" alt="Axe intestin-cerveau" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
+            <div className="pulsar-illus-wrap" style={{ border: "rgba(47,209,200,0.2)" }}>
+              <img src="/assets/illustrations/PULSAR_GUT_BRAIN_AXIS.png" alt="Axe intestin-cerveau" />
+            </div>
+          </div>
+          <div className="pulsar-illus-wrap" style={{ border: "rgba(255,107,53,0.25)" }}>
+            <img src="/assets/illustrations/PULSAR_INTESTINAL_BARRIER.png" alt="Barrière intestinale — Leaky Gut FIRES" />
             <div style={{ padding: '8px 14px', fontFamily: 'var(--p-font-mono)', fontSize: 9, color: 'rgba(47,209,200,0.7)', borderTop: '1px solid rgba(47,209,200,0.1)' }}>Axe intestin-cerveau · Hypothèse L3 Discovery</div>
           </div>
         </div>
