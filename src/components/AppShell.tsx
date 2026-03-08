@@ -8,6 +8,7 @@ import { ProfileProvider } from '@/contexts/ProfileContext'
 import { RoleBadge } from './RoleGate'
 import ConnectionStatus from './ConnectionStatus'
 import PulsarGuide from './PulsarGuide'
+import CommandPalette from './CommandPalette'
 import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
 import PulsarLogo from '@/components/PulsarLogo'
 import PulsarAI from '@/components/PulsarAI'
@@ -136,6 +137,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <Link href="/usecase/alejandro" style={{ fontSize: 10, color: '#F5A623', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, background: 'rgba(245,166,35,0.08)' }}>Alejandro</Link>
             <Link href="/lab" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, background: 'rgba(16,185,129,0.08)' }}>Lab</Link>
+            <CommandPalette />
             <Link href="/login" style={{ fontSize: 10, color: '#6C7CFF', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(108,124,255,0.2)' }}>Connexion</Link>
           </div>
         </div>
@@ -185,6 +187,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <Link href="/dashboard" style={{ fontSize: 10, color: 'var(--p-text-dim)', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '3px 8px', borderRadius: 5, background: 'rgba(108,124,255,0.06)' }}>Dashboard</Link>
             <Link href="/patients" style={{ fontSize: 10, color: 'var(--p-text-dim)', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '3px 8px', borderRadius: 5, background: 'rgba(108,124,255,0.06)' }}>Patients</Link>
+            <CommandPalette />
             <button onClick={() => setAiOpen(o => !o)} style={{ background: 'none', border: 'none', cursor: 'pointer', padding: '3px 6px' }}>
               <img src="/assets/pictos-v17/pulsar-ai-icon-128.png" alt="AI" width={18} height={18} style={{ opacity: 0.6, objectFit: 'contain' }} />
             </button>
@@ -265,6 +268,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
                 style={{ opacity: aiOpen ? 1 : 0.45, objectFit: 'contain' }} />
             </button>
 
+            <CommandPalette />
             <LangToggle />
             <ThemeToggle />
             <RoleBadge />
