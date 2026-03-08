@@ -98,14 +98,14 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const { t } = useLang()
 
-  const isTourActive = typeof window !== 'undefined' && sessionStorage.getItem('pulsar-tour-active') === '1'
   const isPatient = pathname.startsWith('/patient/')
-  const isPublic = ['/', '/login', '/invite'].includes(pathname) || pathname === '/lab' || pathname.startsWith('/usecase') || (isTourActive && (pathname === '/patients' || pathname === '/research'))
+  const isPublic = ['/', '/login', '/invite'].includes(pathname) || pathname === '/lab' || pathname.startsWith('/usecase')
 
   useEffect(() => {
     if (isPublic) { setLoading(false); return }
-    // During tour, patient pages are accessible without auth
-    if (isTourActive && (isPatient || pathname === '/patients' || pathname === '/research')) {
+    // Check tour INSIDE useEffect (sessionStorage only available client-side)
+    const isTourActive = sessionStorage.getItem('pulsar-tour-active') === '1'
+    if (isTourActive) {
       setUser('Démo')
       setLoading(false)
       return
