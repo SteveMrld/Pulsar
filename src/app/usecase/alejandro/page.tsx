@@ -190,6 +190,129 @@ function TimelineCard({ event, index, isActive, onClick }: { event: typeof TIMEL
 }
 
 // ══════════════════════════════════════════════════════════════
+// PRÉLUDE NARRATIF
+// Voix humaine avant les données — chapitres I→V de la Genèse
+// ══════════════════════════════════════════════════════════════
+
+const FRAGMENTS = [
+  {
+    chapter: 'I',
+    title: 'La fièvre',
+    text: 'Tout commence par une fièvre. Une fièvre d\'enfant, comme il y en a des milliers chaque jour. Alejandro a six ans. Sa température monte, ne redescend pas.',
+    coda: 'Et puis quelque chose de lumineux survient : Alejandro va mieux. Suffisamment pour enregistrer une petite vidéo à sa grand-mère. Sa voix d\'enfant, un sourire peut-être, quelques mots simples — je vais mieux, je vais bientôt sortir.',
+    color: '#6C7CFF',
+  },
+  {
+    chapter: 'II',
+    title: 'La chute',
+    text: 'Le lendemain, avant la sortie, on lui fait de derniers examens de sang. Des examens de routine. Et à partir de là, tout bascule.',
+    coda: 'Quand on entre dans sa chambre de réanimation, on voit le nombre de lignes de perfusion intraveineuse, les poches de médicaments suspendues les unes à côté des autres, les écrans qui clignotent, les tuyaux partout. On est abasourdis. Sidérés par la violence de ce qu\'on voit.',
+    color: '#F59E0B',
+  },
+  {
+    chapter: 'III–IV',
+    title: 'Le diagnostic',
+    text: 'Un mot que personne autour d\'Alejandro n\'avait jamais entendu : syndrome FIRES. Febrile Infection-Related Epilepsy Syndrome. L\'une des pathologies les plus dévastatrices qui puisse frapper un enfant.',
+    coda: 'La nuit, je suis sur Internet. Je cherche tout. Boston. Chicago. New York. Mumbai. Zurich. Plus d\'une vingtaine d\'emails aux plus grands spécialistes de la planète. Et le miracle — parce que c\'en est un — c\'est qu\'ils répondent. Tous.',
+    color: '#EF4444',
+  },
+  {
+    chapter: 'V',
+    title: 'La promesse',
+    text: 'Quinze jours. C\'est le temps qu\'il aura fallu entre une fièvre d\'enfant et un enterrement d\'enfant.',
+    coda: 'Quand je suis entré dans cette chambre et que je l\'ai vu, j\'ai su que je ne pouvais pas laisser ça sans réponse. Je lui ai fait une promesse. Les mêmes mots, toujours les mêmes :',
+    quote: 'Je ferai quelque chose. Je ferai quelque chose pour que ta mort ne soit pas en vain. Pour les prochains enfants qui seront frappés par cette pathologie. Je te le jure.',
+    color: '#F5A623',
+  },
+]
+
+function PréludeNarratif() {
+  const [revealed, setRevealed] = useState<number[]>([])
+  const [started, setStarted] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !started) {
+        setStarted(true)
+        FRAGMENTS.forEach((_, i) => {
+          setTimeout(() => setRevealed(r => [...r, i]), i * 600)
+        })
+      }
+    }, { threshold: 0.15 })
+    if (ref.current) obs.observe(ref.current)
+    return () => obs.disconnect()
+  }, [started])
+
+  return (
+    <div ref={ref} style={{ marginBottom: 'var(--p-space-8)' }}>
+      {/* Section header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 24 }}>
+        <div style={{ width: 4, height: 20, borderRadius: 2, background: '#F5A623' }} />
+        <h2 style={{ fontSize: 'var(--p-text-base)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>
+          Ce qui s'est passé
+        </h2>
+      </div>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {FRAGMENTS.map((f, i) => (
+          <div key={i} style={{
+            opacity: revealed.includes(i) ? 1 : 0,
+            transform: revealed.includes(i) ? 'translateY(0)' : 'translateY(12px)',
+            transition: 'opacity 0.7s ease, transform 0.7s ease',
+            background: 'var(--p-bg-card)',
+            borderRadius: 14,
+            border: `1px solid ${f.color}15`,
+            borderLeft: `4px solid ${f.color}`,
+            padding: '18px 20px',
+            position: 'relative',
+            overflow: 'hidden',
+          }}>
+            {/* Chapter watermark */}
+            <div style={{
+              position: 'absolute', top: 10, right: 16,
+              fontSize: 40, fontWeight: 900, color: `${f.color}06`,
+              fontFamily: 'var(--p-font-mono)', lineHeight: 1, userSelect: 'none',
+            }}>{f.chapter}</div>
+
+            <div style={{ fontSize: 9, fontWeight: 700, color: f.color, letterSpacing: 2, textTransform: 'uppercase', marginBottom: 8, fontFamily: 'var(--p-font-mono)' }}>
+              {f.title}
+            </div>
+            <p style={{ fontSize: 13, color: 'var(--p-text)', lineHeight: 1.8, marginBottom: 10, fontStyle: 'italic' }}>
+              {f.text}
+            </p>
+            <p style={{ fontSize: 12, color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: f.quote ? 12 : 0 }}>
+              {f.coda}
+            </p>
+            {f.quote && (
+              <div style={{
+                borderLeft: `3px solid ${f.color}`,
+                paddingLeft: 16, marginTop: 4,
+                background: `${f.color}08`, borderRadius: '0 8px 8px 0',
+                padding: '10px 16px',
+              }}>
+                <p style={{ fontSize: 13, color: f.color, fontStyle: 'italic', lineHeight: 1.9, margin: 0 }}>
+                  « {f.quote} »
+                </p>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Bridge vers la reconstitution */}
+      <div style={{ textAlign: 'center', margin: '28px 0 8px', padding: '0 20px' }}>
+        <div style={{ width: 1, height: 32, background: 'linear-gradient(180deg, transparent, #6C7CFF40)', margin: '0 auto 12px' }} />
+        <p style={{ fontSize: 12, color: 'var(--p-text-dim)', lineHeight: 1.7, maxWidth: 420, margin: '0 auto', fontStyle: 'italic' }}>
+          Voici ce que les moteurs PULSAR auraient vu, jour après jour, si la plateforme avait existé en avril 2025.
+        </p>
+        <div style={{ width: 1, height: 32, background: 'linear-gradient(180deg, #6C7CFF40, transparent)', margin: '12px auto 0' }} />
+      </div>
+    </div>
+  )
+}
+
+// ══════════════════════════════════════════════════════════════
 // RECONSTITUTION CINÉMATIQUE
 // Play auto + scroll libre — 9 jours — J+15 écran mémorial
 // ══════════════════════════════════════════════════════════════
@@ -616,6 +739,9 @@ export default function AlejandroCasePage() {
           </div>
         ))}
       </div>
+
+      {/* Prélude narratif */}
+      <PréludeNarratif />
 
       {/* Reconstitution cinématique */}
       <ReconstitutionCinematique />
