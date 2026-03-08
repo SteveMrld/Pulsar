@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import Picto from '@/components/Picto'
 import Link from 'next/link'
@@ -189,6 +189,267 @@ function TimelineCard({ event, index, isActive, onClick }: { event: typeof TIMEL
   )
 }
 
+// ══════════════════════════════════════════════════════════════
+// RECONSTITUTION CINÉMATIQUE
+// Play auto + scroll libre — 9 jours — J+15 écran mémorial
+// ══════════════════════════════════════════════════════════════
+
+const VITALS: Record<number, { pam?: string; fc?: string; spo2?: string; crises?: string }> = {
+  0: {},
+  1: {},
+  2: { pam: '—', fc: '—', spo2: '—', crises: '3' },
+  3: { pam: '—', fc: '—', spo2: '—', crises: '5' },
+  4: { pam: '61', fc: '82', spo2: '95%', crises: '6' },
+  5: { pam: '67', fc: '99', spo2: '94%', crises: '8' },
+  6: { pam: '—', fc: '—', spo2: '—', crises: '12' },
+  7: { pam: '—', fc: '—', spo2: '—', crises: '9' },
+  8: { pam: '114 (!)', fc: '108', spo2: '97%', crises: '—' },
+}
+
+function VitalChip({ label, value, alert }: { label: string; value: string; alert?: boolean }) {
+  return (
+    <div style={{
+      display: 'flex', flexDirection: 'column', alignItems: 'center',
+      background: alert ? '#EF444412' : '#6C7CFF08',
+      border: `1px solid ${alert ? '#EF444425' : '#6C7CFF18'}`,
+      borderRadius: 8, padding: '6px 10px', minWidth: 52,
+    }}>
+      <span style={{ fontSize: 14, fontWeight: 900, color: alert ? '#EF4444' : '#6C7CFF', fontFamily: 'var(--p-font-mono)' }}>{value}</span>
+      <span style={{ fontSize: 8, color: 'var(--p-text-dim)', marginTop: 2, fontWeight: 700 }}>{label}</span>
+    </div>
+  )
+}
+
+function ReconstitutionCinematique() {
+  const [current, setCurrent] = useState(0)
+  const [playing, setPlaying] = useState(false)
+  const [entered, setEntered] = useState(false)
+  const [factVisible, setFactVisible] = useState(0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const sectionRef = useRef<HTMLDivElement>(null)
+  const total = TIMELINE.length
+
+  const isDeath = current === total - 1
+
+  // Scroll-into-view reveals section
+  useEffect(() => {
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setEntered(true) }, { threshold: 0.15 })
+    if (sectionRef.current) obs.observe(sectionRef.current)
+    return () => obs.disconnect()
+  }, [])
+
+  // Animate facts one by one when day changes
+  useEffect(() => {
+    setFactVisible(0)
+    const ev = TIMELINE[current]
+    if (!ev) return
+    const total = ev.facts.length + ev.pulsar.length
+    let i = 0
+    const t = setInterval(() => {
+      i++
+      setFactVisible(i)
+      if (i >= total) clearInterval(t)
+    }, 220)
+    return () => clearInterval(t)
+  }, [current])
+
+  // Auto-play
+  useEffect(() => {
+    if (playing) {
+      intervalRef.current = setInterval(() => {
+        setCurrent(c => {
+          if (c >= total - 1) { setPlaying(false); return c }
+          return c + 1
+        })
+      }, 4200)
+    } else {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+    }
+    return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
+  }, [playing, total])
+
+  const goTo = useCallback((i: number) => {
+    setCurrent(Math.max(0, Math.min(total - 1, i)))
+  }, [total])
+
+  const ev = TIMELINE[current]
+  const vitals = VITALS[current] || {}
+  const progress = (current / (total - 1)) * 100
+
+  return (
+    <div ref={sectionRef} style={{ marginBottom: 'var(--p-space-8)', opacity: entered ? 1 : 0, transition: 'opacity 0.8s ease' }}>
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{ width: 4, height: 20, borderRadius: 2, background: 'linear-gradient(180deg, #6C7CFF, #EF4444)' }} />
+          <h2 style={{ fontSize: 'var(--p-text-base)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>
+            Reconstitution — 15 jours
+          </h2>
+        </div>
+        <button
+          onClick={() => { setPlaying(p => !p) }}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 6,
+            padding: '6px 14px', borderRadius: 8, cursor: 'pointer',
+            background: playing ? '#EF444415' : '#6C7CFF15',
+            border: `1px solid ${playing ? '#EF444430' : '#6C7CFF30'}`,
+            color: playing ? '#EF4444' : '#6C7CFF',
+            fontSize: 11, fontWeight: 700, fontFamily: 'var(--p-font-mono)',
+            transition: 'all 0.2s',
+          }}
+        >
+          {playing ? '⏸ PAUSE' : '▶ PLAY'}
+        </button>
+      </div>
+
+      {/* Progress bar */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 14 }}>
+        <button onClick={() => goTo(current - 1)} disabled={current === 0}
+          style={{ background: 'none', border: 'none', cursor: current === 0 ? 'default' : 'pointer', color: current === 0 ? '#2A3040' : '#6C7CFF', fontSize: 14, padding: '0 4px' }}>‹</button>
+        <div style={{ flex: 1, position: 'relative', height: 6, background: '#1A2235', borderRadius: 3, overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', left: 0, top: 0, height: '100%', width: `${progress}%`, background: isDeath ? '#DC2626' : 'linear-gradient(90deg, #6C7CFF, #EF4444)', borderRadius: 3, transition: 'width 0.5s ease' }} />
+        </div>
+        <button onClick={() => goTo(current + 1)} disabled={current === total - 1}
+          style={{ background: 'none', border: 'none', cursor: current === total - 1 ? 'default' : 'pointer', color: current === total - 1 ? '#2A3040' : '#6C7CFF', fontSize: 14, padding: '0 4px' }}>›</button>
+      </div>
+
+      {/* Day dots */}
+      <div style={{ display: 'flex', gap: 4, justifyContent: 'center', marginBottom: 16 }}>
+        {TIMELINE.map((e, i) => (
+          <button key={i} onClick={() => goTo(i)} title={e.title} style={{
+            width: i === current ? 20 : 8, height: 8,
+            borderRadius: 4, border: 'none', cursor: 'pointer',
+            background: i === current ? e.color : i < current ? e.color + '60' : '#1A2235',
+            transition: 'all 0.3s ease', padding: 0,
+          }} />
+        ))}
+      </div>
+
+      {/* Main cinematic card */}
+      {isDeath ? (
+        // Death screen
+        <div style={{
+          background: '#000', borderRadius: 16, padding: '60px 32px',
+          textAlign: 'center', border: '1px solid #222',
+          animation: 'fadeIn 1s ease',
+        }}>
+          <div style={{ fontSize: 10, fontFamily: 'var(--p-font-mono)', color: '#444', letterSpacing: 4, marginBottom: 24 }}>
+            17 AVRIL 2025 · J+15
+          </div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 12, lineHeight: 1.3 }}>
+            Arrêt cardiaque.
+          </div>
+          <div style={{ fontSize: 13, color: '#666', maxWidth: 420, margin: '0 auto 32px', lineHeight: 1.7 }}>
+            Pas de lésion cérébrale irréversible aux derniers examens. Anakinra administré à J+10 — des signes d'amélioration à J+11. Mais la fenêtre des 72 premières heures s'était fermée 9 jours plus tôt.
+          </div>
+          <div style={{ width: 1, height: 40, background: '#F5A623', margin: '0 auto 24px', opacity: 0.6 }} />
+          <div style={{ fontSize: 16, color: '#F5A623', fontStyle: 'italic', lineHeight: 1.8 }}>
+            À la mémoire d'Alejandro R.<br />
+            <span style={{ fontSize: 12, opacity: 0.7 }}>2019 — 2025</span>
+          </div>
+        </div>
+      ) : (
+        <div style={{
+          background: 'var(--p-bg-card)', borderRadius: 16,
+          border: `1px solid ${ev.color}20`,
+          overflow: 'hidden',
+          boxShadow: `0 0 40px ${ev.color}08`,
+        }}>
+          {/* Top band */}
+          <div style={{ height: 3, background: `linear-gradient(90deg, ${ev.color}, ${ev.color}40)` }} />
+
+          <div style={{ padding: '20px 20px 16px' }}>
+            {/* Day header */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                  <div style={{
+                    padding: '4px 12px', borderRadius: 6,
+                    background: `${ev.color}15`, border: `1px solid ${ev.color}25`,
+                    fontSize: 12, fontWeight: 900, color: ev.color, fontFamily: 'var(--p-font-mono)',
+                  }}>
+                    {ev.day < 0 ? `J${ev.day}` : ev.day === 0 ? 'J0' : `J+${ev.day}`}
+                  </div>
+                  <span style={{ fontSize: 10, color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>{ev.date}</span>
+                  <span style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>· {ev.place}</span>
+                </div>
+                <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--p-text)', lineHeight: 1.3 }}>{ev.title}</div>
+              </div>
+              {/* VPS gauge */}
+              <div style={{ textAlign: 'center', minWidth: 52 }}>
+                <div style={{ fontSize: 28, fontWeight: 900, color: ev.color, fontFamily: 'var(--p-font-mono)', lineHeight: 1 }}>{ev.vps}</div>
+                <div style={{ fontSize: 8, color: ev.color, fontWeight: 700 }}>VPS</div>
+                <div style={{ marginTop: 4, width: 48, height: 4, background: '#1A2235', borderRadius: 2, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', width: `${ev.vps}%`, background: ev.color, borderRadius: 2, transition: 'width 0.6s ease' }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Vitals row */}
+            {(vitals.pam || vitals.fc || vitals.spo2 || vitals.crises) && (
+              <div style={{ display: 'flex', gap: 6, marginBottom: 14, flexWrap: 'wrap' }}>
+                {vitals.pam && <VitalChip label="PAM" value={vitals.pam} alert={vitals.pam.includes('!')} />}
+                {vitals.fc && <VitalChip label="FC" value={vitals.fc} />}
+                {vitals.spo2 && <VitalChip label="SpO2" value={vitals.spo2} />}
+                {vitals.crises && <VitalChip label="Crises" value={vitals.crises} alert={parseInt(vitals.crises) >= 6} />}
+              </div>
+            )}
+
+            {/* Facts + PULSAR two columns */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+              <div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: '#EF4444', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4, letterSpacing: 1, textTransform: 'uppercase' }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#EF4444', display: 'inline-block' }} /> Événements
+                </div>
+                {ev.facts.map((f, i) => (
+                  <div key={i} style={{
+                    fontSize: 11, color: 'var(--p-text-muted)', paddingLeft: 8,
+                    borderLeft: `2px solid ${i < factVisible ? '#EF444425' : 'transparent'}`,
+                    marginBottom: 4, lineHeight: 1.5,
+                    opacity: i < factVisible ? 1 : 0,
+                    transform: i < factVisible ? 'translateY(0)' : 'translateY(4px)',
+                    transition: 'opacity 0.3s ease, transform 0.3s ease',
+                  }}>{f}</div>
+                ))}
+              </div>
+              <div>
+                <div style={{ fontSize: 9, fontWeight: 700, color: '#2FD1C8', marginBottom: 6, display: 'flex', alignItems: 'center', gap: 4, letterSpacing: 1, textTransform: 'uppercase' }}>
+                  <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#2FD1C8', display: 'inline-block' }} /> PULSAR aurait dit
+                </div>
+                {ev.pulsar.map((p, i) => (
+                  <div key={i} style={{
+                    fontSize: 11, color: '#A0AEC0', paddingLeft: 8,
+                    borderLeft: `2px solid ${i < (factVisible - ev.facts.length) ? '#2FD1C825' : 'transparent'}`,
+                    marginBottom: 4, lineHeight: 1.5,
+                    opacity: i < (factVisible - ev.facts.length) ? 1 : 0,
+                    transform: i < (factVisible - ev.facts.length) ? 'translateY(0)' : 'translateY(4px)',
+                    transition: 'opacity 0.3s ease, transform 0.3s ease',
+                  }}>{p}</div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Keyboard hint */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 16, marginTop: 10 }}>
+        {TIMELINE.map((e, i) => (
+          <button key={i} onClick={() => goTo(i)} style={{
+            background: 'none', border: 'none', cursor: 'pointer',
+            fontSize: 9, color: i === current ? e.color : 'var(--p-text-dim)',
+            fontFamily: 'var(--p-font-mono)', fontWeight: i === current ? 800 : 400,
+            padding: 0, transition: 'color 0.2s',
+            display: i === 0 || i === total - 1 || i === current || i === current - 1 || i === current + 1 ? 'block' : 'none',
+          }}>
+            {e.day < 0 ? `J${e.day}` : e.day === 0 ? 'J0' : `J+${e.day}`}
+          </button>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 export default function AlejandroCasePage() {
   const { t } = useLang()
   const [activeDay, setActiveDay] = useState(0)
@@ -355,6 +616,9 @@ export default function AlejandroCasePage() {
           </div>
         ))}
       </div>
+
+      {/* Reconstitution cinématique */}
+      <ReconstitutionCinematique />
 
       {/* Conclusion */}
       <div style={{ background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-2xl)', padding: 'var(--p-space-8)', border: '1px solid #F5A62315', textAlign: 'center' }}>
