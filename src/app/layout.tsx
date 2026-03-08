@@ -1,7 +1,9 @@
 import type { Metadata, Viewport } from 'next'
 import '@/styles/tokens.css'
 import AppShell from '@/components/AppShell'
-import ResearchPulse from '@/components/ResearchPulse';
+import ResearchPulse from '@/components/ResearchPulse'
+import dynamic from 'next/dynamic'
+const GuidedTour = dynamic(() => import('@/components/GuidedTour'), { ssr: false });
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -49,7 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })()
         `}} />
       </head>
-      <body><AppShell>{children}</AppShell></body>
+      <body><AppShell>{children}</AppShell><GuidedTour /></body>
     </html>
   )
 }

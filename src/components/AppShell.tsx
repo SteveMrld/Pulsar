@@ -9,9 +9,7 @@ import { RoleBadge } from './RoleGate'
 import ConnectionStatus from './ConnectionStatus'
 import PulsarGuide from './PulsarGuide'
 import CommandPalette from './CommandPalette'
-import GuidedTour from './GuidedTour'
 import dynamic from 'next/dynamic'
-const GuidedTourDynamic = dynamic(() => import('./GuidedTour'), { ssr: false })
 import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
 import PulsarLogo from '@/components/PulsarLogo'
 import PulsarAI from '@/components/PulsarAI'
@@ -152,7 +150,6 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         {children}
-        <GuidedTourDynamic />
       </div>
     </LanguageProvider>
   )
@@ -205,7 +202,6 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         {children}
-        <GuidedTour />
         <PulsarAIFloat open={aiOpen} setOpen={setAiOpen} />
       </div>
     </ProfileProvider>
@@ -239,7 +235,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
             <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={26} height={26}
                 style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.4))', display: 'block', objectFit: 'contain' }} />
-              <PulsarLogo size="md" />
+              <span style={{ fontSize: 14, fontWeight: 800, color: '#6C7CFF', fontFamily: 'var(--p-font-mono)', letterSpacing: '0.08em' }}>PULSAR</span>
             </Link>
             <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1l4 4-4 4" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round"/></svg>
             <span style={{ fontSize: '11px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>{breadcrumb}</span>
@@ -299,7 +295,6 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
 
         <ConnectionStatus />
         <PulsarGuide />
-        <GuidedTour />
         <PulsarAIFloat open={aiOpen} setOpen={setAiOpen} />
       </div>
     </ProfileProvider>
