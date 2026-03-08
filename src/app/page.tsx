@@ -322,20 +322,13 @@ export default function LandingPage() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
               {[
                 {
-                  href: '/usecase/alejandro',
-                  color: '#F5A623',
-                  icon: '✦',
-                  label: t('Cas Alejandro', 'Alejandro Case'),
-                  sub: t('Le cas fondateur. 15 jours. Ce que PULSAR aurait vu.', 'The founding case. 15 days. What PULSAR would have seen.'),
-                  tag: t('Histoire vraie', 'True story'),
-                },
-                {
                   href: '#',
                   color: '#6C7CFF',
                   icon: '▶',
                   label: t('Voir la démo', 'View demo'),
                   sub: t('Patient fictif. Tous les moteurs actifs. Parcours complet.', 'Fictional patient. All engines active. Full workflow.'),
                   tag: t('Démo live', 'Live demo'),
+                  onClick: () => setDemoOpen(true),
                 },
                 {
                   href: '/login',
@@ -354,7 +347,7 @@ export default function LandingPage() {
                   tag: 'Public',
                 },
               ].map((card, i) => (
-                <a key={i} href={card.href} style={{ textDecoration: 'none' }}>
+                <a key={i} href={(card as any).onClick ? '#' : card.href} onClick={(card as any).onClick} style={{ textDecoration: 'none' }}>
                   <div style={{
                     background: 'var(--p-bg-card)',
                     borderRadius: 16,

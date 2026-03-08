@@ -141,9 +141,6 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
             <PulsarLogo size="sm" />
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Link href="/usecase/alejandro" style={{ fontSize: 10, color: '#F5A623', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, background: 'rgba(245,166,35,0.08)' }}>Alejandro</Link>
-            <Link href="/lab" style={{ fontSize: 10, color: '#10B981', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, background: 'rgba(16,185,129,0.08)' }}>Lab</Link>
-            <CommandPalette />
             <Link href="/login" style={{ fontSize: 10, color: '#6C7CFF', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(108,124,255,0.2)' }}>Connexion</Link>
           </div>
         </div>
