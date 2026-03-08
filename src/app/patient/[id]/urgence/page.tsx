@@ -163,6 +163,12 @@ export default function UrgencePage() {
           )}
         </div>
       </div>
+
+      {/* ── ILLUSTRATION BBB ── */}
+      <div style={{ marginTop: 16, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,107,53,0.2)', background: 'rgba(0,0,0,0.3)' }}>
+        <img src="/assets/illustrations/PULSAR_BBB_FIRES_detailed.png" alt="Barrière hémato-encéphalique FIRES" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
+        <div style={{ padding: '8px 14px', fontFamily: 'var(--p-font-mono)', fontSize: 9, color: 'rgba(255,107,53,0.7)', borderTop: '1px solid rgba(255,107,53,0.1)' }}>Barrière hémato-encéphalique · Perméabilité +340% · CAE Engine</div>
+      </div>
     </div>
   )
 }

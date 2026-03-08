@@ -191,6 +191,18 @@ export default function DiagnosticPage() {
           )}
         </div>
       </div>
+
+      {/* ── ILLUSTRATIONS CLINIQUES ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, marginTop: 16 }}>
+        <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(139,92,246,0.2)', background: 'rgba(0,0,0,0.3)' }}>
+          <img src="/assets/illustrations/PULSAR_BRAIN_NORMAL_VS_FIRES.png" alt="Cerveau normal vs FIRES" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
+          <div style={{ padding: '8px 12px', fontFamily: 'var(--p-font-mono)', fontSize: 9, color: 'rgba(139,92,246,0.7)', borderTop: '1px solid rgba(139,92,246,0.1)' }}>Cerveau normal vs FIRES · NeuroCore</div>
+        </div>
+        <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(239,68,68,0.2)', background: 'rgba(0,0,0,0.3)' }}>
+          <img src="/assets/illustrations/PULSAR_FIRES_TIMELINE.png" alt="Timeline FIRES" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
+          <div style={{ padding: '8px 12px', fontFamily: 'var(--p-font-mono)', fontSize: 9, color: 'rgba(239,68,68,0.7)', borderTop: '1px solid rgba(239,68,68,0.1)' }}>Chronologie FIRES · Délais DDD identifiés</div>
+        </div>
+      </div>
     </div>
   )
 }

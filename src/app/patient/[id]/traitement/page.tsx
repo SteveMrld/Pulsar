@@ -316,6 +316,12 @@ function DiscoveryEnrichmentPanel({ syndrome }: { syndrome: string }) {
       <div style={{ marginTop: 'var(--p-space-6)' }}>
         <DrugSafetyChecker />
       </div>
+
+      {/* ── ILLUSTRATION ANAKINRA ── */}
+      <div style={{ marginTop: 20, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(16,185,129,0.2)', background: 'rgba(0,0,0,0.3)' }}>
+        <img src="/assets/illustrations/PULSAR_ANAKINRA_MECHANISM.png" alt="Mécanisme Anakinra" style={{ width: '100%', display: 'block', opacity: 0.9 }} />
+        <div style={{ padding: '8px 14px', fontFamily: 'var(--p-font-mono)', fontSize: 9, color: 'rgba(16,185,129,0.7)', borderTop: '1px solid rgba(16,185,129,0.1)' }}>Mécanisme d'action Anakinra · Inhibition IL-1β · TPE Engine</div>
+      </div>
     </div>
   )
 }
