@@ -138,9 +138,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           borderBottom: '1px solid rgba(108,124,255,0.06)',
         }}>
           <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={22} height={22}
-              style={{ filter: 'drop-shadow(0 0 6px rgba(108,124,255,0.4))', objectFit: 'contain' }} />
-            <span style={{ fontSize: 13, fontWeight: 800, color: '#6C7CFF', fontFamily: 'var(--p-font-mono)', letterSpacing: '0.1em' }}>PULSAR</span>
+            <PulsarLogo size="sm" />
           </Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
             <Link href="/usecase/alejandro" style={{ fontSize: 10, color: '#F5A623', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, background: 'rgba(245,166,35,0.08)' }}>Alejandro</Link>
@@ -233,9 +231,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           {/* LEFT */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: '170px' }}>
             <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <img src="/assets/pictos-v17/brain-hero-128.png" alt="PULSAR" width={26} height={26}
-                style={{ filter: 'drop-shadow(0 0 8px rgba(108,124,255,0.4))', display: 'block', objectFit: 'contain' }} />
-              <span style={{ fontSize: 14, fontWeight: 800, color: '#6C7CFF', fontFamily: 'var(--p-font-mono)', letterSpacing: '0.08em' }}>PULSAR</span>
+              <PulsarLogo size="md" />
             </Link>
             <svg width="6" height="10" viewBox="0 0 6 10" fill="none"><path d="M1 1l4 4-4 4" stroke="rgba(255,255,255,0.2)" strokeWidth="1.5" strokeLinecap="round"/></svg>
             <span style={{ fontSize: '11px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>{breadcrumb}</span>
