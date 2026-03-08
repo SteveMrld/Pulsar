@@ -1,0 +1,191 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="40%"><stop offset="0%" stop-color="#07101F"/><stop offset="100%" stop-color="#04070F"/></radialGradient>
+  <radialGradient id="brainNorm" cx="45%" cy="35%"><stop offset="0%" stop-color="#2A2060"/><stop offset="50%" stop-color="#1A1545"/><stop offset="100%" stop-color="#0F0D2A"/></radialGradient>
+  <radialGradient id="brainFIRES" cx="45%" cy="35%"><stop offset="0%" stop-color="#4A1515"/><stop offset="40%" stop-color="#2D0D0D"/><stop offset="100%" stop-color="#1A0808"/></radialGradient>
+  <radialGradient id="hotspot" cx="50%" cy="50%"><stop offset="0%" stop-color="#FF4444" stop-opacity="0.9"/><stop offset="60%" stop-color="#DC2626" stop-opacity="0.5"/><stop offset="100%" stop-color="#991B1B" stop-opacity="0"/></radialGradient>
+  <radialGradient id="hotspot2" cx="50%" cy="50%"><stop offset="0%" stop-color="#FF6B35" stop-opacity="0.85"/><stop offset="60%" stop-color="#EA580C" stop-opacity="0.4"/><stop offset="100%" stop-color="#9A3412" stop-opacity="0"/></radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="softg"><feGaussianBlur stdDeviation="3.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="bigglow"><feGaussianBlur stdDeviation="18" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="subtleglow"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+
+<rect width="1400" height="900" fill="url(#bg)"/>
+
+<!-- Header -->
+<text x="50" y="48" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#6C7CFF" letter-spacing="3" opacity="0.7">PULSAR · NEUROCORE · ANALYSE COMPARATIVE IRM</text>
+<text x="50" y="80" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">Cerveau Normal vs FIRES</text>
+<text x="50" y="108" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">Hyperactivité épileptique · Inflammation microgliale · Atrophie hippocampique · Déséquilibre GABA/Glutamate</text>
+
+<!-- CENTER DIVIDER -->
+<line x1="700" y1="130" x2="700" y2="820" stroke="rgba(255,255,255,0.07)" stroke-width="1.5" stroke-dasharray="8,6"/>
+<text x="700" y="148" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" fill="rgba(255,255,255,0.12)" letter-spacing="3">VS</text>
+
+<!-- ════ LEFT: CERVEAU NORMAL ════ -->
+<text x="350" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="rgba(108,124,255,0.8)" letter-spacing="2">CERVEAU NORMAL</text>
+<text x="350" y="173" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">Activité électrique régulière · Microenvironnement équilibré</text>
+
+<!-- Brain outline left (side view, sagittal) -->
+<!-- Main brain shape -->
+<path d="M130,480 Q100,420 110,360 Q118,300 150,260 Q185,215 235,195 Q285,170 340,168 Q400,165 450,185 Q500,205 530,240 Q565,280 572,330 Q580,385 565,430 Q550,475 520,510 Q490,545 450,565 Q410,580 360,582 Q310,584 270,570 Q230,555 195,530 Q160,505 130,480Z" 
+      fill="url(#brainNorm)" stroke="rgba(108,124,255,0.5)" stroke-width="2.5" filter="url(#subtleglow)"/>
+
+<!-- Cortical gyri (left brain - normal) -->
+<!-- Frontal lobe gyri -->
+<path d="M175,350 Q205,325 240,330 Q270,335 295,315 Q320,295 355,300 Q385,305 400,285" fill="none" stroke="rgba(108,124,255,0.4)" stroke-width="5" stroke-linecap="round"/>
+<path d="M165,390 Q200,370 235,375 Q265,378 295,358 Q325,340 360,345 Q390,350 415,330" fill="none" stroke="rgba(108,124,255,0.35)" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M155,430 Q190,412 225,418 Q258,423 285,403 Q315,382 348,388 Q380,393 410,370 Q435,350 455,340" fill="none" stroke="rgba(108,124,255,0.3)" stroke-width="4" stroke-linecap="round"/>
+<!-- Parietal/occipital -->
+<path d="M420,280 Q450,265 478,272 Q505,280 525,265" fill="none" stroke="rgba(108,124,255,0.35)" stroke-width="4" stroke-linecap="round"/>
+<path d="M445,320 Q472,305 498,312 Q522,320 545,308" fill="none" stroke="rgba(108,124,255,0.3)" stroke-width="4" stroke-linecap="round"/>
+<path d="M460,360 Q486,345 512,352 Q538,360 558,346" fill="none" stroke="rgba(108,124,255,0.28)" stroke-width="3.5" stroke-linecap="round"/>
+<!-- Temporal lobe -->
+<path d="M180,450 Q215,440 248,448 Q278,456 308,442" fill="none" stroke="rgba(108,124,255,0.25)" stroke-width="3.5" stroke-linecap="round"/>
+<path d="M175,490 Q210,480 244,488 Q272,495 302,480 Q332,465 365,472" fill="none" stroke="rgba(108,124,255,0.22)" stroke-width="3" stroke-linecap="round"/>
+<path d="M180,530 Q215,522 248,530 Q278,538 310,524 Q345,510 378,518" fill="none" stroke="rgba(108,124,255,0.2)" stroke-width="3" stroke-linecap="round"/>
+
+<!-- Key anatomical structures (left, normal) -->
+<!-- Hippocampus (C-shaped, healthy) -->
+<path d="M245,480 Q255,465 270,462 Q285,462 295,472 Q300,482 295,492 Q285,500 270,497 Q255,493 248,482 Z" 
+      fill="rgba(108,124,255,0.25)" stroke="rgba(108,124,255,0.7)" stroke-width="2" filter="url(#softg)"/>
+<text x="348" y="488" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(108,124,255,0.7)">Hippocampe</text>
+<text x="348" y="500" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(108,124,255,0.45)">Volume normal</text>
+<line x1="297" y1="480" x2="343" y2="482" stroke="rgba(108,124,255,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+
+<!-- Thalamus (oval, normal) -->
+<ellipse cx="355" cy="430" rx="30" ry="20" fill="rgba(139,92,246,0.25)" stroke="rgba(139,92,246,0.6)" stroke-width="1.8" filter="url(#softg)"/>
+<text x="393" y="426" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(139,92,246,0.7)">Thalamus</text>
+<text x="393" y="438" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(139,92,246,0.45)">Relais normal</text>
+<line x1="386" y1="430" x2="390" y2="430" stroke="rgba(139,92,246,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+
+<!-- Corpus callosum (curved bar) -->
+<path d="M248,370 Q355,345 455,370" fill="none" stroke="rgba(47,209,200,0.5)" stroke-width="7" stroke-linecap="round"/>
+<text x="350" y="340" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(47,209,200,0.6)">Corps calleux — intact</text>
+<line x1="350" y1="345" x2="355" y2="360" stroke="rgba(47,209,200,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+
+<!-- Brainstem (left) -->
+<path d="M320,565 Q340,590 352,625 Q356,645 345,660 Q330,672 315,665 Q300,658 296,640 Q290,618 305,598 Z"
+      fill="rgba(108,124,255,0.2)" stroke="rgba(108,124,255,0.4)" stroke-width="2"/>
+<text x="230" y="628" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(108,124,255,0.5)">Tronc cérébral</text>
+<line x1="300" y1="628" x2="268" y2="622" stroke="rgba(108,124,255,0.25)" stroke-width="1" stroke-dasharray="3,3"/>
+
+<!-- Cerebellum (left) -->
+<path d="M415,565 Q455,565 490,580 Q520,595 530,620 Q535,640 520,655 Q500,668 470,665 Q440,662 420,645 Q400,628 398,606 Q397,585 415,565Z"
+      fill="rgba(108,124,255,0.15)" stroke="rgba(108,124,255,0.35)" stroke-width="1.8"/>
+<!-- Cerebellar folia -->
+<path d="M415,580 Q445,572 475,580 Q505,588 525,575" fill="none" stroke="rgba(108,124,255,0.25)" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M410,600 Q440,592 470,600 Q500,608 522,595" fill="none" stroke="rgba(108,124,255,0.22)" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M408,620 Q438,612 468,620 Q498,628 520,615" fill="none" stroke="rgba(108,124,255,0.2)" stroke-width="2.5" stroke-linecap="round"/>
+<text x="465" y="650" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(108,124,255,0.45)">Cervelet</text>
+
+<!-- EEG strip (normal, left) -->
+<rect x="80" y="695" width="540" height="80" rx="10" fill="rgba(108,124,255,0.06)" stroke="rgba(108,124,255,0.2)" stroke-width="1.5"/>
+<text x="88" y="714" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(108,124,255,0.7)">EEG — NORMAL</text>
+<text x="88" y="728" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Alpha: 8–12Hz · Bêta: 12–30Hz · Rythme régulier</text>
+<!-- Normal EEG trace -->
+<svg x="88" y="735" width="520" height="32">
+  <polyline points="0,16 18,16 20,12 22,20 24,16 42,16 44,12 46,20 48,16 66,16 68,12 70,20 72,16 90,16 92,11 94,21 96,16 114,16 116,11 118,21 120,16 138,16 140,12 142,20 144,16 162,16 164,11 166,21 168,16 186,16 188,12 190,20 192,16 210,16 212,11 214,21 216,16 234,16 236,12 238,20 240,16 258,16 260,11 262,21 264,16 282,16 284,12 286,20 288,16 306,16 308,11 310,21 312,16 330,16 332,12 334,20 336,16 354,16 356,11 358,21 360,16 378,16 380,12 382,20 384,16 402,16 404,11 406,21 408,16 426,16 428,12 430,20 432,16 450,16 452,11 454,21 456,16 474,16 476,12 478,20 480,16 498,16 500,11 502,21 504,16 520,16" fill="none" stroke="#6C7CFF" stroke-width="1.5" opacity="0.7"/>
+</svg>
+
+<!-- GABA/Glutamate balance (normal) -->
+<rect x="80" y="788" width="245" height="22" rx="5" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.25)" stroke-width="1"/>
+<text x="92" y="804" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(16,185,129,0.7)">GABA ↔ Glutamate · Équilibré</text>
+<rect x="338" y="788" width="245" height="22" rx="5" fill="rgba(108,124,255,0.08)" stroke="rgba(108,124,255,0.25)" stroke-width="1"/>
+<text x="350" y="804" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(108,124,255,0.7)">Microglie · Quiescent · Homéostasie</text>
+
+<!-- ════ RIGHT: CERVEAU FIRES ════ -->
+<text x="1050" y="155" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="13" font-weight="700" fill="rgba(239,68,68,0.85)" letter-spacing="2">CERVEAU FIRES</text>
+<text x="1050" y="173" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="rgba(255,255,255,0.35)">Status epilepticus réfractaire · Neuroinflammation sévère</text>
+
+<!-- Brain outline right (FIRES - swollen, asymmetric) -->
+<path d="M730,480 Q698,418 710,352 Q720,290 755,248 Q795,202 848,182 Q905,160 962,162 Q1022,163 1072,188 Q1122,213 1152,252 Q1185,295 1190,348 Q1196,405 1178,452 Q1160,498 1125,533 Q1090,567 1046,582 Q1000,596 948,595 Q895,594 852,578 Q808,562 773,535 Q742,510 730,480Z" 
+      fill="url(#brainFIRES)" stroke="rgba(239,68,68,0.55)" stroke-width="2.5" filter="url(#subtleglow)"/>
+
+<!-- HOT ZONES (inflammation) -->
+<circle cx="900" cy="340" r="65" fill="url(#hotspot)" filter="url(#bigglow)" opacity="0.7"/>
+<circle cx="1010" cy="410" r="50" fill="url(#hotspot2)" filter="url(#bigglow)" opacity="0.6"/>
+<circle cx="850" cy="460" r="45" fill="url(#hotspot)" filter="url(#bigglow)" opacity="0.5"/>
+<circle cx="980" cy="290" r="38" fill="url(#hotspot2)" filter="url(#bigglow)" opacity="0.5"/>
+<circle cx="1085" cy="360" r="42" fill="url(#hotspot)" filter="url(#bigglow)" opacity="0.45"/>
+
+<!-- Cortical gyri (FIRES - disrupted, inflamed) -->
+<path d="M775,350 Q808,322 845,327 Q875,332 902,310 Q930,288 965,292 Q995,297 1012,277" fill="none" stroke="rgba(239,68,68,0.5)" stroke-width="5.5" stroke-linecap="round"/>
+<path d="M764,392 Q798,371 838,376 Q868,380 898,358 Q928,338 962,343 Q994,348 1018,325" fill="none" stroke="rgba(239,68,68,0.45)" stroke-width="5" stroke-linecap="round"/>
+<path d="M754,435 Q788,415 825,420 Q858,425 887,403 Q918,382 950,388 Q985,394 1014,370 Q1038,350 1058,340" fill="none" stroke="rgba(239,68,68,0.38)" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M1020,278 Q1052,263 1082,270 Q1110,277 1132,262" fill="none" stroke="rgba(239,68,68,0.4)" stroke-width="4.5" stroke-linecap="round"/>
+<path d="M1048,318 Q1078,302 1105,310 Q1132,318 1155,305" fill="none" stroke="rgba(239,68,68,0.35)" stroke-width="4" stroke-linecap="round"/>
+<path d="M1065,360 Q1092,344 1118,352 Q1144,360 1165,346" fill="none" stroke="rgba(239,68,68,0.32)" stroke-width="4" stroke-linecap="round"/>
+<path d="M778,453 Q812,440 848,447 Q878,453 910,440" fill="none" stroke="rgba(239,68,68,0.28)" stroke-width="3.5" stroke-linecap="round"/>
+<path d="M775,493 Q810,480 845,487 Q875,493 907,479 Q940,464 972,471" fill="none" stroke="rgba(239,68,68,0.24)" stroke-width="3" stroke-linecap="round"/>
+
+<!-- Key anatomical structures (right, FIRES) -->
+<!-- Hippocampus (atrophied, right) -->
+<path d="M846,482 Q855,468 868,465 Q880,464 887,472 Q891,480 887,488 Q880,494 868,492 Q856,490 849,483 Z" 
+      fill="rgba(239,68,68,0.3)" stroke="rgba(239,68,68,0.7)" stroke-width="2" filter="url(#softg)"/>
+<!-- Atrophy indicator -->
+<circle cx="868" cy="478" r="5" fill="none" stroke="#EF4444" stroke-width="1.5" stroke-dasharray="2,2"/>
+<text x="758" y="488" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.8)">Hippocampe</text>
+<text x="758" y="500" text-anchor="end" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.5)">Atrophié −35%</text>
+<line x1="758" y1="488" x2="844" y2="484" stroke="rgba(239,68,68,0.3)" stroke-width="1" stroke-dasharray="3,3"/>
+
+<!-- Thalamus hyperactive (right) -->
+<ellipse cx="958" cy="428" rx="34" ry="23" fill="rgba(239,68,68,0.35)" stroke="#EF4444" stroke-width="2" filter="url(#glow)"/>
+<text x="1000" y="424" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.8)">Thalamus</text>
+<text x="1000" y="436" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.5)">Hyperactivité ↑↑</text>
+
+<!-- Corpus callosum (disrupted) -->
+<path d="M848,368 Q955,343 1058,368" fill="none" stroke="rgba(239,68,68,0.4)" stroke-width="7" stroke-linecap="round" stroke-dasharray="12,5"/>
+<circle cx="913" cy="352" r="6" fill="rgba(239,68,68,0.5)" stroke="#EF4444" stroke-width="1.5" filter="url(#softg)"/>
+<circle cx="998" cy="354" r="5" fill="rgba(239,68,68,0.45)" stroke="#EF4444" stroke-width="1.5" filter="url(#softg)"/>
+<text x="952" y="335" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.6)">Corps calleux — altéré</text>
+
+<!-- Brainstem (right, inflamed) -->
+<path d="M921,566 Q942,592 954,628 Q958,648 946,662 Q930,675 914,667 Q899,660 895,642 Q888,618 904,598 Z"
+      fill="rgba(239,68,68,0.2)" stroke="rgba(239,68,68,0.45)" stroke-width="2"/>
+<text x="836" y="628" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.5)">Tronc cérébral</text>
+
+<!-- Cerebellum right -->
+<path d="M1015,566 Q1058,566 1095,581 Q1128,596 1138,622 Q1143,642 1128,657 Q1107,670 1076,666 Q1045,663 1024,646 Q1002,628 1000,607 Q998,585 1015,566Z"
+      fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.3)" stroke-width="1.8"/>
+<path d="M1015,581 Q1048,572 1080,581 Q1110,589 1132,576" fill="none" stroke="rgba(239,68,68,0.2)" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M1012,602 Q1045,594 1076,602 Q1108,611 1130,597" fill="none" stroke="rgba(239,68,68,0.18)" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M1010,622 Q1043,614 1074,622 Q1106,631 1128,617" fill="none" stroke="rgba(239,68,68,0.16)" stroke-width="2.5" stroke-linecap="round"/>
+
+<!-- Microglial activation markers scattered around FIRES brain -->
+<g fill="rgba(239,68,68,0.55)" filter="url(#softg)">
+  <circle cx="820" cy="300" r="5"/>
+  <circle cx="870" cy="270" r="4.5"/>
+  <circle cx="1060" cy="295" r="5"/>
+  <circle cx="1120" cy="320" r="4.5"/>
+  <circle cx="1140" cy="390" r="5"/>
+  <circle cx="800" cy="410" r="4"/>
+  <circle cx="770" cy="480" r="4.5"/>
+  <circle cx="1075" cy="465" r="4"/>
+  <circle cx="930" cy="245" r="4.5"/>
+  <circle cx="1000" cy="238" r="4"/>
+</g>
+<!-- Microglia labels -->
+<text x="790" y="292" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(239,68,68,0.65)" text-anchor="middle">MG↑</text>
+<text x="1130" y="316" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(239,68,68,0.65)" text-anchor="middle">MG↑</text>
+
+<!-- EEG strip (FIRES) -->
+<rect x="680" y="695" width="540" height="80" rx="10" fill="rgba(239,68,68,0.07)" stroke="rgba(239,68,68,0.3)" stroke-width="1.5"/>
+<text x="690" y="714" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(239,68,68,0.8)">EEG — STATUS EPILEPTICUS FIRES</text>
+<text x="690" y="728" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Burst-suppression · High-voltage polyspikes · Réfractaire</text>
+<!-- Epileptic EEG trace -->
+<svg x="688" y="735" width="520" height="32">
+  <polyline points="0,16 10,16 12,2 15,30 18,16 28,16 30,4 32,28 34,16 44,16 46,2 50,30 54,16 64,16 66,1 70,31 74,16 84,16 86,2 90,29 94,16 104,16 106,3 110,29 114,16 124,16 125,14 126,8 128,24 130,16 132,14 133,2 135,30 138,16 142,16 143,14 145,6 148,26 150,16 160,16 162,4 165,28 168,16 178,16 180,2 184,30 188,16 198,16 200,3 204,29 208,16 218,16 219,12 221,4 224,28 227,16 230,16 237,16 240,3 244,29 248,16 258,16 260,2 264,30 268,16 278,16 280,5 284,27 288,16 298,16 300,3 304,29 308,16 318,16 320,2 325,31 330,16 340,16 342,4 346,28 350,16 360,16 362,1 368,31 374,16 384,16 386,3 390,29 394,16 404,16 406,2 411,30 416,16 426,16 428,4 432,28 436,16 446,16 448,2 453,30 458,16 468,16 470,3 474,29 478,16 488,16 490,2 495,31 500,16 510,16 512,4 516,28 520,16" fill="none" stroke="#EF4444" stroke-width="2" opacity="0.85"/>
+</svg>
+
+<!-- Neurotransmitter imbalance -->
+<rect x="680" y="788" width="245" height="22" rx="5" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.3)" stroke-width="1"/>
+<text x="692" y="804" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.75)">GABA ↓↓ · Glutamate ↑↑ · Excitotoxicité</text>
+<rect x="938" y="788" width="245" height="22" rx="5" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.3)" stroke-width="1"/>
+<text x="950" y="804" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.75)">Microglie M1 · IL-1β ×420% · BBB ↓</text>
+
+<!-- ════ PULSAR DETECTION TAG ════ -->
+<rect x="480" y="840" width="440" height="45" rx="10" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.3)" stroke-width="1.5"/>
+<text x="700" y="859" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#10B981">✦ PULSAR NEUROCORE — Détection automatique</text>
+<text x="700" y="876" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.4)">Asymétrie activité · Atrophie hippocampique · Status epilepticus détecté · VPS 92/100</text>
+</svg>

@@ -1,0 +1,267 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 900" width="1400" height="900">
+<defs>
+  <radialGradient id="bg" cx="50%" cy="35%"><stop offset="0%" stop-color="#07101F"/><stop offset="100%" stop-color="#04070F"/></radialGradient>
+  <linearGradient id="vessel" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#DC2626" stop-opacity="0.9"/><stop offset="50%" stop-color="#EF4444" stop-opacity="0.95"/><stop offset="100%" stop-color="#DC2626" stop-opacity="0.9"/></linearGradient>
+  <linearGradient id="bloodFlow" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#DC2626" stop-opacity="0.4"/><stop offset="50%" stop-color="#EF4444" stop-opacity="0.15"/><stop offset="100%" stop-color="#DC2626" stop-opacity="0.4"/></linearGradient>
+  <radialGradient id="cellBody" cx="50%" cy="40%"><stop offset="0%" stop-color="#1E1050"/><stop offset="100%" stop-color="#0C0825"/></radialGradient>
+  <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="softg"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <filter id="bigred"><feGaussianBlur stdDeviation="16" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  <marker id="arrR" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#EF4444" opacity="0.85"/></marker>
+  <marker id="arrG" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#10B981" opacity="0.85"/></marker>
+  <marker id="arrW" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="rgba(255,255,255,0.5)"/></marker>
+</defs>
+
+<rect width="1400" height="900" fill="url(#bg)"/>
+
+<!-- Header -->
+<text x="50" y="48" font-family="'JetBrains Mono', monospace" font-size="11" font-weight="700" fill="#EF4444" letter-spacing="3" opacity="0.75">PULSAR · NEUROCORE · BARRIÈRE HÉMATO-ENCÉPHALIQUE</text>
+<text x="50" y="80" font-family="Arial, sans-serif" font-size="28" font-weight="900" fill="#FFFFFF">BHE — Architecture &amp; Compromission FIRES</text>
+<text x="50" y="108" font-family="Arial, sans-serif" font-size="14" fill="rgba(255,255,255,0.45)">Jonctions serrées · Pied astrocytaire · Péricyte · LPS · IL-1β · Infiltration leucocytaire</text>
+
+<!-- ════ BLOOD VESSEL (large, centered horizontally) ════ -->
+<!-- Top vessel wall -->
+<rect x="60" y="180" width="1280" height="90" rx="0" fill="url(#vessel)" opacity="0.8"/>
+<!-- Bottom vessel wall -->
+<rect x="60" y="620" width="1280" height="90" rx="0" fill="url(#vessel)" opacity="0.8"/>
+<!-- Blood lumen -->
+<rect x="60" y="270" width="1280" height="350" rx="0" fill="rgba(150,0,0,0.08)"/>
+<!-- Blood flow lines -->
+<path d="M60,345 Q350,330 700,350 Q1050,370 1340,345" fill="none" stroke="rgba(239,68,68,0.12)" stroke-width="20"/>
+<path d="M60,395 Q350,380 700,400 Q1050,420 1340,395" fill="none" stroke="rgba(239,68,68,0.1)" stroke-width="20"/>
+<path d="M60,445 Q350,430 700,450 Q1050,470 1340,445" fill="none" stroke="rgba(239,68,68,0.12)" stroke-width="20"/>
+<path d="M60,495 Q350,480 700,500 Q1050,520 1340,495" fill="none" stroke="rgba(239,68,68,0.1)" stroke-width="20"/>
+<path d="M60,545 Q350,530 700,550 Q1050,570 1340,545" fill="none" stroke="rgba(239,68,68,0.09)" stroke-width="18"/>
+<text x="700" y="450" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="14" font-weight="700" fill="rgba(239,68,68,0.35)" letter-spacing="4">LUMEN SANGUIN</text>
+<text x="700" y="470" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(239,68,68,0.2)">LPS · Cytokines · Leucocytes · VEGF · Facteurs de coagulation</text>
+
+<!-- Flow arrows -->
+<line x1="200" y1="420" x2="350" y2="420" stroke="rgba(239,68,68,0.3)" stroke-width="3" marker-end="url(#arrR)"/>
+<line x1="500" y1="420" x2="650" y2="420" stroke="rgba(239,68,68,0.3)" stroke-width="3" marker-end="url(#arrR)"/>
+<line x1="800" y1="420" x2="950" y2="420" stroke="rgba(239,68,68,0.3)" stroke-width="3" marker-end="url(#arrR)"/>
+<line x1="1050" y1="420" x2="1200" y2="420" stroke="rgba(239,68,68,0.3)" stroke-width="3" marker-end="url(#arrR)"/>
+
+<!-- ════ ENDOTHELIAL CELLS (top wall interior - luminal side) ════ -->
+<!-- Normal zone cells (left) -->
+<g opacity="0.95">
+  <!-- Cell 1: normal TJ -->
+  <path d="M80,260 Q115,250 150,255 Q160,257 160,270 L160,200 Q160,188 150,185 Q115,180 80,188 Q68,192 68,205 Z" fill="rgba(139,92,246,0.3)" stroke="rgba(139,92,246,0.6)" stroke-width="1.8"/>
+  <!-- Nucleus -->
+  <ellipse cx="115" cy="225" rx="18" ry="10" fill="rgba(109,40,217,0.45)" stroke="rgba(139,92,246,0.5)" stroke-width="1.2"/>
+  <circle cx="115" cy="225" r="6" fill="rgba(167,139,250,0.3)"/>
+  <!-- Tight junction left normal -->
+  <line x1="68" y1="225" x2="68" y2="270" stroke="rgba(139,92,246,0.8)" stroke-width="3"/>
+  <line x1="80" y1="268" x2="68" y2="268" stroke="rgba(139,92,246,0.8)" stroke-width="3"/>
+  <!-- Glycocalyx (brush border) -->
+  <g stroke="rgba(47,209,200,0.4)" stroke-width="1">
+    <line x1="85" y1="270" x2="80" y2="285"/>
+    <line x1="95" y1="270" x2="90" y2="286"/>
+    <line x1="105" y1="270" x2="100" y2="285"/>
+    <line x1="115" y1="270" x2="110" y2="286"/>
+    <line x1="125" y1="270" x2="120" y2="285"/>
+    <line x1="135" y1="270" x2="130" y2="286"/>
+    <line x1="145" y1="270" x2="140" y2="285"/>
+  </g>
+
+  <!-- Cell 2: normal -->
+  <path d="M160,260 Q198,250 235,255 Q246,257 246,270 L246,200 Q246,188 235,185 Q198,180 160,188 Q148,192 148,205 Z" fill="rgba(139,92,246,0.28)" stroke="rgba(139,92,246,0.55)" stroke-width="1.8"/>
+  <ellipse cx="198" cy="225" rx="18" ry="10" fill="rgba(109,40,217,0.4)" stroke="rgba(139,92,246,0.45)" stroke-width="1.2"/>
+  <circle cx="198" cy="225" r="6" fill="rgba(167,139,250,0.25)"/>
+  <line x1="246" y1="200" x2="246" y2="270" stroke="rgba(139,92,246,0.8)" stroke-width="3"/>
+  <g stroke="rgba(47,209,200,0.35)" stroke-width="1">
+    <line x1="166" y1="270" x2="161" y2="285"/>
+    <line x1="178" y1="270" x2="173" y2="286"/>
+    <line x1="190" y1="270" x2="185" y2="285"/>
+    <line x1="202" y1="270" x2="197" y2="286"/>
+    <line x1="214" y1="270" x2="209" y2="285"/>
+    <line x1="226" y1="270" x2="221" y2="286"/>
+    <line x1="238" y1="270" x2="233" y2="285"/>
+  </g>
+  
+  <!-- Cell 3: normal -->
+  <path d="M246,260 Q282,250 318,255 Q330,257 330,270 L330,200 Q330,188 318,185 Q282,180 246,188 Q234,192 234,205 Z" fill="rgba(139,92,246,0.28)" stroke="rgba(139,92,246,0.55)" stroke-width="1.8"/>
+  <ellipse cx="282" cy="225" rx="18" ry="10" fill="rgba(109,40,217,0.38)" stroke="rgba(139,92,246,0.45)" stroke-width="1.2"/>
+  <circle cx="282" cy="225" r="6" fill="rgba(167,139,250,0.25)"/>
+  <line x1="330" y1="200" x2="330" y2="270" stroke="rgba(139,92,246,0.8)" stroke-width="3"/>
+  <g stroke="rgba(47,209,200,0.3)" stroke-width="1">
+    <line x1="252" y1="270" x2="247" y2="285"/>
+    <line x1="264" y1="270" x2="259" y2="286"/>
+    <line x1="276" y1="270" x2="271" y2="285"/>
+    <line x1="288" y1="270" x2="283" y2="286"/>
+    <line x1="300" y1="270" x2="295" y2="285"/>
+    <line x1="312" y1="270" x2="307" y2="285"/>
+    <line x1="324" y1="270" x2="319" y2="285"/>
+  </g>
+</g>
+
+<!-- Normal zone label -->
+<rect x="80" y="148" width="270" height="28" rx="6" fill="rgba(16,185,129,0.08)" stroke="rgba(16,185,129,0.3)" stroke-width="1.5"/>
+<text x="215" y="167" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#10B981">✓ ZONE INTACTE — TJ fonctionnelles</text>
+
+<!-- Tight junction labels (normal) -->
+<text x="68" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.7)">TJ</text>
+<text x="160" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.7)">TJ</text>
+<text x="246" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.7)">TJ</text>
+<text x="330" y="162" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(16,185,129,0.7)">TJ</text>
+
+<!-- Molecule labels (normal side permeability) -->
+<text x="200" y="310" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" font-weight="700" fill="rgba(16,185,129,0.5)">IMPERMÉABLE</text>
+<text x="200" y="324" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.3)">Claudes-5, Occludines, ZO-1</text>
+
+<!-- ════ DISRUPTED ZONE (center - FIRES) ════ -->
+<!-- Heat glow under disrupted zone -->
+<rect x="380" y="140" width="620" height="620" fill="rgba(239,68,68,0.04)" filter="url(#bigred)"/>
+
+<!-- Disrupted cells -->
+<!-- Cell 4: swollen/activated -->
+<path d="M340,265 Q378,248 415,257 Q430,260 432,275 L432,195 Q432,182 415,178 Q378,172 340,180 Q326,184 326,198 Z" fill="rgba(239,68,68,0.25)" stroke="rgba(239,68,68,0.6)" stroke-width="2" filter="url(#softg)"/>
+<ellipse cx="378" cy="224" rx="19" ry="11" fill="rgba(185,28,28,0.4)" stroke="rgba(239,68,68,0.5)" stroke-width="1.5"/>
+<circle cx="378" cy="224" r="7" fill="rgba(239,68,68,0.25)"/>
+<!-- NF-kB active in nucleus -->
+<text x="378" y="228" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6" fill="rgba(239,68,68,0.8)">NFκB</text>
+
+<!-- DISRUPTED TIGHT JUNCTION (gap) -->
+<rect x="430" y="155" width="50" height="125" rx="4" fill="rgba(239,68,68,0.08)" stroke="rgba(239,68,68,0.5)" stroke-width="2" stroke-dasharray="4,3"/>
+<text x="455" y="175" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="#EF4444">GAP</text>
+<text x="455" y="188" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(239,68,68,0.7)">TJ ↓↓</text>
+
+<!-- Molecules leaking through gap -->
+<!-- IL-1β leaking down into brain parenchyma -->
+<g filter="url(#softg)">
+  <polygon points="455,200 465,210 462,225 455,230 448,225 445,210" fill="rgba(239,68,68,0.4)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="455" y="220" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#fff">IL-1β</text>
+  <line x1="455" y1="232" x2="455" y2="270" stroke="#EF4444" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+</g>
+<!-- LPS leaking -->
+<g transform="translate(510,205)" filter="url(#softg)">
+  <circle r="14" fill="rgba(255,107,53,0.35)" stroke="#FF6B35" stroke-width="1.5"/>
+  <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="#fff">LPS</text>
+  <line x1="0" y1="16" x2="0" y2="60" stroke="#FF6B35" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+</g>
+<!-- TNF-α -->
+<g transform="translate(575,212)" filter="url(#softg)">
+  <polygon points="0,-12 10,-4 10,8 0,14 -10,8 -10,-4" fill="rgba(255,179,71,0.35)" stroke="#FFB347" stroke-width="1.5"/>
+  <text x="0" y="3" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6.5" fill="#fff">TNF-α</text>
+  <line x1="0" y1="16" x2="0" y2="58" stroke="#FFB347" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrR)"/>
+</g>
+
+<!-- Cell 5: very disrupted -->
+<path d="M545,268 Q583,248 620,257 Q638,261 640,278 L640,196 Q640,183 620,178 Q583,172 545,181 Q530,185 530,200 Z" fill="rgba(239,68,68,0.22)" stroke="rgba(239,68,68,0.55)" stroke-width="2" filter="url(#softg)"/>
+<ellipse cx="583" cy="226" rx="20" ry="12" fill="rgba(185,28,28,0.38)" stroke="rgba(239,68,68,0.5)" stroke-width="1.5"/>
+<!-- VCAM-1 expression on surface -->
+<g fill="rgba(239,68,68,0.5)" stroke="rgba(239,68,68,0.7)" stroke-width="1">
+  <circle cx="548" cy="272" r="4"/>
+  <circle cx="560" cy="274" r="4"/>
+  <circle cx="572" cy="272" r="4"/>
+  <circle cx="584" cy="274" r="4"/>
+  <circle cx="596" cy="272" r="4"/>
+  <circle cx="608" cy="274" r="4"/>
+  <circle cx="620" cy="272" r="4"/>
+  <circle cx="632" cy="272" r="4"/>
+</g>
+<text x="590" y="292" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7.5" fill="rgba(239,68,68,0.7)">VCAM-1 ↑</text>
+
+<!-- Leukocyte rolling and adhesion -->
+<!-- Neutrophil rolling -->
+<ellipse cx="650" cy="380" rx="22" ry="16" fill="rgba(185,107,255,0.35)" stroke="#B96BFF" stroke-width="2" filter="url(#softg)"/>
+<!-- Multilobed nucleus -->
+<circle cx="640" cy="378" r="7" fill="rgba(109,40,217,0.4)" stroke="rgba(139,92,246,0.6)" stroke-width="1.5"/>
+<circle cx="655" cy="375" r="6" fill="rgba(109,40,217,0.4)" stroke="rgba(139,92,246,0.6)" stroke-width="1.5"/>
+<circle cx="666" cy="380" r="5.5" fill="rgba(109,40,217,0.4)" stroke="rgba(139,92,246,0.6)" stroke-width="1.5"/>
+<text x="650" y="408" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(185,107,255,0.7)">Neutrophile</text>
+<text x="650" y="420" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Rolling → Adhésion</text>
+<!-- Selectin connections -->
+<line x1="645" y1="364" x2="600" y2="272" stroke="rgba(185,107,255,0.35)" stroke-width="1.5" stroke-dasharray="3,3"/>
+<line x1="660" y1="364" x2="620" y2="272" stroke="rgba(185,107,255,0.3)" stroke-width="1.5" stroke-dasharray="3,3"/>
+
+<!-- Monocyte transmigrating -->
+<ellipse cx="800" cy="310" rx="25" ry="20" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="2" filter="url(#softg)"/>
+<ellipse cx="800" cy="310" rx="12" ry="9" fill="rgba(185,28,28,0.4)" stroke="rgba(239,68,68,0.5)" stroke-width="1.5"/>
+<text x="800" y="344" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.7)">Monocyte</text>
+<text x="800" y="356" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="rgba(255,255,255,0.3)">Transmigration</text>
+<!-- Arrow showing crossing of BBB -->
+<line x1="800" y1="270" x2="800" y2="180" stroke="#EF4444" stroke-width="2.5" stroke-dasharray="5,3" marker-end="url(#arrR)" opacity="0.7"/>
+<text x="820" y="230" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.6)">DIAPÉDÈSE</text>
+
+<!-- Disrupted zone label -->
+<rect x="380" y="140" width="350" height="28" rx="6" fill="rgba(239,68,68,0.1)" stroke="rgba(239,68,68,0.4)" stroke-width="1.5"/>
+<text x="555" y="159" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#EF4444">✗ ZONE FIRES — BHE COMPROMISE</text>
+
+<!-- ════ ASTROCYTE ENDFEET (bottom) ════ -->
+<text x="700" y="660" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="rgba(255,179,71,0.7)" letter-spacing="2">PIEDS ASTROCYTAIRES</text>
+
+<!-- Astrocyte endfeet (perivascular) -->
+<g fill="rgba(255,179,71,0.18)" stroke="rgba(255,179,71,0.45)" stroke-width="1.8">
+  <!-- Normal endfeet (left) -->
+  <path d="M80,620 Q130,638 160,630 Q180,623 185,614 L185,620 Q185,622 180,625 Q160,632 130,640 Q100,648 80,630 Z"/>
+  <path d="M185,620 Q240,638 270,630 Q290,623 295,614 L295,620 Q295,622 290,625 Q270,632 240,640 Q205,648 185,630 Z"/>
+  <path d="M295,620 Q348,638 378,630 Q398,623 403,614 L403,620 Q403,622 398,625 Q378,632 348,640 Q310,648 295,630 Z"/>
+  <!-- Disrupted endfeet (center) - FIRES zone -->
+  <path d="M403,620 Q458,642 488,630 Q512,620 518,612 L518,620 Q516,625 510,628 Q488,636 458,644 Q418,652 403,632 Z" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.4)"/>
+  <path d="M518,620 Q568,645 600,630 Q625,618 630,608 L630,616 Q627,622 620,626 Q598,636 568,646 Q530,656 518,635 Z" fill="rgba(239,68,68,0.15)" stroke="rgba(239,68,68,0.4)"/>
+  <!-- Separated/retracted endfeet (max disruption) -->
+  <path d="M630,622 Q680,648 710,635 Q738,622 742,612 L742,620 Q738,626 728,630 Q706,640 675,650 Q640,660 630,640 Z" fill="rgba(239,68,68,0.12)" stroke="rgba(239,68,68,0.35)" stroke-dasharray="4,3"/>
+</g>
+<!-- Retraction indicator -->
+<text x="686" y="680" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.6)">Pieds rétractés ↓ — Perte soutien vasculaire</text>
+
+<!-- Pericyte -->
+<ellipse cx="900" cy="640" rx="40" ry="18" fill="rgba(47,209,200,0.18)" stroke="rgba(47,209,200,0.45)" stroke-width="2" filter="url(#softg)"/>
+<!-- Pericyte processes -->
+<path d="M860,640 Q820,630 785,635" fill="none" stroke="rgba(47,209,200,0.4)" stroke-width="3" stroke-linecap="round"/>
+<path d="M940,640 Q975,632 1008,637" fill="none" stroke="rgba(47,209,200,0.4)" stroke-width="3" stroke-linecap="round"/>
+<path d="M900,622 Q905,600 912,580" fill="none" stroke="rgba(47,209,200,0.35)" stroke-width="2.5" stroke-linecap="round"/>
+<path d="M900,658 Q895,676 890,692" fill="none" stroke="rgba(47,209,200,0.3)" stroke-width="2.5" stroke-linecap="round"/>
+<text x="900" y="638" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" font-weight="700" fill="rgba(47,209,200,0.8)">Péricyte</text>
+<text x="900" y="722" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,255,255,0.35)">Contraction · PDGF-β ↓</text>
+
+<!-- Brain parenchyma below -->
+<rect x="60" y="710" width="1280" height="150" rx="0" fill="rgba(108,124,255,0.03)"/>
+<text x="700" y="745" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="rgba(108,124,255,0.2)" letter-spacing="4">PARENCHYME CÉRÉBRAL</text>
+<!-- Microglia in parenchyma (activated) -->
+<g transform="translate(300,770)" filter="url(#softg)">
+  <ellipse rx="15" ry="11" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="1.5"/>
+  <line x1="15" y1="0" x2="26" y2="-5" stroke="#EF4444" stroke-width="1.8"/>
+  <line x1="15" y1="0" x2="26" y2="5" stroke="#EF4444" stroke-width="1.8"/>
+  <line x1="-15" y1="0" x2="-26" y2="-4" stroke="#EF4444" stroke-width="1.8"/>
+  <line x1="0" y1="-11" x2="3" y2="-21" stroke="#EF4444" stroke-width="1.8"/>
+  <line x1="0" y1="11" x2="-3" y2="21" stroke="#EF4444" stroke-width="1.8"/>
+  <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="6.5" fill="#fff">MG</text>
+</g>
+<text x="300" y="810" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.5)">Microglie M1 activée</text>
+<!-- Neuron with excess glutamate -->
+<g transform="translate(700,770)">
+  <circle r="20" fill="rgba(255,179,71,0.15)" stroke="rgba(255,179,71,0.4)" stroke-width="2"/>
+  <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,179,71,0.8)">Glu↑↑</text>
+  <text x="0" y="820" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="0">.</text>
+</g>
+<text x="700" y="808" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(255,179,71,0.5)">Excitotoxicité</text>
+<!-- IL-1β in parenchyma -->
+<g transform="translate(1100,775)" filter="url(#softg)">
+  <polygon points="0,-14 12,-5 12,7 0,14 -12,7 -12,-5" fill="rgba(239,68,68,0.3)" stroke="#EF4444" stroke-width="1.5"/>
+  <text x="0" y="4" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="7" fill="#fff">IL-1β</text>
+</g>
+<text x="1100" y="808" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="rgba(239,68,68,0.5)">Neuroinflammation</text>
+
+<!-- ════ LEGEND & STATS ════ -->
+<rect x="900" y="148" width="460" height="110" rx="12" fill="rgba(10,14,35,0.9)" stroke="rgba(239,68,68,0.35)" stroke-width="1.5"/>
+<text x="1130" y="172" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="10" font-weight="700" fill="#EF4444">MARQUEURS BHE — FIRES</text>
+<line x1="915" y1="180" x2="1345" y2="180" stroke="rgba(239,68,68,0.2)" stroke-width="1"/>
+<g font-family="'JetBrains Mono', monospace" font-size="9" fill="rgba(255,255,255,0.55)">
+  <text x="920" y="198">Claudine-5</text>     <text x="1060" y="198" fill="#EF4444" font-weight="700">−68% ↓↓</text>
+  <rect x="1100" y="189" width="230" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="1100" y="189" width="74" height="10" rx="5" fill="#EF4444" opacity="0.6"/>
+
+  <text x="920" y="216">Occludine</text>      <text x="1060" y="216" fill="#EF4444" font-weight="700">−55% ↓↓</text>
+  <rect x="1100" y="207" width="230" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="1100" y="207" width="103" height="10" rx="5" fill="#FF6B35" opacity="0.6"/>
+
+  <text x="920" y="234">ZO-1</text>           <text x="1060" y="234" fill="#EF4444" font-weight="700">−42% ↓↓</text>
+  <rect x="1100" y="225" width="230" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="1100" y="225" width="133" height="10" rx="5" fill="#FFB347" opacity="0.6"/>
+
+  <text x="920" y="252">VCAM-1</text>         <text x="1060" y="252" fill="#10B981" font-weight="700">+380% ↑↑</text>
+  <rect x="1100" y="243" width="230" height="10" rx="5" fill="rgba(255,255,255,0.04)"/>
+  <rect x="1100" y="243" width="215" height="10" rx="5" fill="rgba(16,185,129,0.5)"/>
+</g>
+</svg>
