@@ -9,6 +9,7 @@ import { RoleBadge } from './RoleGate'
 import ConnectionStatus from './ConnectionStatus'
 import PulsarGuide from './PulsarGuide'
 import CommandPalette from './CommandPalette'
+import GuidedTour from './GuidedTour'
 import { LanguageProvider, LangToggle, useLang } from '@/contexts/LanguageContext'
 import PulsarLogo from '@/components/PulsarLogo'
 import PulsarAI from '@/components/PulsarAI'
@@ -194,6 +195,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         {children}
+        <GuidedTour />
         <PulsarAIFloat open={aiOpen} setOpen={setAiOpen} />
       </div>
     </ProfileProvider>
@@ -287,6 +289,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
 
         <ConnectionStatus />
         <PulsarGuide />
+        <GuidedTour />
         <PulsarAIFloat open={aiOpen} setOpen={setAiOpen} />
       </div>
     </ProfileProvider>

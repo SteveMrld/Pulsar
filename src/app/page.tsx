@@ -3,6 +3,7 @@ import { useLang, LangToggle } from '@/contexts/LanguageContext'
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
 import Picto from '@/components/Picto'
+import { startTour } from '@/components/GuidedTour'
 
 /* ══════════════════════════════════════════════════════════════
    PULSAR — Splash cinématique
@@ -281,10 +282,10 @@ export default function LandingPage() {
             <a href="/login" className="lp-btn lp-btn-main" style={{ fontSize: 15, padding: '13px 36px' }}>
               {t('Ouvrir un dossier patient', 'Open a patient file')}
             </a>
-            <a href="/login?demo=1" style={{
+            <button onClick={startTour} style={{
               padding: '13px 28px', borderRadius: 10, border: '1px solid rgba(245,166,35,.22)',
-              color: '#F5A623', textDecoration: 'none', fontSize: 14, fontWeight: 600, transition: 'all .18s'
-            }}>{t('Voir la démo', 'View demo')}</a>
+              color: '#F5A623', background: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, transition: 'all .18s'
+            }}>{t('Voir la démo', 'View demo')}</button>
           </div>
         </section>
 
@@ -327,7 +328,7 @@ export default function LandingPage() {
                   tag: t('Histoire vraie', 'True story'),
                 },
                 {
-                  href: '/login?demo=1',
+                  href: '#',
                   color: '#6C7CFF',
                   icon: '▶',
                   label: t('Voir la démo', 'View demo'),
@@ -562,11 +563,11 @@ export default function LandingPage() {
                 <a href="/login" className="lp-btn lp-btn-main" style={{ fontSize: 15, padding: '13px 40px' }}>
                   {t('Accéder à PULSAR', 'Access PULSAR')}
                 </a>
-                <a href="/login?demo=1" style={{
+                <button onClick={startTour} style={{
                   padding: '13px 28px', borderRadius: 10,
                   border: '1px solid rgba(245,166,35,.2)', color: '#F5A623',
-                  textDecoration: 'none', fontSize: 14, fontWeight: 600
-                }}>{t('Voir la démo', 'View demo')}</a>
+                  background: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600
+                }}>{t('Voir la démo', 'View demo')}</button>
               </div>
             </div>
           </div>
