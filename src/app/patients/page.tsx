@@ -195,10 +195,10 @@ function PatientRow({ p }: { p: PatientCard }) {
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', color: 'var(--p-text-dim)' }}>{p.age} Â· {p.room}</span>
             {p.isDemo && (
               <span style={{
-                fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 700,
-                padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
-                background: 'rgba(108,124,255,0.08)', color: 'var(--p-text-dim)',
-                border: '1px solid rgba(108,124,255,0.1)',
+                fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800,
+                padding: '2px 7px', borderRadius: 4,
+                background: 'rgba(108,124,255,0.15)', color: '#6C7CFF',
+                border: '1px solid rgba(108,124,255,0.3)',
               }}>{t('DÃMO', 'DEMO')}</span>
             )}
           </div>
@@ -354,7 +354,7 @@ export default function FileActivePage() {
   const { t } = useLang()
   const router = useRouter()
   const [search, setSearch] = useState('')
-  const [showDemo, setShowDemo] = useState(false)
+  const [showDemo, setShowDemo] = useState(true)
   const [sortMode, setSortMode] = useState<'triage' | 'vps' | 'jour' | 'phase' | 'gcs' | 'alertes'>('triage')
 
   const [realPatients, setRealPatients] = useState<PatientCard[]>([])
