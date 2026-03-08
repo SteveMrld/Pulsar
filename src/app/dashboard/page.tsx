@@ -38,7 +38,7 @@ function UseCaseGate() {
 
   if (showCase) return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'var(--p-bg, #0C1424)', overflowY: 'auto' }}>
-      <button onClick={() => setShowCase(false)} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>Fermer â</button>
+      <button onClick={() => setShowCase(false)} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>Fermer Ã¢ÂÂ</button>
       <AlejandroCasePage />
     </div>
   )
@@ -48,13 +48,13 @@ function UseCaseGate() {
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <Picto name="shield" size={18} glow />
         <div>
-          <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)' }}>Use Case â AccÃ¨s protÃ©gÃ©</div>
-          <div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique rÃ©el â code requis</div>
+          <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)' }}>Use Case Ã¢ÂÂ AccÃÂ¨s protÃÂ©gÃÂ©</div>
+          <div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique rÃÂ©el Ã¢ÂÂ code requis</div>
         </div>
       </div>
       {!showInput ? (
         <button onClick={() => setShowInput(true)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-md)', background: '#F5A62315', border: '1px solid #F5A62325', color: '#F5A623', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-          AccÃ©der
+          AccÃÂ©der
         </button>
       ) : (
         <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
@@ -68,10 +68,10 @@ function UseCaseGate() {
   )
 }
 
-/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-   DASHBOARD â Vue chef de service
-   Stats Â· Alertes Â· Triage Â· ActivitÃ© rÃ©cente
-   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+/* Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ
+   DASHBOARD Ã¢ÂÂ Vue chef de service
+   Stats ÃÂ· Alertes ÃÂ· Triage ÃÂ· ActivitÃÂ© rÃÂ©cente
+   Ã¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂÃ¢ÂÂ */
 
 interface DashboardStats {
   total: number
@@ -101,7 +101,7 @@ const PHASE_COLORS: Record<string, string> = {
   acute: '#8B5CF6', stabilization: '#FFA502', monitoring: '#FFB347', recovery: '#2ED573',
 }
 const PHASE_LABELS: Record<string, string> = {
-  acute: 'Aigu', stabilization: 'Stabilisation', monitoring: 'Surveillance', recovery: 'RÃ©cupÃ©ration',
+  acute: 'Aigu', stabilization: 'Stabilisation', monitoring: 'Surveillance', recovery: 'RÃÂ©cupÃÂ©ration',
 }
 const TRIAGE_COLORS: Record<string, string> = {
   P1: '#8B5CF6', P2: '#FFA502', P3: '#FFB347', P4: '#2ED573',
@@ -209,7 +209,7 @@ export default function DashboardPage() {
           summaries.push({
             id: p.id,
             name: p.display_name,
-            room: p.room || 'â',
+            room: p.room || 'Ã¢ÂÂ',
             hospDay,
             vps,
             vpsColor: vps >= 70 ? '#8B5CF6' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573',
@@ -248,7 +248,7 @@ export default function DashboardPage() {
           <div>
             <h1>Dashboard</h1>
             <span className="page-subtitle">
-              Vue d'ensemble du service Â· NeuropÃ©diatrie
+              Vue d'ensemble du service ÃÂ· NeuropÃÂ©diatrie
             </span>
           </div>
         </div>
@@ -281,20 +281,20 @@ export default function DashboardPage() {
             <StatCard value={stats.total} label="PATIENTS ACTIFS" color="#6C7CFF" icon="heart" />
             <StatCard value={stats.avgVps} label="VPS MOYEN" color={stats.avgVps >= 50 ? '#8B5CF6' : '#2ED573'} icon="brain" sub="/100" />
             <StatCard value={stats.critAlerts} label="ALERTES CRITIQUES" color="#8B5CF6" icon="alert" sub={`+ ${stats.warnAlerts} warning`} />
-            <StatCard value={stats.gcsBelow8} label="GCS â¤ 8" color={stats.gcsBelow8 > 0 ? '#8B5CF6' : '#2ED573'} icon="brain" />
+            <StatCard value={stats.gcsBelow8} label="GCS Ã¢ÂÂ¤ 8" color={stats.gcsBelow8 > 0 ? '#8B5CF6' : '#2ED573'} icon="brain" />
           </div>
 
           {/* Phase + Triage distribution */}
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
             <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', flex: '1 1 300px' }}>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '10px' }}>
-                RÃPARTITION PAR PHASE
+                RÃÂPARTITION PAR PHASE
               </div>
               <MiniBar data={stats.byPhase} colors={PHASE_COLORS} labels={PHASE_LABELS} />
             </div>
             <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', flex: '1 1 300px' }}>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '10px' }}>
-                RÃPARTITION PAR TRIAGE
+                RÃÂPARTITION PAR TRIAGE
               </div>
               <MiniBar data={stats.byTriage} colors={TRIAGE_COLORS} labels={{ P1: 'Critique', P2: 'Urgent', P3: 'Semi-urgent', P4: 'Stable' }} />
             </div>
@@ -304,7 +304,7 @@ export default function DashboardPage() {
           {critAlerts.length > 0 && (
             <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', marginBottom: '16px', border: '1px solid #8B5CF620' }}>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '0.5px', marginBottom: '8px' }}>
-                â  ALERTES CRITIQUES NON RÃSOLUES ({critAlerts.length})
+                Ã¢ÂÂ  ALERTES CRITIQUES NON RÃÂSOLUES ({critAlerts.length})
               </div>
               {critAlerts.slice(0, 5).map(a => (
                 <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--p-dark-4)' }}>
@@ -322,11 +322,11 @@ export default function DashboardPage() {
           {/* Patient list */}
           <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '10px' }}>
-              PATIENTS PAR SÃVÃRITÃ VPS
+              PATIENTS PAR SÃÂVÃÂRITÃÂ VPS
             </div>
             {patients.length === 0 ? (
               <div style={{ padding: '20px', textAlign: 'center', fontFamily: 'var(--p-font-mono)', fontSize: '11px', color: 'var(--p-text-dim)' }}>
-                Aucun patient actif â <Link href="/patients/intake" style={{ color: '#6C7CFF' }}>Admettre un patient</Link>
+                Aucun patient actif Ã¢ÂÂ <Link href="/patients/intake" style={{ color: '#6C7CFF' }}>Admettre un patient</Link>
               </div>
             ) : (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '3px' }}>
@@ -369,17 +369,17 @@ export default function DashboardPage() {
                         </span>
                         {p.critAlerts > 0 && (
                           <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: '#8B5CF6', fontWeight: 800 }}>
-                            â  {p.critAlerts}
+                            Ã¢ÂÂ  {p.critAlerts}
                           </span>
                         )}
                       </div>
                       <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)' }}>
-                        {p.room} Â· J{p.hospDay} Â· {PHASE_LABELS[p.phase] || p.phase}
+                        {p.room} ÃÂ· J{p.hospDay} ÃÂ· {PHASE_LABELS[p.phase] || p.phase}
                       </div>
                     </div>
 
                     {/* Arrow */}
-                    <span style={{ color: 'var(--p-text-dim)', fontSize: '12px' }}>â</span>
+                    <span style={{ color: 'var(--p-text-dim)', fontSize: '12px' }}>Ã¢ÂÂ</span>
                   </div>
                 ))}
               </div>
@@ -394,7 +394,7 @@ export default function DashboardPage() {
         </div>
       )}
 
-      {/* ââ Use Case Alejandro â accÃ¨s protÃ©gÃ© par code ââ */}
+      {/* Ã¢ÂÂÃ¢ÂÂ Use Case Alejandro Ã¢ÂÂ accÃÂ¨s protÃÂ©gÃÂ© par code Ã¢ÂÂÃ¢ÂÂ */}
       <UseCaseGate />
       <div style={{ position:'fixed', bottom:'24px', right:'24px', zIndex:100 }}><UseCaseButton /></div>
   </div>
