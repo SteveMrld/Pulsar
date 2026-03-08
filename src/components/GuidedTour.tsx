@@ -185,6 +185,8 @@ export default function GuidedTour() {
     const on    = sessionStorage.getItem(KEY_ACTIVE) === '1'
     const saved = parseInt(sessionStorage.getItem(KEY_STEP) || '0', 10)
     if (!on) return
+    // Ne pas afficher le tour sur la landing
+    if (pathname === '/') return
     setActive(true)
     const match = STEPS.findIndex(s =>
       s.route !== '/dashboard'

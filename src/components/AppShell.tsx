@@ -127,21 +127,20 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   if (isPublic) return (
     <LanguageProvider>
       <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>
-        {/* Minimal public nav */}
-        <div style={{
-          position: 'sticky', top: 0, zIndex: 100,
-          display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-          padding: '0 20px', height: '44px',
-          background: 'rgba(4,7,15,0.85)', backdropFilter: 'blur(12px)',
-          borderBottom: '1px solid rgba(108,124,255,0.06)',
-        }}>
-          <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
-            <PulsarLogo size="sm" />
-          </Link>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Link href="/login" style={{ fontSize: 10, color: '#6C7CFF', textDecoration: 'none', fontFamily: 'var(--p-font-mono)', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(108,124,255,0.2)' }}>Connexion</Link>
+        {/* Sur la landing (/), la page a sa propre nav — on n'affiche rien ici */}
+        {pathname !== '/' && (
+          <div style={{
+            position: 'sticky', top: 0, zIndex: 100,
+            display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+            padding: '0 20px', height: '44px',
+            background: 'rgba(4,7,15,0.85)', backdropFilter: 'blur(12px)',
+            borderBottom: '1px solid rgba(108,124,255,0.06)',
+          }}>
+            <Link href="/" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <PulsarLogo size="sm" />
+            </Link>
           </div>
-        </div>
+        )}
         {children}
       </div>
     </LanguageProvider>
