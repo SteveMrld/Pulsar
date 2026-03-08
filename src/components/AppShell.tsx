@@ -101,11 +101,17 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   const { t } = useLang()
 
   const isTourActive = typeof window !== 'undefined' && sessionStorage.getItem('pulsar-tour-active') === '1'
-  const isPublic = ['/', '/login', '/invite'].includes(pathname) || pathname === '/lab' || pathname.startsWith('/usecase') || (isTourActive && (pathname === '/patients' || pathname.startsWith('/patient/') || pathname === '/research'))
   const isPatient = pathname.startsWith('/patient/')
+  const isPublic = ['/', '/login', '/invite'].includes(pathname) || pathname === '/lab' || pathname.startsWith('/usecase') || (isTourActive && (pathname === '/patients' || pathname === '/research'))
 
   useEffect(() => {
     if (isPublic) { setLoading(false); return }
+    // During tour, patient pages are accessible without auth
+    if (isTourActive && (isPatient || pathname === '/patients' || pathname === '/research')) {
+      setUser('Démo')
+      setLoading(false)
+      return
+    }
     if (typeof window !== 'undefined') {
       const inviteMatch = document.cookie.match(/pulsar-invite=([^;]+)/)
       if (inviteMatch) {
