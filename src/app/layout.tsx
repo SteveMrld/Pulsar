@@ -5,6 +5,7 @@ import '@/styles/tokens.css'
 import AppShell from '@/components/AppShell'
 import ResearchPulse from '@/components/ResearchPulse'
 import dynamic from 'next/dynamic'
+import FeedbackWidget from '@/components/FeedbackWidget';
 const GuidedTour = dynamic(() => import('@/components/GuidedTour'), { ssr: false });
 
 export const viewport: Viewport = {
@@ -18,9 +19,9 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'PULSAR â Aide Ã  la dÃ©cision clinique pÃ©diatrique',
-  description: 'SystÃ¨me d\'aide Ã  la dÃ©cision pour les urgences neuro-inflammatoires pÃ©diatriques.',
-  keywords: ['PULSAR', 'neurologie pÃ©diatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide Ã  la dÃ©cision clinique', 'neuro-inflammatoire'],
+  title: 'PULSAR Ã¢ÂÂ Aide ÃÂ  la dÃÂ©cision clinique pÃÂ©diatrique',
+  description: 'SystÃÂ¨me d\'aide ÃÂ  la dÃÂ©cision pour les urgences neuro-inflammatoires pÃÂ©diatriques.',
+  keywords: ['PULSAR', 'neurologie pÃÂ©diatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide ÃÂ  la dÃÂ©cision clinique', 'neuro-inflammatoire'],
   authors: [{ name: 'Steve Moradel' }],
   icons: {
     icon: '/favicon.ico',
@@ -28,8 +29,8 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'PULSAR â Aide Ã  la dÃ©cision clinique pÃ©diatrique',
-    description: 'SystÃ¨me d\'aide Ã  la dÃ©cision pour les urgences neuro-inflammatoires pÃ©diatriques.',
+    title: 'PULSAR Ã¢ÂÂ Aide ÃÂ  la dÃÂ©cision clinique pÃÂ©diatrique',
+    description: 'SystÃÂ¨me d\'aide ÃÂ  la dÃÂ©cision pour les urgences neuro-inflammatoires pÃÂ©diatriques.',
     type: 'website',
     locale: 'fr_FR',
     siteName: 'PULSAR',
@@ -54,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}} />
       </head>
       <body><AppShell>{children}</AppShell><GuidedTour /></body>
+        <FeedbackWidget />
         <BetaModal />
         <VersionBadge />
     </html>
