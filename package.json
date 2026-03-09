@@ -2,7 +2,8 @@
   "name": "pulsar-v15",
   "version": "15.0.0",
   "private": true,
-  "description": "PULSAR — Pediatric Urgent Lifesaving System for Acute Response",
+  "_deploy": "2026-03-09T10:44:59.300Z",
+  "description": "PULSAR â Pediatric Urgent Lifesaving System for Acute Response",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
