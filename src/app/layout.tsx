@@ -1,14 +1,14 @@
 import type { Metadata, Viewport } from 'next'
 import '@/styles/tokens.css'
 import AppShell from '@/components/AppShell'
+import ResearchPulse from '@/components/ResearchPulse'
 import dynamic from 'next/dynamic'
-import BetaModal from '@/components/BetaModal'
-import VersionBadge from '@/components/VersionBadge'
-import FeedbackWidget from '@/components/FeedbackWidget'
-const GuidedTour = dynamic(() => import('@/components/GuidedTour'), { ssr: false })
+const GuidedTour = dynamic(() => import('@/components/GuidedTour'), { ssr: false });
 
 export const viewport: Viewport = {
-  width: 'device-width', initialScale: 1, maximumScale: 5,
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
   themeColor: [
     { media: '(prefers-color-scheme: dark)', color: '#0E0E16' },
     { media: '(prefers-color-scheme: light)', color: '#F8F9FC' },
@@ -17,15 +17,20 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'PULSAR — Aide à la décision clinique pédiatrique',
-  description: "Système d'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.",
-  keywords: ['PULSAR', 'neurologie pédiatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR'],
+  description: 'Système d\'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.',
+  keywords: ['PULSAR', 'neurologie pédiatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide à la décision clinique', 'neuro-inflammatoire'],
   authors: [{ name: 'Steve Moradel' }],
-  icons: { icon: '/favicon.ico', apple: '/icon-192.png' },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/icon-192.png',
+  },
   manifest: '/manifest.json',
   openGraph: {
     title: 'PULSAR — Aide à la décision clinique pédiatrique',
-    description: "Système d'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.",
-    type: 'website', locale: 'fr_FR', siteName: 'PULSAR',
+    description: 'Système d\'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.',
+    type: 'website',
+    locale: 'fr_FR',
+    siteName: 'PULSAR',
   },
   robots: { index: false, follow: false },
 }
@@ -46,13 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })()
         `}} />
       </head>
-      <body>
-        <AppShell>{children}</AppShell>
-        <GuidedTour />
-        <BetaModal />
-        <FeedbackWidget />
-        <VersionBadge />
-      </body>
+      <body><AppShell>{children}</AppShell><GuidedTour /></body>
     </html>
   )
 }

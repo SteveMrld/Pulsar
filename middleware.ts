@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
 
   const isPublic = ['/', '/login', '/signup'].includes(path)
   const isAuthPage = ['/login', '/signup'].includes(path)
-  const isProtected = !isPublic && path !== '/lab' && !path.startsWith('/invite') && !path.startsWith('/about') && !path.startsWith('/methodology')
+  const isProtected = path.startsWith('/patients') || path.startsWith('/patient/') || path.startsWith('/observatory') || path.startsWith('/neurocore') || path.startsWith('/case-matching') || path.startsWith('/cross-pathologie') || path.startsWith('/export') || path.startsWith('/bilan') || path.startsWith('/staff')
 
   // Redirect unauthenticated users away from protected routes
   if (!user && !isDemo && isProtected) {
@@ -48,7 +48,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from auth pages Ã¢ÂÂ dashboard
+  // Redirect authenticated users away from auth pages → dashboard
   if ((user || isDemo) && isAuthPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
