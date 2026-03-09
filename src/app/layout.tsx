@@ -1,4 +1,6 @@
 import type { Metadata, Viewport } from 'next'
+import BetaModal from '@/components/BetaModal';
+import VersionBadge from '@/components/VersionBadge';
 import '@/styles/tokens.css'
 import AppShell from '@/components/AppShell'
 import ResearchPulse from '@/components/ResearchPulse'
@@ -16,9 +18,9 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'PULSAR — Aide à la décision clinique pédiatrique',
-  description: 'Système d\'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.',
-  keywords: ['PULSAR', 'neurologie pédiatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide à la décision clinique', 'neuro-inflammatoire'],
+  title: 'PULSAR â Aide Ã  la dÃ©cision clinique pÃ©diatrique',
+  description: 'SystÃ¨me d\'aide Ã  la dÃ©cision pour les urgences neuro-inflammatoires pÃ©diatriques.',
+  keywords: ['PULSAR', 'neurologie pÃ©diatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide Ã  la dÃ©cision clinique', 'neuro-inflammatoire'],
   authors: [{ name: 'Steve Moradel' }],
   icons: {
     icon: '/favicon.ico',
@@ -26,8 +28,8 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'PULSAR — Aide à la décision clinique pédiatrique',
-    description: 'Système d\'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.',
+    title: 'PULSAR â Aide Ã  la dÃ©cision clinique pÃ©diatrique',
+    description: 'SystÃ¨me d\'aide Ã  la dÃ©cision pour les urgences neuro-inflammatoires pÃ©diatriques.',
     type: 'website',
     locale: 'fr_FR',
     siteName: 'PULSAR',
@@ -52,6 +54,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}} />
       </head>
       <body><AppShell>{children}</AppShell><GuidedTour /></body>
+        <BetaModal />
+        <VersionBadge />
     </html>
   )
 }
