@@ -1,4 +1,7 @@
 'use client'
+import { useState, useEffect, useRef } from 'react'
+import Link from 'next/link'
+import { usePathname, useRouter } from 'next/navigation'
 import { ProfileProvider } from '@/contexts/ProfileContext'
 import ConnectionStatus from './ConnectionStatus'
 import PulsarGuide from './PulsarGuide'
