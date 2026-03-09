@@ -5,7 +5,7 @@ export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
   // Skip middleware entirely for public case study pages
-  if (path === '/lab' || path.startsWith('/invite', '/about', '/methodology')) {
+  if (path === '/lab' || path.startsWith('/invite') || path.startsWith('/about') || path.startsWith('/methodology')) {
     return NextResponse.next()
   }
 
@@ -39,7 +39,7 @@ export async function middleware(request: NextRequest) {
 
   const isPublic = ['/', '/login', '/signup'].includes(path)
   const isAuthPage = ['/login', '/signup'].includes(path)
-  const isProtected = !isPublic && path !== '/lab' && !path.startsWith('/invite', '/about', '/methodology')
+  const isProtected = !isPublic && path !== '/lab' && !path.startsWith('/invite') && !path.startsWith('/about') && !path.startsWith('/methodology')
 
   // Redirect unauthenticated users away from protected routes
   if (!user && !isDemo && isProtected) {
