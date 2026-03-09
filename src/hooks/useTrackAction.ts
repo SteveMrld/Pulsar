@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 export function useTrackAction() {
   const supabase = createClient();
@@ -22,7 +22,7 @@ export function useTrackAction() {
         metadata: metadata ?? {},
       });
     } catch {
-      // Silencieux â ne jamais bloquer l'UI pour un log
+      // Silencieux Ã¢ÂÂ ne jamais bloquer l'UI pour un log
     }
   }, [supabase]);
 
