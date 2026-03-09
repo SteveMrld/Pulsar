@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from 'next'
-import BetaModal from '@/components/BetaModal';
-import VersionBadge from '@/components/VersionBadge';
+import BetaModal from '@/components/BetaModal'
+import VersionBadge from '@/components/VersionBadge'
+import FeedbackWidget from '@/components/FeedbackWidget'
 import '@/styles/tokens.css'
 import AppShell from '@/components/AppShell'
 import ResearchPulse from '@/components/ResearchPulse'
 import dynamic from 'next/dynamic'
-import FeedbackWidget from '@/components/FeedbackWidget';
-const GuidedTour = dynamic(() => import('@/components/GuidedTour'), { ssr: false });
+const GuidedTour = dynamic(() => import('@/components/GuidedTour'), { ssr: false })
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -19,21 +19,16 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'PULSAR ÃÂ¢ÃÂÃÂ Aide ÃÂÃÂ  la dÃÂÃÂ©cision clinique pÃÂÃÂ©diatrique',
-  description: 'SystÃÂÃÂ¨me d\'aide ÃÂÃÂ  la dÃÂÃÂ©cision pour les urgences neuro-inflammatoires pÃÂÃÂ©diatriques.',
-  keywords: ['PULSAR', 'neurologie pÃÂÃÂ©diatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide ÃÂÃÂ  la dÃÂÃÂ©cision clinique', 'neuro-inflammatoire'],
+  title: 'PULSAR — Aide à la décision clinique pédiatrique',
+  description: "Système d'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.",
+  keywords: ['PULSAR', 'neurologie pédiatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR'],
   authors: [{ name: 'Steve Moradel' }],
-  icons: {
-    icon: '/favicon.ico',
-    apple: '/icon-192.png',
-  },
+  icons: { icon: '/favicon.ico', apple: '/icon-192.png' },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'PULSAR ÃÂ¢ÃÂÃÂ Aide ÃÂÃÂ  la dÃÂÃÂ©cision clinique pÃÂÃÂ©diatrique',
-    description: 'SystÃÂÃÂ¨me d\'aide ÃÂÃÂ  la dÃÂÃÂ©cision pour les urgences neuro-inflammatoires pÃÂÃÂ©diatriques.',
-    type: 'website',
-    locale: 'fr_FR',
-    siteName: 'PULSAR',
+    title: 'PULSAR — Aide à la décision clinique pédiatrique',
+    description: "Système d'aide à la décision pour les urgences neuro-inflammatoires pédiatriques.",
+    type: 'website', locale: 'fr_FR', siteName: 'PULSAR',
   },
   robots: { index: false, follow: false },
 }
@@ -54,7 +49,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })()
         `}} />
       </head>
-      <body><AppShell>{children}</AppShell><GuidedTour /><FeedbackWidget /><BetaModal /><VersionBadge /></body>
+      <body>
+        <AppShell>{children}</AppShell>
+        <GuidedTour />
+        <FeedbackWidget />
+        <BetaModal />
+        <VersionBadge />
+      </body>
     </html>
   )
 }
