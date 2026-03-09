@@ -1,13 +1,13 @@
 'use client';
 import { useState } from 'react';
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/lib/supabase/client';
 
 const CATEGORIES = [
-  { id: 'bug', label: 'ð Bug' },
-  { id: 'ux', label: 'ð¨ UX' },
-  { id: 'contenu', label: 'ð Contenu clinique' },
-  { id: 'suggestion', label: 'ð¡ Suggestion' },
-  { id: 'autre', label: 'ð¬ Autre' },
+  { id: 'bug', label: 'Ã°ÂÂÂ Bug' },
+  { id: 'ux', label: 'Ã°ÂÂÂ¨ UX' },
+  { id: 'contenu', label: 'Ã°ÂÂÂ Contenu clinique' },
+  { id: 'suggestion', label: 'Ã°ÂÂÂ¡ Suggestion' },
+  { id: 'autre', label: 'Ã°ÂÂÂ¬ Autre' },
 ];
 
 export default function FeedbackWidget() {
@@ -58,7 +58,7 @@ export default function FeedbackWidget() {
           backdropFilter: 'blur(8px)', transition: 'all 0.2s',
         }}
       >
-        ð¬
+        Ã°ÂÂÂ¬
       </button>
 
       {/* Panel feedback */}
@@ -72,27 +72,27 @@ export default function FeedbackWidget() {
         }}>
           {sent ? (
             <div style={{textAlign:'center',padding:'20px 0'}}>
-              <div style={{fontSize:32,marginBottom:8}}>â</div>
+              <div style={{fontSize:32,marginBottom:8}}>Ã¢ÂÂ</div>
               <div style={{color:'#10B981',fontFamily:'monospace',fontSize:13}}>Merci pour votre retour !</div>
             </div>
           ) : (
             <>
               <div style={{fontFamily:'monospace',fontSize:11,color:'#7c3aed',letterSpacing:'0.15em',textTransform:'uppercase',marginBottom:14}}>
-                Feedback bÃªta clinicien
+                Feedback bÃÂªta clinicien
               </div>
 
-              {/* Ãtoiles */}
+              {/* ÃÂtoiles */}
               <div style={{display:'flex',gap:6,marginBottom:16}}>
                 {[1,2,3,4,5].map(n => (
                   <button key={n} onClick={() => setRating(n)} style={{
                     background:'none',border:'none',cursor:'pointer',
                     fontSize:22,opacity:n<=rating?1:0.25,
                     transition:'opacity 0.15s',padding:0
-                  }}>â</button>
+                  }}>Ã¢ÂÂ</button>
                 ))}
               </div>
 
-              {/* CatÃ©gorie */}
+              {/* CatÃÂ©gorie */}
               <div style={{display:'flex',flexWrap:'wrap',gap:6,marginBottom:14}}>
                 {CATEGORIES.map(c => (
                   <button key={c.id} onClick={() => setCategory(c.id)} style={{
@@ -109,7 +109,7 @@ export default function FeedbackWidget() {
               <textarea
                 value={message}
                 onChange={e => setMessage(e.target.value)}
-                placeholder="DÃ©crivez votre observation clinique..."
+                placeholder="DÃÂ©crivez votre observation clinique..."
                 rows={4}
                 style={{
                   width:'100%', background:'rgba(255,255,255,0.04)',
