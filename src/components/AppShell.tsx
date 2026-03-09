@@ -12,10 +12,13 @@ import { LanguageProvider, useLang } from '@/contexts/LanguageContext'
 import PulsarLogo from '@/components/PulsarLogo'
 import PulsarAI from '@/components/PulsarAI'
 import Picto from '@/components/Picto'
+import ThemeToggle from '@/components/ThemeToggle';
+import P1Alert from '@/components/P1Alert';
 
 function NavLink({ href, label, color = '#6C7CFF', pathname }: { href: string; label: string; color?: string; pathname: string }) {
   const active = pathname === href
   return (
+    <P1Alert active={patients?.some(p => p.priority === "P1" || p.priorite === "P1") ?? false} />
     <Link href={href} style={{
       padding: '3px 10px', borderRadius: '4px', textDecoration: 'none',
       fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
@@ -67,7 +70,7 @@ function AnalyseMenu({ pathname }: { pathname: string }) {
           {[
             { href: '/observatory', picto: 'chart', label: t('Observatoire', 'Observatory'), desc: t('Vue multi-patients', 'Multi-patient view') },
             { href: '/case-matching', picto: 'cycle', label: 'Case Matching', desc: t('Cas similaires', 'Similar cases') },
-            { href: '/cross-pathologie', picto: 'dna', label: t('Cross-Pathologie', 'Cross-Pathology'), desc: t('5 pathologies croisées', '5 cross pathologies') },
+            { href: '/cross-pathologie', picto: 'dna', label: t('Cross-Pathologie', 'Cross-Pathology'), desc: t('5 pathologies croisÃ©es', '5 cross pathologies') },
             { href: '/bilan', picto: 'microscope', label: t('Bilan', 'Assessment'), desc: t('Examens diagnostiques', 'Diagnostic workup') },
           ].map(item => (
             <Link key={item.href} href={item.href} onClick={() => setOpen(false)} style={{
@@ -104,7 +107,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
     // Check tour INSIDE useEffect (sessionStorage only available client-side)
     const isTourActive = sessionStorage.getItem('pulsar-tour-active') === '1'
     if (isTourActive) {
-      setUser('Démo')
+      setUser('DÃ©mo')
       setLoading(false)
       return
     }
@@ -112,7 +115,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
       const inviteMatch = document.cookie.match(/pulsar-invite=([^;]+)/)
       if (inviteMatch) {
         const nameMatch = document.cookie.match(/pulsar-invite-name=([^;]+)/)
-        setUser(nameMatch ? decodeURIComponent(nameMatch[1]) : 'Invité')
+        setUser(nameMatch ? decodeURIComponent(nameMatch[1]) : 'InvitÃ©')
         setLoading(false); return
       }
     }
@@ -127,7 +130,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   if (isPublic) return (
     <LanguageProvider>
       <div style={{ minHeight: '100vh', background: 'var(--p-bg)' }}>
-        {/* Sur la landing (/), la page a sa propre nav — on n'affiche rien ici */}
+        {/* Sur la landing (/), la page a sa propre nav â on n'affiche rien ici */}
         {pathname !== '/' && (
           <div style={{
             position: 'sticky', top: 0, zIndex: 100,
@@ -150,7 +153,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--p-bg)' }}>
       <div style={{ textAlign: 'center' }}>
         <PulsarLogo size="md" />
-        <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', marginTop: '8px', fontFamily: 'var(--p-font-mono)' }}>{t('Chargement…', 'Loading…')}</div>
+        <div style={{ fontSize: 'var(--p-text-xs)', color: 'var(--p-text-dim)', marginTop: '8px', fontFamily: 'var(--p-font-mono)' }}>{t('Chargementâ¦', 'Loadingâ¦')}</div>
       </div>
     </div>
   )
@@ -179,7 +182,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#6C7CFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
               <span style={{ fontSize: 10, fontFamily: 'var(--p-font-mono)', fontWeight: 700 }}>File active</span>
             </Link>
-            <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10 }}>›</span>
+            <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10 }}>âº</span>
             <span style={{ fontSize: 10, color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>
               {pathname.split('/').pop()?.toUpperCase() || 'PATIENT'}
             </span>
@@ -201,7 +204,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
     : pathname === '/dashboard' ? 'Dashboard'
     : pathname === '/admin' ? 'Admin'
     : pathname === '/research' ? 'Discovery Engine'
-    : pathname === '/staff' ? t('Équipe', 'Staff')
+    : pathname === '/staff' ? t('Ãquipe', 'Staff')
     : pathname === '/observatory' ? t('Observatoire', 'Observatory')
     : pathname === '/neurocore' ? 'NeuroCore'
     : pathname === '/export' ? 'Export'
@@ -239,7 +242,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
             <span className="hdr-breadcrumb" style={{ fontSize: '11px', color: 'var(--p-text-muted)', fontFamily: 'var(--p-font-mono)' }}>{breadcrumb}</span>
           </div>
 
-          {/* CENTER — masqué sur mobile */}
+          {/* CENTER â masquÃ© sur mobile */}
           <div className="hdr-center" style={{ display: 'flex', alignItems: 'center', gap: '2px', overflow: 'hidden', flexShrink: 1, minWidth: 0 }}>
             <NavLink href="/dashboard" label="Dashboard" pathname={pathname} />
             <NavLink href="/patients" label={t('File active', 'Patients')} pathname={pathname} />
@@ -251,8 +254,8 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           {/* RIGHT */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: '120px', flexShrink: 0, justifyContent: 'flex-end' }}>
 
-            {/* Staff — masqué sur petit mobile */}
-            <Link className="hdr-staff" href="/staff" title={t('Équipe soignante', 'Care Team')} style={{
+            {/* Staff â masquÃ© sur petit mobile */}
+            <Link className="hdr-staff" href="/staff" title={t('Ãquipe soignante', 'Care Team')} style={{
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               width: '28px', height: '28px', borderRadius: '6px', textDecoration: 'none',
               background: pathname === '/staff' ? '#6C7CFF18' : 'transparent',
@@ -279,7 +282,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
               padding: '3px 8px', background: 'var(--p-bg-elevated)', border: 'var(--p-border)',
               borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-muted)',
               cursor: 'pointer', fontSize: '9px', fontFamily: 'var(--p-font-mono)', transition: 'all 0.2s',
-            }}>{t('Déco', 'Out')}</button>
+            }}>{t('DÃ©co', 'Out')}</button>
           </div>
         </header>
 
@@ -320,7 +323,7 @@ function PulsarAIFloat({ open, setOpen }: { open: boolean; setOpen: (v: boolean)
         <button onClick={() => setOpen(false)} style={{
           background: 'transparent', border: 'none', color: '#64748B',
           cursor: 'pointer', fontSize: '18px', lineHeight: 1, padding: '2px 6px',
-        }}>×</button>
+        }}>Ã</button>
       </div>
       <div style={{ flex: 1, overflow: 'hidden' }}>
         <PulsarAI />
