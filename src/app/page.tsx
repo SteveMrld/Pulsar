@@ -224,9 +224,9 @@ const CSS = `
 export default function LandingPage() {
 // === AMBIENT SOUND ===
 const ambientRef = useRef<HTMLAudioElement | null>(null);
-const [soundOn, setSoundOn] = React.useState(false);
+const [soundOn, setSoundOn] = useState(false);
 
-React.useEffect(() => {
+useEffect(() => {
   const audio = new Audio('https://cdn.pixabay.com/download/audio/2022/03/10/audio_c8c8a73467.mp3');
   audio.loop = true;
   audio.volume = 0.18;

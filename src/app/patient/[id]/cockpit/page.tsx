@@ -382,15 +382,14 @@ export default function PatientCockpit() {
         {/* Right column */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--p-space-3)' }}>
           <SilhouetteNeon
-            sex={info.sex === 'female' ? 'F' : 'M'}
-            vpsScore={ps.vpsResult?.synthesis.score ?? 0} compact
-            vitals={[
-              { label: 'NEURO', icon: 'brain', value: `GCS: ${ps.neuro.gcs}/15`, color: '#6C7CFF', severity: ps.neuro.gcs <= 8 ? 2 : ps.neuro.gcs <= 12 ? 1 : 0 },
-              { label: 'CARDIO', icon: 'heart', value: `FC: ${ps.hemodynamics.heartRate} bpm`, color: '#A78BFA', severity: ps.hemodynamics.heartRate > 140 ? 2 : 0 },
-              { label: 'RESP', icon: 'lungs', value: `SpO₂: ${ps.hemodynamics.spo2}%`, color: '#2FD1C8', severity: ps.hemodynamics.spo2 < 95 ? 1 : 0 },
-              { label: 'INFLAM', icon: '🔥', value: `CRP: ${ps.biology.crp} mg/L`, color: '#FFB347', severity: ps.biology.crp > 100 ? 2 : ps.biology.crp > 20 ? 1 : 0 },
-              { label: 'TEMP', icon: '🌡️', value: `${ps.hemodynamics.temp}°C`, color: '#B96BFF', severity: ps.hemodynamics.temp >= 38 ? 1 : 0 },
-            ]}
+            gender={info.sex === 'female' ? 'F' : 'M'}
+            vitals={{
+              neuro:  { label: 'NEURO',  value: `GCS: ${ps.neuro.gcs}/15`,              status: ps.neuro.gcs <= 8 ? 'critical' : ps.neuro.gcs <= 12 ? 'warning' : 'normal' },
+              cardio: { label: 'CARDIO', value: `FC: ${ps.hemodynamics.heartRate} bpm`,  status: ps.hemodynamics.heartRate > 140 ? 'critical' : 'normal' },
+              resp:   { label: 'RESP',   value: `SpO2: ${ps.hemodynamics.spo2}%`,         status: ps.hemodynamics.spo2 < 95 ? 'warning' : 'normal' },
+              inflam: { label: 'INFLAM', value: `CRP: ${ps.biology.crp} mg/L`,           status: ps.biology.crp > 100 ? 'critical' : ps.biology.crp > 20 ? 'warning' : 'normal' },
+              temp:   { label: 'TEMP',   value: `${ps.hemodynamics.temp}°C`,             status: ps.hemodynamics.temp >= 38 ? 'warning' : 'normal' },
+            }}
           />
           <div className="glass-card" style={{ padding: 'var(--p-space-3)', borderRadius: 'var(--p-radius-xl)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
