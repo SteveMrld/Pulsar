@@ -19,9 +19,9 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: 'PULSAR Ã¢ÂÂ Aide ÃÂ  la dÃÂ©cision clinique pÃÂ©diatrique',
-  description: 'SystÃÂ¨me d\'aide ÃÂ  la dÃÂ©cision pour les urgences neuro-inflammatoires pÃÂ©diatriques.',
-  keywords: ['PULSAR', 'neurologie pÃÂ©diatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide ÃÂ  la dÃÂ©cision clinique', 'neuro-inflammatoire'],
+  title: 'PULSAR ÃÂ¢ÃÂÃÂ Aide ÃÂÃÂ  la dÃÂÃÂ©cision clinique pÃÂÃÂ©diatrique',
+  description: 'SystÃÂÃÂ¨me d\'aide ÃÂÃÂ  la dÃÂÃÂ©cision pour les urgences neuro-inflammatoires pÃÂÃÂ©diatriques.',
+  keywords: ['PULSAR', 'neurologie pÃÂÃÂ©diatrique', 'FIRES', 'PIMS', 'MOGAD', 'anti-NMDAR', 'aide ÃÂÃÂ  la dÃÂÃÂ©cision clinique', 'neuro-inflammatoire'],
   authors: [{ name: 'Steve Moradel' }],
   icons: {
     icon: '/favicon.ico',
@@ -29,8 +29,8 @@ export const metadata: Metadata = {
   },
   manifest: '/manifest.json',
   openGraph: {
-    title: 'PULSAR Ã¢ÂÂ Aide ÃÂ  la dÃÂ©cision clinique pÃÂ©diatrique',
-    description: 'SystÃÂ¨me d\'aide ÃÂ  la dÃÂ©cision pour les urgences neuro-inflammatoires pÃÂ©diatriques.',
+    title: 'PULSAR ÃÂ¢ÃÂÃÂ Aide ÃÂÃÂ  la dÃÂÃÂ©cision clinique pÃÂÃÂ©diatrique',
+    description: 'SystÃÂÃÂ¨me d\'aide ÃÂÃÂ  la dÃÂÃÂ©cision pour les urgences neuro-inflammatoires pÃÂÃÂ©diatriques.',
     type: 'website',
     locale: 'fr_FR',
     siteName: 'PULSAR',
@@ -54,10 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           })()
         `}} />
       </head>
-      <body><AppShell>{children}</AppShell><GuidedTour /></body>
-        <FeedbackWidget />
-        <BetaModal />
-        <VersionBadge />
+      <body><AppShell>{children}</AppShell><GuidedTour /><FeedbackWidget /><BetaModal /><VersionBadge /></body>
     </html>
   )
 }
