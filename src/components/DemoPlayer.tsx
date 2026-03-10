@@ -2,6 +2,9 @@
 
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
+import NeuronAnimation from '@/components/NeuronAnimation'
+import AnakinraAnimation from '@/components/AnakinraAnimation'
+import GutBrainAnimation from '@/components/GutBrainAnimation'
 
 // ═══════════════════════════════════════════════════════════════════
 // PULSAR DEMO PLAYER — Cinematic product tour
@@ -631,7 +634,7 @@ function ScreenNeuron() {
       <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(185,107,255,0.2)' }}>
           <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(108,124,255,0.2)' }}>
-            <img src="/assets/illustrations/PULSAR_NEURON_FIRES.png" alt="Neurones FIRES" />
+            <NeuronAnimation />
           </div>
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -663,7 +666,7 @@ function ScreenAnakinra() {
       <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(16,185,129,0.2)' }}>
           <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
-            <img src="/assets/illustrations/PULSAR_ANAKINRA_MECHANISM.png" alt="Mécanisme Anakinra" />
+            <AnakinraAnimation />
           </div>
         </div>
         <div style={{ padding: '10px 12px', background: 'rgba(16,185,129,0.07)', borderRadius: 9, border: '1px solid rgba(16,185,129,0.18)' }}>
@@ -688,7 +691,7 @@ function ScreenGutBrain() {
       <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(47,209,200,0.2)' }}>
           <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(47,209,200,0.2)' }}>
-            <img src="/assets/illustrations/PULSAR_GUT_BRAIN_AXIS.png" alt="Axe intestin-cerveau" />
+            <GutBrainAnimation />
           </div>
           <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(255,107,53,0.25)', marginTop: 8 }}>
             <img src="/assets/illustrations/PULSAR_INTESTINAL_BARRIER.png" alt="Barrière intestinale — Leaky Gut FIRES" />

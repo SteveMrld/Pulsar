@@ -1,4 +1,5 @@
 'use client'
+import GutBrainAnimation from '@/components/GutBrainAnimation'
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import Link from 'next/link'
 import { useLang } from '@/contexts/LanguageContext'
@@ -460,7 +461,7 @@ export default function ResearchPage() {
           </div>
           <div style={{ borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(47,209,200,0.2)', background: 'rgba(0,0,0,0.3)' }}>
             <div className="pulsar-illus-wrap" style={{ border: "rgba(47,209,200,0.2)" }}>
-              <img src="/assets/illustrations/PULSAR_GUT_BRAIN_AXIS.png" alt="Axe intestin-cerveau" />
+              <GutBrainAnimation />
             </div>
           </div>
           <div className="pulsar-illus-wrap" style={{ border: "rgba(255,107,53,0.25)" }}>

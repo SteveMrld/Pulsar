@@ -1,4 +1,5 @@
 'use client'
+import AnakinraAnimation from '@/components/AnakinraAnimation'
 import { useMemo, useState, useEffect} from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
@@ -328,7 +329,7 @@ function DiscoveryEnrichmentPanel({ syndrome }: { syndrome: string }) {
       {/* ── ILLUSTRATION ANAKINRA ── */}
       <div style={{ marginTop: 20, borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(16,185,129,0.2)', background: 'rgba(0,0,0,0.3)' }}>
         <div className="pulsar-illus-wrap" style={{ border: "rgba(16,185,129,0.2)" }}>
-          <img src="/assets/illustrations/PULSAR_ANAKINRA_MECHANISM.png" alt="Mécanisme Anakinra" />
+          <AnakinraAnimation />
         </div>
         <div style={{ padding: '8px 14px', fontFamily: 'var(--p-font-mono)', fontSize: 9, color: 'rgba(16,185,129,0.7)', borderTop: '1px solid rgba(16,185,129,0.1)' }}>Mécanisme d'action Anakinra · Inhibition IL-1β · TPE Engine</div>
       </div>
