@@ -27,7 +27,7 @@ function UseCaseGate() {
   return (
     <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-lg)', border: '1px solid var(--p-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span style={{ fontSize: 14 }}>ð</span>
+        <span style={{ fontSize: 14 }}>🔒</span>
         <div><div style={{ fontSize: 12, fontWeight: 700, color: 'var(--p-text)' }}>Use Case · Accès protégé</div><div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique réel</div></div>
       </div>
       {!showInput ? (
@@ -39,7 +39,6 @@ function UseCaseGate() {
           {error && <span style={{ fontSize: 10, color: '#EF4444' }}>Code incorrect</span>}
         </div>
       )}
-      <UseCaseGate />
     </div>
   )
 }
