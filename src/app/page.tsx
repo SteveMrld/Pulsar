@@ -287,11 +287,7 @@ export default function LandingPage() {
             <button onClick={() => setDemoOpen(true)} style={{
               padding: '13px 32px', borderRadius: 10, border: '1px solid rgba(108,124,255,.35)',
               color: '#6C7CFF', background: 'rgba(108,124,255,.1)', cursor: 'pointer', fontSize: 15, fontWeight: 700, transition: 'all .18s'
-            }}>{t('▶ Parcours guidé', '▶ Guided tour')}</button>
-            <button onClick={() => setDemoOpen(true)} style={{
-              padding: '13px 24px', borderRadius: 10, border: '1px solid rgba(245,166,35,.2)',
-              color: '#F5A623', background: 'none', cursor: 'pointer', fontSize: 14, fontWeight: 600, transition: 'all .18s'
-            }}>{t('Voir la démo', 'View demo')}</button>
+            }}>{t('▶ Voir la démo', '▶ View demo')}</button>
           </div>
         </section>
 
@@ -557,12 +553,7 @@ export default function LandingPage() {
                   padding: '13px 32px', borderRadius: 10,
                   border: '1px solid rgba(108,124,255,.35)', color: '#6C7CFF',
                   background: 'rgba(108,124,255,.1)', cursor: 'pointer', fontSize: 15, fontWeight: 700
-                }}>{t('▶ Parcours guidé', '▶ Guided tour')}</button>
-                <button onClick={() => setDemoOpen(true)} style={{
-                  padding: '13px 20px', borderRadius: 10,
-                  border: '1px solid rgba(245,166,35,.2)', color: '#F5A623',
-                  background: 'none', cursor: 'pointer', fontSize: 13, fontWeight: 600
-                }}>{t('Voir la démo', 'View demo')}</button>
+                }}>{t('▶ Voir la démo', '▶ View demo')}</button>
               </div>
             </div>
           </div>
