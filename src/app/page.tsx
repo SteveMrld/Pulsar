@@ -6,7 +6,6 @@ import Link from 'next/link'
 import Picto from '@/components/Picto'
 import dynamic from 'next/dynamic'
 const DemoPlayer = dynamic(() => import('@/components/DemoPlayer'), { ssr: false })
-import { startTour } from '@/components/GuidedTour'
 
 /* ══════════════════════════════════════════════════════════════
    PULSAR — Splash cinématique
@@ -285,7 +284,7 @@ export default function LandingPage() {
           </p>
 
           <div className="lp-a lp-a4" style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <button onClick={startTour} style={{
+            <button onClick={() => setDemoOpen(true)} style={{
               padding: '13px 32px', borderRadius: 10, border: '1px solid rgba(108,124,255,.35)',
               color: '#6C7CFF', background: 'rgba(108,124,255,.1)', cursor: 'pointer', fontSize: 15, fontWeight: 700, transition: 'all .18s'
             }}>{t('▶ Parcours guidé', '▶ Guided tour')}</button>
@@ -554,7 +553,7 @@ export default function LandingPage() {
                 )}
               </p>
               <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap' }}>
-                <button onClick={startTour} style={{
+                <button onClick={() => setDemoOpen(true)} style={{
                   padding: '13px 32px', borderRadius: 10,
                   border: '1px solid rgba(108,124,255,.35)', color: '#6C7CFF',
                   background: 'rgba(108,124,255,.1)', cursor: 'pointer', fontSize: 15, fontWeight: 700
