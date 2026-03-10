@@ -22,7 +22,7 @@ export function useTrackAction() {
         metadata: metadata ?? {},
       });
     } catch {
-      // Silencieux Ã¢ÂÂ ne jamais bloquer l'UI pour un log
+      // Silencieux â ne jamais bloquer l'UI pour un log
     }
   }, [supabase]);
 
