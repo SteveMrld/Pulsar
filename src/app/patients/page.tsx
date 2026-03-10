@@ -58,10 +58,10 @@ import PatientTimeline from '@/components/PatientTimeline';
 import AlertBadge from '@/components/AlertBadge';
 import { useTrackAction } from '@/hooks/useTrackAction'
 
-/* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+/* ══════════════════════════════════════════════════════════════
    FILE ACTIVE · PULSAR V17
    Tour de contrôle · Avatars · Phases · Quick access · Démo
-   ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
+   ══════════════════════════════════════════════════════════════ */
 
 interface PatientCard {
   id: string; name: string; age: string; sex: 'male' | 'female'
@@ -117,7 +117,7 @@ function buildDemoPatients(): PatientCard[] {
   }).filter(Boolean) as PatientCard[]
 }
 
-/* ââ Mini Avatar SVG ââ */
+/* ── Mini Avatar SVG ── */
 function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size?: number; name?: string; sex?: 'male' | 'female' }) {
   const avatarKey = sex === 'male'
     ? (name?.startsWith('Lucas') ? 'avatar-lucas' : 'avatar-noah')
@@ -143,7 +143,7 @@ function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size
   )
 }
 
-/* ââ Mini VPS Sparkline ââ */
+/* ── Mini VPS Sparkline ── */
 function VPSSparkline({ data, color }: { data: number[]; color: string }) {
   if (data.length < 2) return null
   const max = Math.max(...data, 100)
@@ -157,7 +157,7 @@ function VPSSparkline({ data, color }: { data: number[]; color: string }) {
   )
 }
 
-/* ââ Phase Bar ââ */
+/* ── Phase Bar ── */
 function PhaseBar({ phase }: { phase: ClinicalPhase }) {
   const p = PHASES[phase]
   return (
@@ -171,7 +171,7 @@ function PhaseBar({ phase }: { phase: ClinicalPhase }) {
   )
 }
 
-/* ââ Patient Card Row ââ */
+/* ── Patient Card Row ── */
 function PatientRow({ p }: { p: PatientCard }) {
   const { t } = useLang()
   const vpsColor = p.vps >= 70 ? '#8B5CF6' : p.vps >= 50 ? '#FFA502' : p.vps >= 30 ? '#FFB347' : '#2ED573'
@@ -252,7 +252,7 @@ function PatientRow({ p }: { p: PatientCard }) {
   )
 }
 
-/* ââ Pulsing Brain Animation ââ */
+/* ── Pulsing Brain Animation ── */
 function PulsingBrain() {
   return (
     <div className="animate-breathe" style={{
@@ -268,7 +268,7 @@ function PulsingBrain() {
   )
 }
 
-/* ââ Empty State ââ */
+/* ── Empty State ── */
 function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }) {
   const { t } = useLang()
   return (
@@ -303,7 +303,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
           color: 'var(--p-text-muted)', letterSpacing: '0.3px', width: '300px',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
         }}>
-          <span style={{ fontSize: '14px' }}>â¶</span> {t('Explorer avec des cas fictifs', 'Explore with demo cases')}
+          <span style={{ fontSize: '14px' }}>▶</span> {t('Explorer avec des cas fictifs', 'Explore with demo cases')}
         </button>
       </div>
 
@@ -350,7 +350,7 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
   )
 }
 
-/* ââ Main ââ */
+/* ── Main ── */
 export default function FileActivePage() {
   const { track } = useTrackAction()
 
@@ -463,7 +463,7 @@ export default function FileActivePage() {
   return (
     <div style={{ minHeight: '100vh', background: 'var(--p-bg)', padding: '0' }}>
 
-      {/* ââ CONTENT ââ */}
+      {/* ── CONTENT ── */}
       {!hasPatients ? (
         <EmptyState onDemo={() => setShowDemo(true)} onNew={() => router.push('/patients/intake')} />
       ) : (
@@ -514,7 +514,7 @@ export default function FileActivePage() {
                 }}>
                   <Picto name={opt.icon} size={10} />
                   {opt.label}
-                  {active && <span style={{ fontSize: '7px', opacity: 0.7 }}>â¼</span>}
+                  {active && <span style={{ fontSize: '7px', opacity: 0.7 }}>▼</span>}
                 </button>
               )
             })}
