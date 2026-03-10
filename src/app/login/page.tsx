@@ -84,7 +84,7 @@ export default function LoginPage() {
             fontSize: 'var(--p-text-sm)',
             marginTop: 'var(--p-space-2)',
           }}>
-            {t('Connexion Ã  votre espace', 'Sign in to your workspace')}
+            {t('Connexion à votre espace', 'Sign in to your workspace')}
           </p>
         </div>
 
@@ -113,7 +113,7 @@ export default function LoginPage() {
               onChange={(e) => setPassword(e.target.value)}
               required
               style={inputStyle}
-              placeholder="â¢â¢â¢â¢â¢â¢â¢â¢"
+              placeholder="••••••••"
             />
           </div>
 
@@ -154,7 +154,7 @@ export default function LoginPage() {
           fontSize: 'var(--p-text-sm)',
           color: 'var(--p-text-dim)',
         }}>
-          {t('AccÃ¨s sur invitation uniquement', 'Invite-only access')}
+          {t('Accès sur invitation uniquement', 'Invite-only access')}
         </p>
 
         <div style={{ marginTop: 'var(--p-space-4)', paddingTop: 'var(--p-space-4)', borderTop: 'var(--p-border)' }}>
@@ -205,11 +205,11 @@ export default function LoginPage() {
               cursor: 'pointer',
             }}
           >
-            {t('DÃ©couvrir PULSAR â DÃ©mo', 'Discover PULSAR â Demo')}
+            {t('Découvrir PULSAR — Démo', 'Discover PULSAR — Demo')}
           </button>
         </div>
 
-        {/* âââââââ DEMO OVERLAY âââââââ */}
+        {/* ═══════ DEMO OVERLAY ═══════ */}
         {showDemo && <DemoOverlay t={t} onClose={() => setShowDemo(false)} />}
         {showCase && <CaseOverlay t={t} onClose={() => setShowCase(false)} />}
       </div>
@@ -218,18 +218,18 @@ export default function LoginPage() {
 }
 
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// DEMO IMMERSIVE â Simulation interactive PULSAR
-// L'utilisateur vit l'expÃ©rience comme s'il Ã©tait dans l'app
-// Curseur animÃ©, saisie de donnÃ©es, pipeline en temps rÃ©el
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════
+// DEMO IMMERSIVE — Simulation interactive PULSAR
+// L'utilisateur vit l'expérience comme s'il était dans l'app
+// Curseur animé, saisie de données, pipeline en temps réel
+// ═══════════════════════════════════════════════════════════
 
 
 
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
-// DEMO IMMERSIVE V2 â Tour guidÃ© pÃ©dagogique
-// Sidebar rÃ©elle + curseur + bulles explicatives
-// âââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
+// ═══════════════════════════════════════════════════════════
+// DEMO IMMERSIVE V2 — Tour guidé pédagogique
+// Sidebar réelle + curseur + bulles explicatives
+// ═══════════════════════════════════════════════════════════
 
 const DEMO_V2_CSS = `
   .dv2-root { position:fixed; inset:0; z-index:999; background:#0C1424; overflow:hidden; font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif; }
@@ -277,8 +277,8 @@ const SIDEBAR_TABS = [
   { id: 'dashboard', label: 'Observatory', icon: 'chart',     color: '#3B82F6' },
   { id: 'diagnostic',label: 'Diagnostic',  icon: 'brain',     color: '#6C7CFF' },
   { id: 'traitement',label: 'Traitement',  icon: 'pill',      color: '#2FD1C8' },
-  { id: 'pve',       label: 'MÃ©dicaments', icon: 'shield',    color: '#B96BFF' },
-  { id: 'ewe',       label: 'Ãvolution',   icon: 'chart',     color: '#A78BFA' },
+  { id: 'pve',       label: 'Médicaments', icon: 'shield',    color: '#B96BFF' },
+  { id: 'ewe',       label: 'Évolution',   icon: 'chart',     color: '#A78BFA' },
   { id: 'discovery', label: 'Discovery',   icon: 'microscope',color: '#10B981' },
   { id: 'lab',       label: 'Research Lab',icon: 'microscope',color: '#0EA5E9' },
   { id: 'cascade',   label: 'Cascade',     icon: 'alert',     color: '#FF6B35' },
@@ -287,9 +287,9 @@ const SIDEBAR_TABS = [
 ]
 
 const ACTS = [
-  { label: 'Acte I â Admission',  steps: [0,1,2],       color: '#6C7CFF' },
-  { label: 'Acte II â Moteurs',   steps: [3,4,5,6,7,8], color: '#10B981' },
-  { label: 'Acte III â Puissance',steps: [9,10,11],     color: '#E879F9' },
+  { label: 'Acte I — Admission',  steps: [0,1,2],       color: '#6C7CFF' },
+  { label: 'Acte II — Moteurs',   steps: [3,4,5,6,7,8], color: '#10B981' },
+  { label: 'Acte III — Puissance',steps: [9,10,11],     color: '#E879F9' },
 ]
 
 interface DemoStep {
@@ -305,52 +305,52 @@ interface DemoStep {
 
 const DEMO_STEPS: DemoStep[] = [
   { tabId: 'intake', duration: 5500, act: 0,
-    titleFr: 'IntakeAnalyzer â Admission',
-    bubbleFr: 'Lucas, 8 ans. 5 paramÃ¨tres saisis en 20 secondes. PULSAR calcule le niveau de triage : P1 Critique. FiÃ¨vre J-3, convulsions, GCS 9.',
+    titleFr: 'IntakeAnalyzer — Admission',
+    bubbleFr: 'Lucas, 8 ans. 5 paramètres saisis en 20 secondes. PULSAR calcule le niveau de triage : P1 Critique. Fièvre J-3, convulsions, GCS 9.',
     cursorTarget: 'content', contentX: 50, contentY: 30 },
   { tabId: 'cockpit', duration: 5500, act: 0,
-    titleFr: 'VPS Score â SÃ©vÃ©ritÃ© globale',
-    bubbleFr: 'Score VPS 81/100. 13 critÃ¨res analysÃ©s en temps rÃ©el : neurologique, inflammatoire, vital. FIRES suspect Ã  87%. Un seul Ã©cran, toute la sÃ©vÃ©ritÃ©.',
+    titleFr: 'VPS Score — Sévérité globale',
+    bubbleFr: 'Score VPS 81/100. 13 critères analysés en temps réel : neurologique, inflammatoire, vital. FIRES suspect à 87%. Un seul écran, toute la sévérité.',
     cursorTarget: 'sidebar' },
   { tabId: 'dashboard', duration: 5000, act: 0,
-    titleFr: 'Observatory â Vue chef de service',
-    bubbleFr: '8 patients actifs. Lucas apparaÃ®t en rouge P1. Vue multi-patients en temps rÃ©el : le chef de service pilote depuis un seul Ã©cran.',
+    titleFr: 'Observatory — Vue chef de service',
+    bubbleFr: '8 patients actifs. Lucas apparaît en rouge P1. Vue multi-patients en temps réel : le chef de service pilote depuis un seul écran.',
     cursorTarget: 'content', contentX: 40, contentY: 35 },
   { tabId: 'diagnostic', duration: 5500, act: 1,
-    titleFr: 'Diagnostic IA â Pattern FIRES',
-    bubbleFr: 'PULSAR identifie le pattern FIRES sur 13 critÃ¨res. Score composite 9/13. HypothÃ¨se principale : FIRES. DiffÃ©rentiel : anti-NMDAR, PIMS-TS neuro.',
+    titleFr: 'Diagnostic IA — Pattern FIRES',
+    bubbleFr: 'PULSAR identifie le pattern FIRES sur 13 critères. Score composite 9/13. Hypothèse principale : FIRES. Différentiel : anti-NMDAR, PIMS-TS neuro.',
     cursorTarget: 'sidebar' },
   { tabId: 'traitement', duration: 5500, act: 1,
-    titleFr: 'TDE â Escalade thÃ©rapeutique',
-    bubbleFr: 'Le TDE gÃ©nÃ¨re le protocole en 4 lignes. Ligne 1 dÃ©jÃ  administrÃ©e. Ligne 2 : Midazolam IV recommandÃ©. DÃ©lai optimal : prochaines 2h.',
+    titleFr: 'TDE — Escalade thérapeutique',
+    bubbleFr: 'Le TDE génère le protocole en 4 lignes. Ligne 1 déjà administrée. Ligne 2 : Midazolam IV recommandé. Délai optimal : prochaines 2h.',
     cursorTarget: 'sidebar' },
   { tabId: 'pve', duration: 5500, act: 1,
-    titleFr: 'PVE â Alerte interaction mÃ©dicamenteuse',
-    bubbleFr: 'Flash rouge : KÃ©tamine + Midazolam Ã profil FIRES. Le PVE interroge OpenFDA en temps rÃ©el et signale le risque de dÃ©pression respiratoire.',
+    titleFr: 'PVE — Alerte interaction médicamenteuse',
+    bubbleFr: 'Flash rouge : Kétamine + Midazolam × profil FIRES. Le PVE interroge OpenFDA en temps réel et signale le risque de dépression respiratoire.',
     cursorTarget: 'content', contentX: 55, contentY: 25 },
   { tabId: 'ewe', duration: 5000, act: 1,
-    titleFr: 'EWE â Signal dÃ©gradation J+2',
-    bubbleFr: "Tendance vitale : SpOâ en baisse sur 18h. EWE projette une dÃ©gradation Ã  J+2 avec 74% de probabilitÃ©. FenÃªtre d'action : 6h.",
+    titleFr: 'EWE — Signal dégradation J+2',
+    bubbleFr: "Tendance vitale : SpO₂ en baisse sur 18h. EWE projette une dégradation à J+2 avec 74% de probabilité. Fenêtre d'action : 6h.",
     cursorTarget: 'content', contentX: 60, contentY: 40 },
   { tabId: 'discovery', duration: 5500, act: 1,
-    titleFr: 'Discovery â PubMed en temps rÃ©el',
-    bubbleFr: 'Scan PubMed : 3 articles remontÃ©s sur FIRES pÃ©diatrique 2023â2024. PatternMiner dÃ©tecte une corrÃ©lation GCS Ã dÃ©lai IVIG non documentÃ©e.',
+    titleFr: 'Discovery — PubMed en temps réel',
+    bubbleFr: 'Scan PubMed : 3 articles remontés sur FIRES pédiatrique 2023–2024. PatternMiner détecte une corrélation GCS × délai IVIG non documentée.',
     cursorTarget: 'sidebar' },
   { tabId: 'lab', duration: 5000, act: 1,
-    titleFr: 'Research Lab â HypothÃ¨ses IA',
-    bubbleFr: '3 hypothÃ¨ses gÃ©nÃ©rÃ©es par IA. H1 : FIRES idiopathique 87%. H2 : FIRES infectieux 11%. H3 : PIMS-TS neuro 2%. Essais NCT actifs identifiÃ©s.',
+    titleFr: 'Research Lab — Hypothèses IA',
+    bubbleFr: '3 hypothèses générées par IA. H1 : FIRES idiopathique 87%. H2 : FIRES infectieux 11%. H3 : PIMS-TS neuro 2%. Essais NCT actifs identifiés.',
     cursorTarget: 'sidebar' },
   { tabId: 'cascade', duration: 5500, act: 2,
     titleFr: 'Cascade Alert Engine',
-    bubbleFr: "MÃ©dicament saisi : MEOPA. PULSAR croise avec le profil Lucas. STOP : 4 Ã©tapes de cascade identifiÃ©es. Alternative proposÃ©e en 1 clic.",
+    bubbleFr: "Médicament saisi : MEOPA. PULSAR croise avec le profil Lucas. STOP : 4 étapes de cascade identifiées. Alternative proposée en 1 clic.",
     cursorTarget: 'content', contentX: 55, contentY: 30 },
   { tabId: 'oracle', duration: 5500, act: 2,
-    titleFr: 'Oracle â 4 scÃ©narios Ã  H+72',
-    bubbleFr: 'Simulation complÃ¨te. Anakinra + RÃ©gime CÃ©togÃ¨ne â VPS projetÃ© 28. Sans action â VPS 95. Le mÃ©decin voit l\'impact de chaque dÃ©cision.',
+    titleFr: 'Oracle — 4 scénarios à H+72',
+    bubbleFr: 'Simulation complète. Anakinra + Régime Cétogène → VPS projeté 28. Sans action → VPS 95. Le médecin voit l\'impact de chaque décision.',
     cursorTarget: 'sidebar' },
   { tabId: 'rapport', duration: 5500, act: 2,
-    titleFr: 'Export â Brief clinique en 1 clic',
-    bubbleFr: 'PDF clinique gÃ©nÃ©rÃ© : 12 moteurs, 70+ sources, traductions FR/EN. MD Â· JSON Â· BibTeX. PrÃªt pour le spÃ©cialiste en moins de 3 secondes.',
+    titleFr: 'Export — Brief clinique en 1 clic',
+    bubbleFr: 'PDF clinique généré : 12 moteurs, 70+ sources, traductions FR/EN. MD · JSON · BibTeX. Prêt pour le spécialiste en moins de 3 secondes.',
     cursorTarget: 'content', contentX: 50, contentY: 40 },
 ]
 
@@ -362,11 +362,11 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
       <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:6, marginBottom:10 }}>
         {[
           { l:'Patient', v:'Lucas M., 8 ans', c:'#6C7CFF' },
-          { l:'Triage', v:'P1 â CRITIQUE', c:'#EF4444' },
-          { l:'SymptÃ´mes', v:'Convulsions J-3', c:'#F59E0B' },
+          { l:'Triage', v:'P1 — CRITIQUE', c:'#EF4444' },
+          { l:'Symptômes', v:'Convulsions J-3', c:'#F59E0B' },
           { l:'GCS initial', v:'9 / 15', c:'#EF4444' },
-          { l:'TempÃ©rature', v:'39.2Â°C', c:'#F59E0B' },
-          { l:'Service', v:'NeuropÃ©diatrie', c:'#6B7280' },
+          { l:'Température', v:'39.2°C', c:'#F59E0B' },
+          { l:'Service', v:'Neuropédiatrie', c:'#6B7280' },
         ].map((m,i) => (
           <div key={i} style={{ padding:'7px 10px', background:'#0D1526', borderRadius:7, borderLeft:`2px solid ${m.c}30` }}>
             <div style={{ fontSize:7.5, color:'#4B5563', marginBottom:2 }}>{m.l}</div>
@@ -375,7 +375,7 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
         ))}
       </div>
       <div style={{ padding:'8px 12px', background:'#6C7CFF08', borderRadius:8, border:'1px solid #6C7CFF18', fontSize:8.5, color:'#6C7CFF', fontWeight:700 }}>
-        â Analyse IntakeAnalyzer â Triage automatique P1 en 18 secondes
+        ✓ Analyse IntakeAnalyzer — Triage automatique P1 en 18 secondes
       </div>
     </div>
   )
@@ -389,7 +389,7 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
           <div style={{ fontSize:7, color:'#EF4444', marginTop:2 }}>CRITIQUE</div>
         </div>
         <div style={{ flex:1, display:'grid', gridTemplateColumns:'1fr 1fr', gap:4 }}>
-          {[{ l:'GCS', v:'9/15', c:'#EF4444' }, { l:'Crises/24h', v:'4', c:'#EF4444' }, { l:'FC', v:'142', c:'#F59E0B' }, { l:'SpO2', v:'94%', c:'#F59E0B' }, { l:'TÂ°', v:'39.2Â°C', c:'#F59E0B' }, { l:'CRP', v:'78', c:'#EF4444' }].map((v,i) => (
+          {[{ l:'GCS', v:'9/15', c:'#EF4444' }, { l:'Crises/24h', v:'4', c:'#EF4444' }, { l:'FC', v:'142', c:'#F59E0B' }, { l:'SpO2', v:'94%', c:'#F59E0B' }, { l:'T°', v:'39.2°C', c:'#F59E0B' }, { l:'CRP', v:'78', c:'#EF4444' }].map((v,i) => (
             <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'4px 8px', background:'#0D1526', borderRadius:5 }}>
               <span style={{ fontSize:7.5, color:'#4B5563' }}>{v.l}</span>
               <span style={{ fontSize:9, fontWeight:700, color:v.c, fontFamily:'monospace' }}>{v.v}</span>
@@ -407,12 +407,12 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
 
   if (s === 'dashboard') return (
     <div>
-      <div style={{ fontSize:8, color:'#4B5563', marginBottom:6 }}>8 patients actifs â Service NeuropÃ©diatrie</div>
+      <div style={{ fontSize:8, color:'#4B5563', marginBottom:6 }}>8 patients actifs — Service Neuropédiatrie</div>
       {[
         { n:'Lucas M.',   a:'8a', vps:81, p:'P1', c:'#EF4444', dx:'FIRES suspect' },
-        { n:'Emma R.',    a:'6a', vps:52, p:'P2', c:'#F59E0B', dx:'EncÃ©phalite' },
-        { n:'Noah B.',    a:'11a',vps:38, p:'P2', c:'#F59E0B', dx:'Ãpilepsie rÃ©fractaire' },
-        { n:'LÃ©a K.',     a:'4a', vps:21, p:'P3', c:'#10B981', dx:'Bilan neurologique' },
+        { n:'Emma R.',    a:'6a', vps:52, p:'P2', c:'#F59E0B', dx:'Encéphalite' },
+        { n:'Noah B.',    a:'11a',vps:38, p:'P2', c:'#F59E0B', dx:'Épilepsie réfractaire' },
+        { n:'Léa K.',     a:'4a', vps:21, p:'P3', c:'#10B981', dx:'Bilan neurologique' },
       ].map((pt,i) => (
         <div key={i} style={{ display:'flex', alignItems:'center', gap:8, padding:'6px 10px', background: i===0 ? '#EF444406' : '#0D1526', borderRadius:7, marginBottom:4, border: i===0 ? '1px solid #EF444418' : '1px solid transparent' }}>
           <span style={{ width:5, height:5, borderRadius:3, background:pt.c, flexShrink:0 }} />
@@ -434,7 +434,7 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
           <div style={{ fontSize:7, color:'#6C7CFF' }}>87% prob.</div>
         </div>
         <div style={{ flex:1 }}>
-          {[['FiÃ¨vre prÃ©-ictale','â','#10B981'],['Crise >24h','â','#10B981'],['EEG continu','â','#10B981'],['IRM normale','â','#10B981'],['LCS normal','?','#F59E0B']].map(([l,v,c],i) => (
+          {[['Fièvre pré-ictale','✓','#10B981'],['Crise >24h','✓','#10B981'],['EEG continu','✓','#10B981'],['IRM normale','✓','#10B981'],['LCS normal','?','#F59E0B']].map(([l,v,c],i) => (
             <div key={i} style={{ display:'flex', justifyContent:'space-between', padding:'3px 8px', background:'#0D1526', borderRadius:4, marginBottom:3 }}>
               <span style={{ fontSize:8, color:'#6B7280' }}>{l}</span>
               <span style={{ fontSize:9, fontWeight:700, color:c as string }}>{v}</span>
@@ -456,10 +456,10 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
   if (s === 'traitement') return (
     <div>
       {[
-        { n:'Ligne 1', tx:'Benzos + PhÃ©nobarbital', s:'â AdministrÃ©e', c:'#10B981' },
-        { n:'Ligne 2', tx:'Midazolam IV continu', s:'â RecommandÃ©e', c:'#6C7CFF' },
-        { n:'Ligne 3', tx:'KÃ©tamine + Propofol', s:'En attente', c:'#4B5563' },
-        { n:'Ligne 4', tx:'AnesthÃ©sie gÃ©nÃ©rale', s:'Si Ã©chec L3', c:'#374151' },
+        { n:'Ligne 1', tx:'Benzos + Phénobarbital', s:'✓ Administrée', c:'#10B981' },
+        { n:'Ligne 2', tx:'Midazolam IV continu', s:'→ Recommandée', c:'#6C7CFF' },
+        { n:'Ligne 3', tx:'Kétamine + Propofol', s:'En attente', c:'#4B5563' },
+        { n:'Ligne 4', tx:'Anesthésie générale', s:'Si échec L3', c:'#374151' },
       ].map((l,i) => (
         <div key={i} style={{ display:'flex', alignItems:'center', gap:8, padding:'7px 10px', background: i===1 ? '#6C7CFF08' : '#0D1526', borderRadius:7, marginBottom:4, border: i===1 ? '1px solid #6C7CFF20' : '1px solid transparent' }}>
           <div style={{ width:4, height:4, borderRadius:2, background:l.c, flexShrink:0 }} />
@@ -469,7 +469,7 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
         </div>
       ))}
       <div style={{ marginTop:6, padding:'5px 10px', background:'#F59E0B08', borderRadius:6, fontSize:8, color:'#F59E0B' }}>
-        â¡ DÃ©lai optimal ligne 2 : &lt; 2h (H+6 actuel)
+        ⚡ Délai optimal ligne 2 : &lt; 2h (H+6 actuel)
       </div>
     </div>
   )
@@ -477,33 +477,33 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
   if (s === 'pve') return (
     <div>
       <div style={{ display:'flex', gap:6, marginBottom:10 }}>
-        <div style={{ flex:1, padding:'6px 10px', background:'#0D1526', borderRadius:7, border:'1px solid #EF444420', fontSize:9.5, color:'#F0F2F5' }}>KÃ©tamine</div>
+        <div style={{ flex:1, padding:'6px 10px', background:'#0D1526', borderRadius:7, border:'1px solid #EF444420', fontSize:9.5, color:'#F0F2F5' }}>Kétamine</div>
         <div style={{ padding:'6px 14px', borderRadius:7, background:'#EF4444', color:'#fff', fontSize:8.5, fontWeight:700 }}>Analyser PVE</div>
       </div>
       <div style={{ padding:'10px 12px', background:'#EF444408', borderRadius:9, border:'1px solid #EF444418' }}>
-        <div style={{ fontSize:9, fontWeight:800, color:'#EF4444', marginBottom:6 }}>â  INTERACTION CRITIQUE</div>
-        {['KÃ©tamine Ã Midazolam IV â dÃ©pression respiratoire','Profil FIRES : sensibilitÃ© EEG augmentÃ©e','Dose cumulÃ©e : seuil dÃ©jÃ  Ã  78%'].map((s,i) => (
+        <div style={{ fontSize:9, fontWeight:800, color:'#EF4444', marginBottom:6 }}>⚠ INTERACTION CRITIQUE</div>
+        {['Kétamine × Midazolam IV — dépression respiratoire','Profil FIRES : sensibilité EEG augmentée','Dose cumulée : seuil déjà à 78%'].map((s,i) => (
           <div key={i} style={{ display:'flex', gap:6, marginBottom:3 }}>
-            <span style={{ fontSize:7, color:'#EF4444', fontWeight:900 }}>â</span>
+            <span style={{ fontSize:7, color:'#EF4444', fontWeight:900 }}>→</span>
             <span style={{ fontSize:8, color:'#E8EAF0' }}>{s}</span>
           </div>
         ))}
-        <div style={{ marginTop:6, fontSize:8, color:'#10B981', fontWeight:600 }}>Alternative : PhÃ©nobarbital + monitoring EEG renforcÃ©</div>
+        <div style={{ marginTop:6, fontSize:8, color:'#10B981', fontWeight:600 }}>Alternative : Phénobarbital + monitoring EEG renforcé</div>
       </div>
     </div>
   )
 
   if (s === 'ewe') return (
     <div>
-      <div style={{ fontSize:8, color:'#4B5563', marginBottom:8 }}>Tendance SpOâ â 18 derniÃ¨res heures</div>
+      <div style={{ fontSize:8, color:'#4B5563', marginBottom:8 }}>Tendance SpO₂ — 18 dernières heures</div>
       <div style={{ display:'flex', alignItems:'flex-end', gap:3, height:60, marginBottom:10 }}>
         {[96,95,95,94,94,93,93,93,92,91,91,90,90,89,88,87,87,86].map((v,i) => (
           <div key={i} style={{ flex:1, height:`${(v-82)*6}px`, background: v<90 ? '#EF444430' : '#A78BFA30', borderRadius:'2px 2px 0 0', borderTop:`2px solid ${v<90?'#EF4444':'#A78BFA'}`, transition:'height 0.5s' }} />
         ))}
       </div>
       <div style={{ padding:'8px 12px', background:'#EF444408', borderRadius:8, border:'1px solid #EF444418', fontSize:8.5 }}>
-        <span style={{ color:'#EF4444', fontWeight:700 }}>EWE Alert â </span>
-        <span style={{ color:'#9CA3AF' }}>DÃ©gradation projetÃ©e J+2 Â· ProbabilitÃ© 74% Â· FenÃªtre d'action : 6h</span>
+        <span style={{ color:'#EF4444', fontWeight:700 }}>EWE Alert — </span>
+        <span style={{ color:'#9CA3AF' }}>Dégradation projetée J+2 · Probabilité 74% · Fenêtre d'action : 6h</span>
       </div>
     </div>
   )
@@ -511,18 +511,17 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
   if (s === 'discovery') return (
     <div>
       <div style={{ display:'flex', gap:4, marginBottom:8 }}>
-        {[['L1 Pattern','#10B981'],['L2 PubMed','#10B981'],['L3 HypothÃ¨ses','#F59E0B'],['L4 Essais','#4B5563']].map(([l,c],i) => (
+        {[['L1 Pattern','#10B981'],['L2 PubMed','#10B981'],['L3 Hypothèses','#F59E0B'],['L4 Essais','#4B5563']].map(([l,c],i) => (
           <div key={i} style={{ flex:1, padding:'4px 4px', background:`${c}10`, borderRadius:5, textAlign:'center', border:`1px solid ${c}20` }}>
             <div style={{ fontSize:7, color:c as string, fontWeight:700, lineHeight:1.3 }}>{l}</div>
             {i < 2 && <div style={{ width:6, height:6, borderRadius:3, background:c, margin:'2px auto 0' }} />}
-        <img src="/assets/illustrations/avatar-boy.png" style={{width:"100%",height:"100%",objectFit:"cover",borderRadius:"50%"}} alt=""/>
           </div>
         ))}
       </div>
       {[
-        { src:'Nat. Neurology 2023', t:'FIRES + GCS < 10 â IVIG J+2 amÃ©liore pronostic Ã2.3', c:'#10B981' },
-        { src:'Epilepsia 2024', t:'CorrÃ©lation CRP > 60 + pattern EEG = FIRES dans 89% des cas', c:'#10B981' },
-        { src:'Brain 2023', t:'Anakinra prÃ©coce (< 72h) rÃ©duit durÃ©e status epilepticus', c:'#0EA5E9' },
+        { src:'Nat. Neurology 2023', t:'FIRES + GCS < 10 → IVIG J+2 améliore pronostic ×2.3', c:'#10B981' },
+        { src:'Epilepsia 2024', t:'Corrélation CRP > 60 + pattern EEG = FIRES dans 89% des cas', c:'#10B981' },
+        { src:'Brain 2023', t:'Anakinra précoce (< 72h) réduit durée status epilepticus', c:'#0EA5E9' },
       ].map((a,i) => (
         <div key={i} style={{ padding:'6px 10px', background:'#0D1526', borderRadius:6, marginBottom:4 }}>
           <div style={{ fontSize:7, color:a.c, fontWeight:700, marginBottom:2 }}>{a.src}</div>
@@ -551,7 +550,7 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
         ))}
       </div>
       <div style={{ padding:'6px 10px', background:'#0EA5E908', borderRadius:7, border:'1px solid #0EA5E918', fontSize:8, color:'#0EA5E9' }}>
-        ð¬ NCT05847205 â Anakinra pÃ©diatrique FIRES Â· Recrutement actif Â· 4 centres FR
+        🔬 NCT05847205 — Anakinra pédiatrique FIRES · Recrutement actif · 4 centres FR
       </div>
     </div>
   )
@@ -563,26 +562,26 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
         <div style={{ padding:'6px 14px', borderRadius:7, background:'#FF6B35', color:'#fff', fontSize:8.5, fontWeight:700 }}>Analyser</div>
       </div>
       <div style={{ padding:'10px 12px', background:'#EF444408', borderRadius:9, border:'1px solid #EF444418' }}>
-        <div style={{ fontSize:9, fontWeight:800, color:'#EF4444', marginBottom:6 }}>â CASCADE CRITIQUE â 4 Ã©tapes identifiÃ©es</div>
-        {['Neuroinflammation latente active','MEOPA â hypoxie cÃ©rÃ©brale transitoire','Seuil convulsif dÃ©jÃ  abaissÃ© (GCS 9)','Cascade auto-entretenue irrÃ©versible'].map((s,i) => (
+        <div style={{ fontSize:9, fontWeight:800, color:'#EF4444', marginBottom:6 }}>⛔ CASCADE CRITIQUE — 4 étapes identifiées</div>
+        {['Neuroinflammation latente active','MEOPA → hypoxie cérébrale transitoire','Seuil convulsif déjà abaissé (GCS 9)','Cascade auto-entretenue irréversible'].map((s,i) => (
           <div key={i} style={{ display:'flex', gap:6, marginBottom:3, alignItems:'center' }}>
             <span style={{ fontSize:8, fontWeight:900, color:'#EF4444', fontFamily:'monospace', minWidth:12 }}>{i+1}</span>
             <span style={{ fontSize:8, color:'#E8EAF0' }}>{s}</span>
           </div>
         ))}
-        <div style={{ marginTop:6, fontSize:8, color:'#10B981', fontWeight:600 }}>â Alternative : Emla topique + ParacÃ©tamol IV</div>
+        <div style={{ marginTop:6, fontSize:8, color:'#10B981', fontWeight:600 }}>→ Alternative : Emla topique + Paracétamol IV</div>
       </div>
     </div>
   )
 
   if (s === 'oracle') return (
     <div>
-      <div style={{ fontSize:8, color:'#4B5563', marginBottom:8 }}>Simulation pronostique H+72 â VPS projetÃ©</div>
+      <div style={{ fontSize:8, color:'#4B5563', marginBottom:8 }}>Simulation pronostique H+72 — VPS projeté</div>
       {[
-        { l:'Anakinra + RÃ©gime CÃ©togÃ¨ne', v:28, c:'#10B981', tag:'â RecommandÃ©' },
-        { l:'Standard (CorticoÃ¯des + IVIG)', v:44, c:'#6C7CFF', tag:'' },
-        { l:'Rituximab expÃ©rimental', v:35, c:'#F5A623', tag:'Essai NCT' },
-        { l:'Sans action supplÃ©mentaire', v:95, c:'#EF4444', tag:'â  Critique' },
+        { l:'Anakinra + Régime Cétogène', v:28, c:'#10B981', tag:'↑ Recommandé' },
+        { l:'Standard (Corticoïdes + IVIG)', v:44, c:'#6C7CFF', tag:'' },
+        { l:'Rituximab expérimental', v:35, c:'#F5A623', tag:'Essai NCT' },
+        { l:'Sans action supplémentaire', v:95, c:'#EF4444', tag:'⚠ Critique' },
       ].map((s,i) => (
         <div key={i} style={{ display:'flex', alignItems:'center', gap:6, marginBottom:8 }}>
           <span style={{ width:130, fontSize:8, color:'#6B7280', textAlign:'right', flexShrink:0 }}>{s.l}</span>
@@ -605,14 +604,14 @@ function DemoContent({ step, stepIdx }: { step: DemoStep; stepIdx: number }) {
           </div>
         ))}
       </div>
-      {['Analyse VPS Â· 12 moteurs IA','70+ publications sourÃ©es','Traduction FR / EN auto','HypothÃ¨ses + Essais NCT actifs','Signature mÃ©decin + Timestamp'].map((l,i) => (
+      {['Analyse VPS · 12 moteurs IA','70+ publications sourées','Traduction FR / EN auto','Hypothèses + Essais NCT actifs','Signature médecin + Timestamp'].map((l,i) => (
         <div key={i} style={{ display:'flex', gap:6, padding:'4px 0', borderBottom:'1px solid #1A2540', alignItems:'center' }}>
-          <span style={{ fontSize:8, color:'#10B981' }}>â</span>
+          <span style={{ fontSize:8, color:'#10B981' }}>✓</span>
           <span style={{ fontSize:8.5, color:'#9CA3AF' }}>{l}</span>
         </div>
       ))}
       <div style={{ marginTop:8, padding:'6px 10px', background:'#10B98108', borderRadius:7, fontSize:8.5, color:'#10B981', fontWeight:700 }}>
-        PDF gÃ©nÃ©rÃ© en 2.3 secondes Â· PrÃªt Ã  envoyer
+        PDF généré en 2.3 secondes · Prêt à envoyer
       </div>
     </div>
   )
@@ -675,8 +674,8 @@ function DemoOverlay({ t, onClose }: { t: (fr: string, en: string) => string; on
             <span style={{ fontSize:10.5, fontWeight:900, color:'#6C7CFF', letterSpacing:1.5 }}>PULSAR</span>
           </div>
           <div className="dv2-patient-chip">
-            <div style={{ fontSize:8.5, fontWeight:700, color:'#E8EAF0' }}>Lucas M. Â· 8 ans</div>
-            <div style={{ fontSize:7.5, color:'#EF4444', fontWeight:600 }}>P1 Â· FIRES suspect</div>
+            <div style={{ fontSize:8.5, fontWeight:700, color:'#E8EAF0' }}>Lucas M. · 8 ans</div>
+            <div style={{ fontSize:7.5, color:'#EF4444', fontWeight:600 }}>P1 · FIRES suspect</div>
           </div>
           {SIDEBAR_TABS.map((tab, i) => (
             <div key={tab.id}
@@ -739,18 +738,18 @@ function DemoOverlay({ t, onClose }: { t: (fr: string, en: string) => string; on
 
         {/* Nav dots */}
         <div className="dv2-nav">
-          <button className="dv2-nav-btn" onClick={() => setStepIdx(s => Math.max(0, s-1))}>â</button>
+          <button className="dv2-nav-btn" onClick={() => setStepIdx(s => Math.max(0, s-1))}>←</button>
           {DEMO_STEPS.map((_, i) => (
             <div key={i} className="dv2-dot"
               onClick={() => setStepIdx(i)}
               style={{ width: i === stepIdx ? 16 : 4, background: i <= stepIdx ? ACTS[DEMO_STEPS[i].act].color : '#1F2A40' }}
             />
           ))}
-          <button className="dv2-nav-btn" onClick={() => setStepIdx(s => Math.min(DEMO_STEPS.length-1, s+1))}>â</button>
-          <button className="dv2-nav-btn" onClick={() => setPaused(p => !p)}>{paused ? 'â¶' : 'â¸'}</button>
+          <button className="dv2-nav-btn" onClick={() => setStepIdx(s => Math.min(DEMO_STEPS.length-1, s+1))}>→</button>
+          <button className="dv2-nav-btn" onClick={() => setPaused(p => !p)}>{paused ? '▶' : '⏸'}</button>
         </div>
 
-        <button className="dv2-close" onClick={onClose}>{t('Fermer', 'Close')} â</button>
+        <button className="dv2-close" onClick={onClose}>{t('Fermer', 'Close')} ✕</button>
       </div>
     </>
   )
@@ -760,7 +759,7 @@ function CaseOverlay({ t, onClose }: { t: (fr: string, en: string) => string; on
   return (
     <div style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'var(--p-bg, #0C1424)', overflowY: 'auto' }}>
       <button onClick={onClose} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>
-        {t('Fermer', 'Close')} â
+        {t('Fermer', 'Close')} ✕
       </button>
       <AlejandroCasePage />
     </div>
