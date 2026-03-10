@@ -42,7 +42,7 @@ function UseCaseGate() {
     </div>
   )
 }
-import { AVATAR_DATA } from '@/lib/avatarData'
+
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
@@ -118,10 +118,9 @@ function buildDemoPatients(): PatientCard[] {
 
 /* ── Mini Avatar SVG ── */
 function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size?: number; name?: string; sex?: 'male' | 'female' }) {
-  const avatarKey = sex === 'male'
-    ? (name?.startsWith('Lucas') ? 'avatar-lucas' : 'avatar-noah')
-    : (name?.startsWith('Amara') ? 'avatar-amara' : 'avatar-ines')
-  const avatarSrc = AVATAR_DATA[avatarKey] || ''
+  const avatarSrc = sex === 'male'
+    ? '/assets/avatars/avatar-boy.png'
+    : '/assets/avatars/avatar-girl.png'
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%',
