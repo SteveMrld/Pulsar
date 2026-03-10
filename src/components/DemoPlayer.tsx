@@ -509,9 +509,9 @@ function ScreenVisualPhysio() {
           </div>
         </div>
         {/* Center: patient silhouette */}
-        <div style={{ flex: 1, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: 8 }}>
-          <div style={{ position: "relative", height: "100%", maxHeight: 280 }}>
-            <canvas ref={canvasRef} style={{ display: 'block', height: '100%', maxHeight: 280, width: 'auto' }} />
+        <div style={{ flex: 1, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: 8, background: "transparent" }}>
+          <div style={{ position: "relative", height: "100%", maxHeight: 280, background: "transparent" }}>
+            <canvas ref={canvasRef} style={{ display: 'block', height: '100%', maxHeight: 280, width: 'auto', mixBlendMode: 'screen' }} />
             {/* Hotspots */}
             {[
               { top: "12%", left: "48%", c: "#EF4444" },

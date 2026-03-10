@@ -124,20 +124,14 @@ function MiniAvatar({ vpsColor, size = 36, name, sex }: { vpsColor: string; size
   return (
     <div style={{
       width: size, height: size, borderRadius: '50%',
-      background: `${vpsColor}18`, border: `2px solid ${vpsColor}40`,
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      flexShrink: 0, overflow: 'hidden',
-      boxShadow: `0 0 8px ${vpsColor}20`,
-    }}>
-      {avatarSrc && (
-        <img src={avatarSrc} alt={name || ''} 
-          style={{ 
-            width: '100%', height: '100%', 
-            objectFit: 'cover', objectPosition: 'center 30%',
-            display: 'block',
-          }} />
-      )}
-    </div>
+      border: `2px solid ${vpsColor}40`,
+      flexShrink: 0,
+      boxShadow: `0 0 10px ${vpsColor}30`,
+      backgroundImage: `url(${avatarSrc})`,
+      backgroundSize: '140%',
+      backgroundPosition: 'center 20%',
+      backgroundColor: 'transparent',
+    }} aria-label={name} />
   )
 }
 
