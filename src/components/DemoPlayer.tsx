@@ -456,9 +456,11 @@ function ScreenVisualPhysio() {
         const r = d[i], g = d[i+1], b = d[i+2]
         const avg = (r + g + b) / 3
         const diff = Math.max(Math.abs(r-g), Math.abs(r-b), Math.abs(g-b))
-        // Pixel gris: faible saturation et luminosité mid-range
-        if (diff < 30 && avg > 40 && avg < 160) {
-          d[i+3] = 0
+        // Supprime fond blanc, gris clair et gris moyen (faible saturation)
+        if (diff < 40 && avg > 40) {
+          // Fondu progressif : plus le pixel est clair, plus il devient transparent
+          const alpha = avg > 160 ? 0 : Math.round(((160 - avg) / 120) * 255)
+          d[i+3] = alpha
         }
       }
       ctx.putImageData(data, 0, 0)

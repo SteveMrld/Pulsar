@@ -645,6 +645,7 @@ body {
   position: relative;
   overflow: hidden;
   border-radius: 10px;
+  background: #0C1424;
   animation:
     pulsarIllusFadeIn 0.55s cubic-bezier(0.22,1,0.36,1) both,
     pulsarGlowPulse   4s  ease-in-out                    infinite;
@@ -653,6 +654,7 @@ body {
 .pulsar-illus-wrap img {
   display: block;
   width: 100%;
+  mix-blend-mode: screen;
   transform-origin: center center;
   animation: pulsarKenBurns 20s ease-in-out infinite;
   will-change: transform;
@@ -674,6 +676,15 @@ body {
   animation: pulsarScanLine 4s linear infinite;
   pointer-events: none;
   z-index: 2;
+}
+
+/* Illustrations standalone (hors .pulsar-illus-wrap) */
+.pulsar-illus-img {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  mix-blend-mode: screen;
+  background: transparent;
 }
 
 /* Caption sous l'illustration */

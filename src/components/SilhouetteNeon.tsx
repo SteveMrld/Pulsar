@@ -128,12 +128,13 @@ export default function SilhouetteNeon({
         </div>
 
         {/* Image silhouette avec hotspots */}
-        <div style={{ position: 'relative', width: 220, height: 340, borderRadius: 12, overflow: 'hidden' }}>
+        <div style={{ position: 'relative', width: 220, height: 340, borderRadius: 12, overflow: 'hidden', background: '#0C1424' }}>
           <img
             src="/assets/silhouette-neon.jpg"
             alt="Visual Physiology"
             style={{
               width: '100%', height: '100%', objectFit: 'cover',
+              mixBlendMode: 'screen',
               ...imgStyle,
             }}
           />
