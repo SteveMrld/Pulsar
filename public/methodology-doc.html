@@ -1,0 +1,1236 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PULSAR — Méthodologie Clinique v4.0</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    /* ── Reset & Variables ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --p-black:       #0A0A0F;
+      --p-dark-1:      #121219;
+      --p-dark-2:      #171722;
+      --p-dark-3:      #1E1E2C;
+      --p-dark-4:      #262638;
+      --p-dark-5:      #2C2C40;
+      --p-gray-1:      #3A3A50;
+      --p-gray-2:      #4E4E66;
+      --p-gray-3:      #6B6B85;
+      --p-gray-4:      #8E8EA3;
+      --p-gray-5:      #B0B0C0;
+      --p-light-2:     #E8E8F0;
+      --p-white:       #F4F4FA;
+
+      --p-vps:         #6C7CFF;
+      --p-vps-dim:     rgba(108,124,255,0.15);
+      --p-vps-glow:    rgba(108,124,255,0.30);
+      --p-tde:         #2FD1C8;
+      --p-tde-dim:     rgba(47,209,200,0.15);
+      --p-pve:         #B96BFF;
+      --p-pve-dim:     rgba(185,107,255,0.15);
+      --p-ewe:         #A78BFA;
+      --p-tpe:         #FFB347;
+      --p-tpe-dim:     rgba(255,179,71,0.15);
+      --p-disc:        #10B981;
+      --p-disc-dim:    rgba(16,185,129,0.15);
+      --p-disc-glow:   rgba(16,185,129,0.30);
+
+      --p-critical:    #8B5CF6;
+      --p-warning:     #FFA502;
+      --p-success:     #2ED573;
+      --p-info:        #3B82F6;
+
+      --p-font-body:  'Inter', -apple-system, sans-serif;
+      --p-font-mono:  'JetBrains Mono', 'Fira Code', monospace;
+
+      --p-bg:          #121219;
+      --p-bg-card:     #171722;
+      --p-bg-elevated: #1E1E2C;
+      --p-text:        #F4F4FA;
+      --p-text-muted:  #8E8EA3;
+      --p-text-dim:    #6B6B85;
+      --p-border:      1px solid #3A3A50;
+    }
+
+    html {
+      font-family: var(--p-font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      background: var(--p-bg);
+      color: var(--p-text);
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 20%, rgba(108,124,255,0.05) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 80%, rgba(16,185,129,0.04) 0%, transparent 60%),
+        var(--p-bg);
+    }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--p-gray-2); border-radius: 99px; }
+
+    /* ── Layout ── */
+    .doc-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 48px 32px 80px;
+    }
+
+    @media (max-width: 640px) {
+      .doc-wrap { padding: 24px 16px 60px; }
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      border-bottom: 1px solid var(--p-gray-1);
+      padding-bottom: 32px;
+      margin-bottom: 40px;
+    }
+
+    .doc-header-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .doc-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, var(--p-vps), var(--p-tde));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--p-font-mono);
+      font-size: 13px;
+      font-weight: 700;
+      color: white;
+      flex-shrink: 0;
+      box-shadow: 0 0 16px rgba(108,124,255,0.3);
+    }
+
+    .doc-badge {
+      font-family: var(--p-font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      background: var(--p-disc-dim);
+      color: var(--p-disc);
+      border: 1px solid rgba(16,185,129,0.25);
+    }
+
+    .doc-version {
+      font-family: var(--p-font-mono);
+      font-size: 10px;
+      color: var(--p-text-dim);
+      margin-left: auto;
+    }
+
+    .doc-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: var(--p-text);
+      line-height: 1.2;
+      margin-bottom: 8px;
+    }
+
+    .doc-title span {
+      background: linear-gradient(135deg, var(--p-vps), var(--p-tde));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .doc-subtitle {
+      font-size: 14px;
+      color: var(--p-text-muted);
+      line-height: 1.6;
+      max-width: 640px;
+    }
+
+    .doc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-top: 20px;
+    }
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--p-font-mono);
+      font-size: 11px;
+      color: var(--p-text-dim);
+    }
+
+    .meta-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--p-disc);
+      box-shadow: 0 0 6px var(--p-disc);
+      animation: breathe 2s ease-in-out infinite;
+    }
+
+    @keyframes breathe {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+
+    /* ── TOC ── */
+    .toc {
+      background: var(--p-bg-card);
+      border: var(--p-border);
+      border-left: 3px solid var(--p-vps);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 40px;
+    }
+
+    .toc-title {
+      font-family: var(--p-font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--p-text-dim);
+      margin-bottom: 12px;
+    }
+
+    .toc-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .toc-list li a {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--p-text-muted);
+      text-decoration: none;
+      padding: 3px 0;
+      transition: color 0.2s;
+    }
+
+    .toc-list li a:hover { color: var(--p-vps); }
+
+    .toc-num {
+      font-family: var(--p-font-mono);
+      font-size: 10px;
+      color: var(--p-text-dim);
+      width: 18px;
+      flex-shrink: 0;
+    }
+
+    /* ── Sections ── */
+    .section {
+      margin-bottom: 48px;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--p-gray-1);
+    }
+
+    .section-number {
+      font-family: var(--p-font-mono);
+      font-size: 11px;
+      color: var(--p-text-dim);
+      font-weight: 700;
+      width: 24px;
+      flex-shrink: 0;
+    }
+
+    .section-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      flex-shrink: 0;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--p-text);
+    }
+
+    .section-tag {
+      font-family: var(--p-font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    /* ── Prose ── */
+    p {
+      font-size: 14px;
+      color: var(--p-text-muted);
+      line-height: 1.75;
+      margin-bottom: 12px;
+    }
+
+    strong { color: var(--p-text); font-weight: 600; }
+
+    /* ── Cards ── */
+    .card {
+      background: var(--p-bg-card);
+      border: var(--p-border);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 12px;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--p-text);
+      margin-bottom: 6px;
+    }
+
+    .card-body {
+      font-size: 13px;
+      color: var(--p-text-muted);
+      line-height: 1.6;
+    }
+
+    /* ── Engine blocks ── */
+    .engine-pipeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+    }
+
+    .engine-pipeline::before {
+      content: '';
+      position: absolute;
+      left: 19px;
+      top: 36px;
+      bottom: 36px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--p-vps), var(--p-tde), var(--p-pve), var(--p-disc));
+      opacity: 0.3;
+    }
+
+    .engine-item {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      border-radius: 10px;
+      border: var(--p-border);
+      background: var(--p-bg-card);
+      margin-bottom: 8px;
+      position: relative;
+    }
+
+    .engine-badge {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--p-font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .engine-content { flex: 1; min-width: 0; }
+
+    .engine-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--p-text);
+      margin-bottom: 3px;
+    }
+
+    .engine-desc {
+      font-size: 12px;
+      color: var(--p-text-muted);
+      line-height: 1.5;
+    }
+
+    .engine-tech {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 6px;
+    }
+
+    .tech-tag {
+      font-family: var(--p-font-mono);
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--p-bg-elevated);
+      color: var(--p-text-dim);
+      border: 1px solid var(--p-gray-1);
+    }
+
+    /* ── Timeline (case Alejandro) ── */
+    .timeline {
+      position: relative;
+      padding-left: 32px;
+    }
+
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      bottom: 6px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--p-warning), var(--p-critical), var(--p-success));
+      opacity: 0.5;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding: 14px 16px;
+      background: var(--p-bg-card);
+      border: var(--p-border);
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: -28px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid;
+    }
+
+    .timeline-item.day-0::before { border-color: var(--p-info); background: var(--p-info); }
+    .timeline-item.day-3::before { border-color: var(--p-warning); background: var(--p-warning); }
+    .timeline-item.day-5::before { border-color: var(--p-critical); background: var(--p-critical); }
+    .timeline-item.day-10::before { border-color: var(--p-pve); background: var(--p-pve); }
+    .timeline-item.day-late::before { border-color: var(--p-disc); background: var(--p-disc); }
+
+    .timeline-day {
+      font-family: var(--p-font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .timeline-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--p-text);
+      margin-bottom: 3px;
+    }
+
+    .timeline-note {
+      font-size: 12px;
+      color: var(--p-text-muted);
+      line-height: 1.5;
+    }
+
+    .alert-box {
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      line-height: 1.6;
+      margin-bottom: 14px;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+
+    .alert-box.warning {
+      background: rgba(255,165,2,0.08);
+      border: 1px solid rgba(255,165,2,0.2);
+      color: #FFB347;
+    }
+
+    .alert-box.critical {
+      background: rgba(139,92,246,0.08);
+      border: 1px solid rgba(139,92,246,0.2);
+      color: #A78BFA;
+    }
+
+    .alert-box.info {
+      background: rgba(59,130,246,0.08);
+      border: 1px solid rgba(59,130,246,0.2);
+      color: #93C5FD;
+    }
+
+    .alert-box.success {
+      background: rgba(16,185,129,0.08);
+      border: 1px solid rgba(16,185,129,0.2);
+      color: var(--p-disc);
+    }
+
+    .alert-icon { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+    .alert-content { flex: 1; }
+    .alert-title { font-weight: 700; margin-bottom: 2px; }
+    .alert-body { opacity: 0.85; }
+
+    /* ── Treatment table ── */
+    .treatment-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .treatment-card {
+      background: var(--p-bg-elevated);
+      border: var(--p-border);
+      border-radius: 10px;
+      padding: 16px;
+    }
+
+    .treatment-name {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--p-text);
+      margin-bottom: 4px;
+    }
+
+    .treatment-class {
+      font-family: var(--p-font-mono);
+      font-size: 10px;
+      color: var(--p-text-dim);
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .treatment-score {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .score-bar {
+      flex: 1;
+      height: 4px;
+      background: var(--p-gray-1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .score-fill {
+      height: 100%;
+      border-radius: 2px;
+    }
+
+    .score-val {
+      font-family: var(--p-font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      min-width: 24px;
+      text-align: right;
+    }
+
+    /* ── Moteurs (5 engines) ── */
+    .motors-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .motor-card {
+      background: var(--p-bg-card);
+      border: var(--p-border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .motor-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .motor-abbr {
+      font-family: var(--p-font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+    }
+
+    .motor-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--p-text);
+    }
+
+    .motor-desc {
+      font-size: 11px;
+      color: var(--p-text-dim);
+      line-height: 1.5;
+    }
+
+    /* ── Key principles ── */
+    .principles-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .principle-item {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      padding: 14px 16px;
+      background: var(--p-bg-card);
+      border: var(--p-border);
+      border-radius: 10px;
+    }
+
+    .principle-num {
+      font-family: var(--p-font-mono);
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--p-vps);
+      min-width: 20px;
+      flex-shrink: 0;
+      padding-top: 1px;
+    }
+
+    .principle-text {
+      font-size: 13px;
+      color: var(--p-text-muted);
+      line-height: 1.6;
+    }
+
+    .principle-text strong { color: var(--p-text); }
+
+    /* ── Memorial ── */
+    .memorial {
+      background: linear-gradient(135deg, rgba(108,124,255,0.06) 0%, rgba(16,185,129,0.04) 100%);
+      border: 1px solid rgba(108,124,255,0.2);
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      margin-top: 40px;
+    }
+
+    .memorial-name {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--p-vps);
+      margin-bottom: 4px;
+    }
+
+    .memorial-dates {
+      font-family: var(--p-font-mono);
+      font-size: 12px;
+      color: var(--p-text-dim);
+      margin-bottom: 12px;
+    }
+
+    .memorial-text {
+      font-size: 13px;
+      color: var(--p-text-muted);
+      line-height: 1.7;
+      max-width: 540px;
+      margin: 0 auto;
+      font-style: italic;
+    }
+
+    /* ── Footer ── */
+    .doc-footer {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--p-gray-1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-brand {
+      font-family: var(--p-font-mono);
+      font-size: 12px;
+      color: var(--p-text-dim);
+    }
+
+    .footer-brand span {
+      background: linear-gradient(135deg, var(--p-vps), var(--p-tde));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 700;
+    }
+
+    .footer-note {
+      font-size: 11px;
+      color: var(--p-text-dim);
+      font-style: italic;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: white; color: #111; }
+      :root {
+        --p-bg: white; --p-bg-card: #f5f5f5; --p-text: #111;
+        --p-text-muted: #444; --p-text-dim: #666; --p-gray-1: #ddd;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="doc-wrap">
+
+    <!-- ── HEADER ── -->
+    <header class="doc-header">
+      <div class="doc-header-top">
+        <div class="doc-logo">P</div>
+        <span class="doc-badge">Méthodologie Clinique</span>
+        <span class="doc-version">v4.0 · 2025</span>
+      </div>
+      <h1 class="doc-title">
+        <span>PULSAR</span> — Plateforme d'Aide à la Décision<br>
+        Neuro-Inflammatoire Pédiatrique
+      </h1>
+      <p class="doc-subtitle">
+        Documentation de référence : architecture des moteurs d'analyse, protocole de décision clinique,
+        fondements méthodologiques et origine du cas clinique fondateur.
+      </p>
+      <div class="doc-meta">
+        <span class="meta-item"><span class="meta-dot"></span>Discovery Engine v4.0 — 4 niveaux, 4 662 lignes</span>
+        <span class="meta-item"><span class="meta-dot"></span>12 fichiers · i18n FR/EN</span>
+        <span class="meta-item"><span class="meta-dot"></span>Collaborateur scientifique : Pierre Sonigo, ex-INSERM</span>
+      </div>
+    </header>
+
+    <!-- ── TABLE DES MATIÈRES ── -->
+    <nav class="toc">
+      <div class="toc-title">Table des matières</div>
+      <ul class="toc-list">
+        <li><a href="#section-1"><span class="toc-num">01</span>Contexte et genèse de la plateforme</a></li>
+        <li><a href="#section-2"><span class="toc-num">02</span>Cas fondateur — Patient Zero : Alejandro</a></li>
+        <li><a href="#section-3"><span class="toc-num">03</span>Les 5 moteurs d'analyse clinique (PULSAR Engines)</a></li>
+        <li><a href="#section-4"><span class="toc-num">04</span>Discovery Engine v4.0 — Architecture en 4 niveaux</a></li>
+        <li><a href="#section-5"><span class="toc-num">05</span>Protocole thérapeutique — 4 agents clés</a></li>
+        <li><a href="#section-6"><span class="toc-num">06</span>Principes directeurs de la décision clinique</a></li>
+        <li><a href="#section-7"><span class="toc-num">07</span>Limites, déontologie et usage responsable</a></li>
+      </ul>
+    </nav>
+
+    <!-- ── 01 CONTEXTE ── -->
+    <section class="section" id="section-1">
+      <div class="section-header">
+        <span class="section-number">01</span>
+        <div class="section-icon" style="background:rgba(108,124,255,0.12);">🧠</div>
+        <h2 class="section-title">Contexte et genèse de la plateforme</h2>
+        <span class="section-tag" style="background:var(--p-vps-dim);color:var(--p-vps);">Origine</span>
+      </div>
+
+      <p>
+        PULSAR est née d'une urgence réelle : dans les pathologies neuro-inflammatoires pédiatriques sévères,
+        la fenêtre diagnostique est étroite, les hypothèses concurrentes nombreuses, et les délais décisionnels
+        peuvent avoir des conséquences irréversibles. La plateforme ambitionne de <strong>réduire le temps entre
+        le premier signal clinique et l'initiation d'un traitement ciblé</strong>.
+      </p>
+      <p>
+        La collaboration avec <strong>Pierre Sonigo</strong> (chercheur, ancien directeur à l'INSERM) a ancré
+        la conception dans une rigueur scientifique de premier plan. Chaque module analytique a été conçu pour
+        être intelligible par des pédiatres non spécialistes comme par des neurologues confirmés.
+      </p>
+
+      <div class="alert-box info">
+        <span class="alert-icon">ℹ️</span>
+        <div class="alert-content">
+          <div class="alert-title">Périmètre clinique</div>
+          <div class="alert-body">PULSAR couvre en priorité les encéphalites auto-immunes, les syndromes FIRES/NORSE, les vascularites
+          cérébrales pédiatriques, et les tableaux neuro-inflammatoires inclassifiés à présentation aiguë.</div>
+        </div>
+      </div>
+
+      <p>
+        La plateforme intègre une double logique : <strong>aide à la décision en urgence</strong> (scores,
+        alertes, protocoles) et <strong>veille scientifique continue</strong> (Discovery Engine, scan PubMed
+        en temps réel). Elle n'a pas vocation à remplacer le clinicien mais à <em>structurer et accélérer
+        sa réflexion</em> dans des situations où le temps est un facteur pronostic majeur.
+      </p>
+    </section>
+
+    <!-- ── 02 CAS ALEJANDRO ── -->
+    <section class="section" id="section-2">
+      <div class="section-header">
+        <span class="section-number">02</span>
+        <div class="section-icon" style="background:rgba(139,92,246,0.12);">📋</div>
+        <h2 class="section-title">Cas fondateur — Patient Zero : Alejandro</h2>
+        <span class="section-tag" style="background:rgba(139,92,246,0.12);color:var(--p-critical);">Cas réel</span>
+      </div>
+
+      <div class="alert-box critical">
+        <span class="alert-icon">⚠️</span>
+        <div class="alert-content">
+          <div class="alert-title">Cas clinique réel — Anonymisé</div>
+          <div class="alert-body">
+            Le cas d'Alejandro constitue la matrice clinique sur laquelle PULSAR a été conçu et calibré.
+            Son parcours illustre précisément les situations dans lesquelles la plateforme doit intervenir.
+          </div>
+        </div>
+      </div>
+
+      <p>
+        Alejandro, 6 ans, se présente avec un tableau convulsif fébrile atypique. Le déclencheur initial
+        documenté est une exposition anesthésique associant <strong>Kalinox et Sévoflurane</strong>.
+        Le tableau clinique s'aggrave rapidement, générant une cascade diagnostique où plusieurs hypothèses
+        concurrentes retardent la reconnaissance du syndrome FIRES.
+      </p>
+
+      <div class="timeline">
+        <div class="timeline-item day-0">
+          <div class="timeline-day" style="color:var(--p-info);">J0 — DÉCLENCHEUR</div>
+          <div class="timeline-title">Trigger : Kalinox + Sévoflurane</div>
+          <div class="timeline-note">Exposition anesthésique. Premières convulsions fébriles atypiques. Contexte infectieux associé identifié a posteriori.</div>
+        </div>
+
+        <div class="timeline-item day-3">
+          <div class="timeline-day" style="color:var(--p-warning);">J+3 — PREMIÈRE LIGNE</div>
+          <div class="timeline-title">Administration d'IgIV</div>
+          <div class="timeline-note">Immunoglobulines intraveineuses initiées. Réponse partielle. Les hypothèses virales et auto-immunes restent ouvertes simultanément — source de délai.</div>
+        </div>
+
+        <div class="timeline-item day-5">
+          <div class="timeline-day" style="color:var(--p-critical);">J+5 — DIAGNOSTIC FIRES</div>
+          <div class="timeline-title">Diagnostic FIRES posé + Régime Cétogène</div>
+          <div class="timeline-note">Febrile Infection-Related Epilepsy Syndrome (FIRES) confirmé. Démarrage du régime cétogène (KD) comme thérapie anti-épileptique de sauvetage.</div>
+        </div>
+
+        <div class="timeline-item day-10">
+          <div class="timeline-day" style="color:var(--p-pve);">J+10 — BIOTHÉRAPIE</div>
+          <div class="timeline-title">Initiation de l'Anakinra</div>
+          <div class="timeline-note">Inhibiteur IL-1Ra introduit. À ce stade, plus de 10 molécules administrées simultanément. L'escalade thérapeutique a précédé le consensus diagnostique.</div>
+        </div>
+
+        <div class="timeline-item day-late">
+          <div class="timeline-day" style="color:var(--p-disc);">J+14+ — SÉQUELLES</div>
+          <div class="timeline-title">Tout a été fait — mais trop tard</div>
+          <div class="timeline-note">La narrativité clinique de ce cas est centrale à PULSAR : les protocoles étaient disponibles, les molécules connues. C'est la compétition entre hypothèses diagnostiques et les délais logistiques qui ont conduit à l'issue.</div>
+        </div>
+      </div>
+
+      <div class="alert-box warning">
+        <span class="alert-icon">🔬</span>
+        <div class="alert-content">
+          <div class="alert-title">6 erreurs corrigées dans le rapport initial</div>
+          <div class="alert-body">
+            L'analyse rétrospective a permis de rectifier 6 données factuelles dans le rapport initial :
+            trigger (Kalinox+Sévoflurane), IgIV à J+3, KD à J+5, Anakinra à J+10, diagnostic FIRES à J+5,
+            et la polypharmacologie simultanée (10+ molécules). Ces corrections fondent la précision clinique
+            du modèle PULSAR.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 03 LES 5 MOTEURS ── -->
+    <section class="section" id="section-3">
+      <div class="section-header">
+        <span class="section-number">03</span>
+        <div class="section-icon" style="background:rgba(47,209,200,0.12);">⚙️</div>
+        <h2 class="section-title">Les 5 moteurs d'analyse clinique</h2>
+        <span class="section-tag" style="background:var(--p-tde-dim);color:var(--p-tde);">Core Engines</span>
+      </div>
+
+      <p>
+        L'architecture de PULSAR repose sur cinq moteurs analytiques complémentaires. Chaque moteur est
+        indépendant mais peut alimenter les autres. Ensemble, ils couvrent le spectre complet de l'évaluation
+        clinique neuro-inflammatoire — du signal initial à la proposition thérapeutique.
+      </p>
+
+      <div class="motors-grid">
+        <div class="motor-card" style="border-left:3px solid var(--p-vps);">
+          <span class="motor-abbr" style="color:var(--p-vps);">VPS</span>
+          <div class="motor-name">Vital Parameter Scanner</div>
+          <div class="motor-desc">Surveillance continue des paramètres vitaux. Détection des signaux d'alarme précoces et trajectoire d'évolution.</div>
+        </div>
+        <div class="motor-card" style="border-left:3px solid var(--p-tde);">
+          <span class="motor-abbr" style="color:var(--p-tde);">TDE</span>
+          <div class="motor-name">Timeline & Diagnostic Engine</div>
+          <div class="motor-desc">Reconstruction chronologique et pondération des hypothèses diagnostiques. Réduction du biais de confirmation.</div>
+        </div>
+        <div class="motor-card" style="border-left:3px solid var(--p-pve);">
+          <span class="motor-abbr" style="color:var(--p-pve);">PVE</span>
+          <div class="motor-name">Predictive Vulnerability Engine</div>
+          <div class="motor-desc">Score de vulnérabilité individuelle. Facteurs de risque, terrain génétique, antécédents pertinents.</div>
+        </div>
+        <div class="motor-card" style="border-left:3px solid var(--p-ewe);">
+          <span class="motor-abbr" style="color:var(--p-ewe);">EWE</span>
+          <div class="motor-name">Early Warning Engine</div>
+          <div class="motor-desc">Système d'alertes graduées (A1–A4). Détection des patterns critiques sur fenêtres temporelles courtes.</div>
+        </div>
+        <div class="motor-card" style="border-left:3px solid var(--p-tpe);">
+          <span class="motor-abbr" style="color:var(--p-tpe);">TPE</span>
+          <div class="motor-name">Treatment Pathway Engine</div>
+          <div class="motor-desc">Recommandation thérapeutique séquencée. Intègre les scores TDE/PVE pour proposer un arbre décisionnel personnalisé.</div>
+        </div>
+      </div>
+
+      <div class="alert-box success">
+        <span class="alert-icon">✅</span>
+        <div class="alert-content">
+          <div class="alert-title">Interdépendance des moteurs</div>
+          <div class="alert-body">
+            Un tableau FIRES en phase aiguë active simultanément les 5 moteurs. VPS capte la détérioration
+            neurologique → EWE émet l'alerte → TDE affine le diagnostic → PVE personnalise le risque →
+            TPE propose anakinra/tocilizumab/KD selon le profil.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 04 DISCOVERY ENGINE ── -->
+    <section class="section" id="section-4">
+      <div class="section-header">
+        <span class="section-number">04</span>
+        <div class="section-icon" style="background:rgba(16,185,129,0.12);">🔬</div>
+        <h2 class="section-title">Discovery Engine v4.0 — Architecture en 4 niveaux</h2>
+        <span class="section-tag" style="background:var(--p-disc-dim);color:var(--p-disc);">4 662 lignes</span>
+      </div>
+
+      <p>
+        Le Discovery Engine est le cœur analytique de PULSAR. Il opère en <strong>4 niveaux successifs</strong>,
+        du traitement statistique brut à la formulation d'hypothèses thérapeutiques. Chaque niveau enrichit
+        le suivant, créant une chaîne d'inférence clinique complète.
+      </p>
+
+      <div class="engine-pipeline">
+        <div class="engine-item">
+          <div class="engine-badge" style="background:rgba(108,124,255,0.15);color:var(--p-vps);">N1</div>
+          <div class="engine-content">
+            <div class="engine-name">PatternMiner — Analyse statistique multivariée</div>
+            <div class="engine-desc">
+              Extraction de patterns cliniques significatifs dans les données patient. Calcul de corrélations,
+              détection d'anomalies et clustering des profils similaires.
+            </div>
+            <div class="engine-tech">
+              <span class="tech-tag">Pearson</span>
+              <span class="tech-tag">k-means</span>
+              <span class="tech-tag">z-score</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="engine-item">
+          <div class="engine-badge" style="background:rgba(47,209,200,0.15);color:var(--p-tde);">N2</div>
+          <div class="engine-content">
+            <div class="engine-name">LiteratureScanner — Veille bibliographique PubMed</div>
+            <div class="engine-desc">
+              Scan automatisé de PubMed en temps réel. Analyse et synthèse de publications récentes
+              sur les pathologies neuro-inflammatoires pédiatriques.
+            </div>
+            <div class="engine-tech">
+              <span class="tech-tag">PubMed API</span>
+              <span class="tech-tag">25 publications analysées</span>
+              <span class="tech-tag">NLP extraction</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="engine-item">
+          <div class="engine-badge" style="background:rgba(185,107,255,0.15);color:var(--p-pve);">N3</div>
+          <div class="engine-content">
+            <div class="engine-name">HypothesisEngine — Génération d'hypothèses (Claude API)</div>
+            <div class="engine-desc">
+              Formulation raisonnée d'hypothèses diagnostiques et thérapeutiques à partir des patterns N1
+              et de la littérature N2. Utilise Claude Sonnet pour structurer le raisonnement clinique.
+            </div>
+            <div class="engine-tech">
+              <span class="tech-tag">Claude API Sonnet</span>
+              <span class="tech-tag">Chain-of-thought</span>
+              <span class="tech-tag">Differential scoring</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="engine-item">
+          <div class="engine-badge" style="background:rgba(16,185,129,0.15);color:var(--p-disc);">N4</div>
+          <div class="engine-content">
+            <div class="engine-name">TreatmentPathfinder — Recommandation thérapeutique</div>
+            <div class="engine-desc">
+              Proposition séquencée des stratégies thérapeutiques avec scoring individuel. Intègre les
+              hypothèses N3 et les contraintes patient pour prioriser les interventions.
+            </div>
+            <div class="engine-tech">
+              <span class="tech-tag">Anakinra</span>
+              <span class="tech-tag">Tocilizumab</span>
+              <span class="tech-tag">KD (Régime cétogène)</span>
+              <span class="tech-tag">Rituximab</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p style="margin-top:12px;">
+        L'ensemble du Discovery Engine est accessible via la <strong>page /research</strong> (couleur #10B981),
+        organisée en 7 onglets thématiques. L'architecture complète représente
+        <strong>4 662 lignes de code TypeScript</strong> réparties sur 12 fichiers.
+      </p>
+    </section>
+
+    <!-- ── 05 PROTOCOLE THÉRAPEUTIQUE ── -->
+    <section class="section" id="section-5">
+      <div class="section-header">
+        <span class="section-number">05</span>
+        <div class="section-icon" style="background:rgba(255,179,71,0.12);">💊</div>
+        <h2 class="section-title">Protocole thérapeutique — 4 agents clés</h2>
+        <span class="section-tag" style="background:var(--p-tpe-dim);color:var(--p-tpe);">TreatmentPathfinder</span>
+      </div>
+
+      <p>
+        Le TreatmentPathfinder N4 évalue et séquence quatre agents thérapeutiques majeurs dans la prise en charge
+        des syndromes neuro-inflammatoires sévères de l'enfant. Chaque agent est scoré selon le profil patient
+        individuel issu des moteurs N1–N3.
+      </p>
+
+      <div class="treatment-grid">
+        <div class="treatment-card" style="border-left:3px solid #F97316;">
+          <div class="treatment-name">Anakinra</div>
+          <div class="treatment-class">Inhibiteur IL-1Ra · Biothérapie</div>
+          <p style="font-size:12px;margin-bottom:8px;">
+            Agent de premier recours dans FIRES réfractaire. Mécanisme anti-IL-1β.
+            Efficacité démontrée dans les tableaux à début fébrile.
+          </p>
+          <div class="treatment-score">
+            <div class="score-bar"><div class="score-fill" style="width:88%;background:#F97316;"></div></div>
+            <span class="score-val" style="color:#F97316;">88</span>
+          </div>
+        </div>
+
+        <div class="treatment-card" style="border-left:3px solid var(--p-tde);">
+          <div class="treatment-name">Tocilizumab</div>
+          <div class="treatment-class">Anti-IL-6R · Biothérapie</div>
+          <p style="font-size:12px;margin-bottom:8px;">
+            Inhibiteur du récepteur IL-6. Indiqué dans les formes avec marqueurs inflammatoires
+            élevés et atteinte multisystémique associée.
+          </p>
+          <div class="treatment-score">
+            <div class="score-bar"><div class="score-fill" style="width:72%;background:var(--p-tde);"></div></div>
+            <span class="score-val" style="color:var(--p-tde);">72</span>
+          </div>
+        </div>
+
+        <div class="treatment-card" style="border-left:3px solid var(--p-disc);">
+          <div class="treatment-name">Régime Cétogène (KD)</div>
+          <div class="treatment-class">Thérapie métabolique · Anti-épileptique</div>
+          <p style="font-size:12px;margin-bottom:8px;">
+            Traitement de sauvetage dans les épilepsies réfractaires. Effet anti-convulsivant
+            via modification du métabolisme cérébral. Initié à J+5 chez Alejandro.
+          </p>
+          <div class="treatment-score">
+            <div class="score-bar"><div class="score-fill" style="width:79%;background:var(--p-disc);"></div></div>
+            <span class="score-val" style="color:var(--p-disc);">79</span>
+          </div>
+        </div>
+
+        <div class="treatment-card" style="border-left:3px solid var(--p-pve);">
+          <div class="treatment-name">Rituximab</div>
+          <div class="treatment-class">Anti-CD20 · Immunothérapie</div>
+          <p style="font-size:12px;margin-bottom:8px;">
+            Déplétion des lymphocytes B. Indiqué dans les encéphalites auto-immunes
+            avec anticorps positifs ou résistantes aux lignes précédentes.
+          </p>
+          <div class="treatment-score">
+            <div class="score-bar"><div class="score-fill" style="width:61%;background:var(--p-pve);"></div></div>
+            <span class="score-val" style="color:var(--p-pve);">61</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-box warning">
+        <span class="alert-icon">⚡</span>
+        <div class="alert-content">
+          <div class="alert-title">Enseignement clé du cas Alejandro</div>
+          <div class="alert-body">
+            Les quatre agents étaient disponibles. Le régime cétogène a été initié à J+5, l'anakinra à J+10.
+            C'est l'antériorité des hypothèses concurrentes et les délais logistiques — non l'absence de
+            protocole — qui ont déterminé l'issue. PULSAR vise à compresser cette fenêtre décisionnelle.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 06 PRINCIPES DIRECTEURS ── -->
+    <section class="section" id="section-6">
+      <div class="section-header">
+        <span class="section-number">06</span>
+        <div class="section-icon" style="background:rgba(167,139,250,0.12);">📐</div>
+        <h2 class="section-title">Principes directeurs de la décision clinique</h2>
+        <span class="section-tag" style="background:rgba(167,139,250,0.12);color:var(--p-ewe);">Framework</span>
+      </div>
+
+      <p>
+        La philosophie de PULSAR n'est pas de remplacer le clinicien mais de <strong>structurer sa pensée
+        dans la turbulence</strong>. Six principes guident l'ensemble des choix d'architecture et
+        d'interface de la plateforme.
+      </p>
+
+      <ul class="principles-list">
+        <li class="principle-item">
+          <span class="principle-num">01</span>
+          <span class="principle-text"><strong>La fenêtre thérapeutique est le temps de l'ennemi.</strong>
+          Toute interface, tout algorithme doit réduire le temps entre signal clinique et décision thérapeutique.
+          La friction cognitive tue.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">02</span>
+          <span class="principle-text"><strong>Les hypothèses concurrentes sont le piège principal.</strong>
+          Dans les tableaux neuro-inflammatoires aigus, la polyhypothèse non tranchée est plus dangereuse
+          que l'hypothèse fausse. PULSAR force la hiérarchisation.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">03</span>
+          <span class="principle-text"><strong>Le score n'est pas un verdict.</strong>
+          Chaque score PULSAR est une aide à la priorisation, pas une prescription. Le clinicien reste
+          souverain. La plateforme documente, ne décide pas.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">04</span>
+          <span class="principle-text"><strong>La littérature doit être vivante.</strong>
+          Un protocole de 2019 peut être obsolète en 2024. Le LiteratureScanner N2 garantit que les
+          recommandations s'appuient sur des publications récentes, pas sur des consensus figés.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">05</span>
+          <span class="principle-text"><strong>La polypharmacologie doit être cartographiée.</strong>
+          Dès 5 molécules simultanées, le risque d'interactions devient une variable clinique à part entière.
+          PULSAR intègre cette dimension dans le TreatmentPathfinder.</span>
+        </li>
+        <li class="principle-item">
+          <span class="principle-num">06</span>
+          <span class="principle-text"><strong>Chaque cas complexe enrichit le suivant.</strong>
+          Les données anonymisées des cas documentés dans PULSAR alimentent PatternMiner N1
+          et améliorent la précision des recommandations futures.</span>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ── 07 LIMITES ET DÉONTOLOGIE ── -->
+    <section class="section" id="section-7">
+      <div class="section-header">
+        <span class="section-number">07</span>
+        <div class="section-icon" style="background:rgba(59,130,246,0.12);">⚖️</div>
+        <h2 class="section-title">Limites, déontologie et usage responsable</h2>
+        <span class="section-tag" style="background:rgba(59,130,246,0.12);color:var(--p-info);">Éthique</span>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-title">🚫 Ce que PULSAR n'est pas</div>
+          <div class="card-body">
+            Un outil de prescription autonome. PULSAR est un système d'aide à la décision clinique (SADC)
+            soumis à la supervision médicale. Toute recommandation doit être validée par un clinicien habilité
+            avant mise en œuvre.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🔒 Données patient</div>
+          <div class="card-body">
+            Les données saisies dans PULSAR sont soumises au RGPD et aux réglementations HDS (Hébergeur
+            de Données de Santé). Aucune donnée nominative ne transite hors de l'infrastructure certifiée.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">🤖 IA et responsabilité</div>
+          <div class="card-body">
+            Le module HypothesisEngine N3 (Claude API) génère des hypothèses cliniques probabilistes.
+            Ces suggestions n'ont pas de valeur normative. La responsabilité diagnostique et thérapeutique
+            reste intégralement du clinicien.
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title">📊 Validation clinique</div>
+          <div class="card-body">
+            PULSAR est en phase bêta clinique. Les algorithmes de scoring sont issus de la littérature
+            validée mais n'ont pas encore fait l'objet d'une étude de validation prospective indépendante.
+          </div>
+        </div>
+      </div>
+
+      <div class="alert-box info">
+        <span class="alert-icon">📄</span>
+        <div class="alert-content">
+          <div class="alert-title">Référencement scientifique</div>
+          <div class="alert-body">
+            Les travaux liés à PULSAR ont été cités dans des revues internationales spécialisées en
+            neuro-inflammation pédiatrique et blue economy médicale. Pour toute demande de collaboration
+            scientifique, contacter le Dr Pierre Sonigo (ex-INSERM).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── MÉMORIAL ── -->
+    <div class="memorial">
+      <div class="memorial-name">In memoriam — Alejandro R.</div>
+      <div class="memorial-dates">2019 — 2025</div>
+      <p class="memorial-text">
+        PULSAR a été conçu pour que les outils existent avant que le temps manque.
+        Pour que les protocoles soient activés à la première heure, pas à la dernière.
+        Cette plateforme lui est dédiée.
+      </p>
+    </div>
+
+    <!-- ── FOOTER ── -->
+    <footer class="doc-footer">
+      <div class="footer-brand">
+        <span>PULSAR</span> · Plateforme Neuro-Inflammatoire Pédiatrique
+      </div>
+      <div class="footer-note">
+        Version 4.0 · Documentation clinique interne · Usage réservé aux professionnels de santé
+      </div>
+    </footer>
+
+  </div>
+</body>
+</html>
