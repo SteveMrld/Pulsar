@@ -307,56 +307,7 @@ export default function LandingPage() {
           ))}
         </div>
 
-        {/* ─── NAVIGATION HUB ─── */}
-        <section style={{ padding: '64px 48px 0' }}>
-          <div style={{ maxWidth: 860, margin: '0 auto' }}>
-            <div style={{ textAlign: 'center', marginBottom: 36 }}>
-              <div style={{ fontSize: 10, fontFamily: 'var(--p-font-mono)', color: '#6C7CFF', letterSpacing: 3, fontWeight: 700, marginBottom: 10, textTransform: 'uppercase' }}>
-                {t('Par où commencer ?', 'Where to start?')}
-              </div>
-              <h2 style={{ fontSize: 'clamp(1.3rem,2.5vw,1.7rem)', fontWeight: 800, color: 'var(--p-text)', margin: 0 }}>
-                {t('Choisissez votre entrée', 'Choose your entry point')}
-              </h2>
-            </div>
-
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
-              {[
-                {
-                  href: '#',
-                  color: '#6C7CFF',
-                  icon: '▶',
-                  label: t('Voir la démo', 'View demo'),
-                  sub: t('Patient fictif. Tous les moteurs actifs. Parcours complet.', 'Fictional patient. All engines active. Full workflow.'),
-                  tag: t('Démo live', 'Live demo'),
-                  onClick: () => setDemoOpen(true),
-                },
-              ].map((card, i) => (
-                <a key={i} href={(card as any).onClick ? '#' : card.href} onClick={(card as any).onClick} style={{ textDecoration: 'none' }}>
-                  <div style={{
-                    background: 'var(--p-bg-card)',
-                    borderRadius: 16,
-                    border: `1px solid ${card.color}18`,
-                    borderTop: `3px solid ${card.color}`,
-                    padding: '22px 20px',
-                    cursor: 'pointer',
-                    transition: 'transform 0.2s, box-shadow 0.2s',
-                    height: '100%',
-                  }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-3px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 32px ${card.color}18` }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'none'; (e.currentTarget as HTMLDivElement).style.boxShadow = 'none' }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
-                      <span style={{ fontSize: 20, color: card.color }}>{card.icon}</span>
-                      <span style={{ fontSize: 9, fontWeight: 700, fontFamily: 'var(--p-font-mono)', color: card.color, background: `${card.color}12`, border: `1px solid ${card.color}20`, padding: '2px 8px', borderRadius: 4 }}>{card.tag}</span>
-                    </div>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: 'var(--p-text)', marginBottom: 6 }}>{card.label}</div>
-                    <div style={{ fontSize: 11, color: 'var(--p-text-muted)', lineHeight: 1.6 }}>{card.sub}</div>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </div>
-        </section>
+        {/* ─── CLINICAL / RESEARCH ─── */}
         <section>
           <div className="lp-wrap lp-section">
             <div className="lp-g2">
