@@ -1,4 +1,5 @@
 'use client'
+import UseCaseGate from '@/components/UseCaseGate'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -17,56 +18,7 @@ import ResearchPulse from '@/components/ResearchPulse';
 import AlertBadge from '@/components/AlertBadge';
 import { useTrackAction } from '@/hooks/useTrackAction'
 
-const AlejandroCasePage = dynamic(() => import('@/app/usecase/alejandro/page'), { ssr: false })
 
-function UseCaseGate() {
-  const [showInput, setShowInput] = useState(false)
-  const [code, setCode] = useState('')
-  const [showCase, setShowCase] = useState(false)
-  const [error, setError] = useState(false)
-
-  const handleSubmit = () => {
-    if (code === '0513') {
-      setShowCase(true)
-      setShowInput(false)
-      setError(false)
-    } else {
-      setError(true)
-      setCode('')
-    }
-  }
-
-  if (showCase) return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'var(--p-bg, #0C1424)', overflowY: 'auto' }}>
-      <button onClick={() => setShowCase(false)} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>Fermer ✕</button>
-      <AlejandroCasePage />
-    </div>
-  )
-
-  return (
-    <div style={{ marginTop: 'var(--p-space-6)', padding: '16px 20px', background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-lg)', border: '1px solid var(--p-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-        <Picto name="shield" size={18} glow />
-        <div>
-          <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 700, color: 'var(--p-text)' }}>Use Case — Accès protégé</div>
-          <div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique réel — code requis</div>
-        </div>
-      </div>
-      {!showInput ? (
-        <button onClick={() => setShowInput(true)} style={{ padding: '6px 16px', borderRadius: 'var(--p-radius-md)', background: '#F5A62315', border: '1px solid #F5A62325', color: '#F5A623', fontSize: 12, fontWeight: 700, cursor: 'pointer' }}>
-          Accéder
-        </button>
-      ) : (
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <input type="password" value={code} onChange={e => { setCode(e.target.value); setError(false) }} onKeyDown={e => e.key === 'Enter' && handleSubmit()} placeholder="Code" maxLength={4}
-            style={{ width: 80, padding: '6px 10px', borderRadius: 'var(--p-radius-md)', background: 'var(--p-bg-surface)', border: `1px solid ${error ? '#EF4444' : 'var(--p-border)'}`, color: 'var(--p-text)', fontSize: 14, fontFamily: 'var(--p-font-mono)', textAlign: 'center', letterSpacing: 4 }} autoFocus />
-          <button onClick={handleSubmit} style={{ padding: '6px 12px', borderRadius: 'var(--p-radius-md)', background: '#F5A623', color: '#000', fontSize: 12, fontWeight: 700, border: 'none', cursor: 'pointer' }}>OK</button>
-          {error && <span style={{ fontSize: 10, color: '#EF4444' }}>Code incorrect</span>}
-        </div>
-      )}
-    </div>
-  )
-}
 
 /* ══════════════════════════════════════════════════════════════
    DASHBOARD — Vue chef de service

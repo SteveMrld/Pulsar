@@ -1,4 +1,5 @@
 'use client'
+import UseCaseGate from '@/components/UseCaseGate'
 import PulsarLogo from '@/components/PulsarLogo'
 import { useState, useMemo, useEffect } from 'react'
 import Link from 'next/link'
@@ -6,42 +7,7 @@ import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 import { useLang, LangToggle } from '@/contexts/LanguageContext'
 
-const AlejandroCasePage = dynamic(() => import('@/app/usecase/alejandro/page'), { ssr: false })
 
-function UseCaseGate() {
-  const [showInput, setShowInput] = useState(false)
-  const [code, setCode] = useState('')
-  const [showCase, setShowCase] = useState(false)
-  const [error, setError] = useState(false)
-  const handleSubmit = () => {
-    if (code === '0513') { setShowCase(true); setShowInput(false); setError(false) }
-    else { setError(true); setCode('') }
-  }
-  if (showCase) return (
-    <div style={{ position: 'fixed', inset: 0, zIndex: 999, background: 'var(--p-bg, #0C1424)', overflowY: 'auto' }}>
-      <HypothesisGauges />
-      <button onClick={() => setShowCase(false)} style={{ position: 'fixed', top: 12, right: 16, zIndex: 1000, background: 'none', border: '1px solid rgba(255,255,255,0.15)', color: '#6B7280', fontSize: 11, padding: '4px 14px', borderRadius: 16, cursor: 'pointer' }}>Fermer ×</button>
-      <AlejandroCasePage />
-    </div>
-  )
-  return (
-    <div style={{ marginTop: 16, padding: '14px 18px', background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-lg)', border: '1px solid var(--p-border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 10 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-        <span style={{ fontSize: 14 }}>🔒</span>
-        <div><div style={{ fontSize: 12, fontWeight: 700, color: 'var(--p-text)' }}>Use Case · Accès protégé</div><div style={{ fontSize: 10, color: 'var(--p-text-dim)' }}>Analyse de cas clinique réel</div></div>
-      </div>
-      {!showInput ? (
-        <button onClick={() => setShowInput(true)} style={{ padding: '5px 14px', borderRadius: 8, background: '#F5A62315', border: '1px solid #F5A62325', color: '#F5A623', fontSize: 11, fontWeight: 700, cursor: 'pointer' }}>Accéder</button>
-      ) : (
-        <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-          <input type="password" value={code} onChange={e => { setCode(e.target.value); setError(false) }} onKeyDown={e => e.key === 'Enter' && handleSubmit()} placeholder="Code" maxLength={4} style={{ width: 72, padding: '5px 8px', borderRadius: 6, background: 'var(--p-bg-surface)', border: '1px solid ' + (error ? '#EF4444' : 'var(--p-border)'), color: 'var(--p-text)', fontSize: 14, fontFamily: 'var(--p-font-mono)', textAlign: 'center', letterSpacing: 4 }} autoFocus />
-          <button onClick={handleSubmit} style={{ padding: '5px 10px', borderRadius: 6, background: '#F5A623', color: '#000', fontSize: 11, fontWeight: 700, border: 'none', cursor: 'pointer' }}>OK</button>
-          {error && <span style={{ fontSize: 10, color: '#EF4444' }}>Code incorrect</span>}
-        </div>
-      )}
-    </div>
-  )
-}
 
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
@@ -575,6 +541,7 @@ export default function FileActivePage() {
           )}
         </div>
       )}
+      <UseCaseGate />
       <div style={{ position:'fixed', bottom:'24px', right:'24px', zIndex:1000 }}><UseCaseButton /></div>
   </div>
   )
