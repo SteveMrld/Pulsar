@@ -2,12 +2,20 @@
 import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
+import { useTrackAction } from '@/hooks/useTrackAction'
 
 /* Synth\u00e8se Clinique \u2014 Staff & Transmission */
 
 export default function SynthesePage() {
   const { t } = useLang()
   const { ps, info, engineSummary, timeline } = usePatient()
+
+  const { track } = useTrackAction()
+
+  useEffect(() => {
+    track('view_synthese', 'synthese', info?.id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const { vps, vpsColor, vpsLevel, criticalAlerts, warningAlerts, totalRecommendations, topRecommendation } = engineSummary
 
   const allAlerts = ps.alerts

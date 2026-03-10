@@ -1,8 +1,9 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect} from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
+import { useTrackAction } from '@/hooks/useTrackAction'
 
 const ABCDE = [
   { step: 'A', label: 'Airway', desc: 'Voies aériennes libres ? Intubation nécessaire ?', color: '#8B5CF6' },
@@ -26,6 +27,13 @@ const BUNDLES = [
 export default function UrgencePage() {
   const { t } = useLang()
   const { ps, info } = usePatient()
+
+  const { track } = useTrackAction()
+
+  useEffect(() => {
+    track('view_urgence', 'urgence', info?.id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [checks, setChecks] = useState<boolean[]>(ABCDE.map(() => false))
   const [bundles, setBundles] = useState(BUNDLES.map(b => ({ ...b })))
 

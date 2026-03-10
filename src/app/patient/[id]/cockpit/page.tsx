@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect} from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import { computeDiagnosticContext } from '@/lib/data/epidemioContext'
@@ -14,6 +14,7 @@ import { DEMO_PATIENTS, SEED_SIGNALS } from '@/lib/data/discoveryData'
 import { SEED_ARTICLES } from '@/lib/data/literatureData'
 import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
 import type { SignalCard } from '@/lib/types/discovery'
+import { useTrackAction } from '@/hooks/useTrackAction'
 
 /* ══════════════════════════════════════════════════════════════
    COCKPIT — Patient-centric
@@ -192,6 +193,13 @@ function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; synd
 export default function PatientCockpit() {
   const { t } = useLang()
   const { ps, info, scenarioKey } = usePatient()
+
+  const { track } = useTrackAction()
+
+  useEffect(() => {
+    track('view_cockpit', 'cockpit', info?.id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const base = `/patient/${info.id}`
 
   const caeResult = useMemo(() => runCAE(ps), [ps])

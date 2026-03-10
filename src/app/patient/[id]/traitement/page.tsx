@@ -1,5 +1,5 @@
 'use client'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect} from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
@@ -11,6 +11,7 @@ import { SEED_ARTICLES } from '@/lib/data/literatureData'
 import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
 import { generateTDEEnrichments, ENRICHMENT_COLORS, RECOMMENDATION_LABELS } from '@/lib/engines/TDEEnrichment'
 import type { TDEEnrichment } from '@/lib/engines/TDEEnrichment'
+import { useTrackAction } from '@/hooks/useTrackAction'
 
 /* ══════════════════════════════════════════════════════════════
    TRAITEMENT — TDE + PVE results
@@ -29,6 +30,13 @@ function SectionTitle({ title, color, icon }: { title: string; color: string; ic
 export default function TraitementPage() {
   const { t } = useLang()
   const { ps, info } = usePatient()
+
+  const { track } = useTrackAction()
+
+  useEffect(() => {
+    track('view_traitement', 'traitement', info?.id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const tde = ps.tdeResult
   const pve = ps.pveResult
 

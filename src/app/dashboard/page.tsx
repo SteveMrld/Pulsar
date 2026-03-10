@@ -16,6 +16,7 @@ import UseCaseButton from '@/components/UseCaseButton';
 import EngineStatusBar from '@/components/EngineStatusBar';
 import ResearchPulse from '@/components/ResearchPulse';
 import AlertBadge from '@/components/AlertBadge';
+import { useTrackAction } from '@/hooks/useTrackAction'
 
 const AlejandroCasePage = dynamic(() => import('@/app/usecase/alejandro/page'), { ssr: false })
 
@@ -159,6 +160,13 @@ function MiniBar({ data, colors, labels }: { data: Record<string, number>; color
 }
 
 export default function DashboardPage() {
+  const { track } = useTrackAction()
+
+  useEffect(() => {
+    track('view_dashboard', 'dashboard')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const { t } = useLang()
   const router = useRouter()
   const [stats, setStats] = useState<DashboardStats | null>(null)

@@ -1,9 +1,10 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect} from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 import { PatientState } from '@/lib/engines/PatientState'
+import { useTrackAction } from '@/hooks/useTrackAction'
 
 /* ── FIRES Criteria ── */
 const FIRES_CRITERIA = [
@@ -43,6 +44,13 @@ function Gauge({ value, max, label, color, size = 100 }: { value: number; max: n
 export default function DiagnosticPage() {
   const { t } = useLang()
   const { ps, info, scenarioKey } = usePatient()
+
+  const { track } = useTrackAction()
+
+  useEffect(() => {
+    track('view_diagnostic', 'diagnostic', info?.id)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   const [expandedSection, setExpandedSection] = useState<string>('hypothesis')
 
   const fc = useMemo(() => FIRES_CRITERIA.map(c => ({ ...c, met: c.test(ps) })), [ps])

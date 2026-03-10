@@ -56,6 +56,7 @@ import UseCaseButton from '@/components/UseCaseButton';
 import HypothesisGauges from '@/components/HypothesisGauges';
 import PatientTimeline from '@/components/PatientTimeline';
 import AlertBadge from '@/components/AlertBadge';
+import { useTrackAction } from '@/hooks/useTrackAction'
 
 /* ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ
    FILE ACTIVE · PULSAR V17
@@ -351,6 +352,13 @@ function EmptyState({ onDemo, onNew }: { onDemo: () => void; onNew: () => void }
 
 /* ââ Main ââ */
 export default function FileActivePage() {
+  const { track } = useTrackAction()
+
+  useEffect(() => {
+    track('view_patients', 'patients')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const { t } = useLang()
   const router = useRouter()
   const [search, setSearch] = useState('')

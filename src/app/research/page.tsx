@@ -19,6 +19,7 @@ import { EVIDENCE_LABELS, STATUS_LABELS as PATH_STATUS_LABELS } from '@/lib/engi
 import { PATIENT_PROFILES } from '@/lib/data/patientProfiles'
 import { searchPubMed, searchTrials, runFullPubMedScan, runTrialScan } from '@/lib/services/liveScanner'
 import { exportMarkdown, exportJSON, exportBibTeX, triggerDownload } from '@/lib/services/exportService'
+import { useTrackAction } from '@/hooks/useTrackAction'
 
 /* ══════════════════════════════════════════════════════════════
    RESEARCH DASHBOARD — Discovery Engine v4.0 (4 niveaux actifs)
@@ -75,6 +76,13 @@ const STATUS_LABELS: Record<string, { label: string; labelEn?: string; color: st
 }
 
 export default function ResearchPage() {
+  const { track } = useTrackAction()
+
+  useEffect(() => {
+    track('view_research', 'discovery_engine')
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   const { t } = useLang()
   const [tab, setTab] = useState<Tab>('signals')
   const [filters, setFilters] = useState<SignalFilters>({ type: 'all', strength: 'all', status: 'all', search: '' })
