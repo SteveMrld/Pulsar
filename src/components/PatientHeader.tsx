@@ -1,7 +1,9 @@
 'use client'
+import { useState } from 'react'
 import { usePathname } from 'next/navigation'
 import Link from 'next/link'
 import Picto from '@/components/Picto'
+import { exportPatientPDF } from '@/lib/exportPDF'
 import type { PatientState } from '@/lib/engines/PatientState'
 
 interface PatientHeaderProps {
@@ -11,6 +13,33 @@ interface PatientHeaderProps {
 }
 
 export default function PatientHeader({ ps, patientId, patientName }: PatientHeaderProps) {
+  const [exporting, setExporting] = useState(false)
+
+  async function handleExportPDF() {
+    setExporting(true)
+    try {
+      await exportPatientPDF(patientName, {
+        priority: 'P1',
+        service: 'Réa Neuro Pédiatrique',
+        phase: ps.hospDay <= 3 ? 'Phase aiguë précoce' : ps.hospDay <= 10 ? 'Phase aiguë' : 'Phase subaiguë',
+        diagnostic: ps.csf.antibodies === 'nmdar' ? 'Anti-NMDAR'
+          : ps.csf.antibodies === 'mog' ? 'MOGAD'
+          : ps.neuro.seizureType === 'refractory_status' ? 'FIRES'
+          : ps.pims?.confirmed ? 'PIMS'
+          : 'En cours d\'évaluation',
+        jour: ps.hospDay,
+        vpsScore: ps.vpsResult?.synthesis.score ?? 0,
+        alertesCritiques: ps.alerts.filter(a => a.severity === 'critical').length,
+        age: `${Math.floor(ps.ageMonths / 12)} ans`,
+        sexe: ps.sex === 'female' ? 'F' : 'M',
+        poids: `${ps.weightKg} kg`,
+        gcs: ps.neuro.gcs,
+      })
+    } finally {
+      setTimeout(() => setExporting(false), 1500)
+    }
+  }
+
   const vps = ps.vpsResult?.synthesis.score ?? 0
   const vpsColor = vps >= 70 ? '#8B5CF6' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
   const vpsLevel = vps >= 70 ? 'CRITIQUE' : vps >= 50 ? 'SÉVÈRE' : vps >= 30 ? 'MODÉRÉ' : 'STABLE'
@@ -105,6 +134,24 @@ export default function PatientHeader({ ps, patientId, patientName }: PatientHea
 
         {/* RIGHT: Quick actions */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
+            onClick={handleExportPDF}
+            disabled={exporting}
+            style={{
+              padding: '5px 12px', borderRadius: '8px',
+              background: exporting ? 'rgba(16,185,129,0.04)' : 'rgba(16,185,129,0.08)',
+              border: `1px solid rgba(16,185,129,${exporting ? '0.1' : '0.2'})`,
+              fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+              color: exporting ? 'rgba(16,185,129,0.4)' : '#10B981',
+              letterSpacing: '0.5px', cursor: exporting ? 'wait' : 'pointer',
+              transition: 'all 0.2s',
+              display: 'flex', alignItems: 'center', gap: '5px',
+            }}
+            title="Exporter le dossier patient en PDF"
+          >
+            <span style={{ fontSize: '11px' }}>{exporting ? '⏳' : '📄'}</span>
+            {exporting ? 'EXPORT...' : 'PDF'}
+          </button>
           <Link href={`/patient/${patientId}/cockpit`} style={{
             padding: '5px 12px', borderRadius: '8px', textDecoration: 'none',
             background: 'rgba(139,92,246,0.08)', border: '1px solid rgba(139,92,246,0.15)',
