@@ -54,26 +54,83 @@ export default function IntakePage(){
   const sB=useCallback((k:string,v:any)=>setBState(p=>({...p,[k]:v})),[])
   const sI=useCallback((k:string,v:any)=>setIState(p=>({...p,[k]:v})),[])
 
+  const parsePdfText = (text: string) => {
+    const f = (re: RegExp) => { const m=text.match(re); return m?m[1].trim():'' }
+    const n = (re: RegExp) => { const v=f(re); const x=parseFloat(v.replace(',','.').replace(/[^\d.]/g,'')); return isNaN(x)?0:x }
+
+    const nomLine = f(/Nom.*?Prénom[^\n]*?([A-ZÉÀÜ][\w\s\-éàüèê]{1,40})/i) || f(/NOM[^\n]*\n([^\n]{3,40})/)
+    const parts = nomLine.split(/\s{2,}/)
+
+    let ageMonths = 0
+    const am = text.match(/(\d+)\s*ans?\s*(\d+)?\s*mois?/i)
+    if(am) ageMonths = parseInt(am[1])*12+(parseInt(am[2]??'0')||0)
+
+    let seizureType = 'none'
+    if(/super.réfractaire|super_refractory/i.test(text)) seizureType='super_refractory'
+    else if(/réfractaire/i.test(text) && /status|état de mal/i.test(text)) seizureType='refractory_status'
+    else if(/status epilepticus|état de mal/i.test(text)) seizureType='status'
+    else if(/généralisée|tonico/i.test(text)) seizureType='generalized_tonic_clonic'
+    else if(/focale/i.test(text)) seizureType='focal_impaired'
+
+    const ex: Record<string,any> = {
+      lastName:  parts[0]||'', firstName: parts[1]||'',
+      ageMonths, sex: /f[ée]m/i.test(f(/Sexe[^\n]+/)) ? 'female' : 'male',
+      weightKg:  n(/Poids[^\d]*(\d+[,.]?\d*)/),
+      fileNumber: f(/N°\s*dossier[^\n]*?([A-Z0-9\-]{5,20})/),
+      chiefComplaint: f(/Motif principal[^\n]*?([^\n]{10,120})/),
+      symptomOnsetDays: n(/depuis\s+J[-−](\d+)/i) || n(/J[-−](\d+)/i),
+      gcs: n(/Glasgow[^\d]*(\d+)/) || 15,
+      seizureType,
+      seizures24h: n(/Crises.*?24h[^\d]*(\d+)/),
+      seizureDuration: n(/Durée.*?crise[^\d]*(\d+)/),
+      crp: n(/CRP[^\d]*(\d+[,.]?\d*)/),
+      ferritin: n(/Ferritine[^\d]*(\d+)/),
+      wbc: n(/Leucocytes[^\d]*(\d+[,.]?\d*)/),
+      temp: n(/Température[^\d]*(\d+[,.]\d+)/),
+      heartRate: n(/FC[^\d]*(\d+)/),
+      spo2: n(/SpO2[^\d]*(\d+)/),
+      sbp: n(/TA systolique[^\d]*(\d+)/),
+      map: n(/PAM[^\d]*(\d+)/),
+      csfCells: n(/Leucocytes LCR[^\d]*(\d+)/),
+      csfProtein: n(/Protéinorachie[^\d]*(\d+[,.]\d+)/),
+      eegDone: /EEG/i.test(text),
+      eegResult: f(/Conclusion EEG[^\n]*?([^\n]{10,120})/),
+      mriDone: /IRM/i.test(text),
+      mriResult: f(/Conclusion imagerie[^\n]*?([^\n]{10,120})/),
+      ctDone: /scanner/i.test(text),
+      ctResult: f(/Résultat scanner[^\n]*?([^\n]{10,120})/),
+    }
+    return ex
+  }
+
   const handleUpload=useCallback(async(e:React.ChangeEvent<HTMLInputElement>)=>{
     const file=e.target.files?.[0];if(!file)return
     setUploading(true);setUploadedFile(file.name)
 
     try {
-      const base64 = await new Promise<string>((res,rej)=>{
-        const r=new FileReader()
-        r.onload=()=>res((r.result as string).split(',')[1])
-        r.onerror=()=>rej(new Error('Lecture fichier échouée'))
-        r.readAsDataURL(file)
-      })
+      // Charger pdf.js depuis CDN
+      if(!(window as any).pdfjsLib) {
+        await new Promise<void>((res,rej)=>{
+          const s=document.createElement('script')
+          s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
+          s.onload=()=>res(); s.onerror=()=>rej()
+          document.head.appendChild(s)
+        })
+        ;(window as any).pdfjsLib.GlobalWorkerOptions.workerSrc =
+          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+      }
+      const pdfjsLib = (window as any).pdfjsLib
 
-      const resp = await fetch('/api/extract-pdf',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ base64, mediaType: file.type || 'application/pdf' })
-      })
+      const arrayBuffer = await file.arrayBuffer()
+      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise
+      let text = ''
+      for(let i=1;i<=pdf.numPages;i++){
+        const page = await pdf.getPage(i)
+        const tc = await page.getTextContent()
+        text += tc.items.map((item:any)=>item.str).join(' ') + '\n'
+      }
 
-      const data = await resp.json()
-      let ex: Record<string,any> = data.ok ? data.data : {}
+      const ex = parsePdfText(text)
 
       if(ex.lastName)      sId('lastName',   ex.lastName)
       if(ex.firstName)     sId('firstName',  ex.firstName)
