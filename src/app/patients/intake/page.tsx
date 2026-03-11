@@ -294,7 +294,48 @@ export default function IntakePage(){
   const next=useCallback(()=>{if(step<STEPS.length-1)setStep(step+1)},[step])
   const prev=useCallback(()=>{if(step>0)setStep(step-1)},[step])
 
-  const launch=useCallback(()=>{setAnalyzing(true);setTimeout(()=>router.push('/patients'),1500)},[router])
+  const launch=useCallback(()=>{
+    setAnalyzing(true)
+    // Construire le patient state au format attendu par les moteurs
+    const patientId = `intake-${Date.now()}`
+    const patientData = {
+      id: patientId,
+      identity: { ...id },
+      admission: { ...adm },
+      neuro: { ...n },
+      bio: { ...bio },
+      imaging: { ...img },
+      history: { ...h },
+      createdAt: new Date().toISOString(),
+      // Champs normalisés pour PatientState
+      ageMonths: parseInt(id.ageMonths) || 0,
+      sex: id.sex,
+      weightKg: parseFloat(id.weight) || 0,
+      gcs: n.gcs,
+      seizureType: n.seizureType,
+      seizureFreq: parseInt(n.seizureFreq) || 0,
+      crp: parseFloat(bio.crp) || 0,
+      wbc: parseFloat(bio.wbc) || 0,
+      ferritin: parseFloat((bio.otherBio||'').match(/Ferritine[:\s]+(\d+)/)?.[1]||'0') || 0,
+      temp: parseFloat((bio.otherBio||'').match(/T°[:\s]+(\d+[.,]\d+)/)?.[1]||'0') || 0,
+      eegDone: img.eegDone,
+      eegResult: img.eegResult,
+      mriDone: img.mriDone,
+      mriResult: img.mriResult,
+      ctDone: img.ctDone,
+      ctResult: img.ctResult,
+      csfDone: bio.csfDone,
+      csfWbc: parseFloat(bio.csfWbc) || 0,
+      csfProtein: parseFloat(bio.csfProtein) || 0,
+      chiefComplaint: adm.chiefComplaint,
+      symptomOnsetDays: parseInt(adm.symptomOnsetDays) || 0,
+      lastName: id.lastName,
+      firstName: id.firstName,
+      fileNumber: id.fileNumber,
+    }
+    localStorage.setItem(`pulsar-patient-${patientId}`, JSON.stringify(patientData))
+    setTimeout(()=>router.push(`/patient/${patientId}/cockpit`), 1200)
+  },[router, id, adm, n, bio, img, h])
 
   return (
     <div style={{maxWidth:'900px',margin:'0 auto',padding:'24px 16px'}}>
