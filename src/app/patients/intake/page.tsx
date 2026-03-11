@@ -249,8 +249,14 @@ export default function IntakePage(){
       if(/convulsion.*fébril|fébril.*convulsion/i.test(text)) sH('febrileSeizuresHistory', true)
       if(ex.csfCells > 0){ sB('csfDone',true); sB('csfWbc',String(ex.csfCells)) }
       if(ex.csfProtein)    sB('csfProtein',  String(ex.csfProtein))
-      const ferNote = ex.ferritin ? `Ferritine: ${ex.ferritin} µg/L | T°: ${ex.temp}°C | FC: ${ex.heartRate} | SpO2: ${ex.spo2}%` : ''
-      if(ferNote)          sB('otherBio',    ferNote)
+      const parts = []
+      if(ex.ferritin) parts.push(`Ferritine: ${ex.ferritin} µg/L`)
+      if(ex.temp)     parts.push(`T°: ${ex.temp}°C`)
+      if(ex.heartRate) parts.push(`FC: ${ex.heartRate}`)
+      if(ex.spo2)     parts.push(`SpO2: ${ex.spo2}%`)
+      if(ex.sbp)      parts.push(`TA: ${ex.sbp} mmHg`)
+      if(ex.map)      parts.push(`PAM: ${ex.map} mmHg`)
+      if(parts.length) sB('otherBio', parts.join(' | '))
 
     } catch(err) {
       console.error('PDF extraction error:', err)
@@ -316,8 +322,8 @@ export default function IntakePage(){
       seizureFreq: parseInt(n.seizureFreq) || 0,
       crp: parseFloat(bio.crp) || 0,
       wbc: parseFloat(bio.wbc) || 0,
-      ferritin: parseFloat((bio.otherBio||'').match(/Ferritine[:\s]+(\d+)/)?.[1]||'0') || 0,
-      temp: parseFloat((bio.otherBio||'').match(/T°[:\s]+(\d+[.,]\d+)/)?.[1]||'0') || 0,
+      ferritin: parseFloat((bio.otherBio||'').match(/Ferritine[^\d]*(\d+)/i)?.[1]||'0') || 0,
+      temp: parseFloat((bio.otherBio||'').match(/T[°e].*?(\d+[.,]\d+)/i)?.[1]?.replace(',','.')||'0') || 0,
       eegDone: img.eegDone,
       eegResult: img.eegResult,
       mriDone: img.mriDone,

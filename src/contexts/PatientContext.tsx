@@ -340,13 +340,13 @@ export function PatientProvider({ id, children }: { id: string; children: ReactN
             const triage = computeTriageFromPipeline(ps)
             const info: PatientInfo = {
               id,
-              displayName: raw.firstName ? `${raw.firstName} ${raw.lastName}`.trim() : 'Patient intake',
+              displayName: (raw.firstName || raw.lastName) ? `${raw.firstName || ''} ${raw.lastName || ''}`.trim() : 'Patient',
               age: raw.ageMonths ? `${Math.floor(raw.ageMonths / 12)} ans` : '—',
               sex: raw.sex || 'male',
               syndrome: 'En évaluation',
               hospDay: 1,
               room: raw.identity?.room || 'Non assigné',
-              weight: raw.weightKg ? `${raw.weightKg} kg` : '—',
+              weight: raw.weightKg && raw.weightKg > 0 ? `${raw.weightKg} kg` : (raw.identity?.weight ? `${raw.identity.weight} kg` : '—'),
               allergies: [],
               phase,
               phaseInfo: PHASES[phase],
