@@ -218,10 +218,9 @@ const FRAGMENTS = [
   },
   {
     chapter: 'V',
-    title: 'La promesse',
+    title: 'Quinze jours',
     text: 'Quinze jours. C\'est le temps qu\'il aura fallu entre une fièvre d\'enfant et un enterrement d\'enfant.',
-    coda: 'Quand je suis entré dans cette chambre et que je l\'ai vu, j\'ai su que je ne pouvais pas laisser ça sans réponse. Je lui ai fait une promesse. Les mêmes mots, toujours les mêmes :',
-    quote: 'Je ferai quelque chose. Je ferai quelque chose pour que ta mort ne soit pas en vain. Pour les prochains enfants qui seront frappés par cette pathologie. Je te le jure.',
+    coda: 'PULSAR est né de ce cas. Pour que les prochains enfants frappés par FIRES aient une chance que les moteurs posent les bonnes questions, au bon moment.',
     color: '#F5A623',
   },
 ]
