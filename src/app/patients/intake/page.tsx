@@ -182,7 +182,11 @@ export default function IntakePage(){
         text += tc.items.map((item:any)=>item.str).join(' ') + '\n'
       }
 
+      // DEBUG — log les 500 premiers caractères du texte extrait par pdf.js
+      console.log('[PULSAR PDF DEBUG]', text.slice(0, 500))
+      console.log('[PULSAR PDF NOM SEARCH]', text.slice(text.indexOf('Nom'), text.indexOf('Nom') + 100))
       const ex = parsePdfText(text)
+      console.log('[PULSAR PDF EXTRACTED]', JSON.stringify({lastName: ex.lastName, firstName: ex.firstName, ageMonths: ex.ageMonths, temp: ex.temp}))
 
       if(ex.lastName)      sId('lastName',   ex.lastName)
       if(ex.firstName)     sId('firstName',  ex.firstName)
