@@ -71,12 +71,15 @@ export default function IntakePage(){
       return m ? n(m[1]) : 0
     }
 
-    // Nom / Prénom — format "COHEN Théo" sur la ligne suivant le label
-    const nomVal = afterLabel('Nom / Prénom') || afterLabel('Nom.*?Prénom')
-    // Sépare NOM (majuscules) et Prénom (casse mixte)
-    const nomMatch = nomVal.match(/^([A-ZÉÀÜÈÊ\-]+)\s+(.+)$/)
-    const lastName  = nomMatch ? nomMatch[1] : nomVal.split(/\s+/)[0] || ''
-    const firstName = nomMatch ? nomMatch[2].trim() : nomVal.split(/\s+/).slice(1).join(' ') || ''
+    // Nom / Prénom — format tableau : "Nom / Prénom    COHEN Théo" sur la même ligne
+    // pdf.js concatène les cellules avec espaces
+    const nomLineMatch = text.match(/Nom\s*\/\s*Prénom\s+([A-ZÉÀÜÈÊË\-]+(?:\s+[A-ZÉÀÜÈÊË\-]+)*)\s+([A-Za-zéàüèêëîïôùûç][\w\s\-éàüèêëîïôùûç]{1,30})/)
+    const nomSameLineMatch = text.match(/Nom\s*\/\s*Prénom[^\n]*?([A-ZÉÀÜÈÊË]{2,}[A-ZÉÀÜÈÊË\-]*)\s+([A-Z][a-zéàüèêëîïôùûç]+)/)
+    // Fallback: cherche "COHEN Théo" pattern (MAJUSCULES puis CasseMixte) n'importe où
+    const cohenPattern = text.match(/([A-ZÉÀÜÈÊË]{2,15})\s+([A-Z][a-zéàüèêë]{1,15})\s*\n?\s*(?:22\/09|Date|\d{2}\/\d{2})/)
+    const nomMatch = nomLineMatch || nomSameLineMatch
+    const lastName  = nomMatch ? nomMatch[1].trim() : (cohenPattern ? cohenPattern[1] : '')
+    const firstName = nomMatch ? nomMatch[2].trim() : (cohenPattern ? cohenPattern[2] : '')
 
     // Âge — "7 ans 6 mois" dans le texte
     let ageMonths = 0
@@ -92,10 +95,10 @@ export default function IntakePage(){
     const weightKg = n(poidsVal) || inlineNum('Poids')
 
     // N° dossier
-    const fileNumber = afterLabel('N°\\s*dossier') || afterLabel('dossier')
+    const fileNumber = (text.match(/N°\s*dossier\s+([A-Z0-9\-]{5,25})/)?.[1]) || afterLabel('N°\s*dossier') || ''
 
     // Motif principal
-    const chiefComplaint = afterLabel('Motif principal')
+    const chiefComplaint = (text.match(/Motif principal\s+([^\n]{10,120})/)?.[1]?.trim()) || afterLabel('Motif principal') || ''
 
     // Délai symptômes
     const onsetM = chiefComplaint.match(/J[-−](\d+)/i) || text.match(/depuis\s+J[-−](\d+)/i)
@@ -122,7 +125,7 @@ export default function IntakePage(){
     const crp      = inlineNum('CRP')
     const ferritin = inlineNum('Ferritine')
     const wbc      = inlineNum('Leucocytes')
-    const temp     = inlineNum('Température')
+    const temp     = (() => { const m = text.match(/Température\s+(\d+[.,]\d+)/); return m ? parseFloat(m[1].replace(',','.')) : inlineNum('Température') })()
     const heartRate= inlineNum('FC')
     const spo2     = inlineNum('SpO2')
     const sbp      = inlineNum('TA systolique')
