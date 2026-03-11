@@ -146,12 +146,20 @@ export function ProfileProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      // Fallback: demo mode
+      // Fallback: demo mode only if truly not authenticated
       setProfile(DEMO_PROFILE)
       setIsDemo(true)
     } catch {
-      setProfile(DEMO_PROFILE)
-      setIsDemo(true)
+      // Check if we have a valid session — if so, don't show DEMO badge
+      try {
+        const supabase2 = createClient()
+        const { data: { session } } = await supabase2.auth.getSession()
+        setProfile(DEMO_PROFILE)
+        setIsDemo(!session)
+      } catch {
+        setProfile(DEMO_PROFILE)
+        setIsDemo(true)
+      }
     }
     setLoading(false)
   }

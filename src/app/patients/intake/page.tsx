@@ -193,7 +193,9 @@ export default function IntakePage(){
       else sAd('mode','urgence')
       if(ex.symptomOnsetDays)  sAd('symptomOnsetDays',  String(ex.symptomOnsetDays))
       if(ex.gcs)           sN('gcs',         ex.gcs)
-      if(ex.seizureType)   sN('seizureType', ex.seizureType)
+      // seizureType : 'none' si aucune crise documentée
+      const st = ex.seizureType || 'none'
+      sN('seizureType', st)
       if(ex.seizures24h)   sN('seizureFreq', String(ex.seizures24h))
       if(ex.crp)           sB('crp',         String(ex.crp))
       if(ex.wbc)           sB('wbc',         String(ex.wbc))
@@ -509,7 +511,7 @@ export default function IntakePage(){
           <div style={{display:'grid',gap:'12px'}}>
             <div style={{padding:'16px',borderRadius:'12px',background:'rgba(108,124,255,0.04)',border:'1px solid rgba(108,124,255,0.1)'}}>
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'#6C7CFF',fontWeight:800,letterSpacing:'1px',marginBottom:'8px'}}>PATIENT</div>
-              <div style={{fontSize:'16px',fontWeight:800,color:'var(--p-text)'}}>{id.firstName} {id.lastName}</div>
+              <div style={{fontSize:'16px',fontWeight:800,color:'var(--p-text)'}}>{[id.firstName, id.lastName].filter(Boolean).join(' ') || '—'}</div>
               <div style={{fontSize:'12px',color:'var(--p-text-muted)',marginTop:'4px'}}>{id.ageMonths&&`${Math.floor(Number(id.ageMonths)/12)}${t(' ans',' y')} ${Number(id.ageMonths)%12>0?Number(id.ageMonths)%12+t(' mois',' mo'):''}`} · {id.sex==='female'?t('F','F'):id.sex==='male'?t('M','M'):'—'} {id.weight&&`· ${id.weight}kg`} {id.room&&`· ${id.room}`}</div>
             </div>
             <div style={{padding:'16px',borderRadius:'12px',background:'rgba(139,92,246,0.04)',border:'1px solid rgba(139,92,246,0.1)'}}>
