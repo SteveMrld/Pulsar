@@ -333,6 +333,12 @@ const C10_AMBIGU: ClinicalCase = {
 // ════════════════════════════════════════════════════════════
 // RUNNER
 // ════════════════════════════════════════════════════════════
+export const CLINICAL_CASES: ClinicalCase[] = [
+  C1_STATUS, C2_PRODROME, C3_FIRES_POST_IVIG, C4_HEALTHY,
+  C5_CYTOKINE_STORM, C6_NMDAR, C7_ALEJANDRO, C8_NOURRISSON,
+  C9_AMELIORATION, C10_AMBIGU,
+]
+
 export function runClinicalTests(): { results: string[]; totalPass: number; totalFail: number } {
   const CASES: ClinicalCase[] = [
     C1_STATUS, C2_PRODROME, C3_FIRES_POST_IVIG, C4_HEALTHY,

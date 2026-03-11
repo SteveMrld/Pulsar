@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import EngineStatusBar from '@/components/EngineStatusBar';
+import RegressionBot from '@/components/RegressionBot';
 import Picto from '@/components/Picto';
 
 // ─── Supabase ──────────────────────────────────────────────────────────────────
@@ -139,7 +140,7 @@ function CronBar({ val, max }: { val: number; max: number }) {
 
 // ─── Main ──────────────────────────────────────────────────────────────────────
 export default function LabPage() {
-  const [tab, setTab] = useState<'l1'|'l2'|'l3'|'l4'|'visu'|'export'|'settings'>('l1');
+  const [tab, setTab] = useState<'l1'|'l2'|'l3'|'l4'|'visu'|'export'|'settings'|'regression'>('l1');
   const [expandedH, setExpandedH] = useState<string|null>('H1');
   const [matrixHover, setMatrixHover] = useState<[number,number]|null>(null);
   const [articles, setArticles] = useState(ARTICLES);
@@ -176,7 +177,8 @@ export default function LabPage() {
     { id: 'l4',       label: 'L4 · TreatmentPathfinder', color: 'var(--p-tpe)'  },
     { id: 'visu',     label: 'Visualisations',            color: 'var(--p-vps)'  },
     { id: 'export',   label: 'Export · CRON',             color: 'var(--p-text-dim)' },
-    { id: 'settings', label: 'Settings',                  color: 'var(--p-text-dim)' },
+    { id: 'settings',   label: 'Settings',                  color: 'var(--p-text-dim)' },
+    { id: 'regression', label: '🤖 Bot Régression',          color: '#10B981' },
   ];
 
   return (
@@ -851,6 +853,10 @@ export default function LabPage() {
               </div>
             ))}
           </div>
+        )}
+
+        {tab === 'regression' && (
+          <RegressionBot />
         )}
 
       </div>
