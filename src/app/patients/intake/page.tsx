@@ -66,26 +66,14 @@ export default function IntakePage(){
         r.readAsDataURL(file)
       })
 
-      const resp = await fetch('https://api.anthropic.com/v1/messages',{
+      const resp = await fetch('/api/extract-pdf',{
         method:'POST',
         headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({
-          model:'claude-sonnet-4-20250514',
-          max_tokens:1000,
-          messages:[{
-            role:'user',
-            content:[
-              {type:'document',source:{type:'base64',media_type:'application/pdf',data:base64}},
-              {type:'text',text:'Extrais les données cliniques de ce dossier patient PULSAR. Réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks, avec exactement ces champs (laisse 0 ou vide si non trouvé) : {"lastName":"","firstName":"","ageMonths":0,"sex":"male","weightKg":0,"fileNumber":"","chiefComplaint":"","symptomOnsetDays":0,"gcs":15,"seizureType":"none","seizures24h":0,"seizureDuration":0,"crp":0,"ferritin":0,"wbc":0,"temp":0,"heartRate":0,"spo2":0,"sbp":0,"map":0,"csfCells":0,"csfProtein":0,"eegDone":false,"eegResult":"","mriDone":false,"mriResult":"","ctDone":false,"ctResult":""}'}
-            ]
-          }]
-        })
+        body: JSON.stringify({ base64, mediaType: file.type || 'application/pdf' })
       })
 
       const data = await resp.json()
-      const text = data.content?.find((b:any)=>b.type==='text')?.text ?? ''
-      let ex: Record<string,any> = {}
-      try { ex = JSON.parse(text) } catch { ex = {} }
+      let ex: Record<string,any> = data.ok ? data.data : {}
 
       if(ex.lastName)      sId('lastName',   ex.lastName)
       if(ex.firstName)     sId('firstName',  ex.firstName)
