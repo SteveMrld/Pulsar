@@ -55,52 +55,98 @@ export default function IntakePage(){
   const sI=useCallback((k:string,v:any)=>setIState(p=>({...p,[k]:v})),[])
 
   const parsePdfText = (text: string) => {
-    const f = (re: RegExp) => { const m=text.match(re); return m?m[1].trim():'' }
-    const n = (re: RegExp) => { const v=f(re); const x=parseFloat(v.replace(',','.').replace(/[^\d.]/g,'')); return isNaN(x)?0:x }
+    // Format réel : label sur une ligne, valeur sur la ligne suivante
+    const afterLabel = (label: string): string => {
+      const re = new RegExp(label + '\\s*\\n([^\\n]{1,120})', 'i')
+      const m = text.match(re)
+      return m ? m[1].trim() : ''
+    }
+    const n = (s: string): number => {
+      const x = parseFloat(s.replace(/\s/g,'').replace(',','.').replace(/[^\d.]/g,''))
+      return isNaN(x) ? 0 : x
+    }
+    const inlineNum = (label: string): number => {
+      const re = new RegExp(label + '[^\\d]*(\\d+[,\\s]?\\d*)', 'i')
+      const m = text.match(re)
+      return m ? n(m[1]) : 0
+    }
 
-    const nomLine = f(/Nom.*?Prénom[^\n]*?([A-ZÉÀÜ][\w\s\-éàüèê]{1,40})/i) || f(/NOM[^\n]*\n([^\n]{3,40})/)
-    const parts = nomLine.split(/\s{2,}/)
+    // Nom / Prénom — format "COHEN Théo" après label
+    const nomVal = afterLabel('Nom / Prénom') || afterLabel('Nom.*Prénom')
+    const nameParts = nomVal.split(/\s+/)
+    const lastName  = nameParts[0] || ''
+    const firstName = nameParts.slice(1).join(' ') || ''
 
+    // Âge — "7 ans 6 mois" dans le texte
     let ageMonths = 0
     const am = text.match(/(\d+)\s*ans?\s*(\d+)?\s*mois?/i)
-    if(am) ageMonths = parseInt(am[1])*12+(parseInt(am[2]??'0')||0)
+    if(am) ageMonths = parseInt(am[1])*12 + (parseInt(am[2]??'0')||0)
 
+    // Sexe
+    const sexVal = afterLabel('Sexe')
+    const sex = /f[ée]m|female/i.test(sexVal) ? 'female' : 'male'
+
+    // Poids — "25.2 kg"
+    const poidsVal = afterLabel('Poids')
+    const weightKg = n(poidsVal) || inlineNum('Poids')
+
+    // N° dossier
+    const fileNumber = afterLabel('N°\\s*dossier') || afterLabel('dossier')
+
+    // Motif principal
+    const chiefComplaint = afterLabel('Motif principal')
+
+    // Délai symptômes
+    const onsetM = chiefComplaint.match(/J[-−](\d+)/i) || text.match(/depuis\s+J[-−](\d+)/i)
+    const symptomOnsetDays = onsetM ? parseInt(onsetM[1]) : 0
+
+    // GCS — "15 / 15"
+    const gcsVal = afterLabel('Glasgow') || ''
+    const gcs = parseInt(gcsVal) || inlineNum('Glasgow') || 15
+
+    // Crises
+    const seizures24h = inlineNum('Crises.*24h') || inlineNum('Crises / 24h')
+    const seizureDuration = inlineNum('Durée.*crise') || inlineNum('durée.*crise')
+
+    // Type de crise
     let seizureType = 'none'
-    if(/super.réfractaire|super_refractory/i.test(text)) seizureType='super_refractory'
-    else if(/réfractaire/i.test(text) && /status|état de mal/i.test(text)) seizureType='refractory_status'
-    else if(/status epilepticus|état de mal/i.test(text)) seizureType='status'
-    else if(/généralisée|tonico/i.test(text)) seizureType='generalized_tonic_clonic'
-    else if(/focale/i.test(text)) seizureType='focal_impaired'
+    if(seizures24h === 0 && !/crise|seizure/i.test(chiefComplaint)) seizureType = 'none'
+    else if(/super.réfractaire|super_refractory/i.test(text)) seizureType = 'super_refractory'
+    else if(/réfractaire/i.test(text) && /status|état de mal/i.test(text)) seizureType = 'refractory_status'
+    else if(/status epilepticus|état de mal/i.test(text)) seizureType = 'status'
+    else if(/généralisée|tonico/i.test(text)) seizureType = 'generalized_tonic_clonic'
+    else if(/focale/i.test(text)) seizureType = 'focal_impaired'
 
-    const ex: Record<string,any> = {
-      lastName:  parts[0]||'', firstName: parts[1]||'',
-      ageMonths, sex: /f[ée]m/i.test(f(/Sexe[^\n]+/)) ? 'female' : 'male',
-      weightKg:  n(/Poids[^\d]*(\d+[,.]?\d*)/),
-      fileNumber: f(/N°\s*dossier[^\n]*?([A-Z0-9\-]{5,20})/),
-      chiefComplaint: f(/Motif principal[^\n]*?([^\n]{10,120})/),
-      symptomOnsetDays: n(/depuis\s+J[-−](\d+)/i) || n(/J[-−](\d+)/i),
-      gcs: n(/Glasgow[^\d]*(\d+)/) || 15,
-      seizureType,
-      seizures24h: n(/Crises.*?24h[^\d]*(\d+)/),
-      seizureDuration: n(/Durée.*?crise[^\d]*(\d+)/),
-      crp: n(/CRP[^\d]*(\d+[,.]?\d*)/),
-      ferritin: n(/Ferritine[^\d]*(\d+)/),
-      wbc: n(/Leucocytes[^\d]*(\d+[,.]?\d*)/),
-      temp: n(/Température[^\d]*(\d+[,.]\d+)/),
-      heartRate: n(/FC[^\d]*(\d+)/),
-      spo2: n(/SpO2[^\d]*(\d+)/),
-      sbp: n(/TA systolique[^\d]*(\d+)/),
-      map: n(/PAM[^\d]*(\d+)/),
-      csfCells: n(/Leucocytes LCR[^\d]*(\d+)/),
-      csfProtein: n(/Protéinorachie[^\d]*(\d+[,.]\d+)/),
-      eegDone: /EEG/i.test(text),
-      eegResult: f(/Conclusion EEG[^\n]*?([^\n]{10,120})/),
-      mriDone: /IRM/i.test(text),
-      mriResult: f(/Conclusion imagerie[^\n]*?([^\n]{10,120})/),
-      ctDone: /scanner/i.test(text),
-      ctResult: f(/Résultat scanner[^\n]*?([^\n]{10,120})/),
+    // Bio — valeurs après labels dans tableau
+    const crp      = inlineNum('CRP')
+    const ferritin = inlineNum('Ferritine')
+    const wbc      = inlineNum('Leucocytes')
+    const temp     = inlineNum('Température')
+    const heartRate= inlineNum('FC')
+    const spo2     = inlineNum('SpO2')
+    const sbp      = inlineNum('TA systolique')
+    const map      = inlineNum('PAM')
+
+    // LCR
+    const csfCells   = inlineNum('Leucocytes LCR')
+    const csfProtein = inlineNum('Protéinorachie')
+
+    // Imagerie
+    const eegDone   = /EEG/i.test(text)
+    const eegResult = afterLabel('Conclusion EEG') || ''
+    const mriDone   = /IRM/i.test(text)
+    const mriResult = afterLabel('Conclusion imagerie') || ''
+    const ctDone    = /scanner/i.test(text)
+    const ctResult  = afterLabel('Résultat scanner') || ''
+
+    return {
+      lastName, firstName, ageMonths, sex, weightKg, fileNumber,
+      chiefComplaint, symptomOnsetDays,
+      gcs, seizureType, seizures24h, seizureDuration,
+      crp, ferritin, wbc, temp, heartRate, spo2, sbp, map,
+      csfCells, csfProtein,
+      eegDone, eegResult, mriDone, mriResult, ctDone, ctResult,
     }
-    return ex
   }
 
   const handleUpload=useCallback(async(e:React.ChangeEvent<HTMLInputElement>)=>{
