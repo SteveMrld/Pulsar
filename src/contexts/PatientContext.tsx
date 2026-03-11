@@ -307,6 +307,75 @@ export function PatientProvider({ id, children }: { id: string; children: ReactN
     let cancelled = false
     async function load() {
       try {
+        // Fallback localStorage pour patients créés depuis l'intake (id = "intake-xxx")
+        if (id.startsWith('intake-')) {
+          const stored = typeof window !== 'undefined' ? localStorage.getItem(`pulsar-patient-${id}`) : null
+          if (stored) {
+            const raw = JSON.parse(stored)
+            const ps = new PatientState({
+              ageMonths: raw.ageMonths || 0,
+              sex: raw.sex || 'male',
+              weightKg: raw.weightKg || 0,
+              gcs: raw.gcs || 15,
+              seizureType: raw.seizureType || 'none',
+              seizureFreq: raw.seizureFreq || 0,
+              crp: raw.crp || 0,
+              wbc: raw.wbc || 0,
+              ferritin: raw.ferritin || 0,
+              temp: raw.temp || 0,
+              eegDone: raw.eegDone || false,
+              eegResult: raw.eegResult || '',
+              mriDone: raw.mriDone || false,
+              mriResult: raw.mriResult || '',
+              csfDone: raw.csfDone || false,
+              csfWbc: raw.csfWbc || 0,
+              csfProtein: raw.csfProtein || 0,
+              chiefComplaint: raw.chiefComplaint || '',
+              symptomOnsetDays: raw.symptomOnsetDays || 0,
+              hospDay: 1,
+            })
+            runPipeline(ps)
+            const vps = ps.vpsResult?.synthesis.score ?? 0
+            const phase = detectPhase(1, vps)
+            const triage = computeTriageFromPipeline(ps)
+            const info: PatientInfo = {
+              id,
+              displayName: raw.firstName ? `${raw.firstName} ${raw.lastName}`.trim() : 'Patient intake',
+              age: raw.ageMonths ? `${Math.floor(raw.ageMonths / 12)} ans` : '—',
+              sex: raw.sex || 'male',
+              syndrome: 'En évaluation',
+              hospDay: 1,
+              room: raw.identity?.room || 'Non assigné',
+              weight: raw.weightKg ? `${raw.weightKg} kg` : '—',
+              allergies: [],
+              phase,
+              phaseInfo: PHASES[phase],
+              triage,
+            }
+            const tabs = buildTabs(phase, ps)
+            const timeline = buildTimeline(ps, info)
+            const vpsColor = vps >= 70 ? '#8B5CF6' : vps >= 50 ? '#FFA502' : vps >= 30 ? '#FFB347' : '#2ED573'
+            const vpsLevel = vps >= 70 ? 'CRITIQUE' : vps >= 50 ? 'SÉVÈRE' : vps >= 30 ? 'MODÉRÉ' : 'STABLE'
+            const allRecs = [
+              ...(ps.vpsResult?.synthesis.recommendations || []),
+              ...(ps.tdeResult?.synthesis.recommendations || []),
+              ...(ps.pveResult?.synthesis.recommendations || []),
+            ]
+            const engineSummary = {
+              vps, vpsLevel, vpsColor,
+              criticalAlerts: ps.alerts.filter(a => a.severity === 'critical').length,
+              warningAlerts: ps.alerts.filter(a => a.severity === 'warning').length,
+              totalRecommendations: allRecs.length,
+              topRecommendation: allRecs.find(r => r.priority === 'urgent')?.title || null,
+            }
+            if (!cancelled) {
+              setDbValue({ ps, info, scenarioKey: 'INTAKE', tabs, timeline, engineSummary })
+              setDbLoading(false)
+            }
+            return
+          }
+        }
+
         const loaded = await intakePersistenceService.loadForEngines(id)
         if (cancelled || !loaded || !loaded.patient) return
 
