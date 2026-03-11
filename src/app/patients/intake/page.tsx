@@ -53,6 +53,7 @@ export default function IntakePage(){
   const sN=useCallback((k:string,v:any)=>setNState(p=>({...p,[k]:v})),[])
   const sB=useCallback((k:string,v:any)=>setBState(p=>({...p,[k]:v})),[])
   const sI=useCallback((k:string,v:any)=>setIState(p=>({...p,[k]:v})),[])
+  const sH=useCallback((k:string,v:any)=>setHState(p=>({...p,[k]:v})),[])
 
   const parsePdfText = (text: string) => {
     // Format réel : label sur une ligne, valeur sur la ligne suivante
@@ -203,6 +204,19 @@ export default function IntakePage(){
       if(ex.mriResult)     sI('mriResult',   ex.mriResult)
       if(ex.ctDone)        sI('ctDone',      true)
       if(ex.ctResult)      sI('ctResult',    ex.ctResult)
+
+      // Antécédents texte libre depuis PDF
+      const rhinite = /rhinite/i.test(text) ? 'Rhinite récurrente' : ''
+      const constip = /constipation/i.test(text) ? 'Constipation chronique' : ''
+      const atcdInfect = [rhinite, constip].filter(Boolean).join(' — ')
+      if(atcdInfect) sH('otherInfection', atcdInfect)
+
+      // Antécédents familiaux
+      const famMatch = text.match(/Antécédents familiaux[\s\n]+([^\n]{10,150})/i)
+      if(famMatch) sH('otherFamily', famMatch[1].trim())
+
+      // Convulsions fébriles
+      if(/convulsion.*fébril|fébril.*convulsion/i.test(text)) sH('febrileSeizuresHistory', true)
       if(ex.csfCells > 0){ sB('csfDone',true); sB('csfWbc',String(ex.csfCells)) }
       if(ex.csfProtein)    sB('csfProtein',  String(ex.csfProtein))
       const ferNote = ex.ferritin ? `Ferritine: ${ex.ferritin} µg/L | T°: ${ex.temp}°C | FC: ${ex.heartRate} | SpO2: ${ex.spo2}%` : ''
