@@ -133,13 +133,18 @@ export default function IntakePage(){
     const csfCells   = inlineNum('Leucocytes LCR')
     const csfProtein = inlineNum('Protéinorachie')
 
-    // Imagerie
+    // Imagerie — récupère jusqu'à 3 lignes après le label
+    const afterLabelMulti = (label: string): string => {
+      const re = new RegExp(label + '\\s*\\n([^\\n]{1,120}(?:\\n[^\\n]{1,120}){0,2})', 'i')
+      const m = text.match(re)
+      return m ? m[1].replace(/\n/g,' ').trim() : ''
+    }
     const eegDone   = /EEG/i.test(text)
-    const eegResult = afterLabel('Conclusion EEG') || ''
+    const eegResult = afterLabelMulti('Conclusion EEG')
     const mriDone   = /IRM/i.test(text)
-    const mriResult = afterLabel('Conclusion imagerie') || ''
-    const ctDone    = /scanner/i.test(text)
-    const ctResult  = afterLabel('Résultat scanner') || ''
+    const mriResult = afterLabelMulti('Conclusion imagerie')
+    const ctDone    = /scanner/i.test(text.toLowerCase())
+    const ctResult  = afterLabelMulti('Résultat scanner')
 
     return {
       lastName, firstName, ageMonths, sex, weightKg, fileNumber,
