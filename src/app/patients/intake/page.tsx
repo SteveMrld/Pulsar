@@ -375,7 +375,12 @@ export default function IntakePage(){
             <F label={t("NOM *","LAST NAME *")}><input style={inputS} value={id.lastName} onChange={e=>sId('lastName',e.target.value)} placeholder={t("ex: Martin","e.g. Martin")}/></F>
             <F label={t("PRÉNOM","FIRST NAME")}><input style={inputS} value={id.firstName} onChange={e=>sId('firstName',e.target.value)}/></F>
             <F label={t("DATE DE NAISSANCE","DATE OF BIRTH")}><input type="date" style={inputS} value={id.dob} onChange={e=>sId('dob',e.target.value)}/></F>
-            <F label={t("ÂGE (mois) *","AGE (months) *")} tip={t("Requis pour les scores","Required for scores")}><input type="number" style={inputS} value={id.ageMonths} onChange={e=>sId('ageMonths',e.target.value)} placeholder="48"/></F>
+            <F label={t("ÂGE *","AGE *")} tip={t("Requis pour les scores","Required for scores")}>
+                <input type="number" style={inputS} value={id.ageMonths} onChange={e=>sId('ageMonths',e.target.value)} placeholder="48"/>
+                {id.ageMonths&&<div style={{fontSize:'11px',color:'var(--p-text-muted)',marginTop:'4px'}}>
+                  {Math.floor(Number(id.ageMonths)/12)}{t(' ans',' y')} {Number(id.ageMonths)%12>0?`${Number(id.ageMonths)%12}${t(' mois',' mo')}`:''}
+                </div>}
+              </F>
             <F label={t("SEXE *","SEX *")}><select style={selS} value={id.sex} onChange={e=>sId('sex',e.target.value)}><option value="">—</option><option value="female">{t("Fille","Female")}</option><option value="male">{t("Garçon","Male")}</option></select></F>
             <F label={t("POIDS (kg)","WEIGHT (kg)")}><input type="number" style={inputS} value={id.weight} onChange={e=>sId('weight',e.target.value)}/></F>
             <F label={t("N° DOSSIER","FILE NUMBER")}><input style={inputS} value={id.fileNumber} onChange={e=>sId('fileNumber',e.target.value)}/></F>
@@ -538,7 +543,7 @@ export default function IntakePage(){
             <div style={{padding:'16px',borderRadius:'12px',background:'rgba(108,124,255,0.04)',border:'1px solid rgba(108,124,255,0.1)'}}>
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'#6C7CFF',fontWeight:800,letterSpacing:'1px',marginBottom:'8px'}}>PATIENT</div>
               <div style={{fontSize:'16px',fontWeight:800,color:'var(--p-text)'}}>{id.firstName} {id.lastName}</div>
-              <div style={{fontSize:'12px',color:'var(--p-text-muted)',marginTop:'4px'}}>{id.ageMonths&&`${id.ageMonths} ${t('mois','mo')}`} · {id.sex==='female'?t('F','F'):id.sex==='male'?t('M','M'):'—'} {id.weight&&`· ${id.weight}kg`} {id.room&&`· ${id.room}`}</div>
+              <div style={{fontSize:'12px',color:'var(--p-text-muted)',marginTop:'4px'}}>{id.ageMonths&&`${Math.floor(Number(id.ageMonths)/12)}${t(' ans',' y')} ${Number(id.ageMonths)%12>0?Number(id.ageMonths)%12+t(' mois',' mo'):''}`} · {id.sex==='female'?t('F','F'):id.sex==='male'?t('M','M'):'—'} {id.weight&&`· ${id.weight}kg`} {id.room&&`· ${id.room}`}</div>
             </div>
             <div style={{padding:'16px',borderRadius:'12px',background:'rgba(139,92,246,0.04)',border:'1px solid rgba(139,92,246,0.1)'}}>
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'#8B5CF6',fontWeight:800,letterSpacing:'1px',marginBottom:'8px'}}>ADMISSION</div>
