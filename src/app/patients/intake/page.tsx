@@ -71,11 +71,12 @@ export default function IntakePage(){
       return m ? n(m[1]) : 0
     }
 
-    // Nom / Prénom — format "COHEN Théo" après label
-    const nomVal = afterLabel('Nom / Prénom') || afterLabel('Nom.*Prénom')
-    const nameParts = nomVal.split(/\s+/)
-    const lastName  = nameParts[0] || ''
-    const firstName = nameParts.slice(1).join(' ') || ''
+    // Nom / Prénom — format "COHEN Théo" sur la ligne suivant le label
+    const nomVal = afterLabel('Nom / Prénom') || afterLabel('Nom.*?Prénom')
+    // Sépare NOM (majuscules) et Prénom (casse mixte)
+    const nomMatch = nomVal.match(/^([A-ZÉÀÜÈÊ\-]+)\s+(.+)$/)
+    const lastName  = nomMatch ? nomMatch[1] : nomVal.split(/\s+/)[0] || ''
+    const firstName = nomMatch ? nomMatch[2].trim() : nomVal.split(/\s+/).slice(1).join(' ') || ''
 
     // Âge — "7 ans 6 mois" dans le texte
     let ageMonths = 0
@@ -236,7 +237,7 @@ export default function IntakePage(){
   }, [])
 
   const canGo=useCallback((s:number)=>{
-    if(s===1)return id.lastName.trim()!==''&&id.ageMonths!==''&&id.sex!==''
+    if(s===1)return id.ageMonths!==''&&id.sex!==''
     if(s===2)return adm.mode!==''&&adm.chiefComplaint.trim()!==''
     return true
   },[id,adm])
