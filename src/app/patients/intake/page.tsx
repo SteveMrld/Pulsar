@@ -57,7 +57,66 @@ export default function IntakePage(){
   const handleUpload=useCallback(async(e:React.ChangeEvent<HTMLInputElement>)=>{
     const file=e.target.files?.[0];if(!file)return
     setUploading(true);setUploadedFile(file.name)
-    setTimeout(()=>{setUploading(false);setStep(1)},2000)
+
+    try {
+      const base64 = await new Promise<string>((res,rej)=>{
+        const r=new FileReader()
+        r.onload=()=>res((r.result as string).split(',')[1])
+        r.onerror=()=>rej(new Error('Lecture fichier échouée'))
+        r.readAsDataURL(file)
+      })
+
+      const resp = await fetch('https://api.anthropic.com/v1/messages',{
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          model:'claude-sonnet-4-20250514',
+          max_tokens:1000,
+          messages:[{
+            role:'user',
+            content:[
+              {type:'document',source:{type:'base64',media_type:'application/pdf',data:base64}},
+              {type:'text',text:'Extrais les données cliniques de ce dossier patient PULSAR. Réponds UNIQUEMENT en JSON valide, sans markdown, sans backticks, avec exactement ces champs (laisse 0 ou vide si non trouvé) : {"lastName":"","firstName":"","ageMonths":0,"sex":"male","weightKg":0,"fileNumber":"","chiefComplaint":"","symptomOnsetDays":0,"gcs":15,"seizureType":"none","seizures24h":0,"seizureDuration":0,"crp":0,"ferritin":0,"wbc":0,"temp":0,"heartRate":0,"spo2":0,"sbp":0,"map":0,"csfCells":0,"csfProtein":0,"eegDone":false,"eegResult":"","mriDone":false,"mriResult":"","ctDone":false,"ctResult":""}'}
+            ]
+          }]
+        })
+      })
+
+      const data = await resp.json()
+      const text = data.content?.find((b:any)=>b.type==='text')?.text ?? ''
+      let ex: Record<string,any> = {}
+      try { ex = JSON.parse(text) } catch { ex = {} }
+
+      if(ex.lastName)      sId('lastName',   ex.lastName)
+      if(ex.firstName)     sId('firstName',  ex.firstName)
+      if(ex.ageMonths)     sId('ageMonths',  String(ex.ageMonths))
+      if(ex.sex)           sId('sex',        ex.sex)
+      if(ex.weightKg)      sId('weight',     String(ex.weightKg))
+      if(ex.fileNumber)    sId('fileNumber', ex.fileNumber)
+      if(ex.chiefComplaint)    sAd('chiefComplaint',    ex.chiefComplaint)
+      if(ex.symptomOnsetDays)  sAd('symptomOnsetDays',  String(ex.symptomOnsetDays))
+      if(ex.gcs)           sN('gcs',         ex.gcs)
+      if(ex.seizureType)   sN('seizureType', ex.seizureType)
+      if(ex.seizures24h)   sN('seizureFreq', String(ex.seizures24h))
+      if(ex.crp)           sB('crp',         String(ex.crp))
+      if(ex.wbc)           sB('wbc',         String(ex.wbc))
+      if(ex.eegDone)       sI('eegDone',     true)
+      if(ex.eegResult)     sI('eegResult',   ex.eegResult)
+      if(ex.mriDone)       sI('mriDone',     true)
+      if(ex.mriResult)     sI('mriResult',   ex.mriResult)
+      if(ex.ctDone)        sI('ctDone',      true)
+      if(ex.ctResult)      sI('ctResult',    ex.ctResult)
+      if(ex.csfCells > 0){ sB('csfDone',true); sB('csfWbc',String(ex.csfCells)) }
+      if(ex.csfProtein)    sB('csfProtein',  String(ex.csfProtein))
+      const ferNote = ex.ferritin ? `Ferritine: ${ex.ferritin} µg/L | T°: ${ex.temp}°C | FC: ${ex.heartRate} | SpO2: ${ex.spo2}%` : ''
+      if(ferNote)          sB('otherBio',    ferNote)
+
+    } catch(err) {
+      console.error('PDF extraction error:', err)
+    }
+
+    setUploading(false)
+    setStep(1)
   },[])
 
   const canGo=useCallback((s:number)=>{
