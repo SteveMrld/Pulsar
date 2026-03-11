@@ -163,33 +163,21 @@ export default function IntakePage(){
     setUploading(true);setUploadedFile(file.name)
 
     try {
-      // Charger pdf.js depuis CDN
-      if(!(window as any).pdfjsLib) {
-        await new Promise<void>((res,rej)=>{
-          const s=document.createElement('script')
-          s.src='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js'
-          s.onload=()=>res(); s.onerror=()=>rej()
-          document.head.appendChild(s)
-        })
-        ;(window as any).pdfjsLib.GlobalWorkerOptions.workerSrc =
-          'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
-      }
-      const pdfjsLib = (window as any).pdfjsLib
+      // Envoyer à la route API serveur (Claude Haiku)
+      const base64 = await new Promise<string>((res,rej)=>{
+        const r=new FileReader()
+        r.onload=()=>res((r.result as string).split(',')[1])
+        r.onerror=()=>rej(new Error('Lecture fichier échouée'))
+        r.readAsDataURL(file)
+      })
 
-      const arrayBuffer = await file.arrayBuffer()
-      const pdf = await pdfjsLib.getDocument({data: arrayBuffer}).promise
-      let text = ''
-      for(let i=1;i<=pdf.numPages;i++){
-        const page = await pdf.getPage(i)
-        const tc = await page.getTextContent()
-        text += tc.items.map((item:any)=>item.str).join(' ') + '\n'
-      }
-
-      // DEBUG — log les 500 premiers caractères du texte extrait par pdf.js
-      console.log('[PULSAR PDF DEBUG]', text.slice(0, 500))
-      console.log('[PULSAR PDF NOM SEARCH]', text.slice(text.indexOf('Nom'), text.indexOf('Nom') + 100))
-      const ex = parsePdfText(text)
-      console.log('[PULSAR PDF EXTRACTED]', JSON.stringify({lastName: ex.lastName, firstName: ex.firstName, ageMonths: ex.ageMonths, temp: ex.temp}))
+      const apiResp = await fetch('/api/extract-pdf', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({ base64, mediaType: file.type || 'application/pdf' })
+      })
+      const apiData = await apiResp.json()
+      const ex = apiData.ok ? apiData.data : {}
 
       if(ex.lastName)      sId('lastName',   ex.lastName)
       if(ex.firstName)     sId('firstName',  ex.firstName)
@@ -209,51 +197,14 @@ export default function IntakePage(){
       if(ex.seizures24h)   sN('seizureFreq', String(ex.seizures24h))
       if(ex.crp)           sB('crp',         String(ex.crp))
       if(ex.wbc)           sB('wbc',         String(ex.wbc))
-      if(ex.eegDone)  sI('eegDone', true)
-      if(ex.eegResult) {
-        const eegR = /NORMAL|normal/i.test(ex.eegResult) ? 'normal'
-          : /épileptiforme|epileptiform|pointe|spike/i.test(ex.eegResult) ? 'epileptiform'
-          : /état de mal|status/i.test(ex.eegResult) ? 'status'
-          : /ralentiss|slowing|thêta|delta/i.test(ex.eegResult) ? 'slowing' : 'normal'
-        sI('eegResult', eegR)
-        sI('eegDetail', ex.eegResult.slice(0,80))
-      }
-      // IRM — ne cocher que si réellement réalisée
-      const mriNotDone = /NON RÉALISÉE|non réalisée|not performed/i.test(ex.mriResult || '')
-      if(ex.mriDone && !mriNotDone) {
-        sI('mriDone', true)
-        if(ex.mriResult) {
-          const mriR = /NORMAL|normal/i.test(ex.mriResult) ? 'normal'
-            : /temporal|hippocampe/i.test(ex.mriResult) ? 'temporal'
-            : /multifocal/i.test(ex.mriResult) ? 'multifocal'
-            : /démyélin|demyelin/i.test(ex.mriResult) ? 'demyelination' : 'normal'
-          sI('mriResult', mriR)
-          sI('mriDetail', ex.mriResult.slice(0,80))
-        }
-      }
-      if(ex.ctDone) {
-        sI('ctDone', true)
-        if(ex.ctResult) {
-          const ctR = /NORMAL|normal/i.test(ex.ctResult) ? 'normal'
-            : /oedème|edema/i.test(ex.ctResult) ? 'edema'
-            : /hémorragie|hemorrhage/i.test(ex.ctResult) ? 'hemorrhage' : 'normal'
-          sI('ctResult', ctR)
-          sI('ctDetail', ex.ctResult.slice(0,80))
-        }
-      }
+      if(ex.eegDone) { sI('eegDone', true); sI('eegResult', ex.eegNormal ? 'normal' : 'epileptiform'); if(ex.eegDetail) sI('eegDetail', ex.eegDetail.slice(0,80)) }
+      if(ex.mriDone) { sI('mriDone', true); sI('mriResult', ex.mriNormal ? 'normal' : 'temporal'); if(ex.mriDetail) sI('mriDetail', ex.mriDetail.slice(0,80)) }
+      if(ex.ctDone)  { sI('ctDone',  true); sI('ctResult',  ex.ctNormal  ? 'normal' : 'edema');    if(ex.ctDetail)  sI('ctDetail',  ex.ctDetail.slice(0,80)) }
 
-      // Antécédents texte libre depuis PDF
-      const rhinite = /rhinite/i.test(text) ? 'Rhinite récurrente' : ''
-      const constip = /constipation/i.test(text) ? 'Constipation chronique' : ''
-      const atcdInfect = [rhinite, constip].filter(Boolean).join(' — ')
-      if(atcdInfect) sH('otherInfection', atcdInfect)
-
-      // Antécédents familiaux
-      const famMatch = text.match(/Antécédents familiaux[\s\n]+([^\n]{10,150})/i)
-      if(famMatch) sH('otherFamily', famMatch[1].trim())
-
-      // Convulsions fébriles
-      if(/convulsion.*fébril|fébril.*convulsion/i.test(text)) sH('febrileSeizuresHistory', true)
+      if(ex.otherInfection) sH('otherInfection', ex.otherInfection)
+      if(ex.familyHistory)  sH('otherFamily',    ex.familyHistory)
+      if(ex.allergies)      sH('allergies',       ex.allergies)
+      if(ex.currentMedications) sH('currentMedications', ex.currentMedications)
       if(ex.csfCells > 0){ sB('csfDone',true); sB('csfWbc',String(ex.csfCells)) }
       if(ex.csfProtein)    sB('csfProtein',  String(ex.csfProtein))
       const parts = []
