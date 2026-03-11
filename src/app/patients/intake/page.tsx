@@ -107,6 +107,31 @@ export default function IntakePage(){
     setStep(1)
   },[])
 
+
+  const loadDemo = useCallback((profile: 'prodrome' | 'status') => {
+    if (profile === 'prodrome') {
+      sId('lastName','Cohen'); sId('firstName','Théo'); sId('ageMonths','90')
+      sId('sex','male'); sId('weight','25.2'); sId('fileNumber','BCT-2025-07831')
+      sAd('mode','urgence'); sAd('chiefComplaint','Fièvre persistante depuis J-5 — myalgies membres inférieurs — refus de marcher'); sAd('symptomOnsetDays','5')
+      sN('gcs',15); sN('seizureType','none'); sN('seizureFreq','0')
+      sB('crp','48'); sB('wbc','11.4'); sB('otherBio','Ferritine: 420 µg/L | IL-6: 22 pg/mL | CK: 485 UI/L | PCT: 0.6 | T°: 39.1°C | FC: 104 | SpO2: 98%')
+      sI('eegDone',true); sI('eegResult','NORMAL — activité bêta frontale discrète — pas de foyer épileptique')
+      sI('ctDone',true); sI('ctResult','NORMAL — pas de lésion focale')
+      setUploadedFile('PULSAR_Patient_Prodrome_J2_Theo_Cohen.pdf')
+    } else {
+      sId('lastName','Martin'); sId('firstName','Lucas'); sId('ageMonths','81')
+      sId('sex','male'); sId('weight','22.4'); sId('fileNumber','RDB-2025-04712')
+      sAd('mode','urgence'); sAd('chiefComplaint','Status epilepticus réfractaire — 3e convulsion en 18h — fièvre depuis J-5'); sAd('symptomOnsetDays','1')
+      sN('gcs',9); sN('seizureType','refractory_status'); sN('seizureFreq','5')
+      sB('crp','142'); sB('wbc','14.2'); sB('otherBio','Ferritine: 1840 µg/L | IL-6: 87 pg/mL | PCT: 0.8 | T°: 39.2°C | FC: 118 | SpO2: 94% | PAM: 62')
+      sB('csfDone',true); sB('csfWbc','8'); sB('csfProtein','0.52'); sB('csfAppearance','clear')
+      sI('eegDone',true); sI('eegResult','Pointes-ondes bitemporales — 2 crises infracliniques — EEG FIRES compatible')
+      sI('mriDone',true); sI('mriResult','Hypersignal FLAIR hippocampe gauche — pas de prise de contraste')
+      setUploadedFile('PULSAR_Patient_Lucas_Martin_StatusJ1.pdf')
+    }
+    setStep(1)
+  }, [])
+
   const canGo=useCallback((s:number)=>{
     if(s===1)return id.lastName.trim()!==''&&id.ageMonths!==''&&id.sex!==''
     if(s===2)return adm.mode!==''&&adm.chiefComplaint.trim()!==''
@@ -155,6 +180,16 @@ export default function IntakePage(){
               <div style={{fontFamily:'var(--p-font-mono)',fontSize:'9px',color:'var(--p-text-dim)'}}>PDF · JPG · PNG · DOCX</div>
             </button>
             <input ref={fileRef} type="file" accept=".pdf,.jpg,.jpeg,.png,.docx" onChange={handleUpload} style={{display:'none'}}/>
+            <div style={{display:'flex',gap:'10px',marginTop:'4px'}}>
+              <button onClick={()=>loadDemo('prodrome')} style={{flex:1,padding:'16px 12px',borderRadius:'12px',border:'2px solid rgba(245,166,35,0.4)',background:'rgba(245,166,35,0.06)',cursor:'pointer',textAlign:'left'}}>
+                <div style={{fontSize:'11px',fontWeight:800,color:'#F5A623',letterSpacing:'1px'}}>DÉMO PRODROME</div>
+                <div style={{fontSize:'10px',color:'var(--p-text-muted)',marginTop:'4px'}}>Théo Cohen · 7a · J-2 · GCS 15</div>
+              </button>
+              <button onClick={()=>loadDemo('status')} style={{flex:1,padding:'16px 12px',borderRadius:'12px',border:'2px solid rgba(239,68,68,0.4)',background:'rgba(239,68,68,0.06)',cursor:'pointer',textAlign:'left'}}>
+                <div style={{fontSize:'11px',fontWeight:800,color:'#EF4444',letterSpacing:'1px'}}>DÉMO STATUS</div>
+                <div style={{fontSize:'10px',color:'var(--p-text-muted)',marginTop:'4px'}}>Lucas Martin · 6a · J+1 · SE réfractaire</div>
+              </button>
+            </div>
             <button onClick={()=>setStep(1)} style={{padding:'28px 20px',borderRadius:'16px',border:'2px dashed rgba(16,185,129,0.3)',background:'rgba(16,185,129,0.04)',cursor:'pointer',textAlign:'left',transition:'all 0.3s',display:'flex',flexDirection:'column',gap:'12px'}}>
               <div style={{width:'44px',height:'44px',borderRadius:'12px',background:'rgba(16,185,129,0.12)',border:'1px solid rgba(16,185,129,0.25)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'20px',fontWeight:900,color:'#10B981',fontFamily:'var(--p-font-mono)'}}>+</div>
               <div style={{fontSize:'15px',fontWeight:700,color:'#10B981'}}>{t('Saisie manuelle','Manual entry')}</div>
