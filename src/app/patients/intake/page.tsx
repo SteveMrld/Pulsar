@@ -141,7 +141,7 @@ export default function IntakePage(){
     }
     const eegDone   = /EEG/i.test(text)
     const eegResult = afterLabelMulti('Conclusion EEG')
-    const mriDone   = /IRM/i.test(text)
+    const mriDone   = /IRM/i.test(text) && !/NON RÉALISÉE/i.test(text.slice(text.search(/IRM/i), text.search(/IRM/i)+100))
     const mriResult = afterLabelMulti('Conclusion imagerie')
     const ctDone    = /scanner/i.test(text.toLowerCase())
     const ctResult  = afterLabelMulti('Résultat scanner')
@@ -203,12 +203,38 @@ export default function IntakePage(){
       if(ex.seizures24h)   sN('seizureFreq', String(ex.seizures24h))
       if(ex.crp)           sB('crp',         String(ex.crp))
       if(ex.wbc)           sB('wbc',         String(ex.wbc))
-      if(ex.eegDone)       sI('eegDone',     true)
-      if(ex.eegResult)     sI('eegResult',   ex.eegResult)
-      if(ex.mriDone)       sI('mriDone',     true)
-      if(ex.mriResult)     sI('mriResult',   ex.mriResult)
-      if(ex.ctDone)        sI('ctDone',      true)
-      if(ex.ctResult)      sI('ctResult',    ex.ctResult)
+      if(ex.eegDone)  sI('eegDone', true)
+      if(ex.eegResult) {
+        const eegR = /NORMAL|normal/i.test(ex.eegResult) ? 'normal'
+          : /épileptiforme|epileptiform|pointe|spike/i.test(ex.eegResult) ? 'epileptiform'
+          : /état de mal|status/i.test(ex.eegResult) ? 'status'
+          : /ralentiss|slowing|thêta|delta/i.test(ex.eegResult) ? 'slowing' : 'normal'
+        sI('eegResult', eegR)
+        sI('eegDetail', ex.eegResult.slice(0,80))
+      }
+      // IRM — ne cocher que si réellement réalisée
+      const mriNotDone = /NON RÉALISÉE|non réalisée|not performed/i.test(ex.mriResult || '')
+      if(ex.mriDone && !mriNotDone) {
+        sI('mriDone', true)
+        if(ex.mriResult) {
+          const mriR = /NORMAL|normal/i.test(ex.mriResult) ? 'normal'
+            : /temporal|hippocampe/i.test(ex.mriResult) ? 'temporal'
+            : /multifocal/i.test(ex.mriResult) ? 'multifocal'
+            : /démyélin|demyelin/i.test(ex.mriResult) ? 'demyelination' : 'normal'
+          sI('mriResult', mriR)
+          sI('mriDetail', ex.mriResult.slice(0,80))
+        }
+      }
+      if(ex.ctDone) {
+        sI('ctDone', true)
+        if(ex.ctResult) {
+          const ctR = /NORMAL|normal/i.test(ex.ctResult) ? 'normal'
+            : /oedème|edema/i.test(ex.ctResult) ? 'edema'
+            : /hémorragie|hemorrhage/i.test(ex.ctResult) ? 'hemorrhage' : 'normal'
+          sI('ctResult', ctR)
+          sI('ctDetail', ex.ctResult.slice(0,80))
+        }
+      }
 
       // Antécédents texte libre depuis PDF
       const rhinite = /rhinite/i.test(text) ? 'Rhinite récurrente' : ''
