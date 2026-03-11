@@ -53,7 +53,6 @@ export default function IntakePage(){
   const sN=useCallback((k:string,v:any)=>setNState(p=>({...p,[k]:v})),[])
   const sB=useCallback((k:string,v:any)=>setBState(p=>({...p,[k]:v})),[])
   const sI=useCallback((k:string,v:any)=>setIState(p=>({...p,[k]:v})),[])
-  const sH=useCallback((k:string,v:any)=>setHState(p=>({...p,[k]:v})),[])
 
   const parsePdfText = (text: string) => {
     // Format réel : label sur une ligne, valeur sur la ligne suivante
