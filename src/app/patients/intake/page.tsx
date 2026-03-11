@@ -186,6 +186,11 @@ export default function IntakePage(){
       if(ex.weightKg)      sId('weight',     String(ex.weightKg))
       if(ex.fileNumber)    sId('fileNumber', ex.fileNumber)
       if(ex.chiefComplaint)    sAd('chiefComplaint',    ex.chiefComplaint)
+      // Mode admission auto-détecté
+      const textLower = (ex.chiefComplaint||'').toLowerCase()
+      if(/urgence|status|réfractaire|convuls|crise/i.test(ex.chiefComplaint||'')) sAd('mode','urgence')
+      else if(/transfert|transféré/i.test(ex.chiefComplaint||'')) sAd('mode','transfert')
+      else sAd('mode','urgence')
       if(ex.symptomOnsetDays)  sAd('symptomOnsetDays',  String(ex.symptomOnsetDays))
       if(ex.gcs)           sN('gcs',         ex.gcs)
       if(ex.seizureType)   sN('seizureType', ex.seizureType)
@@ -238,7 +243,7 @@ export default function IntakePage(){
 
   const canGo=useCallback((s:number)=>{
     if(s===1)return id.ageMonths!==''&&id.sex!==''
-    if(s===2)return adm.mode!==''&&adm.chiefComplaint.trim()!==''
+    if(s===2)return true
     return true
   },[id,adm])
 
