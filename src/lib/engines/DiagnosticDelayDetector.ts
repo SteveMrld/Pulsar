@@ -145,7 +145,11 @@ const CARE_WINDOW_RULES: CareWindowRule[] = [
   },
   // ── Anakinra/IL-1 blockade for FIRES ──
   {
-    id: 'anakinra-72h',
+    // CORRECTION SCIENTIFIQUE : la fenêtre <72h s'applique à l'immunothérapie de 1ère ligne (stéroïdes/IVIg).
+    // Pour l'anakinra (2ème ligne), le consensus 2022 recommande d'initier si pas d'amélioration à J+7.
+    // Des données rétrospectives (Lai 2020, 25 enfants) associent une initiation plus précoce
+    // à des séjours en réa plus courts — sans seuil horaire précis validé.
+    id: 'anakinra-fires',
     condition: (ps) => {
       const firesSuspect = ps.neuro.seizureType === 'super_refractory' &&
         ps.biology.ferritin > 500 &&
@@ -153,12 +157,13 @@ const CARE_WINDOW_RULES: CareWindowRule[] = [
       const il1bElevated = ps.cytokines?.il1b && ps.cytokines.il1b > 10
       return firesSuspect || (il1bElevated === true && ps.hospDay >= 3)
     },
-    optimalHours: 72,
-    action: 'Anakinra (anti-IL-1) — traitement ciblé FIRES/NORSE. Initiation recommandée < 72h.',
+    optimalHours: 168, // J+7 — seuil consensus 2022 pour escalade 2ème ligne si échec L1
+    action: "Anakinra (anti-IL-1) — 2ème ligne ciblée FIRES/NORSE. Envisager si pas d'amélioration sous immunothérapie L1 (stéroïdes + IVIg) dans les 7 premiers jours. Les données disponibles suggèrent qu'une initiation plus précoce est associée à de meilleurs résultats, sans fenêtre horaire précise établie par consensus.",
     category: 'targeted_therapy',
     references: [
-      'Kenney-Jung et al. Ann Neurol 2016: "Anakinra for FIRES: early initiation associated with seizure freedom"',
-      'Dilena et al. Epilepsia 2019: "IL-1 receptor antagonist in FIRES: best outcomes when started < 72h"',
+      "Kenney-Jung et al. Ann Neurol 2016 — Premier rapport d'anakinra dans FIRES pédiatrique : efficace et bien toléré (rapport de cas unique)",
+      "Lai et al. Ann Clin Transl Neurol 2020 — Cohorte rétrospective 25 enfants : initiation plus précoce associée à durée plus courte de ventilation mécanique et de séjour en réanimation",
+      "Wickström et al. Epilepsia 2022 — Consensus international NORSE/FIRES : 2ème ligne immunothérapie à envisager si pas d'amélioration à J+7",
     ],
   },
   // ── 2nd line immunotherapy if 1st fails ──
@@ -278,7 +283,7 @@ export function runDDD(ps: PatientState): DDDResult {
         actionTaken = ps.neuro.seizureType !== 'none' // Assumed if seizure type is classified
         break
       case 'targeted_therapy':
-        if (rule.id === 'anakinra-72h') {
+        if (rule.id === 'anakinra-fires') {
           actionTaken = hasTreatmentCategory(ps, ['anakinra', 'kineret'])
         } else if (rule.id === 'ketogenic-7d') {
           actionTaken = hasTreatmentCategory(ps, ['ketogenic', 'cétogène', 'ketogen'])
