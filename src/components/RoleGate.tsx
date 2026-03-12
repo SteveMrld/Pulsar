@@ -47,6 +47,9 @@ export default function RoleGate({ require, requireAny, requireAll, fallback, ch
 export function RoleBadge() {
   const { roleLabel, roleColor, isDemo } = useProfile()
 
+  // Ne pas afficher le badge DÉMO sur les patients intake (session valide sans profil DB)
+  if (isDemo) return null
+
   return (
     <span style={{
       fontFamily: 'var(--p-font-mono)', fontSize: '8px', fontWeight: 800,
@@ -54,7 +57,7 @@ export function RoleBadge() {
       background: `${roleColor}15`, color: roleColor,
       border: `1px solid ${roleColor}30`,
     }}>
-      {isDemo ? 'DÉMO' : roleLabel.toUpperCase()}
+      {roleLabel.toUpperCase()}
     </span>
   )
 }
