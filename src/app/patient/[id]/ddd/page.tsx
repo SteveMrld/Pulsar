@@ -152,7 +152,7 @@ export default function DDDPage() {
       <div style={{ marginTop: 'var(--p-space-8)', padding: 12, background: 'var(--p-bg-surface)', borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${DDD_COLOR}30` }}>
         <div style={{ fontSize: 10, fontFamily: 'var(--p-font-mono)', color: DDD_COLOR, fontWeight: 700 }}>DIAGNOSTIC DELAY DETECTOR v1.0</div>
         <div style={{ fontSize: 10, color: 'var(--p-text-dim)', marginTop: 2 }}>
-          {t('442 lignes · 8 règles sourées · Gaspard 2015, Titulaer 2013, Dilena 2019, Kenney-Jung 2016', '442 lines · 8 sourced rules · Gaspard 2015, Titulaer 2013, Dilena 2019, Kenney-Jung 2016')}
+          {t('442 lignes · 8 règles sourées · Gaspard 2015, Titulaer 2013, Kenney-Jung 2016 / Lai 2020', '442 lines · 8 sourced rules · Gaspard 2015, Titulaer 2013, Kenney-Jung 2016 / Lai 2020')}
         </div>
       </div>
     </div>

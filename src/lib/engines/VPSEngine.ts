@@ -335,7 +335,7 @@ export class VPSEngine extends BrainCore {
       false, ps.csf.cells > 5 || ps.csf.protein > 0.45,
       ps.ageMonths >= 36 && ps.ageMonths <= 180,
     ].filter(Boolean).length
-    if (firesScore >= 7) alerts.push({ severity: 'critical', title: `FIRES Score ${firesScore}/13`, body: 'Suspicion forte FIRES. Immunothérapie < 48h. Anakinra < 72h.', source: 'VPS — Score composite Méthodologie V2' })
+    if (firesScore >= 7) alerts.push({ severity: 'critical', title: `FIRES Score ${firesScore}/13`, body: 'Suspicion forte FIRES. Immunothérapie L1 < 48h. Anakinra : initiation précoce recommandée (J+7 max — Lai 2020).', source: 'VPS — Score composite Méthodologie V2' })
     else if (firesScore >= 4) alerts.push({ severity: 'warning', title: `FIRES Score ${firesScore}/13`, body: 'Suspicion modérée. Panel anticorps urgent. EEG continu.', source: 'VPS — Score composite' })
 
     return { score, level, alerts, recommendations: [] }

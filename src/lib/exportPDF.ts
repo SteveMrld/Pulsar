@@ -131,7 +131,7 @@ export async function exportPatientPDF(patientName: string, patientData: Record<
   )}
 </div>
 
-<div class="footer">PULSAR v21.4 · ${t('Collaboration Pierre Sonigo (ex-INSERM) · Jabrilia Éditions · Confidentiel', 'In collaboration with Pierre Sonigo (ex-INSERM) · Jabrilia Éditions · Confidential')}</div>
+<div class="footer">PULSAR v21.4 · ${t('Collaboration Pierre Sonigo (ex-INSERM) · Confidentiel', 'In collaboration with Pierre Sonigo (ex-INSERM) · Confidential')}</div>
 </body>
 </html>`;
 

@@ -323,7 +323,7 @@ export function generateConsultBrief(ps: PatientState, lang: 'fr' | 'en' = 'fr')
     questions.push({
       question: 'IL-1β très élevée — profil compatible avec FIRES. Anakinra en urgence ?',
       questionEn: 'Very high IL-1β — profile compatible with FIRES. Emergency Anakinra?',
-      context: `IL-1β : ${ps.cytokines.il1b} pg/mL (norme < 5). Réf : Kenney-Jung 2016, Dilena 2019.`,
+      context: `IL-1β : ${ps.cytokines.il1b} pg/mL (norme < 5). Réf : Kenney-Jung 2016 / Lai 2020.`,
       source: 'Discovery Engine',
       urgency: 'immediate',
     })

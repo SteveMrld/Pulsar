@@ -182,8 +182,8 @@ function getContextualGuide(pathname: string, lang: 'fr' | 'en'): GuideStep {
     return {
       message: "Le Diagnostic Delay Detector compare le parcours réel du patient au parcours optimal (littérature evidence-based). Chaque heure de retard dans l'immunothérapie réduit les chances de récupération.",
       messageEn: "The Diagnostic Delay Detector compares the patient's actual care path to the optimal one (evidence-based literature). Every hour of delay in immunotherapy reduces recovery chances.",
-      tip: "8 règles sourées : Gaspard 2015, Titulaer 2013, Dilena 2019, Kenney-Jung 2016.",
-      tipEn: "8 sourced rules: Gaspard 2015, Titulaer 2013, Dilena 2019, Kenney-Jung 2016.",
+      tip: "8 règles sourées : Gaspard 2015, Titulaer 2013, Kenney-Jung 2016 / Lai 2020 / Wickström 2022.",
+      tipEn: "8 sourced rules: Gaspard 2015, Titulaer 2013, Kenney-Jung 2016 / Lai 2020 / Wickström 2022.",
     }
   }
 

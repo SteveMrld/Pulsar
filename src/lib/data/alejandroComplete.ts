@@ -104,7 +104,7 @@ export const ALEJANDRO_COMPLETE = {
     corticosteroids: { administered: true, drug: 'Méthylprednisolone IV', startDay: 'J+2 (4 avril)', delay: '+24h vs recommandé 24h' },
     ivig: { administered: true, startDay: 'J+3 (5 avril)', delay: '+24h vs recommandé 48h' },
     ketogenicDiet: { administered: true, startDay: 'J+5 (7 avril)', delay: '+72h vs recommandé J+2' },
-    anakinra: { administered: true, startDay: 'J+10 (12 avril)', delay: '+168h vs recommandé 72h (7 jours de retard)', logisticDelay: '4 jours entre discussion et administration' },
+    anakinra: { administered: true, startDay: 'J+10 (12 avril)', delay: '+168h vs recommandé J+7 (consensus Lai 2020 — 3 jours de retard sur signal)', logisticDelay: '4 jours entre discussion et administration' },
     valproate: { administered: true, drug: 'Dépakine', startDay: 'J+8 (10 avril)', note: 'ATTENTION: Valproate introduit alors que carbapénèmes possibles en parallèle' },
     thiopental: { administered: true, startDay: 'J+8 (10 avril)', note: 'Coma barbiturique, réponse très limitée' },
     perampanel: { administered: true, startDay: 'J+9 (11 avril)' },
@@ -177,7 +177,7 @@ export const ALEJANDRO_COMPLETE = {
       dddRetards: [
         { action: 'IVIG', optimal: '< 48h', actual: 'J+3 (72h)', delay: '+24h', severity: 'moderate' },
         { action: 'Régime cétogène', optimal: 'J+2', actual: 'J+5', delay: '+72h', severity: 'high' },
-        { action: 'Anakinra', optimal: '< 72h', actual: 'J+10 (240h)', delay: '+168h (7 jours)', severity: 'critical', note: '4 jours de préparation logistique entre décision et administration' },
+        { action: 'Anakinra', optimal: 'Précoce — J+7 max (consensus Lai 2020)', actual: 'J+10 (240h)', delay: '+3 jours sur signal J+7', severity: 'critical', note: '4 jours de préparation logistique entre décision et administration' },
         { action: 'Diagnostic FIRES', optimal: 'J0-J1', actual: 'J+5', delay: '+96-120h', severity: 'high', note: '3 hypothèses concurrentes ont retardé le diagnostic' },
       ],
       caeAlerts: [
