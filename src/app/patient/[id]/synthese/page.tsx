@@ -1,4 +1,5 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { useLang } from '@/contexts/LanguageContext'
 import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'

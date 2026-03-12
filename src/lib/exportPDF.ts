@@ -1,16 +1,27 @@
 'use client';
 
 export async function exportPatientPDF(patientName: string, patientData: Record<string, unknown>) {
-  // Génération HTML structuré pour impression PDF
-  const date = new Date().toLocaleDateString('fr-FR', { 
-    day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+  // Detect language from localStorage (set by LangToggle) or browser
+  let lang: 'fr' | 'en' = 'en';
+  try {
+    const stored = localStorage.getItem('pulsar-lang');
+    if (stored === 'fr') lang = 'fr';
+    else if (stored === 'en') lang = 'en';
+    else if (navigator.language?.toLowerCase().startsWith('fr')) lang = 'fr';
+  } catch { lang = 'en'; }
+
+  const t = (fr: string, en: string) => lang === 'fr' ? fr : en;
+
+  const locale = lang === 'fr' ? 'fr-FR' : 'en-GB';
+  const date = new Date().toLocaleDateString(locale, {
+    day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
   });
 
   const html = `<!DOCTYPE html>
-<html lang="fr">
+<html lang="${lang}">
 <head>
 <meta charset="UTF-8">
-<title>PULSAR — Dossier ${patientName}</title>
+<title>PULSAR — ${patientName}</title>
 <style>
   @page { margin: 20mm 15mm; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -40,70 +51,87 @@ export async function exportPatientPDF(patientName: string, patientData: Record<
 <div class="header">
   <div class="header-left">
     <h1>PULSAR</h1>
-    <p>Dossier clinique — Aide à la décision pédiatrique neuro-inflammatoire</p>
+    <p>${t('Dossier clinique — Aide à la décision pédiatrique neuro-inflammatoire', 'Clinical Record — Pediatric Neuro-Inflammatory Decision Support')}</p>
   </div>
   <div class="header-right">
-    Exporté le ${date}<br/>
-    PULSAR v21.4 · Version bêta<br/>
-    <span style="color:#dc2626">Confidentiel — Usage clinique interne</span>
+    ${t('Exporté le', 'Exported on')} ${date}<br/>
+    PULSAR v21.4 · ${t('Version bêta', 'Beta version')}<br/>
+    <span style="color:#dc2626">${t('Confidentiel — Usage clinique interne', 'Confidential — Internal clinical use')}</span>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">Identité patient</div>
+  <div class="section-title">${t('Identité patient', 'Patient Identity')}</div>
   <div class="grid">
-    <div class="field"><div class="field-label">Nom</div><div class="field-val">${patientName}</div></div>
-    <div class="field"><div class="field-label">Priorité</div><div class="field-val"><span class="badge badge-p1">${String(patientData.priority || 'P1')}</span></div></div>
-    <div class="field"><div class="field-label">Service</div><div class="field-val">${String(patientData.service || 'Réa Neuro')}</div></div>
-    <div class="field"><div class="field-label">Phase</div><div class="field-val">${String(patientData.phase || 'Phase aiguë')}</div></div>
-    <div class="field"><div class="field-label">Diagnostic suspecté</div><div class="field-val"><span class="badge badge-fires">${String(patientData.diagnostic || 'FIRES')}</span></div></div>
-    <div class="field"><div class="field-label">Jour J+</div><div class="field-val">${String(patientData.jour || '—')}</div></div>
+    <div class="field"><div class="field-label">${t('Nom', 'Name')}</div><div class="field-val">${patientName}</div></div>
+    <div class="field"><div class="field-label">${t('Priorité', 'Priority')}</div><div class="field-val"><span class="badge badge-p1">${String(patientData.priority || 'P1')}</span></div></div>
+    <div class="field"><div class="field-label">${t('Service', 'Department')}</div><div class="field-val">${String(patientData.service || t('Réa Neuro Pédiatrique', 'Pediatric Neuro ICU'))}</div></div>
+    <div class="field"><div class="field-label">${t('Phase', 'Phase')}</div><div class="field-val">${String(patientData.phase || t('Phase aiguë', 'Acute phase'))}</div></div>
+    <div class="field"><div class="field-label">${t('Diagnostic suspecté', 'Suspected Diagnosis')}</div><div class="field-val"><span class="badge badge-fires">${String(patientData.diagnostic || t('En cours d\'évaluation', 'Under evaluation'))}</span></div></div>
+    <div class="field"><div class="field-label">${t('Âge', 'Age')}</div><div class="field-val">${String(patientData.age || '—')} · ${String(patientData.sexe || '—')} · ${String(patientData.poids || '—')}</div></div>
+    <div class="field"><div class="field-label">${t('Jour d\'hospitalisation', 'Hospital Day')}</div><div class="field-val">D+${String(patientData.jour || '—')}</div></div>
+    <div class="field"><div class="field-label">GCS</div><div class="field-val">${String(patientData.gcs || '—')}/15</div></div>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">Hypothèses diagnostiques — PULSAR N3</div>
+  <div class="section-title">${t('Scores PULSAR', 'PULSAR Scores')}</div>
+  <div class="grid">
+    <div class="field">
+      <div class="field-label">VPS — ${t('Sévérité globale', 'Global Severity')}</div>
+      <div class="field-val" style="font-size:18px;font-weight:900;color:${Number(patientData.vpsScore) >= 70 ? '#8B5CF6' : Number(patientData.vpsScore) >= 50 ? '#FFA502' : '#2ED573'}">${String(patientData.vpsScore || 0)}<span style="font-size:11px;color:#888">/100</span></div>
+    </div>
+    <div class="field">
+      <div class="field-label">${t('Alertes critiques', 'Critical Alerts')}</div>
+      <div class="field-val" style="font-size:18px;font-weight:900;color:${Number(patientData.alertesCritiques) > 0 ? '#8B5CF6' : '#2ED573'}">${String(patientData.alertesCritiques || 0)}</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="section-title">${t('Hypothèses diagnostiques — PULSAR N3', 'Diagnostic Hypotheses — PULSAR N3')}</div>
   <div class="hypothesis">
     <span class="h-score">74%</span>
     <div class="h-name">FIRES — Febrile Infection-Related Epilepsy Syndrome</div>
-    <div class="h-desc">IL-6 élevé · EEG burst-suppression · Fièvre réfractaire · Critères FIRES J+5 remplis</div>
+    <div class="h-desc">${t('IL-6 élevé · EEG burst-suppression · Fièvre réfractaire · Critères FIRES J+5 remplis', 'Elevated IL-6 · EEG burst-suppression · Refractory fever · FIRES criteria D+5 met')}</div>
   </div>
   <div class="hypothesis" style="background:#eff6ff;border-color:#bfdbfe">
     <span class="h-score" style="color:#2563eb">18%</span>
-    <div class="h-name" style="color:#1e40af">Encéphalite Anti-NMDAR</div>
-    <div class="h-desc">Ac anti-NMDAR à confirmer · Mouvements anormaux · Instabilité autonomique</div>
+    <div class="h-name" style="color:#1e40af">${t('Encéphalite Anti-NMDAR', 'Anti-NMDAR Encephalitis')}</div>
+    <div class="h-desc">${t('Ac anti-NMDAR à confirmer · Mouvements anormaux · Instabilité autonomique', 'Anti-NMDAR Ab to confirm · Abnormal movements · Autonomic instability')}</div>
   </div>
 </div>
 
 <div class="section">
-  <div class="section-title">Recommandations thérapeutiques — PULSAR N4</div>
+  <div class="section-title">${t('Recommandations thérapeutiques — PULSAR N4', 'Therapeutic Recommendations — PULSAR N4')}</div>
   <div class="grid">
     <div class="field" style="border-color:#fca5a5;background:#fef2f2">
       <div class="field-label" style="color:#dc2626">⚠️ URGENT — Anakinra</div>
-      <div class="field-val">2–8 mg/kg/j SC · Fenêtre J+3–J+5</div>
+      <div class="field-val">2–8 mg/kg/d SC · ${t('Fenêtre J+3–J+5', 'Window D+3–D+5')}</div>
     </div>
     <div class="field">
-      <div class="field-label">Régime Cétogène</div>
-      <div class="field-val">Initiation J+5 · Monitoring glycémie</div>
+      <div class="field-label">${t('Régime Cétogène', 'Ketogenic Diet')}</div>
+      <div class="field-val">${t('Initiation J+5 · Monitoring glycémie', 'Initiation D+5 · Blood glucose monitoring')}</div>
     </div>
     <div class="field">
       <div class="field-label">Tocilizumab</div>
-      <div class="field-val">Si NMDAR confirmé · 8–12 mg/kg IV</div>
+      <div class="field-val">${t('Si NMDAR confirmé · 8–12 mg/kg IV', 'If NMDAR confirmed · 8–12 mg/kg IV')}</div>
     </div>
     <div class="field">
-      <div class="field-label">IVIG</div>
-      <div class="field-val">Déjà administré J+3</div>
+      <div class="field-label">IVIg</div>
+      <div class="field-val">${t('Déjà administré J+3', 'Already administered D+3')}</div>
     </div>
   </div>
 </div>
 
 <div class="disclaimer">
-  <strong>Avertissement :</strong> Ce document est généré par PULSAR v21.4 (bêta), un outil d'aide à la décision clinique non validé réglementairement. 
-  Il ne constitue pas une prescription médicale. Toute décision thérapeutique relève exclusivement de la responsabilité du praticien en charge du patient. 
-  Document à usage interne — ne pas diffuser.
+  <strong>${t('Avertissement', 'Warning')} :</strong> ${t(
+    'Ce document est généré par PULSAR v21.4 (bêta), un outil d\'aide à la décision clinique non validé réglementairement. Il ne constitue pas une prescription médicale. Toute décision thérapeutique relève exclusivement de la responsabilité du praticien en charge du patient. Document à usage interne — ne pas diffuser.',
+    'This document is generated by PULSAR v21.4 (beta), a clinical decision support tool not yet regulatory-approved. It does not constitute a medical prescription. All therapeutic decisions remain the sole responsibility of the treating clinician. For internal use only — do not distribute.'
+  )}
 </div>
 
-<div class="footer">PULSAR v21.4 · Collaboration Pierre Sonigo (ex-INSERM) · Jabrilia Éditions · Confidentiel</div>
+<div class="footer">PULSAR v21.4 · ${t('Collaboration Pierre Sonigo (ex-INSERM) · Jabrilia Éditions · Confidentiel', 'In collaboration with Pierre Sonigo (ex-INSERM) · Jabrilia Éditions · Confidential')}</div>
 </body>
 </html>`;
 

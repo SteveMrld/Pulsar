@@ -52,9 +52,8 @@ interface PatientSummary {
 const PHASE_COLORS: Record<string, string> = {
   acute: '#8B5CF6', stabilization: '#FFA502', monitoring: '#FFB347', recovery: '#2ED573',
 }
-const PHASE_LABELS: Record<string, string> = {
-  acute: 'Aigu', stabilization: 'Stabilisation', monitoring: 'Surveillance', recovery: 'Récupération',
-}
+const PHASE_LABELS_FR: Record<string, string> = { acute: 'Aigu', stabilization: 'Stabilisation', monitoring: 'Surveillance', recovery: 'Récupération' }
+const PHASE_LABELS_EN: Record<string, string> = { acute: 'Acute', stabilization: 'Stabilization', monitoring: 'Monitoring', recovery: 'Recovery' }
 const TRIAGE_COLORS: Record<string, string> = {
   P1: '#8B5CF6', P2: '#FFA502', P3: '#FFB347', P4: '#2ED573',
 }
@@ -112,13 +111,12 @@ function MiniBar({ data, colors, labels }: { data: Record<string, number>; color
 
 export default function DashboardPage() {
   const { track } = useTrackAction()
+  const { t, lang } = useLang()
 
   useEffect(() => {
     track('view_dashboard', 'dashboard')
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  const { t } = useLang()
   const router = useRouter()
   const [stats, setStats] = useState<DashboardStats | null>(null)
   const [patients, setPatients] = useState<PatientSummary[]>([])
@@ -207,7 +205,7 @@ export default function DashboardPage() {
           <div>
             <h1>Dashboard</h1>
             <span className="page-subtitle">
-              Vue d'ensemble du service · Neuropédiatrie
+              {t("Vue d'ensemble du service · Neuropédiatrie", "Department Overview · Neuropediatrics")}
             </span>
           </div>
         </div>
@@ -247,13 +245,13 @@ export default function DashboardPage() {
           <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap', marginBottom: '16px' }}>
             <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', flex: '1 1 300px' }}>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '10px' }}>
-                RÉPARTITION PAR PHASE
+                {t('RÉPARTITION PAR PHASE', 'PHASE DISTRIBUTION')}
               </div>
-              <MiniBar data={stats.byPhase} colors={PHASE_COLORS} labels={PHASE_LABELS} />
+              <MiniBar data={stats.byPhase} colors={PHASE_COLORS} labels={lang === 'fr' ? PHASE_LABELS_FR : PHASE_LABELS_EN} />
             </div>
             <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', flex: '1 1 300px' }}>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '10px' }}>
-                RÉPARTITION PAR TRIAGE
+                {t('RÉPARTITION PAR TRIAGE', 'TRIAGE DISTRIBUTION')}
               </div>
               <MiniBar data={stats.byTriage} colors={TRIAGE_COLORS} labels={{ P1: 'Critique', P2: 'Urgent', P3: 'Semi-urgent', P4: 'Stable' }} />
             </div>
@@ -263,7 +261,7 @@ export default function DashboardPage() {
           {critAlerts.length > 0 && (
             <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)', marginBottom: '16px', border: '1px solid #8B5CF620' }}>
               <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '0.5px', marginBottom: '8px' }}>
-                ⚠ ALERTES CRITIQUES NON RÉSOLUES ({critAlerts.length})
+                ⚠ t('ALERTES CRITIQUES NON RÉSOLUES', 'UNRESOLVED CRITICAL ALERTS') ({critAlerts.length})
               </div>
               {critAlerts.slice(0, 5).map(a => (
                 <div key={a.id} style={{ display: 'flex', justifyContent: 'space-between', padding: '4px 0', borderBottom: '1px solid var(--p-dark-4)' }}>
@@ -281,7 +279,7 @@ export default function DashboardPage() {
           {/* Patient list */}
           <div className="glass-card" style={{ padding: '14px', borderRadius: 'var(--p-radius-xl)' }}>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '10px', fontWeight: 800, color: 'var(--p-text-dim)', letterSpacing: '0.5px', marginBottom: '10px' }}>
-              PATIENTS PAR SÉVÉRITÉ VPS
+              {t('PATIENTS PAR SÉVÉRITÉ VPS', 'PATIENTS BY VPS SEVERITY')}
             </div>
             {patients.length === 0 ? (
               <div style={{ padding: '20px', textAlign: 'center', fontFamily: 'var(--p-font-mono)', fontSize: '11px', color: 'var(--p-text-dim)' }}>
@@ -333,7 +331,7 @@ export default function DashboardPage() {
                         )}
                       </div>
                       <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)' }}>
-                        {p.room} · J{p.hospDay} · {PHASE_LABELS[p.phase] || p.phase}
+                        {p.room} · J{p.hospDay} · {(lang === 'fr' ? PHASE_LABELS_FR : PHASE_LABELS_EN)[p.phase] || p.phase}
                       </div>
                     </div>
 

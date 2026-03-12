@@ -29,7 +29,7 @@ function SectionTitle({ title, color, icon }: { title: string; color: string; ic
 }
 
 export default function TraitementPage() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const { ps, info } = usePatient()
 
   const { track } = useTrackAction()
@@ -52,7 +52,7 @@ export default function TraitementPage() {
   }
   const responseLabel = (r: string) => {
     switch (r) {
-      case 'complete': return 'Complète'
+      case 'complete': return t('Complète', 'Complete')
       case 'good': return 'Bonne'
       case 'partial': return 'Partielle'
       case 'none': return 'Aucune'
@@ -73,7 +73,7 @@ export default function TraitementPage() {
       </div>
 
       {/* ── MÉDICAMENTS ACTIFS ── */}
-      <SectionTitle title="MÉDICAMENTS EN COURS" color="#2FD1C8" icon="pill" />
+      <SectionTitle title={t('MÉDICAMENTS EN COURS', 'CURRENT MEDICATIONS')} color="#2FD1C8" icon="pill" />
       {ps.drugs.length > 0 ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '10px' }}>
           {ps.drugs.map((drug, i) => (
@@ -99,12 +99,12 @@ export default function TraitementPage() {
       {/* ── HISTORIQUE THÉRAPEUTIQUE ── */}
       {ps.treatmentHistory.length > 0 && (
         <>
-          <SectionTitle title="HISTORIQUE THÉRAPEUTIQUE" color="#6C7CFF" icon="chart" />
+          <SectionTitle title={t('HISTORIQUE THÉRAPEUTIQUE', 'TREATMENT HISTORY')} color="#6C7CFF" icon="chart" />
           <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', overflow: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontFamily: 'var(--p-font-mono)', fontSize: '11px' }}>
               <thead>
                 <tr style={{ borderBottom: '1px solid var(--p-border)' }}>
-                  {['Ligne', 'Traitement', 'Période', 'Réponse'].map(h => (
+                  {[t('Ligne', 'Line'), t('Traitement', 'Treatment'), t('Période', 'Period'), t('Réponse', 'Response')].map(h => (
                     <th key={h} style={{ textAlign: 'left', padding: '8px 10px', color: 'var(--p-text-dim)', fontWeight: 700, fontSize: '9px', letterSpacing: '0.5px' }}>{h}</th>
                   ))}
                 </tr>
@@ -134,7 +134,7 @@ export default function TraitementPage() {
       {/* ── RECOMMANDATIONS TDE ── */}
       {tde && (
         <>
-          <SectionTitle title="RECOMMANDATIONS THÉRAPEUTIQUES" color="#2FD1C8" icon="shield" />
+          <SectionTitle title={t('RECOMMANDATIONS THÉRAPEUTIQUES', 'THERAPEUTIC RECOMMENDATIONS')} color="#2FD1C8" icon="shield" />
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
             {tde.synthesis.recommendations.map((r, i) => {
               const prioColor = r.priority === 'urgent' ? '#8B5CF6' : r.priority === 'high' ? '#FFB347' : r.priority === 'medium' ? '#6C7CFF' : '#2ED573'

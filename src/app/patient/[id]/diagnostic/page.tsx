@@ -7,19 +7,19 @@ import { PatientState } from '@/lib/engines/PatientState'
 import { useTrackAction } from '@/hooks/useTrackAction'
 
 /* ── FIRES Criteria ── */
-const FIRES_CRITERIA = [
-  { label: 'Âge 2-12 ans', pts: 1, test: (ps: PatientState) => ps.ageMonths >= 24 && ps.ageMonths <= 144 },
-  { label: 'Épisode fébrile ≥38°C', pts: 1, test: (ps: PatientState) => ps.hemodynamics.temp >= 38 },
-  { label: 'Status réfractaire', pts: 2, test: (ps: PatientState) => ps.neuro.seizureType === 'refractory_status' || ps.neuro.seizureType === 'super_refractory' },
-  { label: 'Status ≥30 min', pts: 1, test: (ps: PatientState) => ps.neuro.seizureDuration >= 30 || ps.neuro.seizureType === 'status' },
+function getFIRES_CRITERIA(lang: string) { return [
+  { label: lang === 'fr' ? 'Âge 2-12 ans' : 'Age 2-12 years', pts: 1, test: (ps: PatientState) => ps.ageMonths >= 24 && ps.ageMonths <= 144 },
+  { label: lang === 'fr' ? 'Épisode fébrile ≥38°C' : 'Febrile episode ≥38°C', pts: 1, test: (ps: PatientState) => ps.hemodynamics.temp >= 38 },
+  { label: lang === 'fr' ? 'Status réfractaire' : 'Refractory status epilepticus', pts: 2, test: (ps: PatientState) => ps.neuro.seizureType === 'refractory_status' || ps.neuro.seizureType === 'super_refractory' },
+  { label: lang === 'fr' ? 'Status ≥30 min' : 'Status ≥30 min', pts: 1, test: (ps: PatientState) => ps.neuro.seizureDuration >= 30 || ps.neuro.seizureType === 'status' },
   { label: 'GCS < 12', pts: 1, test: (ps: PatientState) => ps.neuro.gcs < 12 },
-  { label: 'Pléiocytose LCR (>5)', pts: 1, test: (ps: PatientState) => ps.csf.cells > 5 },
-  { label: 'Anticorps négatifs/pending', pts: 1, test: (ps: PatientState) => ps.csf.antibodies === 'negative' || ps.csf.antibodies === 'pending' },
+  { label: lang === 'fr' ? 'Pléiocytose LCR (>5)' : 'CSF pleocytosis (>5)', pts: 1, test: (ps: PatientState) => ps.csf.cells > 5 },
+  { label: lang === 'fr' ? 'Anticorps négatifs/pending' : 'Antibodies negative/pending', pts: 1, test: (ps: PatientState) => ps.csf.antibodies === 'negative' || ps.csf.antibodies === 'pending' },
   { label: 'CRP > 20 mg/L', pts: 1, test: (ps: PatientState) => ps.biology.crp > 20 },
-  { label: 'Crises ≥5/24h', pts: 1, test: (ps: PatientState) => ps.neuro.seizures24h >= 5 },
-  { label: 'Échec antiépileptique', pts: 1, test: (ps: PatientState) => ps.treatmentHistory.some(t => t.response === 'none') },
-  { label: 'Protéinorachie élevée', pts: 1, test: (ps: PatientState) => ps.csf.protein > 0.45 },
-]
+  { label: lang === 'fr' ? 'Crises ≥5/24h' : 'Seizures ≥5/24h', pts: 1, test: (ps: PatientState) => ps.neuro.seizures24h >= 5 },
+  { label: lang === 'fr' ? 'Échec antiépileptique' : 'Antiepileptic failure', pts: 1, test: (ps: PatientState) => ps.treatmentHistory.some(t => t.response === 'none') },
+  { label: lang === 'fr' ? 'Protéinorachie élevée' : 'Elevated CSF protein', pts: 1, test: (ps: PatientState) => ps.csf.protein > 0.45 },
+]; }
 
 function Gauge({ value, max, label, color, size = 100 }: { value: number; max: number; label: string; color: string; size?: number }) {
   const pct = Math.min(1, value / max)
@@ -42,7 +42,7 @@ function Gauge({ value, max, label, color, size = 100 }: { value: number; max: n
 }
 
 export default function DiagnosticPage() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const { ps, info, scenarioKey } = usePatient()
 
   const { track } = useTrackAction()
@@ -53,7 +53,7 @@ export default function DiagnosticPage() {
   }, [])
   const [expandedSection, setExpandedSection] = useState<string>('hypothesis')
 
-  const fc = useMemo(() => FIRES_CRITERIA.map(c => ({ ...c, met: c.test(ps) })), [ps])
+  const fc = useMemo(() => getFIRES_CRITERIA(lang).map(c => ({ ...c, met: c.test(ps) })), [ps])
   const firesScore = fc.filter(c => c.met).reduce((s, c) => s + c.pts, 0)
   const vps = ps.vpsResult?.synthesis.score ?? 0
   const tdePatterns = ps.tdeResult?.intention.patterns || []

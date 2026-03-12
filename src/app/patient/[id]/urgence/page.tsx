@@ -6,15 +6,22 @@ import Picto from '@/components/Picto'
 import { useTrackAction } from '@/hooks/useTrackAction'
 import BBBAnimation from '@/components/BBBAnimation'
 
-const ABCDE = [
+const ABCDE_FR = [
   { step: 'A', label: 'Airway', desc: 'Voies aériennes libres ? Intubation nécessaire ?', color: '#8B5CF6' },
   { step: 'B', label: 'Breathing', desc: 'FR, SpO₂, tirage, auscultation', color: '#A78BFA' },
   { step: 'C', label: 'Circulation', desc: 'FC, PA, TRC, accès veineux ×2', color: '#FFB347' },
   { step: 'D', label: 'Disability', desc: 'GCS, pupilles, glycémie, convulsions', color: '#6C7CFF' },
   { step: 'E', label: 'Exposure', desc: 'Température, éruption, signes méningés', color: '#B96BFF' },
 ]
+const ABCDE_EN = [
+  { step: 'A', label: 'Airway', desc: 'Patent airway? Intubation required?', color: '#8B5CF6' },
+  { step: 'B', label: 'Breathing', desc: 'RR, SpO₂, retractions, auscultation', color: '#A78BFA' },
+  { step: 'C', label: 'Circulation', desc: 'HR, BP, CRT, IV access ×2', color: '#FFB347' },
+  { step: 'D', label: 'Disability', desc: 'GCS, pupils, blood glucose, seizures', color: '#6C7CFF' },
+  { step: 'E', label: 'Exposure', desc: 'Temperature, rash, meningeal signs', color: '#B96BFF' },
+]
 
-const BUNDLES = [
+const BUNDLES_FR = [
   { label: 'Bilan sanguin complet', icon: 'microscope', done: false },
   { label: 'Ponction lombaire', icon: 'dna', done: false },
   { label: 'EEG urgent', icon: 'eeg', done: false },
@@ -24,9 +31,19 @@ const BUNDLES = [
   { label: 'Méthylprednisolone IV si suspicion AI', icon: 'shield', done: false },
   { label: 'Contact réanimation', icon: 'alert', done: false },
 ]
+const BUNDLES_EN = [
+  { label: 'Complete blood workup', icon: 'microscope', done: false },
+  { label: 'Lumbar puncture', icon: 'dna', done: false },
+  { label: 'Urgent EEG', icon: 'eeg', done: false },
+  { label: 'Brain MRI', icon: 'brain', done: false },
+  { label: 'Secure IV access', icon: 'heart', done: false },
+  { label: '1st-line antiepileptic', icon: 'pill', done: false },
+  { label: 'Methylprednisolone IV if AI suspected', icon: 'shield', done: false },
+  { label: 'ICU contact', icon: 'alert', done: false },
+]
 
 export default function UrgencePage() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const { ps, info } = usePatient()
 
   const { track } = useTrackAction()
@@ -35,8 +52,10 @@ export default function UrgencePage() {
     track('view_urgence', 'urgence', info?.id)
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-  const [checks, setChecks] = useState<boolean[]>(ABCDE.map(() => false))
-  const [bundles, setBundles] = useState(BUNDLES.map(b => ({ ...b })))
+  const ABCDE = lang === 'fr' ? ABCDE_FR : ABCDE_EN
+  const BUNDLES = lang === 'fr' ? BUNDLES_FR : BUNDLES_EN
+  const [checks, setChecks] = useState<boolean[]>(ABCDE_FR.map(() => false))
+  const [bundles, setBundles] = useState((lang === 'fr' ? BUNDLES_FR : BUNDLES_EN).map(b => ({ ...b })))
 
   const toggle = (i: number) => setChecks(c => c.map((v, j) => j === i ? !v : v))
   const toggleBundle = (i: number) => setBundles(b => b.map((v, j) => j === i ? { ...v, done: !v.done } : v))
@@ -71,7 +90,7 @@ export default function UrgencePage() {
         {/* LEFT: ABCDE Checklist */}
         <div className="glass-card" style={{ padding: '16px', borderRadius: 'var(--p-radius-xl)', borderTop: '3px solid #8B5CF6' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '1px' }}>STABILISATION ABCDE</span>
+            <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', fontWeight: 800, color: '#8B5CF6', letterSpacing: '1px' }}>{lang === 'fr' ? lang === 'fr' ? 'STABILISATION ABCDE' : 'ABCDE STABILIZATION' : 'ABCDE STABILIZATION'}</span>
             <span className="page-subtitle">{done}/5</span>
           </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>

@@ -40,9 +40,11 @@ function MiniGauge({ score, color, size = 48 }: { score: number; color: string; 
 
 const DISC = '#10B981'
 const STRENGTH_COLORS: Record<string, string> = { very_strong: '#8B5CF6', strong: '#FFA502', moderate: '#6C7CFF', weak: '#8E8EA3' }
-const STRENGTH_LABELS: Record<string, string> = { very_strong: 'TRÈS FORT', strong: 'FORT', moderate: 'MODÉRÉ', weak: 'FAIBLE' }
+const STRENGTH_LABELS_FR: Record<string, string> = { very_strong: 'TRÈS FORT', strong: 'FORT', moderate: 'MODÉRÉ', weak: 'FAIBLE' }
+const STRENGTH_LABELS_EN: Record<string, string> = { very_strong: 'VERY STRONG', strong: 'STRONG', moderate: 'MODERATE', weak: 'WEAK' }
 
 function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; syndrome: string; base: string }) {
+  const { lang } = useLang()
   const [expanded, setExpanded] = useState<string | null>(null)
 
   const discovery = useMemo(() => {
@@ -123,7 +125,7 @@ function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; synd
                   padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
                   background: `${color}15`, fontSize: '8px', fontFamily: 'var(--p-font-mono)',
                   fontWeight: 700, color,
-                }}>{STRENGTH_LABELS[s.strength] || s.strength}</span>
+                }}>{( lang === 'fr' ? STRENGTH_LABELS_FR : STRENGTH_LABELS_EN )[s.strength] || s.strength}</span>
                 <span style={{
                   padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
                   background: 'var(--p-bg)', fontSize: '8px', fontFamily: 'var(--p-font-mono)',
@@ -142,7 +144,7 @@ function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; synd
                 <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--p-border)' }}>
                   <div style={{ fontSize: '10px', color: 'var(--p-text-muted)', lineHeight: 1.5 }}>{s.description}</div>
                   <div style={{ marginTop: '6px', fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: '#FFA502' }}>
-                    ⚠ Signal IA — validation clinique requise
+                    {lang === 'fr' ? '⚠ Signal IA — validation clinique requise' : '⚠ AI Signal — clinical validation required'}
                   </div>
                 </div>
               )}
@@ -166,7 +168,7 @@ function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; synd
                   padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
                   background: `${scoreColor}15`, fontSize: '8px', fontFamily: 'var(--p-font-mono)',
                   fontWeight: 700, color: scoreColor,
-                }}>{scorePercent}% ÉLIGIBLE</span>
+                }}>{scorePercent}% {lang === 'fr' ? 'ÉLIGIBLE' : 'ELIGIBLE'}</span>
                 {pw.trialId && <span style={{
                   padding: '1px 6px', borderRadius: 'var(--p-radius-full)',
                   background: 'rgba(47,209,200,0.1)', fontSize: '8px', fontFamily: 'var(--p-font-mono)',
@@ -179,7 +181,7 @@ function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; synd
                 <div style={{ marginTop: '8px', paddingTop: '8px', borderTop: '1px solid var(--p-border)' }}>
                   <div style={{ fontSize: '10px', color: 'var(--p-text-muted)', lineHeight: 1.5, marginBottom: '4px' }}>{pw.mechanism}</div>
                   <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: '#FFA502' }}>
-                    ⚠ Piste IA — validation médicale obligatoire
+                    {lang === 'fr' ? '⚠ Piste IA — validation médicale obligatoire' : '⚠ AI Lead — medical validation required'}
                   </div>
                 </div>
               )}
@@ -192,7 +194,7 @@ function DiscoveryPanel({ patientId, syndrome, base }: { patientId: string; synd
 }
 
 export default function PatientCockpit() {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const { ps, info, scenarioKey } = usePatient()
 
   const { track } = useTrackAction()
