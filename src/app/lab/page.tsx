@@ -171,6 +171,7 @@ export default function LabPage() {
   const newCount = articles.filter(a => a.isNew).length;
 
   const TABS = [
+    { id: 'regression', label: '🤖 Bot Régression',          color: '#10B981' },
     { id: 'l1',       label: 'L1 · PatternMiner',        color: 'var(--p-disc)' },
     { id: 'l2',       label: 'L2 · LiteratureScanner',   color: 'var(--p-info)' },
     { id: 'l3',       label: 'L3 · HypothesisEngine',    color: 'var(--p-pve)'  },
@@ -178,7 +179,6 @@ export default function LabPage() {
     { id: 'visu',     label: 'Visualisations',            color: 'var(--p-vps)'  },
     { id: 'export',   label: 'Export · CRON',             color: 'var(--p-text-dim)' },
     { id: 'settings',   label: 'Settings',                  color: 'var(--p-text-dim)' },
-    { id: 'regression', label: '🤖 Bot Régression',          color: '#10B981' },
   ];
 
   return (
