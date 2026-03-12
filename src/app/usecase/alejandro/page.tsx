@@ -41,13 +41,13 @@ const TIMELINE = [
     pulsar: ['CASCADE CRITIQUE : Kalinox+Sévoflurane × Prodrome FIRES', '2 dépresseurs SNC sur cerveau en neuroinflammation latente', 'ALTERNATIVE : Emla + Paracétamol'] },
   { day: 0, date: '03/04', place: 'Robert-Debré', title: 'Admission Réa — Intubation', vps: 85, gcs: 8, crises: 5, cardiacRisk: 20, color: '#EF4444',
     facts: ['Glasgow 8 — intubation', 'Convulsions >20min, susp. méningite', 'Rivotril x3 échec', 'Cefotaxime + Aciclovir', 'Dilantin + Keppra + Midazolam continu'],
-    pulsar: ['VPS 85 CRITIQUE', 'Panel anticorps URGENT', 'IVIG empirique (Titulaer 2013)', 'DILANTIN → monitoring cardiaque'] },
+    pulsar: ['VPS 85 CRITIQUE', 'Panel anticorps URGENT', 'IVIG empirique — consensus FIRES (Wickström 2022)', 'DILANTIN → monitoring cardiaque'] },
   { day: 1, date: '04/04', place: 'Robert-Debré', title: '6 convulsions — Œdème cérébral', vps: 90, gcs: 6, crises: 6, cardiacRisk: 30, color: '#EF4444',
     facts: ['6 convulsions dans la nuit', 'Œdème cérébral', 'PAM 61 (objectif 65-70 non atteint)', 'CORTICOÏDES débutés (méthylprednisolone)', 'FC 82, SpO2 95%'],
-    pulsar: ['PULSAR aurait déjà lancé IVIG + cortico depuis J0', 'Retard +24h corticoïdes', 'ANAKINRA recommandé dès J+1 (Kenney-Jung 2016)'] },
+    pulsar: ['PULSAR aurait déjà lancé IVIG + cortico depuis J0', 'Retard +24h corticoïdes', 'Signal escalade anakinra si persistance L1 — initiation précoce associée à meilleurs résultats (Lai 2020)'] },
   { day: 2, date: '05/04', place: 'Robert-Debré', title: 'SE continue — Infraclinique', vps: 95, gcs: 5, crises: 8, cardiacRisk: 40, color: '#EF4444',
     facts: ['EEG : convulsions infracliniques', 'IVIG ADMINISTRÉES', 'Kétamine augmentée', 'PAM 67, FC 99, SpO2 94%', 'Nutrition Sondalis Junior (standard)'],
-    pulsar: ['IVIG à J+3 — retard +24h vs 48h recommandées', 'KD recommandé dès J+2 (van Baalen 2023)', 'ANAKINRA fenêtre 72h se ferme'] },
+    pulsar: ['IVIG à J+3 — retard +24h vs 48h recommandées', 'KD recommandé dès J+2 (van Baalen 2023)', 'Signal escalade anakinra — chaque jour de retard associé à séjour plus long en réa (Lai 2020)'] },
   { day: 3, date: '06/04', place: 'Robert-Debré', title: 'Convulsion 1h30 — EEG très pauvre', vps: 98, gcs: 3, crises: 12, cardiacRisk: 55, color: '#EF4444',
     facts: ['Crises continues, EEG non réactif', 'Dr Giles évoque encéphalite auto-immune et PIMS', 'Midazolam 3ml/h, Kétamine 1.6ml/h, Sufentanil 0.2ml/h', 'Débat entre 3 hypothèses : FIRES / EAIS / PIMS neuro'],
     pulsar: ['PULSAR aurait posé FIRES dès J0 (score 8/13)', '3 hypothèses concurrentes = 5 jours perdus', 'PVE : cardiotoxicité cumulée déjà critique'] },
@@ -55,7 +55,7 @@ const TIMELINE = [
     facts: ['HYPOTHÈSE FIRES POSÉE (90%)', 'DÉBUT RÉGIME CÉTOGÈNE', 'EEG : peu de changement', 'Discussions anakinra commencent', 'Virage stratégique à Robert-Debré'],
     pulsar: ['FIRES posé à J+5 — retard +120h vs J0 PULSAR', 'KD à J+5 — retard +72h vs J+2 PULSAR', 'Anakinra : encore 5 jours avant administration...'] },
   { day: 14, date: '17/04', place: 'Robert-Debré', title: 'Décès — Arrêt cardiaque', vps: 100, gcs: 3, crises: 0, cardiacRisk: 100, color: '#EF4444',
-    facts: ['Arrêt cardiaque', 'Derniers examens cérébraux : pas de lésion irréversible', 'Anakinra administré J+10 — signes amélioration J+11', 'Mais 7 jours de retard sur la fenêtre de 72h'],
+    facts: ['Arrêt cardiaque', 'Derniers examens cérébraux : pas de lésion irréversible', 'Anakinra administré J+10 — signes amélioration J+11', 'Anakinra à J+10 — 9 jours après le signal d\'escalade PULSAR à J+1'],
     pulsar: ['10+ molécules cardio-actives pendant 15 jours', 'PAM oscillante : 61 → 67 → 114', 'Troponine et écho ne figurent pas dans les documents disponibles', 'PULSAR aurait recommandé monitoring cardiaque dès J+3'] },
 ]
 
@@ -464,7 +464,7 @@ function ReconstitutionCinematique() {
             Arrêt cardiaque.
           </div>
           <div style={{ fontSize: 13, color: '#666', maxWidth: 420, margin: '0 auto 32px', lineHeight: 1.7 }}>
-            Pas de lésion cérébrale irréversible aux derniers examens. Anakinra administré à J+10 — des signes d'amélioration à J+11. Mais la fenêtre des 72 premières heures s'était fermée 9 jours plus tôt.
+            Pas de lésion cérébrale irréversible aux derniers examens. Anakinra administré à J+10 — des signes d'amélioration à J+11. Mais l'anakinra a été administré 9 jours après le premier signal d'escalade identifié par PULSAR à J+1.
           </div>
           <div style={{ width: 1, height: 40, background: '#F5A623', margin: '0 auto 24px', opacity: 0.6 }} />
           <div style={{ fontSize: 16, color: '#F5A623', fontStyle: 'italic', lineHeight: 1.8 }}>
@@ -723,9 +723,9 @@ export default function AlejandroCasePage() {
           </h2>
         </div>
         {[
-          { title: 'Immunothérapie (IVIG)', window: '< 48h', delay: '+48h', ref: 'Gaspard 2015, Titulaer 2013', col: '#EF4444' },
+          { title: 'Immunothérapie (IVIG)', window: '< 48h', delay: '+48h', ref: 'Wickström 2022 — consensus NORSE/FIRES', col: '#EF4444' },
           { title: 'Panel anticorps', window: '< 48h', delay: 'Pending J4+', ref: 'Graus 2016', col: '#EF4444' },
-          { title: 'Anakinra (anti-IL-1)', window: '< 72h', delay: 'Jamais', ref: 'Kenney-Jung 2016, Dilena 2019', col: '#F59E0B' },
+          { title: 'Anakinra (anti-IL-1)', window: 'Précoce — J+7 max (consensus)', delay: '+9 jours', ref: 'Lai 2020 (cohorte 25 enfants) / Wickström 2022', col: '#F59E0B' },
           { title: 'Diagnostic FIRES', window: 'J0', delay: 'Absent du dossier', ref: 'van Baalen 2023', col: '#EF4444' },
         ].map((d, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '10px 14px', background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-md)', borderLeft: `3px solid ${d.col}`, marginBottom: 6 }}>
