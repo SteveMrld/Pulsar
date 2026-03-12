@@ -4,9 +4,47 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { PatientProvider, usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
+import { exportPatientPDF } from '@/lib/exportPDF'
+import type { PatientState } from '@/lib/engines/PatientState'
 
 import { RoleBadge } from '@/components/RoleGate'
 import { LangToggle } from '@/contexts/LanguageContext'
+
+function PDFButton({ ps, name }: { ps: PatientState; name: string }) {
+  const [exporting, setExporting] = useState(false)
+  const handleExport = async () => {
+    setExporting(true)
+    try {
+      await exportPatientPDF(name, {
+        priority: 'P1',
+        service: 'Réa Neuro Pédiatrique',
+        phase: ps.hospDay <= 3 ? 'Phase aiguë précoce' : ps.hospDay <= 10 ? 'Phase aiguë' : 'Phase subaiguë',
+        diagnostic: ps.csf?.antibodies === 'nmdar' ? 'Anti-NMDAR'
+          : ps.neuro?.seizureType === 'refractory_status' ? 'FIRES'
+          : 'En cours d\'évaluation',
+        jour: ps.hospDay,
+        vpsScore: ps.vpsResult?.synthesis.score ?? 0,
+        alertesCritiques: ps.alerts?.filter(a => a.severity === 'critical').length ?? 0,
+        age: `${Math.floor(ps.ageMonths / 12)} ans`,
+        sexe: ps.sex === 'female' ? 'F' : 'M',
+        poids: `${ps.weightKg} kg`,
+        gcs: ps.neuro?.gcs ?? 15,
+      })
+    } finally {
+      setTimeout(() => setExporting(false), 1500)
+    }
+  }
+  return (
+    <button onClick={handleExport} disabled={exporting} style={{
+      padding: '5px 12px', borderRadius: 'var(--p-radius-md)', border: '1px solid rgba(46,213,115,0.25)',
+      background: exporting ? 'rgba(46,213,115,0.05)' : 'rgba(46,213,115,0.08)',
+      color: '#2ED573', fontFamily: 'var(--p-font-mono)', fontSize: '9px', fontWeight: 700,
+      cursor: exporting ? 'not-allowed' : 'pointer', letterSpacing: '0.5px',
+    }}>
+      {exporting ? 'EXPORT...' : '↓ PDF'}
+    </button>
+  )
+}
 
 /* ══════════════════════════════════════════════════════════════
    PATIENT LAYOUT V17
@@ -122,6 +160,9 @@ function PatientHeader() {
             <span style={{ fontFamily: 'var(--p-font-mono)', fontSize: '12px', fontWeight: 800, color: '#8B5CF6' }}>{criticalAlerts}</span>
           </div>
         )}
+
+        {/* PDF Export */}
+        <PDFButton ps={ps} name={info.displayName} />
       </div>
     </div>
   )
