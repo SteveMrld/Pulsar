@@ -185,6 +185,7 @@ export default function LabPage() {
     <div className="page-enter" style={{ minHeight: '100vh', background: 'var(--p-bg)', color: 'var(--p-text)', fontFamily: 'var(--p-font-body)' }}>
       <style>{`
         .lab-tab:hover { color: var(--p-text) !important; }
+        div::-webkit-scrollbar { display: none; }
         .pub-row { transition: border-color 0.15s, background 0.15s; }
         .pub-row:hover { border-color: rgba(16,185,129,0.4) !important; background: var(--p-bg-elevated) !important; }
         .mx-cell { transition: filter 0.1s, transform 0.1s; cursor: pointer; }
@@ -273,7 +274,7 @@ export default function LabPage() {
         </div>
 
         {/* Tabs */}
-        <div style={{ display: 'flex', marginBottom: '-1px', overflowX: 'auto' }}>
+        <div style={{ display: 'flex', marginBottom: '-1px', overflowX: 'auto', scrollbarWidth: 'none' }}>
           {TABS.map(t => (
             <button key={t.id} className="lab-tab" onClick={() => setTab(t.id as typeof tab)} style={{
               padding: '9px 16px', border: 'none', background: 'transparent', cursor: 'pointer',

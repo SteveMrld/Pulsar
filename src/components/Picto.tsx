@@ -29,7 +29,7 @@ const SVG_ICONS: Record<string, { d: string; color: string }> = {
   shield:     { d: 'M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z', color: '#6C7CFF' },
   clipboard:  { d: 'M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2m4-2a2 2 0 012 2v0a2 2 0 01-2 2h-2a2 2 0 01-2-2v0a2 2 0 012-2h2zM8 12h8m-8 4h4', color: '#60A5FA' },
   chart:      { d: 'M18 20V10M12 20V4M6 20v-6', color: '#2FD1C8' },
-  microscope: { d: 'M6 18h8M6 22h12M14 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V2m4 8v4m-4 6l8-6', color: '#E879F9' },
+  microscope: { d: 'M9 3h6l1 4H8L9 3zM8 7v3a4 4 0 008 0V7M9 16v3m6-3v3m-7 0h8M10 11h4', color: '#10B981' },
   warning:    { d: 'M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4m0 4h.01', color: '#EF4444' },
   cycle:      { d: 'M21 2v6h-6M3 12a9 9 0 0115-6.7L21 8M3 22v-6h6M21 12a9 9 0 01-15 6.7L3 16', color: '#06B6D4' },
   export:     { d: 'M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12', color: '#818CF8' },
