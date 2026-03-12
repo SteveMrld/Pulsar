@@ -290,11 +290,11 @@ export class TDEEngine extends BrainCore {
     const w = ps.weightKg
 
     const isRefractoryStatus = ['status', 'refractory_status', 'super_refractory'].includes(ps.neuro.seizureType)
-    const recThreshold = isRefractoryStatus ? 20 : 50 // status réfractaire → recommandation dès score 20
+    const recThreshold = isRefractoryStatus ? 20 : 25 // seuil abaissé — tout tableau inflammatoire mérite une orientation
 
     if (line === 1 && score > recThreshold) recs.push({ priority: 'urgent', title: 'Immunothérapie 1ère ligne', body: `Méthylprednisolone ${Math.round(w * 30)}mg/j IV ×3-5j + IVIg ${Math.round(w * 0.4 * 10) / 10}g/j ×5j (total ${Math.round(w * 2)}g). Alternative : Plasmaphérèse 5-7 séances si CI corticoïdes.`, reference: 'Wickström 2022 / Nosadini 2021' })
     else if (line === 2) recs.push({ priority: 'urgent', title: 'Escalade 2ème ligne', body: `Rituximab 375mg/m²/sem ×4 séances (dose totale ~${Math.round(w * 15)}mg/cycle) | Cyclophosphamide 750mg/m² IV (CI si MOGAD — Banwell 2023) | Plasmaphérèse si non faite en L1. Consensus : initier dans les 7 jours (Wickström 2022).`, reference: 'Sheikh 2023 / Wickström 2022 / NORSE Institute flowchart' })
-    else if (line === 3) recs.push({ priority: 'urgent', title: '3ème ligne — ciblée cytokines', body: `Tocilizumab 8mg/kg IV q4sem (si IL-6 ↑↑ — Jun, Ann Neurol 2018) | Anakinra ${Math.round(w * 5)}mg SC ×2/j (si IL-1β ↑↑ ou FIRES — Costagliola 2022, 60-65% réponse) | Bortezomib 1.3mg/m² J1/J4/J8/J11 (si plasmocytes — Shrestha 2023). Ajouter KD ratio 4:1 si non initié (objectif BHB >4.0 mmol/L).`, reference: 'Jun 2018 / Costagliola 2022 / Shrestha 2023 / NORSE Institute' })
+    else if (line === 3) recs.push({ priority: 'urgent', title: '3ème ligne — ciblée cytokines / B-cell', body: `Rituximab 375mg/m²/sem ×4 (anti-CD20 — encéphalite autoimmune NMDAR/CASPR2 — Titulaer 2013) | Tocilizumab 8mg/kg IV q4sem (si IL-6 ↑↑ — Jun, Ann Neurol 2018) | Anakinra ${Math.round(w * 5)}mg SC ×2/j (si IL-1β ↑↑ ou FIRES — Costagliola 2022, 60-65% réponse) | Bortezomib 1.3mg/m² J1/J4/J8/J11 (si plasmocytes — Shrestha 2023). Ajouter KD ratio 4:1 si non initié (objectif BHB >4.0 mmol/L).`, reference: 'Titulaer 2013 / Jun 2018 / Costagliola 2022 / Shrestha 2023 / NORSE Institute' })
 
     // V20 — Protocole couplé Anakinra + KD si FIRES + échec L1
     const isFires = intention.patterns.some(p => p.name === 'Pattern FIRES' && p.confidence > 0.5)

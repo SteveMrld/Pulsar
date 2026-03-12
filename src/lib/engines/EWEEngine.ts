@@ -281,6 +281,12 @@ export class EWEEngine extends BrainCore {
     let score = Math.min(100, Math.round(avgIntensity * context.contextModifier))
     intention.patterns.forEach(p => { score = Math.min(100, score + Math.round(p.confidence * 15)) })
 
+    // Planchers cliniques EWE
+    // Orage cytokinique (ferritine ≥5000) = alerte précoce critique garantie
+    if (ps.biology.ferritin >= 5000 && score < 72) score = 72
+    // Status réfractaire prolongé (J≥5) = signal d'aggravation systémique
+    if (['refractory_status', 'super_refractory'].includes(ps.neuro.seizureType) && ps.hospDay >= 5 && score < 80) score = 80
+
     const alerts: PatientState['alerts'] = []
     const recs: PatientState['recommendations'] = []
 
