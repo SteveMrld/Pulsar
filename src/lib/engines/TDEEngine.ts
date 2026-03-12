@@ -279,12 +279,20 @@ export class TDEEngine extends BrainCore {
     const ri = intention.fields.find(f => f.category === 'response')?.intensity || 0
     let score = Math.min(100, Math.round((si * 0.6 + ri * 0.4) * context.contextModifier))
 
+    // Règle clinique : status réfractaire → escalade immunologique urgente → TDE minimum 52
+    // Source : NORSE Institute consensus, Brophy 2012
+    if (['refractory_status', 'super_refractory'].includes(ps.neuro.seizureType) && score < 52) score = 52
+    if (ps.neuro.seizureType === 'status' && score < 35) score = 35
+
     const alerts: PatientState['alerts'] = []
     const recs: PatientState['recommendations'] = []
     const line = (curve as any).therapeuticLine || (curve.curveData.length >= 2 ? 3 : curve.curveData.length >= 1 ? 2 : 1)
     const w = ps.weightKg
 
-    if (line === 1 && score > 50) recs.push({ priority: 'urgent', title: 'Immunothérapie 1ère ligne', body: `Méthylprednisolone ${Math.round(w * 30)}mg/j IV ×3-5j + IVIg ${Math.round(w * 0.4 * 10) / 10}g/j ×5j (total ${Math.round(w * 2)}g). Alternative : Plasmaphérèse 5-7 séances si CI corticoïdes.`, reference: 'Wickström 2022 / Nosadini 2021' })
+    const isRefractoryStatus = ['status', 'refractory_status', 'super_refractory'].includes(ps.neuro.seizureType)
+    const recThreshold = isRefractoryStatus ? 20 : 50 // status réfractaire → recommandation dès score 20
+
+    if (line === 1 && score > recThreshold) recs.push({ priority: 'urgent', title: 'Immunothérapie 1ère ligne', body: `Méthylprednisolone ${Math.round(w * 30)}mg/j IV ×3-5j + IVIg ${Math.round(w * 0.4 * 10) / 10}g/j ×5j (total ${Math.round(w * 2)}g). Alternative : Plasmaphérèse 5-7 séances si CI corticoïdes.`, reference: 'Wickström 2022 / Nosadini 2021' })
     else if (line === 2) recs.push({ priority: 'urgent', title: 'Escalade 2ème ligne', body: `Rituximab 375mg/m²/sem ×4 séances (dose totale ~${Math.round(w * 15)}mg/cycle) | Cyclophosphamide 750mg/m² IV (CI si MOGAD — Banwell 2023) | Plasmaphérèse si non faite en L1. Consensus : initier dans les 7 jours (Wickström 2022).`, reference: 'Sheikh 2023 / Wickström 2022 / NORSE Institute flowchart' })
     else if (line === 3) recs.push({ priority: 'urgent', title: '3ème ligne — ciblée cytokines', body: `Tocilizumab 8mg/kg IV q4sem (si IL-6 ↑↑ — Jun, Ann Neurol 2018) | Anakinra ${Math.round(w * 5)}mg SC ×2/j (si IL-1β ↑↑ ou FIRES — Costagliola 2022, 60-65% réponse) | Bortezomib 1.3mg/m² J1/J4/J8/J11 (si plasmocytes — Shrestha 2023). Ajouter KD ratio 4:1 si non initié (objectif BHB >4.0 mmol/L).`, reference: 'Jun 2018 / Costagliola 2022 / Shrestha 2023 / NORSE Institute' })
 

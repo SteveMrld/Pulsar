@@ -32,7 +32,7 @@ export class VPSEngine extends BrainCore {
       signals: [
         { name: 'CRP', weight: 1.5, unit: 'mg/L', extract: ps => ps.biology.crp, normalize: v => (v as number) >= 200 ? 100 : (v as number) >= 100 ? 75 : (v as number) >= 50 ? 50 : (v as number) >= 20 ? 30 : (v as number) >= 5 ? 10 : 0 },
         { name: 'PCT', weight: 2, unit: 'ng/mL', extract: ps => ps.biology.pct, normalize: v => (v as number) >= 10 ? 100 : (v as number) >= 2 ? 75 : (v as number) >= 0.5 ? 50 : (v as number) >= 0.25 ? 25 : 0 },
-        { name: 'Ferritine', weight: 1.5, unit: 'µg/L', extract: ps => ps.biology.ferritin, normalize: v => (v as number) >= 10000 ? 100 : (v as number) >= 5000 ? 85 : (v as number) >= 1000 ? 65 : (v as number) >= 500 ? 40 : (v as number) >= 200 ? 15 : 0 },
+        { name: 'Ferritine', weight: 1.5, unit: 'µg/L', extract: ps => ps.biology.ferritin, normalize: v => (v as number) >= 10000 ? 100 : (v as number) >= 5000 ? 85 : (v as number) >= 2000 ? 78 : (v as number) >= 1500 ? 72 : (v as number) >= 1000 ? 65 : (v as number) >= 500 ? 40 : (v as number) >= 300 ? 22 : (v as number) >= 200 ? 12 : 0 },
         { name: 'Leucocytes', weight: 1, unit: 'G/L', extract: ps => ps.biology.wbc, normalize: v => { const n = v as number; return (n > 30 || n < 2) ? 80 : (n > 20 || n < 4) ? 50 : (n > 15 || n < 5) ? 25 : 0 } },
         { name: 'Température', weight: 1, unit: '°C', extract: ps => ps.hemodynamics.temp, normalize: v => { const t = v as number; return t >= 40 ? 90 : t >= 39 ? 60 : t >= 38.5 ? 35 : t >= 38 ? 15 : t < 35 ? 70 : 0 } },
       ],
@@ -169,6 +169,25 @@ export class VPSEngine extends BrainCore {
       },
     })
 
+    // ── Pattern : Prodrome FIRES ──
+    // Clinique : fièvre persistante + ferritine modérément élevée + CRP + pas de crise encore
+    // Source : Kramer 2011, Nabbout 2011 — profil pré-FIRES identifiable J-5 à J-2
+    this.patterns.push({
+      name: 'Prodrome FIRES',
+      match: (ps) => {
+        const feverPresent = ps.hemodynamics.temp >= 38.5
+        const ferritinElevated = ps.biology.ferritin >= 300
+        const crpElevated = ps.biology.crp >= 20
+        const noSeizureYet = ps.neuro.seizures24h === 0 && ps.neuro.seizureType === 'none'
+        const youngChild = ps.ageMonths <= 144 // ≤12 ans
+        const score = [feverPresent, ferritinElevated, crpElevated, noSeizureYet, youngChild].filter(Boolean).length
+        if (score >= 4) {
+          return { confidence: 0.55 + (score - 4) * 0.15, description: `Profil prodrome FIRES — ferritine ${ps.biology.ferritin} µg/L, CRP ${ps.biology.crp}, T° ${ps.hemodynamics.temp}°C`, implications: 'Surveillance neurologique rapprochée — initier bilan FIRES — Nabbout 2011' }
+        }
+        return { confidence: 0, description: '', implications: '' }
+      },
+    })
+
     // ── Règles métier (4) ──
     this.rules.push({
       name: 'pSOFA Neurologique', reference: 'Matics 2017 — AUC 0.94',
@@ -268,7 +287,7 @@ export class VPSEngine extends BrainCore {
       // Skip PIMS field if no PIMS data
       if (f.category === 'pims' && !ps.pims.confirmed && !ps.pims.covidExposure) continue
       // Skip neuro-monitoring field if no EEG/biomarker data available
-      if (f.category === 'neuro_monitoring' && !ps.eeg && !ps.neuroBiomarkers && !ps.pupillometry) continue
+      if (f.category === 'neuro_monitoring' && !ps.eeg && !ps.neuroBiomarkers && !ps.pupillometry && !ps.imaging?.eegDone) continue
       const w = weights[f.category] || 1
       raw += f.intensity * w
       tw += w
@@ -276,7 +295,19 @@ export class VPSEngine extends BrainCore {
     if (tw > 0) raw /= tw
     raw *= context.contextModifier
     intention.patterns.forEach(p => { raw += p.confidence * 12 })
-    const score = Math.min(100, Math.round(raw))
+    let score = Math.min(100, Math.round(raw))
+
+    // Règle clinique absolue : status réfractaire = CRITIQUE par définition
+    // Source : PICU consensus — Brophy 2012, Glauser 2016
+    if (ps.neuro.seizureType === 'refractory_status' && score < 75) score = 75  // CRITIQUE garanti
+    if (ps.neuro.seizureType === 'super_refractory' && score < 85) score = 85
+    if (ps.neuro.seizureType === 'status' && score < 55) score = 55
+
+    // Règle prodrome FIRES : signal précurseur détecté → minimum MODÉRÉ
+    // Justification : tout prodrome FIRES confirmé nécessite surveillance rapprochée — Nabbout 2011
+    const isProdromeDetected = intention.patterns.some(p => p.name === 'Prodrome FIRES' && p.confidence >= 0.5)
+    if (isProdromeDetected && score < 22) score = 22
+
 
     let level: string
     if (score >= 70) level = 'CRITIQUE'
