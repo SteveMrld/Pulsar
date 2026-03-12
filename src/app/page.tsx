@@ -278,8 +278,8 @@ export default function LandingPage() {
 
           <p className="lp-lead lp-a lp-a3" style={{ maxWidth: 660, margin: '0 auto 40px' }}>
             {t(
-              "FIRES, NORSE, anti-NMDAR, MOGAD, PIMS — des pathologies rares, mortelles, où chaque heure compte. PULSAR est le premier système d'intelligence artificielle entièrement dédié à ces urgences neurologiques pédiatriques.",
-              "FIRES, NORSE, anti-NMDAR, MOGAD, PIMS — rare, deadly conditions where every hour matters. PULSAR is the first AI system entirely dedicated to pediatric neurological emergencies."
+              "FIRES, NORSE, anti-NMDAR, MOGAD, PIMS — des pathologies rares, mortelles, où chaque heure compte. PULSAR est une plateforme d'aide à la décision clinique construite sur 70+ publications peer-reviewed, 6 moteurs analytiques et une méthodologie développée en collaboration avec les experts médicaux de référence internationale.",
+              "FIRES, NORSE, anti-NMDAR, MOGAD, PIMS — rare, deadly conditions where every hour matters. PULSAR is a clinical decision support platform built on 70+ peer-reviewed publications, 6 analytical engines, and a methodology developed in collaboration with leading international medical experts."
             )}
           </p>
 
@@ -322,8 +322,8 @@ export default function LandingPage() {
                 </h2>
                 <p style={{ fontSize: 13, color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 20 }}>
                   {t(
-                    "Dans ces maladies, la différence entre séquelles et récupération se joue en heures. 12 moteurs qui pensent ensemble — sévérité, escalade, pharmacovigilance, alerte précoce, prospection — pour que chaque clinicien ait la puissance de décision du meilleur service au monde.",
-                    "In these diseases, the difference between damage and recovery is measured in hours. 12 engines thinking together — severity, escalation, pharmacovigilance, early warning, prospection — so every clinician has world-class decision power."
+                    "Dans ces maladies, la différence entre séquelles et récupération se joue en heures. 12 modules analytiques construits sur la littérature médicale internationale — sévérité, escalade, pharmacovigilance, alerte précoce, prospection — pour que chaque clinicien dispose du raisonnement structuré du meilleur service au monde.",
+                    "In these diseases, the difference between damage and recovery is measured in hours. 12 analytical modules built on international medical literature — severity, escalation, pharmacovigilance, early warning, prospection — so every clinician has access to the structured reasoning of a world-class center."
                   )}
                 </p>
                 <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
@@ -416,8 +416,8 @@ export default function LandingPage() {
                 </h2>
                 <p style={{ fontSize: 13, color: 'var(--p-text-muted)', lineHeight: 1.8, marginBottom: 24 }}>
                   {t(
-                    "4 niveaux d'analyse en cascade. PubMed et ClinicalTrials.gov en temps réel. Génération d'hypothèses par intelligence artificielle. Export Brief FR/EN · JSON · BibTeX.",
-                    "4 cascading levels of analysis. PubMed and ClinicalTrials.gov in real time. AI-powered hypothesis generation. Brief FR/EN · JSON · BibTeX export."
+                    "4 niveaux d'analyse en cascade. PubMed et ClinicalTrials.gov en temps réel. Formulation d'hypothèses diagnostiques assistée, ancrée dans 25 publications de référence et 3 essais cliniques NCT actifs. Export Brief FR/EN · JSON · BibTeX.",
+                    "4 cascading levels of analysis. PubMed and ClinicalTrials.gov in real time. Diagnostic hypothesis generation grounded in 25 reference publications and 3 active NCT clinical trials. Brief FR/EN · JSON · BibTeX export."
                   )}
                 </p>
                 <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
@@ -512,7 +512,7 @@ export default function LandingPage() {
 
         {/* ─── FOOTER ─── */}
         <footer className="lp-foot">
-          PULSAR · {t('Intelligence clinique pédiatrique', 'Pediatric Clinical Intelligence')} · Discovery Engine v4.0 · 12 {t('moteurs', 'engines')} · © 2026 Steve Moradel
+          PULSAR · {t('Aide à la décision pédiatrique neuro-inflammatoire', 'Pediatric Neuro-Inflammatory Decision Support')} · Discovery Engine v4.0 · © 2026 Steve Moradel
         </footer>
 
       </div>
