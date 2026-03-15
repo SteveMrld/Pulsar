@@ -77,6 +77,7 @@ const STATUS_LABELS: Record<string, { label: string; labelEn?: string; color: st
 }
 
 export default function ResearchPage() {
+  const router = useRouter()
   const { track } = useTrackAction()
 
   useEffect(() => {
@@ -167,13 +168,13 @@ export default function ResearchPage() {
         borderBottom: '1px solid var(--p-border)', background: 'var(--p-bg-card)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link href="/patients" style={{
+          <button onClick={() => router.back()} style={{
             display: 'flex', alignItems: 'center', padding: '6px',
             borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-dim)',
-            textDecoration: 'none',
+            background: 'none', border: 'none', cursor: 'pointer',
           }}>
             <span style={{ fontSize: '16px' }}>←</span>
-          </Link>
+          </button>
           <div style={{
             width: 32, height: 32, borderRadius: 'var(--p-radius-lg)',
             background: DISC_DIM, display: 'flex', alignItems: 'center', justifyContent: 'center',

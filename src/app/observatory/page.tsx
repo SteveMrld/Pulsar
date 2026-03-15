@@ -27,6 +27,7 @@ const TABS: { id: Tab; label: string; icon: string; color: string }[] = [
 ]
 
 export default function ObservatoryPage() {
+  const router = useRouter()
   const { t } = useLang()
   const [tab, setTab] = useState<Tab>('overview')
   const activeTab = TABS.find(t => t.id === tab) || TABS[0]
@@ -39,13 +40,13 @@ export default function ObservatoryPage() {
         borderBottom: '1px solid var(--p-border)', background: 'var(--p-bg-card)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <Link href="/patients" style={{
+          <button onClick={() => router.back()} style={{
             display: 'flex', alignItems: 'center', padding: '6px',
             borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-dim)',
-            textDecoration: 'none',
+            background: 'none', border: 'none', cursor: 'pointer',
           }}>
             <span style={{ fontSize: '16px' }}>←</span>
-          </Link>
+          </button>
           <Picto name="dna" size={28} glow glowColor="rgba(47,209,200,0.5)" />
           <div>
             <h1 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--p-text)', margin: 0, lineHeight: 1.2 }}>Observatory</h1>

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { usePathname } from 'next/navigation'
+import {useRouter, usePathname} from 'next/navigation'
 import Link from 'next/link'
 import Picto from '@/components/Picto'
 import { exportPatientPDF } from '@/lib/exportPDF'
@@ -62,14 +62,14 @@ export default function PatientHeader({ ps, patientId, patientName }: PatientHea
         {/* LEFT: Identity */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           {/* Back to file active */}
-          <Link href="/patients" style={{
+          <button onClick={() => router.back()} style={{
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             width: '28px', height: '28px', borderRadius: '8px',
-            background: 'rgba(108,124,255,0.06)', textDecoration: 'none',
+            background: 'rgba(108,124,255,0.06)', border: 'none', cursor: 'pointer',
             transition: 'background 0.2s',
           }}>
             <span style={{ fontSize: '14px', color: 'var(--p-text-dim)' }}>←</span>
-          </Link>
+          </button>
 
           {/* VPS ring mini */}
           <div style={{
