@@ -476,13 +476,12 @@ function ReconstitutionCinematique() {
         <div style={{
           background: 'var(--p-bg-card)', borderRadius: 16,
           border: `1px solid ${ev.color}20`,
-          overflow: 'hidden',
           boxShadow: `0 0 40px ${ev.color}08`,
         }}>
           {/* Top band */}
-          <div style={{ height: 3, background: `linear-gradient(90deg, ${ev.color}, ${ev.color}40)` }} />
+          <div style={{ height: 3, background: `linear-gradient(90deg, ${ev.color}, ${ev.color}40)`, borderRadius: '16px 16px 0 0' }} />
 
-          <div style={{ padding: '20px 20px 16px' }}>
+          <div style={{ padding: '20px 20px 20px' }}>
             {/* Day header */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
               <div>
