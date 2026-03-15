@@ -20,7 +20,7 @@ const SEQUENCES = [
   { id: 'cascade',   act: 2, duration: 9000,  accentColor: C.cae },
   { id: 'ddd',       act: 2, duration: 9000,  accentColor: C.ddd },
   { id: 'oracle',    act: 2, duration: 9000,  accentColor: C.oracle },
-  { id: 'alejandro', act: 2, duration: 10000, accentColor: C.alex },
+
   { id: 'packshot',  act: 3, duration: 7000,  accentColor: C.vps },
   { id: 'hospitals', act: 4, duration: 8000,  accentColor: C.disc },
   { id: 'memorial',  act: 5, duration: 9000,  accentColor: C.gold },
@@ -64,7 +64,7 @@ function SeqIntro() {
         <span style={{ fontSize: 50, fontWeight: 900, color: C.vps, fontFamily: 'monospace' }}>P</span>
       </div>
       <div style={{ opacity: p >= 2 ? 1 : 0, transition: 'opacity 0.8s' }}>
-        <div style={{ fontSize: 50, fontWeight: 900, color: C.white, letterSpacing: 8, fontFamily: 'monospace' }}>PULSAR</div>
+        <div style={{ fontSize: 50, fontWeight: 800, color: C.white, letterSpacing: -0.5, fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" }}>PULSAR</div>
         <div style={{ fontSize: 10, color: C.dim, letterSpacing: 4, marginTop: 8, fontFamily: 'monospace' }}>PEDIATRIC ULTRA-RARE SYNDROME ANALYZER</div>
       </div>
       <div style={{ fontSize: 17, color: C.gold, fontStyle: 'italic', lineHeight: 1.7, maxWidth: 420, opacity: p >= 3 ? 1 : 0, transform: p >= 3 ? 'translateY(0)' : 'translateY(12px)', transition: 'all 0.8s ease' }}>
@@ -440,7 +440,7 @@ function SeqPackshot() {
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', gap: 20 }}>
       <div style={{ opacity: p >= 1 ? 1 : 0, transition: 'opacity 0.8s' }}>
         <div style={{ fontSize: 9, fontFamily: 'monospace', color: C.dim, letterSpacing: 4, marginBottom: 8 }}>UNE PLATEFORME. UNE MISSION.</div>
-        <div style={{ fontSize: 42, fontWeight: 900, color: C.white, letterSpacing: 6, fontFamily: 'monospace' }}>PULSAR</div>
+        <div style={{ fontSize: 42, fontWeight: 800, color: C.white, letterSpacing: -0.5, fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" }}>PULSAR</div>
         <div style={{ fontSize: 12, color: C.vps, marginTop: 6, fontStyle: 'italic' }}>Pediatric Ultra-Rare Syndrome Analyzer · V21.4</div>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, maxWidth: 480, width: '100%', opacity: p >= 2 ? 1 : 0, transition: 'opacity 0.8s 0.2s' }}>
@@ -474,12 +474,12 @@ function SeqHospitals() {
     return () => ts.forEach(clearTimeout)
   }, [])
   const hospitals = [
-    { f: '🇫🇷', n: 'Robert-Debré', c: 'Paris, France', s: 'Neurologie pédiatrique' },
-    { f: '🇬🇧', n: 'Great Ormond Street', c: 'Londres, UK', s: 'Maladies rares' },
-    { f: '🇺🇸', n: 'Boston Children\'s', c: 'Boston, USA', s: 'Neuro-immunologie' },
-    { f: '🇨🇦', n: 'SickKids', c: 'Toronto, Canada', s: 'Réanimation pédiatrique' },
-    { f: '🇩🇪', n: 'Charité Berlin', c: 'Berlin, Allemagne', s: 'Épilepsie réfractaire' },
-    { f: '🇧🇪', n: 'UZ Leuven', c: 'Louvain, Belgique', s: 'FIRES / NORSE' },
+    { f: '🇫🇷', c: 'France', s: 'Neurologie pédiatrique' },
+    { f: '🇬🇧', c: 'Royaume-Uni', s: 'Maladies rares pédiatriques' },
+    { f: '🇺🇸', c: 'États-Unis', s: 'Neuro-immunologie' },
+    { f: '🇨🇦', c: 'Canada', s: 'Réanimation pédiatrique' },
+    { f: '🇩🇪', c: 'Allemagne', s: 'Épilepsie réfractaire' },
+    { f: '🇧🇪', c: 'Belgique', s: 'FIRES / NORSE' },
   ]
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', gap: 18 }}>
@@ -492,10 +492,9 @@ function SeqHospitals() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, width: '100%', opacity: p >= 2 ? 1 : 0, transition: 'opacity 0.8s' }}>
         {hospitals.map((h, i) => (
           <div key={i} style={{ padding: '10px 12px', background: C.card, borderRadius: 10, border: '1px solid rgba(108,124,255,0.15)', textAlign: 'left', opacity: p >= 3 ? 1 : 0, transform: p >= 3 ? 'translateY(0)' : 'translateY(8px)', transition: `all 0.4s ease ${i * 100}ms` }}>
-            <div style={{ fontSize: 18, marginBottom: 4 }}>{h.f}</div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: C.white }}>{h.n}</div>
-            <div style={{ fontSize: 9, color: C.dim, marginTop: 2 }}>{h.c}</div>
-            <div style={{ fontSize: 8, color: C.vps, marginTop: 4, fontFamily: 'monospace' }}>{h.s}</div>
+            <div style={{ fontSize: 24, marginBottom: 6 }}>{h.f}</div>
+            <div style={{ fontSize: 11, fontWeight: 700, color: C.white }}>{h.c}</div>
+            <div style={{ fontSize: 9, color: C.vps, marginTop: 4, fontFamily: 'monospace' }}>{h.s}</div>
           </div>
         ))}
       </div>
@@ -536,7 +535,7 @@ function SeqMemorial() {
       </div>
       <div style={{ width: 1, height: 50, background: `linear-gradient(to bottom, transparent, ${C.gold}, transparent)`, opacity: p >= 1 ? 1 : 0, transition: 'opacity 1s' }} />
       <div style={{ opacity: p >= 4 ? 1 : 0, transition: 'opacity 1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
-        <div style={{ fontSize: 22, fontWeight: 900, color: C.vps, letterSpacing: 6, fontFamily: 'monospace' }}>PULSAR</div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: C.vps, letterSpacing: -0.5, fontFamily: "-apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif" }}>PULSAR</div>
         <div style={{ fontSize: 9, color: C.dim, letterSpacing: 3, fontFamily: 'monospace' }}>PEDIATRIC ULTRA-RARE SYNDROME ANALYZER</div>
       </div>
       <div style={{ opacity: p >= 5 ? 1 : 0, transition: 'opacity 1s', fontSize: 10, color: C.dim, fontFamily: 'monospace', letterSpacing: 2 }}>
