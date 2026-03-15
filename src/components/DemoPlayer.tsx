@@ -1,259 +1,80 @@
 'use client'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
+// ══════════════════════════════════════════════════════════════
+// PULSAR CINEMATIC DEMO V2 — 5 actes · ~80 secondes
+// ══════════════════════════════════════════════════════════════
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
-import NeuronAnimation from '@/components/NeuronAnimation'
-import AnakinraAnimation from '@/components/AnakinraAnimation'
-import GutBrainAnimation from '@/components/GutBrainAnimation'
+interface DemoPlayerProps { open: boolean; onClose: () => void }
 
-// ═══════════════════════════════════════════════════════════════════
-// PULSAR DEMO PLAYER — Cinematic product tour
-// Inspiré de Linear / Vercel / Loom
-// Chaque scène = reproduction fidèle de l'UI + narration explicative
-// ═══════════════════════════════════════════════════════════════════
+const C = {
+  vps: '#6C7CFF', disc: '#10B981', cae: '#FF6B35', ddd: '#DC2626',
+  oracle: '#E879F9', alex: '#F5A623', gold: '#F5A623', white: '#F0F2F5',
+  dim: '#8892A4', bg: '#04070F', card: '#0B1220',
+}
 
-const SCENES = [
-  {
-    id: 'intro', chapter: 'Admission', chapterN: '01', color: '#6C7CFF',
-    headline: 'Un enfant arrive aux urgences. Le temps compte.',
-    narration: 'PULSAR reçoit les premières données à l\'admission. En quelques secondes, 12 moteurs s\'activent simultanément.',
-    ui: 'admission',
-  },
-  {
-    id: 'vps', chapter: 'Score VPS', chapterN: '02', color: '#EF4444',
-    headline: 'VPS 92 — Alerte critique déclenchée automatiquement.',
-    narration: 'Le Vital Prognosis Score agrège 34 paramètres. Un score > 85 place le patient en P1 immédiat et déclenche la cascade d\'alertes.',
-    ui: 'vps',
-  },
-  {
-    id: 'physio', chapter: 'Corps · Zones d\'alerte', chapterN: '03', color: '#B96BFF',
-    headline: 'Le corps d\'Inès. Chaque système atteint visualisé.',
-    narration: 'PULSAR cartographie les systèmes en défaillance en temps réel. Neurologique, cardiaque, inflammatoire — le clinicien voit tout d\'un coup d\'œil.',
-    ui: 'physio',
-  },
-  {
-    id: 'neuron', chapter: 'Neurones FIRES', chapterN: '04', color: '#B96BFF',
-    headline: 'Ce que FIRES fait aux neurones. Heure par heure.',
-    narration: 'L\'inflammation IL-1β est 4 fois supérieure à la norme. La barrière hémato-encéphalique cède. PULSAR quantifie ce que l\'œil ne voit pas.',
-    ui: 'neuron',
-  },
-  {
-    id: 'brain', chapter: 'Cerveau · Heatmap', chapterN: '05', color: '#FF6B35',
-    headline: 'Carte thermique cérébrale. Cortex temporal : 94%.',
-    narration: 'NeuroCore génère une heatmap des zones inflammatoires à partir de l\'EEG et des biomarqueurs. Ce que l\'IRM montre en 48h, PULSAR l\'estime en minutes.',
-    ui: 'brain',
-  },
-  {
-    id: 'timeline', chapter: 'Timeline DDD', chapterN: '06', color: '#EF4444',
-    headline: '3 fenêtres thérapeutiques manquées. Identifiées rétrospectivement.',
-    narration: 'Le moteur DDD reconstruit la chronologie heure par heure. Chaque délai évitable est nommé, daté, sourcé. Pour que ça n\'arrive plus.',
-    ui: 'timeline',
-  },
-  {
-    id: 'cascade', chapter: 'Alertes CAE', chapterN: '07', color: '#FF6B35',
-    headline: '2 cascades critiques détectées avant qu\'elles se produisent.',
-    narration: 'Le Cascade Alert Engine modélise les effets en chaîne. Il détecte que l\'association MEOPA + midazolam va provoquer une dépression respiratoire dans 18 minutes.',
-    ui: 'cascade',
-  },
-  {
-    id: 'anakinra', chapter: 'Mécanisme Anakinra', chapterN: '08', color: '#10B981',
-    headline: 'Anakinra. Score 94. Mécanisme d\'action visualisé.',
-    narration: 'PULSAR ne se contente pas de recommander — il explique. Le mécanisme d\'action, la posologie, les interactions, la fenêtre. Le médecin comprend pourquoi.',
-    ui: 'anakinra',
-  },
-  {
-    id: 'oracle', chapter: 'Simulation ORACLE', chapterN: '09', color: '#E879F9',
-    headline: '5 scénarios. Voir le futur avant d\'agir.',
-    narration: 'ORACLE simule l\'évolution à J+30 selon chaque décision. Le médecin voit l\'impact de ce qu\'il décide maintenant — avant d\'agir.',
-    ui: 'oracle',
-  },
-  {
-    id: 'gutbrain', chapter: 'Axe intestin-cerveau', chapterN: '10', color: '#2FD1C8',
-    headline: 'Nouvelle hypothèse. Axe intestin-cerveau. 3 essais NCT actifs.',
-    narration: 'Le Discovery Engine L3 génère des hypothèses que la littérature n\'a pas encore validées. Dysbiose intestinale J-7 corrèle avec l\'activation microgliale chez Inès.',
-    ui: 'gutbrain',
-  },
-  {
-    id: 'discovery', chapter: 'Discovery Engine', chapterN: '11', color: '#10B981',
-    headline: 'Chaque patient enrichit la science mondiale.',
-    narration: 'Les données anonymisées d\'Inès enrichissent 847 dossiers dans 12 pays. L\'enfant traité à Pointe-à-Pitre améliore la décision prise demain à Lyon.',
-    ui: 'discovery',
-  },
+const SEQUENCES = [
+  { id: 'intro',     act: 1, duration: 8000,  accentColor: C.vps },
+  { id: 'vps',       act: 2, duration: 9000,  accentColor: C.vps },
+  { id: 'discovery', act: 2, duration: 10000, accentColor: C.disc },
+  { id: 'cascade',   act: 2, duration: 9000,  accentColor: C.cae },
+  { id: 'ddd',       act: 2, duration: 9000,  accentColor: C.ddd },
+  { id: 'oracle',    act: 2, duration: 9000,  accentColor: C.oracle },
+  { id: 'alejandro', act: 2, duration: 10000, accentColor: C.alex },
+  { id: 'packshot',  act: 3, duration: 7000,  accentColor: C.vps },
+  { id: 'hospitals', act: 4, duration: 8000,  accentColor: C.disc },
+  { id: 'memorial',  act: 5, duration: 9000,  accentColor: C.gold },
 ]
 
+const ACT_LABELS = ['', 'Introduction', 'La plateforme', 'Bilan', 'Déploiement', 'Mémorial']
 
-// ── UI SCREENS ─────────────────────────────────────────────────────
-
-function ScreenAdmission() {
+function AlertRow({ severity, title, body, delay = 0 }: { severity: string; title: string; body: string; delay?: number }) {
+  const [v, setV] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setV(true), delay); return () => clearTimeout(t) }, [delay])
+  const col = severity === 'critical' ? '#EF4444' : severity === 'warning' ? '#F59E0B' : C.vps
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 0, fontFamily: 'system-ui, sans-serif' }}>
-      {/* App header */}
-      <div style={{ height: 36, background: 'rgba(108,124,255,0.08)', borderBottom: '1px solid rgba(108,124,255,0.12)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace', letterSpacing: 2 }}>✦ PULSAR</div>
-        <div style={{ flex: 1 }} />
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', fontFamily: 'monospace' }}>ADMISSION EN COURS</div>
-        <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10B981', animation: 'pulse 1.5s infinite' }} />
-      </div>
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
-        {/* Sidebar */}
-        <div style={{ width: 44, background: 'rgba(0,0,0,0.3)', borderRight: '1px solid rgba(255,255,255,0.04)', display: 'flex', flexDirection: 'column', alignItems: 'center', paddingTop: 8, gap: 6 }}>
-          {['◉','⬡','△','◈','○','⊕'].map((ic,i) => (
-            <div key={i} style={{ width: 28, height: 28, borderRadius: 7, background: i===0?'rgba(108,124,255,0.2)':'transparent', display:'flex', alignItems:'center', justifyContent:'center', fontSize: 11, color: i===0?'#6C7CFF':'rgba(255,255,255,0.2)', cursor:'pointer' }}>{ic}</div>
-          ))}
-        </div>
-        {/* Main */}
-        <div style={{ flex: 1, padding: 12, overflow: 'auto' }}>
-          <div style={{ fontSize: 11, fontWeight: 700, color: '#fff', marginBottom: 10 }}>Nouvelle admission · Réa Neurologique</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 10 }}>
-            {[
-              { l: 'Prénom', v: 'Inès' },
-              { l: 'Âge', v: '4 ans' },
-              { l: 'Unité', v: 'Réa Neuro · Lit 3' },
-              { l: 'Admission', v: 'J+0 · 14h32' },
-            ].map((f,i) => (
-              <div key={i} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 6, padding: '7px 10px', border: '1px solid rgba(255,255,255,0.06)' }}>
-                <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.35)', marginBottom: 2 }}>{f.l}</div>
-                <div style={{ fontSize: 11, color: '#fff', fontWeight: 600 }}>{f.v}</div>
-              </div>
-            ))}
-          </div>
-          <div style={{ background: 'rgba(108,124,255,0.06)', borderRadius: 8, padding: 10, border: '1px solid rgba(108,124,255,0.12)' }}>
-            <div style={{ fontSize: 9, color: '#6C7CFF', fontWeight: 700, marginBottom: 6, letterSpacing: 1 }}>MOTEURS IA ACTIVÉS</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 5 }}>
-              {[['VPS','#6C7CFF'],['TDE','#2FD1C8'],['CAE','#FF6B35'],['TPE','#FFB347'],['EWE','#A78BFA'],['PVE','#B96BFF'],['DDD','#DC2626'],['ORACLE','#E879F9']].map(([n,c],i) => (
-                <div key={i} style={{ padding: '3px 8px', borderRadius: 4, background: `${c}15`, border: `1px solid ${c}25`, fontSize: 8, fontWeight: 800, color: c as string, fontFamily: 'monospace' }}>{n}</div>
-              ))}
-            </div>
-          </div>
-          <div style={{ marginTop: 10, padding: 10, background: 'rgba(16,185,129,0.06)', borderRadius: 8, border: '1px solid rgba(16,185,129,0.15)' }}>
-            <div style={{ fontSize: 9, color: '#10B981', fontWeight: 700 }}>✓ Analyse en cours — 8 moteurs actifs</div>
-            <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2, marginTop: 6, overflow: 'hidden' }}>
-              <div style={{ width: '73%', height: '100%', background: 'linear-gradient(90deg,#10B981,#2FD1C8)', borderRadius: 2, animation: 'load 2s ease infinite' }} />
-            </div>
-          </div>
-        </div>
-      </div>
+    <div style={{ padding: '8px 12px', borderRadius: 8, borderLeft: `3px solid ${col}`, background: `${col}08`, marginBottom: 6, opacity: v ? 1 : 0, transform: v ? 'translateX(0)' : 'translateX(-12px)', transition: 'all 0.4s ease' }}>
+      <div style={{ fontSize: 10, fontWeight: 800, color: col, marginBottom: 2 }}>{title}</div>
+      <div style={{ fontSize: 9, color: C.dim, lineHeight: 1.4 }}>{body}</div>
     </div>
   )
 }
 
-function ScreenVPS() {
+function DataRow({ label, value, color, delay = 0 }: { label: string; value: string; color: string; delay?: number }) {
+  const [v, setV] = useState(false)
+  useEffect(() => { const t = setTimeout(() => setV(true), delay); return () => clearTimeout(t) }, [delay])
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(239,68,68,0.08)', borderBottom: '1px solid rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#EF4444', fontWeight: 700, fontFamily: 'monospace' }}>Inès M. · VPS CRITIQUE</div>
-        <div style={{ flex: 1 }} />
-        <div style={{ padding: '2px 8px', borderRadius: 4, background: 'rgba(239,68,68,0.15)', border: '1px solid rgba(239,68,68,0.3)', fontSize: 8, fontWeight: 800, color: '#EF4444', fontFamily: 'monospace' }}>P1 · CRITIQUE</div>
-      </div>
-      <div style={{ flex: 1, padding: 12, display: 'flex', flexDirection: 'column', gap: 10, overflow: 'auto' }}>
-        {/* VPS big score */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: 12, background: 'rgba(239,68,68,0.08)', borderRadius: 10, border: '1px solid rgba(239,68,68,0.2)' }}>
-          <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 44, fontWeight: 900, color: '#EF4444', fontFamily: 'monospace', lineHeight: 1 }}>92</div>
-            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', letterSpacing: 1 }}>VPS</div>
-          </div>
-          <div style={{ flex: 1 }}>
-            <div style={{ height: 8, background: 'rgba(255,255,255,0.06)', borderRadius: 4, overflow: 'hidden', marginBottom: 6 }}>
-              <div style={{ width: '92%', height: '100%', background: 'linear-gradient(90deg,#6C7CFF,#EF4444)', borderRadius: 4 }} />
-            </div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 8, color: 'rgba(255,255,255,0.3)' }}>
-              <span>0 — Stable</span><span style={{ color: '#FFB347' }}>70 — Sévère</span><span style={{ color: '#EF4444' }}>85+ Critique</span>
-            </div>
-          </div>
-        </div>
-        {/* 4 fields */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
-          {[
-            { field: 'Neurologique', score: 28, max: 30, color: '#EF4444', items: ['Status epilepticus J+4','8 crises/24h','GCS 7'] },
-            { field: 'Hémodynamique', score: 24, max: 25, color: '#F59E0B', items: ['PAM 114 mmHg','FC 128 bpm','SpO2 94%'] },
-            { field: 'Inflammatoire', score: 22, max: 25, color: '#FF6B35', items: ['CRP 187','IL-6 élevée','Fièvre J+4'] },
-            { field: 'Thérapeutique', score: 18, max: 20, color: '#8B5CF6', items: ['Phénobarbital','Midazolam','Levetiracetam'] },
-          ].map((f,i) => (
-            <div key={i} style={{ background: `${f.color}08`, borderRadius: 8, padding: 9, border: `1px solid ${f.color}18` }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
-                <div style={{ fontSize: 9, fontWeight: 700, color: f.color }}>{f.field}</div>
-                <div style={{ fontSize: 11, fontWeight: 900, color: f.color, fontFamily: 'monospace' }}>{f.score}/{f.max}</div>
-              </div>
-              {f.items.map((it,j) => (
-                <div key={j} style={{ fontSize: 8, color: 'rgba(255,255,255,0.5)', marginBottom: 2 }}>· {it}</div>
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: '1px solid rgba(255,255,255,0.04)', opacity: v ? 1 : 0, transition: 'opacity 0.3s ease' }}>
+      <span style={{ fontSize: 9, color: C.dim, fontFamily: 'monospace' }}>{label}</span>
+      <span style={{ fontSize: 10, fontWeight: 700, color, fontFamily: 'monospace' }}>{value}</span>
     </div>
   )
 }
 
-function ScreenDiagnostic() {
+// ── ACTE I — INTRO ────────────────────────────────────────────
+function SeqIntro() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [600, 2000, 4000, 6000].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(139,92,246,0.08)', borderBottom: '1px solid rgba(139,92,246,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#8B5CF6', fontWeight: 700, fontFamily: 'monospace' }}>Inès M. · Diagnostic TDE</div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', gap: 24 }}>
+      <div style={{ width: 110, height: 110, borderRadius: '50%', background: `radial-gradient(circle, ${C.vps}40 0%, ${C.vps}10 50%, transparent 70%)`, border: `1px solid ${C.vps}30`, display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: `0 0 60px ${C.vps}30`, opacity: p >= 1 ? 1 : 0, transform: p >= 1 ? 'scale(1)' : 'scale(0.4)', transition: 'all 1s ease' }}>
+        <span style={{ fontSize: 50, fontWeight: 900, color: C.vps, fontFamily: 'monospace' }}>P</span>
       </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ fontSize: 10, fontWeight: 700, color: 'rgba(255,255,255,0.6)' }}>Diagnostic différentiel — 34 paramètres analysés</div>
-        {[
-          { dx: 'FIRES', pct: 87, color: '#EF4444', detail: 'Fever Induced Refractory Epileptic Encephalopathy' },
-          { dx: 'NORSE', pct: 9, color: '#8B5CF6', detail: 'New Onset Refractory Status Epilepticus' },
-          { dx: 'Anti-NMDAR', pct: 3, color: '#6C7CFF', detail: 'Encéphalite auto-immune' },
-          { dx: 'Méningo-encéphalite', pct: 1, color: '#2FD1C8', detail: 'Infectieux · À écarter' },
-        ].map((d,i) => (
-          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '9px 12px', borderRadius: 8, background: i===0?'rgba(239,68,68,0.07)':'rgba(255,255,255,0.02)', border: `1px solid ${i===0?'rgba(239,68,68,0.2)':'rgba(255,255,255,0.04)'}` }}>
-            <div style={{ minWidth: 58, textAlign: 'center' }}>
-              <div style={{ fontSize: 18, fontWeight: 900, color: d.color, fontFamily: 'monospace' }}>{d.pct}%</div>
-            </div>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>{d.dx}</div>
-              <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.35)', marginTop: 1 }}>{d.detail}</div>
-            </div>
-            <div style={{ width: 80, height: 5, background: 'rgba(255,255,255,0.05)', borderRadius: 3, overflow: 'hidden' }}>
-              <div style={{ width: `${d.pct}%`, height: '100%', background: d.color, borderRadius: 3 }} />
-            </div>
-          </div>
-        ))}
-        <div style={{ padding: 10, background: 'rgba(239,68,68,0.06)', borderRadius: 8, border: '1px solid rgba(239,68,68,0.15)' }}>
-          <div style={{ fontSize: 9, fontWeight: 800, color: '#EF4444', marginBottom: 6 }}>⚠ DÉLAIS DIAGNOSTIQUES IDENTIFIÉS PAR DDD</div>
-          {['J-3 : Myalgies non documentées → profil pro-inflammatoire manqué','J+1 : Hypothèse virale maintenue 18h → retard d\'immunothérapie','J+2 : FIRES évoqué tardivement → fenêtre anakinra réduite à 6h'].map((d,i) => (
-            <div key={i} style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)', marginBottom: 4 }}>✗ {d}</div>
-          ))}
-        </div>
+      <div style={{ opacity: p >= 2 ? 1 : 0, transition: 'opacity 0.8s' }}>
+        <div style={{ fontSize: 50, fontWeight: 900, color: C.white, letterSpacing: 8, fontFamily: 'monospace' }}>PULSAR</div>
+        <div style={{ fontSize: 10, color: C.dim, letterSpacing: 4, marginTop: 8, fontFamily: 'monospace' }}>PEDIATRIC ULTRA-RARE SYNDROME ANALYZER</div>
       </div>
-    </div>
-  )
-}
-
-function ScreenCascade() {
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(255,107,53,0.08)', borderBottom: '1px solid rgba(255,107,53,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#FF6B35', fontWeight: 700, fontFamily: 'monospace' }}>Inès M. · Alertes CAE</div>
-        <div style={{ marginLeft: 8, padding: '2px 7px', borderRadius: 4, background: 'rgba(239,68,68,0.15)', fontSize: 8, fontWeight: 800, color: '#EF4444', fontFamily: 'monospace' }}>14 ALERTES</div>
+      <div style={{ fontSize: 17, color: C.gold, fontStyle: 'italic', lineHeight: 1.7, maxWidth: 420, opacity: p >= 3 ? 1 : 0, transform: p >= 3 ? 'translateY(0)' : 'translateY(12px)', transition: 'all 0.8s ease' }}>
+        "Dans les maladies ultra-rares, la différence entre<br/>les séquelles et la récupération se mesure en heures."
       </div>
-      <div style={{ flex: 1, padding: 10, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 7 }}>
-        {[
-          { level: '🔴', type: 'CAE ACTIF', label: 'Cascade cardiorespiratoire imminente', detail: 'MEOPA + midazolam → dépression resp. estimée dans 18 min', engine: 'CAE', time: 'Il y a 4 min' },
-          { level: '🔴', type: 'VPS CRITIQUE', label: 'Score > 90 — Intervention immédiate', detail: 'Seuil dépassé depuis 22 minutes · Escalade requise', engine: 'VPS', time: 'Il y a 22 min' },
-          { level: '🔴', type: 'STATUS EPI', label: 'Status epilepticus réfractaire J+4', detail: 'Résistance aux benzodiazépines documentée', engine: 'TDE', time: 'Il y a 35 min' },
-          { level: '🟠', type: 'HÉMODYNAMIQUE', label: 'PAM 114 mmHg · Hyperpression', detail: 'EWE détecte tendance ascendante sur 2h · Seuil : 110', engine: 'EWE', time: 'Il y a 48 min' },
-          { level: '🟠', type: 'FENÊTRE THÉRAP.', label: 'Anakinra — 6h restantes', detail: 'Au-delà, éligibilité chute à 34%. Agir maintenant.', engine: 'TPE', time: 'Il y a 1h' },
-        ].map((a,i) => (
-          <div key={i} style={{ padding: '9px 11px', borderRadius: 9, background: i<3?'rgba(239,68,68,0.07)':'rgba(245,158,11,0.06)', border: `1px solid ${i<3?'rgba(239,68,68,0.18)':'rgba(245,158,11,0.15)'}` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 7, marginBottom: 4 }}>
-              <span style={{ fontSize: 12 }}>{a.level}</span>
-              <span style={{ fontSize: 8, fontWeight: 800, color: i<3?'#EF4444':'#F59E0B', fontFamily: 'monospace', letterSpacing: 0.5 }}>{a.type}</span>
-              <div style={{ flex: 1 }} />
-              <span style={{ fontSize: 7, color: 'rgba(255,255,255,0.25)' }}>{a.time}</span>
-              <span style={{ fontSize: 7, fontWeight: 800, color: '#6C7CFF', background: 'rgba(108,124,255,0.1)', padding: '1px 5px', borderRadius: 3, fontFamily: 'monospace' }}>{a.engine}</span>
-            </div>
-            <div style={{ fontSize: 10, fontWeight: 700, color: '#fff', marginBottom: 2 }}>{a.label}</div>
-            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)' }}>{a.detail}</div>
+      <div style={{ display: 'flex', gap: 32, opacity: p >= 4 ? 1 : 0, transition: 'opacity 0.8s' }}>
+        {[['12', 'MOTEURS IA'], ['95', 'TESTS VALIDÉS'], ['4,662', 'LIGNES MOTEUR']].map(([n, l]) => (
+          <div key={l} style={{ textAlign: 'center' }}>
+            <div style={{ fontSize: 26, fontWeight: 900, color: C.vps, fontFamily: 'monospace' }}>{n}</div>
+            <div style={{ fontSize: 8, color: C.dim, letterSpacing: 2, fontFamily: 'monospace' }}>{l}</div>
           </div>
         ))}
       </div>
@@ -261,653 +82,564 @@ function ScreenCascade() {
   )
 }
 
-function ScreenTraitement() {
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(16,185,129,0.08)', borderBottom: '1px solid rgba(16,185,129,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#10B981', fontWeight: 700, fontFamily: 'monospace' }}>Inès M. · Protocoles TPE</div>
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        {/* Fenêtre warning */}
-        <div style={{ padding: '8px 12px', background: 'rgba(255,107,53,0.08)', borderRadius: 8, border: '1px solid rgba(255,107,53,0.2)', display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{ fontSize: 14 }}>⏱</span>
-          <div>
-            <div style={{ fontSize: 10, fontWeight: 800, color: '#FF6B35' }}>Fenêtre thérapeutique critique</div>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>Anakinra optimal : 6h restantes · Au-delà → efficacité −60%</div>
-          </div>
-        </div>
-        {[
-          { drug: 'Anakinra', score: 94, status: 'RECOMMANDÉ', color: '#10B981', posologie: '2–4 mg/kg/j IV', mecanisme: 'IL-1 inhibiteur · Anti-inflammatoire ciblé FIRES', interactions: 0 },
-          { drug: 'Tocilizumab', score: 78, status: 'À CONSIDÉRER', color: '#6C7CFF', posologie: '8 mg/kg IV dose unique', mecanisme: 'IL-6 inhibiteur · Si anakinra insuffisant', interactions: 1 },
-          { drug: 'Régime cétogène', score: 71, status: 'À CONSIDÉRER', color: '#F59E0B', posologie: 'Ratio 4:1 · Surveillance biologique', mecanisme: 'Neuroprotection métabolique', interactions: 0 },
-          { drug: 'Rituximab', score: 42, status: 'DIFFÉRER', color: '#8B5CF6', posologie: 'En attente biomarqueurs B-cell', mecanisme: 'Anti-CD20 · Pas d\'indication immédiate', interactions: 0 },
-        ].map((t,i) => (
-          <div key={i} style={{ padding: '10px 12px', borderRadius: 10, background: `${t.color}07`, border: `1px solid ${t.color}18` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 6 }}>
-              <div style={{ width: 38, height: 38, borderRadius: 8, background: `${t.color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 900, color: t.color, fontFamily: 'monospace' }}>{t.score}</div>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 12, fontWeight: 800, color: '#fff' }}>{t.drug}</div>
-                <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', marginTop: 1 }}>{t.posologie}</div>
-              </div>
-              <span style={{ fontSize: 7, fontWeight: 800, color: t.color, background: `${t.color}12`, border: `1px solid ${t.color}25`, padding: '3px 7px', borderRadius: 4, fontFamily: 'monospace' }}>{t.status}</span>
-            </div>
-            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.45)' }}>{t.mecanisme}</div>
-            {t.interactions > 0 && <div style={{ fontSize: 8, color: '#F59E0B', marginTop: 4 }}>⚠ {t.interactions} interaction détectée par PVE</div>}
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function ScreenOracle() {
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(232,121,249,0.08)', borderBottom: '1px solid rgba(232,121,249,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#E879F9', fontWeight: 700, fontFamily: 'monospace' }}>Inès M. · ORACLE — Simulation</div>
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>Simulation prédictive J+30 — 5 scénarios comparés</div>
-        {/* Chart */}
-        <div style={{ background: 'rgba(255,255,255,0.02)', borderRadius: 10, padding: 12, border: '1px solid rgba(255,255,255,0.05)' }}>
-          <svg viewBox="0 0 280 80" style={{ width: '100%', height: 80 }}>
-            <line x1="0" y1="75" x2="280" y2="75" stroke="rgba(255,255,255,0.06)" strokeWidth="1"/>
-            {['J0','J+7','J+14','J+21','J+30'].map((l,i) => (
-              <text key={i} x={i*70} y="80" fontSize="7" fill="rgba(255,255,255,0.2)" textAnchor="middle">{l}</text>
-            ))}
-            {/* Anakinra - best */}
-            <polyline points="0,65 70,52 140,35 210,22 280,14" fill="none" stroke="#10B981" strokeWidth="2.5"/>
-            {/* Tocilizumab */}
-            <polyline points="0,65 70,55 140,42 210,32 280,24" fill="none" stroke="#6C7CFF" strokeWidth="1.5"/>
-            {/* KD */}
-            <polyline points="0,65 70,57 140,46 210,37 280,30" fill="none" stroke="#F59E0B" strokeWidth="1.5"/>
-            {/* No treatment */}
-            <polyline points="0,65 70,68 140,70 210,72 280,74" fill="none" stroke="#EF4444" strokeWidth="1.5" strokeDasharray="4,3"/>
-            {/* Final dot Anakinra */}
-            <circle cx="280" cy="14" r="3.5" fill="#10B981"/>
-          </svg>
-          <div style={{ display: 'flex', gap: 10, marginTop: 4, flexWrap: 'wrap' }}>
-            {[['Anakinra','#10B981'],['Tocilizumab','#6C7CFF'],['KD','#F59E0B'],['Sans traitement','#EF4444']].map(([l,c],i) => (
-              <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 8, color: 'rgba(255,255,255,0.5)' }}>
-                <div style={{ width: 14, height: 2, background: c as string, borderRadius: 1 }}/>
-                {l}
-              </div>
-            ))}
-          </div>
-        </div>
-        {/* Best scenario result */}
-        <div style={{ padding: '10px 14px', background: 'rgba(16,185,129,0.08)', borderRadius: 10, border: '1px solid rgba(16,185,129,0.2)' }}>
-          <div style={{ fontSize: 10, fontWeight: 800, color: '#10B981', marginBottom: 6 }}>Scénario optimal · Anakinra J+0</div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 8 }}>
-            {[['VPS J+30','18','#10B981'],['Récupération','73%','#10B981'],['Séquelles','Faibles','#F59E0B']].map(([l,v,c],i) => (
-              <div key={i} style={{ textAlign: 'center', padding: 6, background: `${c}08`, borderRadius: 6 }}>
-                <div style={{ fontSize: 14, fontWeight: 900, color: c as string, fontFamily: 'monospace' }}>{v}</div>
-                <div style={{ fontSize: 7, color: 'rgba(255,255,255,0.35)', marginTop: 2 }}>{l}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ScreenDiscovery() {
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(47,209,200,0.08)', borderBottom: '1px solid rgba(47,209,200,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#2FD1C8', fontWeight: 700, fontFamily: 'monospace' }}>Discovery Engine · Recherche</div>
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 9 }}>
-        <div style={{ padding: '8px 12px', background: 'rgba(47,209,200,0.06)', borderRadius: 8, border: '1px solid rgba(47,209,200,0.15)', fontSize: 9, color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
-          Les données anonymisées d'Inès enrichissent la base de 847 patients FIRES dans 12 pays. <span style={{ color: '#2FD1C8', fontWeight: 700 }}>Chaque enfant traité améliore le suivant.</span>
-        </div>
-        {[
-          { n: 'L1', label: 'PatternMiner', color: '#6C7CFF', result: '12 patterns détectés · Cluster FIRES inflammatoire confirmé', badge: '12 patterns', detail: 'Pearson 34 params · k-means k=3 · z-score 2.5σ' },
-          { n: 'L2', label: 'LiteratureScanner', color: '#2FD1C8', result: '47 publications pertinentes · 3 essais NCT actifs trouvés', badge: '47 refs', detail: 'PubMed live · ClinicalTrials.gov · Veille temps réel' },
-          { n: 'L3', label: 'HypothesisEngine', color: '#10B981', result: 'Hypothèse : Sur-activation IL-1β précoce comme marqueur FIRES', badge: '3 hyp.', detail: 'Claude API · Validation workflow · Peer review IA' },
-          { n: 'L4', label: 'TreatmentPathfinder', color: '#F59E0B', result: 'Anakinra précoce J0 corrèle avec récupération à 73% à J+30', badge: 'actif', detail: 'Scoring éligibilité · Fenêtres thérap. · Essais NCT' },
-        ].map((l,i) => (
-          <div key={i} style={{ padding: '10px 12px', borderRadius: 9, background: `${l.color}07`, border: `1px solid ${l.color}15` }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 5 }}>
-              <div style={{ width: 22, height: 22, borderRadius: 6, background: `${l.color}18`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, fontWeight: 900, color: l.color, fontFamily: 'monospace' }}>{l.n}</div>
-              <div style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>{l.label}</div>
-              <div style={{ flex: 1 }} />
-              <span style={{ fontSize: 7, fontWeight: 800, color: l.color, background: `${l.color}15`, border: `1px solid ${l.color}25`, padding: '2px 7px', borderRadius: 4, fontFamily: 'monospace' }}>{l.badge}</span>
-            </div>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.65)', marginBottom: 3 }}>→ {l.result}</div>
-            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.3)' }}>{l.detail}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  )
-}
-
-function ScreenBrain() {
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(255,107,53,0.08)', borderBottom: '1px solid rgba(255,107,53,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#FF6B35', fontWeight: 700, fontFamily: 'monospace' }}>Inès M. · NeuroCore — Carte cérébrale</div>
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        {/* Brain illustration */}
-        <div style={{ position: 'relative', borderRadius: 12, overflow: 'hidden', border: '1px solid rgba(255,107,53,0.2)', background: 'rgba(0,0,0,0.3)' }}>
-          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(108,124,255,0.2)' }}>
-            <img src="/assets/illustrations/PULSAR_BRAIN_NORMAL_VS_FIRES.png" alt="Cerveau FIRES" />
-          </div>
-          <div style={{ position: 'absolute', top: 8, left: 8, padding: '3px 9px', borderRadius: 5, background: 'rgba(0,0,0,0.75)', border: '1px solid rgba(255,107,53,0.3)', fontSize: 8, fontWeight: 800, color: '#FF6B35', fontFamily: 'monospace' }}>PULSAR NEUROCORE · FIRES J+4</div>
-        </div>
-        {/* Heatmap zones */}
-        <div style={{ fontSize: 9, fontWeight: 700, color: 'rgba(255,255,255,0.5)', marginBottom: 2 }}>ZONES D'INFLAMMATION DÉTECTÉES</div>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          {[
-            { zone: 'Cortex temporal bilatéral', level: 94, color: '#EF4444', status: 'CRITIQUE' },
-            { zone: 'Hippocampe gauche', level: 78, color: '#FF6B35', status: 'SÉVÈRE' },
-            { zone: 'Thalamus', level: 61, color: '#F59E0B', status: 'MODÉRÉ' },
-            { zone: 'Cortex frontal', level: 38, color: '#6C7CFF', status: 'SURVEILLÉ' },
-          ].map((z, i) => (
-            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '7px 10px', borderRadius: 7, background: `${z.color}08`, border: `1px solid ${z.color}18` }}>
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: 10, fontWeight: 600, color: '#fff' }}>{z.zone}</div>
-              </div>
-              <div style={{ width: 70, height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 2, overflow: 'hidden' }}>
-                <div style={{ width: `${z.level}%`, height: '100%', background: z.color, borderRadius: 2 }} />
-              </div>
-              <span style={{ fontSize: 8, fontWeight: 800, color: z.color, fontFamily: 'monospace', minWidth: 32, textAlign: 'right' }}>{z.level}%</span>
-              <span style={{ fontSize: 7, color: z.color, background: `${z.color}12`, border: `1px solid ${z.color}20`, padding: '1px 5px', borderRadius: 3, fontFamily: 'monospace', fontWeight: 700 }}>{z.status}</span>
-            </div>
-          ))}
-        </div>
-        {/* BBB */}
-        <div style={{ padding: '8px 12px', background: 'rgba(139,92,246,0.07)', borderRadius: 8, border: '1px solid rgba(139,92,246,0.15)' }}>
-          <div style={{ fontSize: 9, fontWeight: 700, color: '#8B5CF6', marginBottom: 4 }}>BARRIÈRE HÉMATO-ENCÉPHALIQUE</div>
-          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.5)' }}>Perméabilité estimée : <span style={{ color: '#EF4444', fontWeight: 700 }}>+340% vs norme</span> · Infiltration lymphocytaire détectée</div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-
-function ScreenVisualPhysio() {
-  const [tick, setTick] = React.useState(0)
-  const canvasRef = React.useRef<HTMLCanvasElement>(null)
-
-  // Canvas: supprime les pixels gris du fond
-  React.useEffect(() => {
-    const canvas = canvasRef.current
-    if (!canvas) return
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return
-    const img = new Image()
-    img.onload = () => {
-      canvas.width = img.width
-      canvas.height = img.height
-      ctx.drawImage(img, 0, 0)
-      const data = ctx.getImageData(0, 0, canvas.width, canvas.height)
-      const d = data.data
-      for (let i = 0; i < d.length; i += 4) {
-        const r = d[i], g = d[i+1], b = d[i+2]
-        const avg = (r + g + b) / 3
-        const diff = Math.max(Math.abs(r-g), Math.abs(r-b), Math.abs(g-b))
-        // Supprime fond blanc, gris clair et gris moyen (faible saturation)
-        if (diff < 40 && avg > 40) {
-          // Fondu progressif : plus le pixel est clair, plus il devient transparent
-          const alpha = avg > 160 ? 0 : Math.round(((160 - avg) / 120) * 255)
-          d[i+3] = alpha
-        }
-      }
-      ctx.putImageData(data, 0, 0)
+// ── ACTE II — VPS ─────────────────────────────────────────────
+function SeqVPS() {
+  const [p, setP] = useState(0)
+  const [score, setScore] = useState(0)
+  useEffect(() => {
+    const ts = [300, 1200, 2800, 4500].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+  useEffect(() => {
+    if (p >= 2) {
+      let v = 0
+      const iv = setInterval(() => { v = Math.min(99, v + 3); setScore(v); if (v >= 99) clearInterval(iv) }, 40)
+      return () => clearInterval(iv)
     }
-    img.src = '/assets/avatars/body-girl.jpg'
-  }, [])
+  }, [p])
+  const pct = (score / 99) * 2 * Math.PI * 38
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontFamily: 'monospace', fontSize: 9, color: C.vps, letterSpacing: 2, marginBottom: 3 }}>MOTEUR 1 — VPS ENGINE</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: C.white }}>Score de Sévérité en Temps Réel</div>
+        <div style={{ fontSize: 10, color: C.dim }}>11 moteurs agrègent les données cliniques · Mis à jour en continu</div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, flex: 1 }}>
+        <div style={{ background: C.card, borderRadius: 12, padding: 16, border: `1px solid ${C.vps}20` }}>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2, marginBottom: 12 }}>INÈS M. · 4 ANS · FIRES · J+4</div>
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 16 }}>
+            <div style={{ position: 'relative', width: 96, height: 96 }}>
+              <svg viewBox="0 0 96 96" style={{ width: '100%', transform: 'rotate(-90deg)' }}>
+                <circle cx="48" cy="48" r="38" fill="none" stroke="#1A2235" strokeWidth="8" />
+                <circle cx="48" cy="48" r="38" fill="none" stroke="#EF4444" strokeWidth="8" strokeDasharray={`${pct} 999`} style={{ transition: 'stroke-dasharray 0.1s' }} />
+              </svg>
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ fontSize: 24, fontWeight: 900, color: '#EF4444', fontFamily: 'monospace', lineHeight: 1 }}>{score}</div>
+                <div style={{ fontSize: 7, color: '#EF4444', fontFamily: 'monospace' }}>CRITIQUE</div>
+              </div>
+            </div>
+          </div>
+          <div style={{ opacity: p >= 3 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            {[['Neuro', '42/50', '#8B5CF6'], ['Cardio', '28/30', '#EF4444'], ['Inflam.', '18/20', '#F59E0B']].map(([l, v, c]) => (
+              <div key={l} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
+                <span style={{ fontSize: 9, color: C.dim, fontFamily: 'monospace' }}>{l}</span>
+                <span style={{ fontSize: 9, color: c, fontFamily: 'monospace', fontWeight: 700 }}>{v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2, marginBottom: 8 }}>10 ALERTES ACTIVES</div>
+          <AlertRow severity="critical" title="🔴 VPS 99/100 — Protocole urgence" body="Seuil critique dépassé · 10 alertes convergentes" delay={800} />
+          <AlertRow severity="critical" title="🔴 FIRES Score 9/13 — Suspicion forte" body="Immunothérapie L1 &lt; 48h · Escalade anakinra" delay={1800} />
+          <AlertRow severity="warning" title="🟡 Cardiotoxicité cumulée — PVE alerte" body="5 molécules cardio-actives · Surveillance ECG" delay={2800} />
+          <AlertRow severity="warning" title="🟡 Orage cytokinique — EWE précoce" body="Ferritine ↑↑ + IL-1β + pattern FIRES" delay={3800} />
+        </div>
+      </div>
+    </div>
+  )
+}
 
-  React.useEffect(() => {
-    const t = setInterval(() => setTick((x: number) => x + 1), 1200)
-    return () => clearInterval(t)
+// ── DISCOVERY ─────────────────────────────────────────────────
+function SeqDiscovery() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [300, 1200, 2500, 4000, 6000].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
   }, [])
-  const zones = [
-    { label: 'NEURO', icon: '🧠', x: 48, y: 18, color: '#EF4444', level: 2 },
-    { label: 'CARDIO', icon: '❤️', x: 48, y: 42, color: '#FF6B35', level: 2 },
-    { label: 'RESP', icon: '🫁', x: 48, y: 55, color: '#F59E0B', level: 1 },
-    { label: 'INFLAM', icon: '🔥', x: 75, y: 38, color: '#EF4444', level: 2 },
-    { label: 'TEMP', icon: '🌡', x: 75, y: 52, color: '#10B981', level: 0 },
+  const signals = [
+    { t: 'Corrélation Ferritine ↔ Crises', v: 'r=0.76', c: C.disc },
+    { t: 'Pattern BACM récurrent sur FIRES', v: 'p<0.001', c: C.oracle },
+    { t: 'Profil orage cytokinique — 4 sigma', v: 'z=4.1', c: '#F59E0B' },
+    { t: 'Résistance L1 systématique · FIRES', v: 'Lai 2020', c: C.cae },
   ]
   return (
-    <div style={{ height: "100%", display: "flex", flexDirection: "column", fontFamily: "system-ui, sans-serif" }}>
-      <div style={{ height: 36, background: "rgba(108,124,255,0.08)", borderBottom: "1px solid rgba(108,124,255,0.15)", display: "flex", alignItems: "center", padding: "0 12px", gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: "#6C7CFF", fontFamily: "monospace" }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)" }}>/</div>
-        <div style={{ fontSize: 9, color: "#B96BFF", fontWeight: 700, fontFamily: "monospace" }}>Inès M. · Visual Physiology System</div>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontFamily: 'monospace', fontSize: 9, color: C.disc, letterSpacing: 2, marginBottom: 3 }}>MOTEUR 2 — DISCOVERY ENGINE v4.0</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: C.white }}>Intelligence Diagnostique — 4 Niveaux d'Analyse</div>
+        <div style={{ fontSize: 10, color: C.dim }}>PatternMiner · LiteratureScanner · HypothesisEngine · TreatmentPathfinder</div>
       </div>
-      <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
-        {/* Left panel */}
-        <div style={{ width: 130, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 7, borderRight: "1px solid rgba(255,255,255,0.04)" }}>
-          {[
-            { l: "NEURO", ic: "🧠", c: "#EF4444", dots: [2,2] },
-            { l: "CARDIO", ic: "❤️", c: "#FF6B35", dots: [2,2] },
-            { l: "RESP", ic: "🫁", c: "#F59E0B", dots: [1,2] },
-          ].map((z, i) => (
-            <div key={i} style={{ padding: "7px 10px", borderRadius: 8, background: `${z.c}10`, border: `1px solid ${z.c}22`, display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 12 }}>{z.ic}</span>
-              <span style={{ fontSize: 9, fontWeight: 800, color: z.c, fontFamily: "monospace", flex: 1 }}>{z.l}</span>
-              <div style={{ display: "flex", gap: 3 }}>
-                {[0,1,2].map(j => <div key={j} style={{ width: 5, height: 5, borderRadius: "50%", background: j <= z.dots[0] ? z.c : "rgba(255,255,255,0.1)", boxShadow: j <= z.dots[0] ? `0 0 5px ${z.c}` : "none", transition: "all 0.4s" }} />)}
-              </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8, marginBottom: 12 }}>
+        {[
+          { n: 'N1', l: 'PatternMiner', d: 'Pearson · k-means · z-score', c: C.disc },
+          { n: 'N2', l: 'LiteratureScanner', d: 'PubMed live · 12 000+ articles', c: C.oracle },
+          { n: 'N3', l: 'HypothesisEngine', d: 'Claude Sonnet API · IA clinique', c: '#F59E0B' },
+          { n: 'N4', l: 'TreatmentPathfinder', d: 'Anakinra · Tocilizumab · KD', c: C.cae },
+        ].map(({ n, l, d, c }, i) => (
+          <div key={n} style={{ padding: '10px 12px', borderRadius: 10, background: C.card, border: `1px solid ${c}25`, borderLeft: `3px solid ${c}`, opacity: p >= 1 ? 1 : 0, transform: p >= 1 ? 'translateY(0)' : 'translateY(8px)', transition: `all 0.4s ease ${i * 150}ms` }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 8, color: c, letterSpacing: 1.5, marginBottom: 2 }}>{n} — {l}</div>
+            <div style={{ fontSize: 9, color: C.dim }}>{d}</div>
+          </div>
+        ))}
+      </div>
+      <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2, marginBottom: 8 }}>SIGNAUX DÉTECTÉS — INÈS M.</div>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+        {signals.map((s, i) => (
+          <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px', background: `${s.c}06`, borderRadius: 8, border: `1px solid ${s.c}20`, opacity: p >= 2 && i < p - 1 ? 1 : 0, transform: p >= 2 && i < p - 1 ? 'translateX(0)' : 'translateX(-10px)', transition: 'all 0.4s ease' }}>
+            <div style={{ width: 8, height: 8, borderRadius: '50%', background: s.c, boxShadow: `0 0 6px ${s.c}`, flexShrink: 0 }} />
+            <span style={{ fontSize: 10, color: C.white, flex: 1 }}>{s.t}</span>
+            <span style={{ fontFamily: 'monospace', fontSize: 9, color: s.c, fontWeight: 700, background: `${s.c}12`, padding: '2px 8px', borderRadius: 20 }}>{s.v}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ── CASCADE ───────────────────────────────────────────────────
+function SeqCascade() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [300, 1500, 3000, 5000, 7000].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+  const chain = ['Phénytoïne IV (15 mg/kg) administrée', 'Inhibition canaux Na⁺ → allongement QT', 'Phénobarbital concomitant → potentialisation', 'PAM chute : 114 → 61 mmHg en 2h', '⚠ RISQUE ARRÊT CARDIAQUE IMMINENT']
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontFamily: 'monospace', fontSize: 9, color: C.cae, letterSpacing: 2, marginBottom: 3 }}>MOTEUR 3 — CASCADE ALERT ENGINE</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: C.white }}>Détection des Effets en Chaîne</div>
+        <div style={{ fontSize: 10, color: C.dim }}>Intervention × Vulnérabilité × Littérature · OpenFDA temps réel</div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, flex: 1 }}>
+        <div>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2, marginBottom: 10 }}>CHAÎNE — PHÉNYTOÏNE + PHÉNOBARBITAL</div>
+          {chain.map((s, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 8, marginBottom: 8, opacity: p >= 1 && i < p ? 1 : 0, transform: p >= 1 && i < p ? 'translateX(0)' : 'translateX(-8px)', transition: 'all 0.3s ease' }}>
+              <div style={{ minWidth: 20, height: 20, borderRadius: '50%', background: i === 4 ? '#EF444420' : `${C.cae}15`, border: `1px solid ${i === 4 ? '#EF4444' : C.cae}40`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 8, fontWeight: 800, color: i === 4 ? '#EF4444' : C.cae, fontFamily: 'monospace', flexShrink: 0 }}>{i + 1}</div>
+              <span style={{ fontSize: 10, color: i === 4 ? '#EF4444' : C.white, lineHeight: 1.4, fontWeight: i === 4 ? 700 : 400 }}>{s}</span>
             </div>
           ))}
-          <div style={{ marginTop: "auto", padding: "8px 10px", borderRadius: 8, background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)" }}>
-            <div style={{ fontSize: 8, color: "#EF4444", fontWeight: 800, marginBottom: 4 }}>VPS</div>
-            <div style={{ fontSize: 22, fontWeight: 900, color: "#EF4444", fontFamily: "monospace" }}>92</div>
-            <div style={{ fontSize: 7, color: "rgba(255,255,255,0.35)" }}>CRITIQUE</div>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ padding: 14, background: C.card, borderRadius: 12, border: `1px solid ${C.cae}20`, textAlign: 'center', opacity: p >= 3 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.cae, marginBottom: 8, letterSpacing: 1 }}>RISQUE CARDIOTOXICITÉ</div>
+            <div style={{ fontFamily: 'monospace', fontSize: 38, fontWeight: 900, color: '#EF4444', lineHeight: 1 }}>97<span style={{ fontSize: 14 }}>%</span></div>
+            <div style={{ fontSize: 9, color: C.dim, marginTop: 8, lineHeight: 1.5 }}>5 molécules cardio-actives actives simultanément</div>
+          </div>
+          <div style={{ padding: '10px 12px', background: '#EF444408', borderRadius: 10, border: '1px solid #EF444430', opacity: p >= 4 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: '#EF4444', marginBottom: 4 }}>Alternative recommandée</div>
+            <div style={{ fontSize: 9, color: C.dim }}>Levetiracetam IV — profil cardiotoxique minimal · Réf: Gaspard 2015</div>
+          </div>
+          <div style={{ padding: '8px 12px', background: `${C.disc}08`, borderRadius: 8, border: `1px solid ${C.disc}20`, opacity: p >= 5 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            <div style={{ fontSize: 9, color: C.disc, fontFamily: 'monospace' }}>↗ Confirmé OpenFDA FAERS en temps réel</div>
           </div>
         </div>
-        {/* Center: patient silhouette */}
-        <div style={{ flex: 1, position: "relative", display: "flex", alignItems: "center", justifyContent: "center", padding: 8, background: "transparent" }}>
-          <div style={{ position: "relative", height: "100%", maxHeight: 280, background: "transparent" }}>
-            <canvas ref={canvasRef} style={{ display: 'block', height: '100%', maxHeight: 280, width: 'auto', mixBlendMode: 'screen' }} />
-            {/* Hotspots */}
-            {[
-              { top: "12%", left: "48%", c: "#EF4444" },
-              { top: "38%", left: "44%", c: "#FF6B35" },
-              { top: "52%", left: "52%", c: "#F59E0B" },
-            ].map((h, i) => (
-              <div key={i} style={{ position: "absolute", top: h.top, left: h.left, transform: "translate(-50%,-50%)" }}>
-                <div style={{ width: 14, height: 14, borderRadius: "50%", background: `${h.c}30`, border: `2px solid ${h.c}`, boxShadow: `0 0 ${tick % 2 === 0 ? 10 : 16}px ${h.c}`, transition: "box-shadow 0.4s" }} />
+      </div>
+    </div>
+  )
+}
+
+// ── DDD ───────────────────────────────────────────────────────
+function SeqDDD() {
+  const [p, setP] = useState(0)
+  const [hours, setHours] = useState(0)
+  useEffect(() => {
+    const ts = [300, 1500, 3000, 5500].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+  useEffect(() => {
+    if (p >= 2) {
+      let h = 0; const iv = setInterval(() => { h = Math.min(120, h + 4); setHours(h); if (h >= 120) clearInterval(iv) }, 50)
+      return () => clearInterval(iv)
+    }
+  }, [p])
+  const delays = [
+    { a: 'Diagnostic FIRES', o: 'J0', r: 'J+5', l: '+120h', s: 'critical' },
+    { a: 'IVIg + Corticoïdes', o: '< 48h', r: 'J+3', l: '+24h', s: 'warning' },
+    { a: 'Régime cétogène', o: 'J+2', r: 'J+5', l: '+72h', s: 'warning' },
+    { a: 'Anakinra (escalade)', o: 'J+7 max', r: 'J+10', l: '+3 jours', s: 'critical' },
+  ]
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontFamily: 'monospace', fontSize: 9, color: C.ddd, letterSpacing: 2, marginBottom: 3 }}>MOTEUR 4 — DIAGNOSTIC DELAY DETECTOR</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: C.white }}>Le Garde-fou Contre l'Inertie Clinique</div>
+        <div style={{ fontSize: 10, color: C.dim }}>8 règles sourées · Détection automatique · Alerte en temps réel</div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, flex: 1 }}>
+        <div>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2, marginBottom: 10 }}>RETARDS — CAS ALEJANDRO RECONSTITUÉ</div>
+          {delays.map((d, i) => (
+            <div key={i} style={{ padding: '8px 10px', borderRadius: 8, marginBottom: 6, background: d.s === 'critical' ? '#EF444408' : '#F59E0B08', border: `1px solid ${d.s === 'critical' ? '#EF444420' : '#F59E0B20'}`, borderLeft: `3px solid ${d.s === 'critical' ? '#EF4444' : '#F59E0B'}`, opacity: p >= 2 ? 1 : 0, transform: p >= 2 ? 'translateX(0)' : 'translateX(-10px)', transition: `all 0.3s ease ${i * 150}ms` }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 2 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, color: C.white }}>{d.a}</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 9, fontWeight: 800, color: d.s === 'critical' ? '#EF4444' : '#F59E0B' }}>{d.l}</span>
               </div>
-            ))}
-          </div>
-        </div>
-        {/* Right panel */}
-        <div style={{ width: 120, padding: "12px 8px", display: "flex", flexDirection: "column", gap: 7, borderLeft: "1px solid rgba(255,255,255,0.04)" }}>
-          {[
-            { l: "INFLAM", ic: "🔥", c: "#EF4444", dots: [2,2] },
-            { l: "TEMP", ic: "🌡", c: "#10B981", dots: [0,2] },
-          ].map((z, i) => (
-            <div key={i} style={{ padding: "7px 10px", borderRadius: 8, background: `${z.c}10`, border: `1px solid ${z.c}22`, display: "flex", alignItems: "center", gap: 6 }}>
-              <span style={{ fontSize: 12 }}>{z.ic}</span>
-              <span style={{ fontSize: 9, fontWeight: 800, color: z.c, fontFamily: "monospace", flex: 1 }}>{z.l}</span>
-              <div style={{ display: "flex", gap: 3 }}>
-                {[0,1,2].map(j => <div key={j} style={{ width: 5, height: 5, borderRadius: "50%", background: j <= z.dots[0] ? z.c : "rgba(255,255,255,0.1)", boxShadow: j <= z.dots[0] ? `0 0 5px ${z.c}` : "none" }} />)}
-              </div>
+              <div style={{ fontSize: 9, color: C.dim }}>{d.o} recommandé · {d.r} réel</div>
             </div>
           ))}
-          {/* EEG mini */}
-          <div style={{ marginTop: "auto", padding: "8px 10px", borderRadius: 8, background: "rgba(108,124,255,0.08)", border: "1px solid rgba(108,124,255,0.2)" }}>
-            <div style={{ fontSize: 8, color: "#6C7CFF", fontWeight: 700, marginBottom: 4, fontFamily: "monospace" }}>EEG</div>
-            <svg viewBox="0 0 80 20" style={{ width: "100%", height: 20 }}>
-              <polyline points="0,10 8,10 10,2 12,18 14,10 22,10 24,4 26,16 28,10 36,10 38,3 40,17 42,10 50,10 52,5 54,15 56,10 64,10 66,2 68,18 70,10 78,10 80,10" fill="none" stroke="#EF4444" strokeWidth="1.2" opacity="0.8"/>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          <div style={{ padding: 16, background: C.card, borderRadius: 12, border: `1px solid ${C.ddd}20`, textAlign: 'center', opacity: p >= 2 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2, marginBottom: 8 }}>HEURES PERDUES</div>
+            <div style={{ fontFamily: 'monospace', fontSize: 50, fontWeight: 900, color: '#EF4444', lineHeight: 1 }}>{hours}</div>
+            <div style={{ fontFamily: 'monospace', fontSize: 11, color: '#EF4444', marginTop: 4 }}>HEURES</div>
+          </div>
+          <div style={{ padding: '10px 14px', background: `${C.disc}08`, borderRadius: 10, border: `1px solid ${C.disc}20`, opacity: p >= 3 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.disc, letterSpacing: 1.5, marginBottom: 6 }}>AVEC PULSAR</div>
+            <DataRow label="Diagnostic FIRES" value="J0 au lieu de J+5" color={C.disc} delay={0} />
+            <DataRow label="Signal anakinra" value="J+1 au lieu de J+10" color={C.disc} delay={100} />
+            <DataRow label="Gain estimé" value="−120h perdues" color={C.disc} delay={200} />
+          </div>
+          <div style={{ padding: '8px 12px', background: `${C.ddd}08`, borderRadius: 8, border: `1px solid ${C.ddd}20`, opacity: p >= 4 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            <div style={{ fontSize: 10, color: C.ddd, fontStyle: 'italic', lineHeight: 1.5 }}>"Le problème n'était pas l'absence d'action. C'était la vitesse de reconnaissance."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── ORACLE ────────────────────────────────────────────────────
+function SeqOracle() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [300, 1500, 3000, 5000, 7000].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+  const pts = [
+    { h: '0h', v: 99, c: '#EF4444' }, { h: '6h', v: 94, c: '#EF4444' },
+    { h: '12h', v: 82, c: '#F59E0B' }, { h: '24h', v: 71, c: '#F59E0B' },
+    { h: '48h', v: 54, c: C.disc }, { h: '72h', v: 38, c: C.disc },
+  ]
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontFamily: 'monospace', fontSize: 9, color: C.oracle, letterSpacing: 2, marginBottom: 3 }}>MOTEUR 5 — ORACLE ENGINE</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: C.white }}>Projection Pronostique sur 72 Heures</div>
+        <div style={{ fontSize: 10, color: C.dim }}>Simulation de trajectoires · Comparaison scénarios · Score de récupération</div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, flex: 1 }}>
+        <div>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2, marginBottom: 10 }}>TRAJECTOIRE VPS — PROTOCOLE OPTIMAL</div>
+          <div style={{ height: 130, position: 'relative', marginBottom: 8 }}>
+            <svg viewBox="0 0 270 110" style={{ width: '100%', height: '100%' }}>
+              {[0, 35, 70, 105].map(y => <line key={y} x1="0" y1={y} x2="270" y2={y} stroke="#1A2235" strokeWidth="1" />)}
+              {p >= 2 && <polyline points={pts.map((pt, i) => `${i * 54},${(100 - pt.v) * 1.1}`).join(' ')} fill="none" stroke={C.oracle} strokeWidth="2.5" />}
+              {p >= 3 && pts.map((pt, i) => <circle key={i} cx={i * 54} cy={(100 - pt.v) * 1.1} r="4" fill={pt.c} style={{ filter: `drop-shadow(0 0 4px ${pt.c})` }} />)}
             </svg>
-            <div style={{ fontSize: 7, color: "#EF4444", fontWeight: 700 }}>SEIZURE</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ScreenIRM() {
-  return (
-    <div style={{ height: "100%", display: "flex", flexDirection: "column", fontFamily: "system-ui, sans-serif" }}>
-      <div style={{ height: 36, background: "rgba(47,209,200,0.08)", borderBottom: "1px solid rgba(47,209,200,0.15)", display: "flex", alignItems: "center", padding: "0 12px", gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: "#6C7CFF", fontFamily: "monospace" }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: "rgba(255,255,255,0.3)" }}>/</div>
-        <div style={{ fontSize: 9, color: "#2FD1C8", fontWeight: 700, fontFamily: "monospace" }}>Inès M. · Cartographie cérébrale</div>
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: "auto", display: "flex", flexDirection: "column", gap: 10 }}>
-        {/* BBB illustration */}
-        <div className="pulsar-illus-wrap" style={{ border: "1px solid rgba(47,209,200,0.25)" }}>
-          <img src="/assets/illustrations/PULSAR_IRM_FIRES.png" alt="IRM cérébrale FIRES — 4 séquences" />
-        </div>
-        {/* Brain zones heatmap */}
-        <div style={{ padding: "10px 12px", background: "rgba(47,209,200,0.06)", borderRadius: 9, border: "1px solid rgba(47,209,200,0.15)" }}>
-          <div style={{ fontSize: 9, fontWeight: 800, color: "#2FD1C8", marginBottom: 8, letterSpacing: 1 }}>CARTOGRAPHIE — ZONES INFLAMMATOIRES</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
-            {[
-              { z: "Temporal G", v: 94, c: "#EF4444" },
-              { z: "Temporal D", v: 89, c: "#EF4444" },
-              { z: "Hippocampe", v: 78, c: "#FF6B35" },
-              { z: "Thalamus", v: 61, c: "#F59E0B" },
-              { z: "Frontal", v: 38, c: "#6C7CFF" },
-              { z: "Occipital", v: 12, c: "#10B981" },
-            ].map((z, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ fontSize: 8, color: "rgba(255,255,255,0.5)", minWidth: 62 }}>{z.z}</div>
-                <div style={{ flex: 1, height: 4, background: "rgba(255,255,255,0.05)", borderRadius: 2, overflow: "hidden" }}>
-                  <div style={{ width: `${z.v}%`, height: "100%", background: z.c, borderRadius: 2 }} />
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
+              {pts.map(pt => (
+                <div key={pt.h} style={{ textAlign: 'center' }}>
+                  <div style={{ fontFamily: 'monospace', fontSize: 8, color: pt.c, fontWeight: 700 }}>{pt.v}</div>
+                  <div style={{ fontFamily: 'monospace', fontSize: 7, color: C.dim }}>{pt.h}</div>
                 </div>
-                <div style={{ fontSize: 8, color: z.c, fontFamily: "monospace", minWidth: 24, textAlign: "right", fontWeight: 700 }}>{z.v}%</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ScreenTimeline() {
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(239,68,68,0.08)', borderBottom: '1px solid rgba(239,68,68,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#EF4444', fontWeight: 700, fontFamily: 'monospace' }}>DDD · Chronologie FIRES</div>
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.5)' }}>Le moteur DDD reconstruit chaque heure. Chaque délai évitable est identifié.</div>
-        <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(239,68,68,0.2)' }}>
-          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(239,68,68,0.2)' }}>
-            <img src="/assets/illustrations/PULSAR_FIRES_TIMELINE.png" alt="Timeline FIRES" />
-          </div>
-        </div>
-        <div style={{ padding: '10px 12px', background: 'rgba(239,68,68,0.06)', borderRadius: 9, border: '1px solid rgba(239,68,68,0.15)' }}>
-          <div style={{ fontSize: 9, fontWeight: 800, color: '#EF4444', marginBottom: 6 }}>3 FENÊTRES THÉRAPEUTIQUES MANQUÉES</div>
-          {['J-3 : Signal pro-inflammatoire précoce non capturé','J0→J+1 : Diagnostic différentiel FIRES retardé 18h','J+2 : Anakinra initié après fermeture de la fenêtre optimale'].map((t,i) => (
-            <div key={i} style={{ fontSize: 9, color: 'rgba(255,255,255,0.55)', marginBottom: 4, display: 'flex', gap: 6 }}>
-              <span style={{ color: '#EF4444' }}>✗</span>{t}
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  )
-}
-
-function ScreenNeuron() {
-  return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(185,107,255,0.08)', borderBottom: '1px solid rgba(185,107,255,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#B96BFF', fontWeight: 700, fontFamily: 'monospace' }}>NeuroCore · Ce que FIRES fait aux neurones</div>
-      </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(185,107,255,0.2)' }}>
-          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(108,124,255,0.2)' }}>
-            <NeuronAnimation />
+          </div>
+          <div style={{ padding: '8px 12px', background: `${C.disc}08`, borderRadius: 8, border: `1px solid ${C.disc}20`, opacity: p >= 4 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.disc, letterSpacing: 1, marginBottom: 4 }}>PROJECTION H+72</div>
+            <div style={{ fontSize: 12, fontWeight: 800, color: C.disc }}>VPS 38 — STABILISATION</div>
+            <div style={{ fontSize: 9, color: C.dim, marginTop: 2 }}>Si protocole L2 initié dans les 6 prochaines heures</div>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2, marginBottom: 4 }}>3 SCÉNARIOS SIMULÉS</div>
           {[
-            { l: 'Activité épileptique', v: '8 crises/24h', c: '#EF4444' },
-            { l: 'Inflammation IL-1β', v: '+420%', c: '#FF6B35' },
-            { l: 'Perméabilité BBB', v: '+340%', c: '#B96BFF' },
-            { l: 'Mort neuronale', v: 'Zone critique', c: '#F59E0B' },
-          ].map((s,i) => (
-            <div key={i} style={{ padding: '8px 10px', borderRadius: 8, background: `${s.c}08`, border: `1px solid ${s.c}18` }}>
-              <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.4)', marginBottom: 3 }}>{s.l}</div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: s.c, fontFamily: 'monospace' }}>{s.v}</div>
+            { l: 'L1 actuel — Sans ajustement', o: 'VPS 82 à H+24', r: 0.31, c: '#EF4444', d: 0 },
+            { l: 'L2 — Anakinra + KD immédiat', o: 'VPS 38 à H+72', r: 0.78, c: C.disc, d: 300 },
+            { l: 'L3 — Rituximab + Plasmaphérèse', o: 'VPS 24 à H+72', r: 0.89, c: C.oracle, d: 600 },
+          ].map((s, i) => (
+            <div key={i} style={{ padding: '10px 12px', background: C.card, borderRadius: 10, border: `1px solid ${s.c}25`, borderLeft: `3px solid ${s.c}`, opacity: p >= 3 ? 1 : 0, transition: `opacity 0.4s ease ${s.d}ms` }}>
+              <div style={{ fontSize: 10, fontWeight: 700, color: C.white, marginBottom: 6 }}>{s.l}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 9, color: C.dim }}>{s.o}</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <div style={{ width: 48, height: 4, background: '#1A2235', borderRadius: 2 }}>
+                    <div style={{ width: `${s.r * 100}%`, height: '100%', background: s.c, borderRadius: 2 }} />
+                  </div>
+                  <span style={{ fontSize: 9, color: s.c, fontFamily: 'monospace', fontWeight: 700 }}>{Math.round(s.r * 100)}%</span>
+                </div>
+              </div>
+            </div>
+          ))}
+          <div style={{ marginTop: 4, padding: '8px 12px', background: `${C.oracle}08`, borderRadius: 8, border: `1px solid ${C.oracle}20`, opacity: p >= 5 ? 1 : 0, transition: 'opacity 0.5s' }}>
+            <div style={{ fontSize: 10, color: C.oracle, fontStyle: 'italic' }}>"Oracle donne au clinicien une longueur d'avance de 72 heures."</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// ── ALEJANDRO ─────────────────────────────────────────────────
+function SeqAlejandro() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [300, 1500, 3500, 5500, 7500].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ marginBottom: 14 }}>
+        <div style={{ fontFamily: 'monospace', fontSize: 9, color: C.alex, letterSpacing: 2, marginBottom: 3 }}>PATIENT 0 — CAS FONDATEUR</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: C.white }}>Alejandro R. — Ce que PULSAR aurait changé</div>
+        <div style={{ fontSize: 10, color: C.dim }}>FIRES · 6 ans · Eaubonne → Robert-Debré · 03/04 – 17/04/2025</div>
+      </div>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, flex: 1 }}>
+        <div>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: '#EF4444', letterSpacing: 2, marginBottom: 8 }}>CE QUI S'EST PASSÉ</div>
+          {[
+            { d: 'J+5', t: 'Diagnostic FIRES — 5 jours après les premiers signaux', c: '#EF4444' },
+            { d: 'J+3', t: 'IVIg — 24h de retard sur la fenêtre optimale', c: '#F59E0B' },
+            { d: 'J+10', t: 'Anakinra — 3 jours après signal d\'escalade PULSAR', c: '#F59E0B' },
+            { d: 'J+15', t: 'Arrêt cardiaque — 5 causes convergentes', c: '#EF4444' },
+          ].map((e, i) => (
+            <div key={i} style={{ display: 'flex', gap: 10, marginBottom: 8, opacity: p >= 1 ? 1 : 0, transition: `opacity 0.3s ease ${i * 150}ms` }}>
+              <div style={{ fontFamily: 'monospace', fontSize: 9, fontWeight: 800, color: e.c, minWidth: 32, paddingTop: 2 }}>{e.d}</div>
+              <div style={{ fontSize: 10, color: C.dim, lineHeight: 1.4 }}>{e.t}</div>
             </div>
           ))}
         </div>
+        <div>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.disc, letterSpacing: 2, marginBottom: 8 }}>AVEC PULSAR — SIMULATION</div>
+          {[
+            { l: 'Diagnostic FIRES', b: 'J+5', a: 'J0', g: '−120h', c: C.disc },
+            { l: 'Alerte anakinra', b: 'J+10', a: 'J+1', g: '−9j', c: C.disc },
+            { l: 'Cardiotoxicité', b: 'Non détectée', a: 'J+3 alerte', g: '✓', c: C.oracle },
+            { l: 'VPS synthétique', b: 'Inconnu', a: '100 CRITIQUE', g: 'Visible', c: '#EF4444' },
+          ].map((r, i) => (
+            <div key={i} style={{ padding: '7px 10px', background: `${r.c}06`, borderRadius: 8, border: `1px solid ${r.c}20`, marginBottom: 6, opacity: p >= 2 ? 1 : 0, transition: `opacity 0.3s ease ${i * 150}ms` }}>
+              <div style={{ fontSize: 9, color: C.dim, marginBottom: 2 }}>{r.l}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: 9, color: '#EF4444', textDecoration: 'line-through', opacity: 0.6 }}>{r.b}</span>
+                <span style={{ fontSize: 9, color: C.white }}>→</span>
+                <span style={{ fontSize: 10, color: r.c, fontWeight: 700 }}>{r.a}</span>
+                <span style={{ fontFamily: 'monospace', fontSize: 9, color: r.c, fontWeight: 800 }}>{r.g}</span>
+              </div>
+            </div>
+          ))}
+          <div style={{ marginTop: 8, padding: '10px 12px', background: `${C.alex}08`, borderRadius: 10, border: `1px solid ${C.alex}30`, opacity: p >= 4 ? 1 : 0, transition: 'opacity 0.6s' }}>
+            <div style={{ fontSize: 10, color: C.alex, lineHeight: 1.6, fontStyle: 'italic' }}>"PULSAR n'est pas un meilleur médecin. C'est un système qui empêche que des signaux connus se perdent dans la complexité d'une réanimation."</div>
+          </div>
+        </div>
+      </div>
+      <div style={{ marginTop: 10, display: 'flex', gap: 16, justifyContent: 'center', opacity: p >= 5 ? 1 : 0, transition: 'opacity 0.5s' }}>
+        {[['100', 'VPS CRITIQUE', '#EF4444'], ['14', 'ALERTES', '#F59E0B'], ['4', 'DDD', C.ddd], ['11', 'MOTEURS', C.vps]].map(([n, l, c]) => (
+          <div key={l} style={{ textAlign: 'center' }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 20, fontWeight: 900, color: c }}>{n}</div>
+            <div style={{ fontFamily: 'monospace', fontSize: 7, color: C.dim, letterSpacing: 1.5 }}>{l}</div>
+          </div>
+        ))}
       </div>
     </div>
   )
 }
 
-function ScreenAnakinra() {
+// ── PACK SHOT ─────────────────────────────────────────────────
+function SeqPackshot() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [300, 1000, 2000, 3000, 4500].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(16,185,129,0.08)', borderBottom: '1px solid rgba(16,185,129,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#10B981', fontWeight: 700, fontFamily: 'monospace' }}>TPE · Mécanisme Anakinra — Score 94/100</div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', gap: 20 }}>
+      <div style={{ opacity: p >= 1 ? 1 : 0, transition: 'opacity 0.8s' }}>
+        <div style={{ fontSize: 9, fontFamily: 'monospace', color: C.dim, letterSpacing: 4, marginBottom: 8 }}>UNE PLATEFORME. UNE MISSION.</div>
+        <div style={{ fontSize: 42, fontWeight: 900, color: C.white, letterSpacing: 6, fontFamily: 'monospace' }}>PULSAR</div>
+        <div style={{ fontSize: 12, color: C.vps, marginTop: 6, fontStyle: 'italic' }}>Pediatric Ultra-Rare Syndrome Analyzer · V21.4</div>
       </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(16,185,129,0.2)' }}>
-          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(16,185,129,0.2)' }}>
-            <AnakinraAnimation />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 10, maxWidth: 480, width: '100%', opacity: p >= 2 ? 1 : 0, transition: 'opacity 0.8s 0.2s' }}>
+        {[['12', 'MOTEURS IA', C.vps], ['95', 'TESTS VALIDÉS', C.disc], ['4,662', 'LIGNES MOTEUR', C.oracle], ['5', 'PATHOLOGIES', '#F59E0B'], ['∞', 'PATIENTS LIVE', C.cae], ['0', 'SAISIE REQUISE', C.disc]].map(([n, l, c]) => (
+          <div key={l} style={{ padding: '12px 8px', background: C.card, borderRadius: 12, border: `1px solid ${c}20` }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 22, fontWeight: 900, color: c }}>{n}</div>
+            <div style={{ fontFamily: 'monospace', fontSize: 7, color: C.dim, letterSpacing: 1.5, marginTop: 4, lineHeight: 1.4 }}>{l}</div>
           </div>
-        </div>
-        <div style={{ padding: '10px 12px', background: 'rgba(16,185,129,0.07)', borderRadius: 9, border: '1px solid rgba(16,185,129,0.18)' }}>
-          <div style={{ fontSize: 10, fontWeight: 800, color: '#10B981', marginBottom: 6 }}>PULSAR RECOMMANDE · Anakinra · Score 94</div>
-          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
-            Inhibiteur IL-1 · Bloque la cascade inflammatoire à la source · 2–4 mg/kg/j IV · <span style={{ color: '#FF6B35', fontWeight: 700 }}>Fenêtre : 6h restantes</span>
-          </div>
-        </div>
+        ))}
+      </div>
+      <div style={{ opacity: p >= 3 ? 1 : 0, transition: 'opacity 0.8s', fontSize: 11, color: C.dim, lineHeight: 1.8 }}>
+        Intelligence artificielle clinique · Littérature médicale temps réel · Pharmacovigilance OpenFDA<br />Analyse de cohorte · Prédiction pronostique · Détection de retard diagnostique
+      </div>
+      <div style={{ display: 'flex', gap: 8, opacity: p >= 4 ? 1 : 0, transition: 'opacity 0.8s' }}>
+        {[['NEXT.JS 14', C.vps], ['SUPABASE', C.disc], ['CLAUDE API', C.oracle], ['OPENFDA', C.alex]].map(([l, c]) => (
+          <div key={l} style={{ padding: '5px 14px', borderRadius: 20, background: `${c}15`, border: `1px solid ${c}30`, fontSize: 9, color: c, fontFamily: 'monospace', fontWeight: 700 }}>{l}</div>
+        ))}
+      </div>
+      <div style={{ opacity: p >= 5 ? 1 : 0, transition: 'opacity 0.8s', padding: '8px 18px', borderRadius: 10, background: `${C.vps}08`, border: `1px solid ${C.vps}20` }}>
+        <div style={{ fontSize: 10, color: C.vps, fontFamily: 'monospace' }}>pulsar-lovat.vercel.app · Beta fermée · Invitation uniquement</div>
       </div>
     </div>
   )
 }
 
-function ScreenGutBrain() {
+// ── HOSPITALS ─────────────────────────────────────────────────
+function SeqHospitals() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [400, 1500, 3000, 5000, 6500].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+  const hospitals = [
+    { f: '🇫🇷', n: 'Robert-Debré', c: 'Paris, France', s: 'Neurologie pédiatrique' },
+    { f: '🇬🇧', n: 'Great Ormond Street', c: 'Londres, UK', s: 'Maladies rares' },
+    { f: '🇺🇸', n: 'Boston Children\'s', c: 'Boston, USA', s: 'Neuro-immunologie' },
+    { f: '🇨🇦', n: 'SickKids', c: 'Toronto, Canada', s: 'Réanimation pédiatrique' },
+    { f: '🇩🇪', n: 'Charité Berlin', c: 'Berlin, Allemagne', s: 'Épilepsie réfractaire' },
+    { f: '🇧🇪', n: 'UZ Leuven', c: 'Louvain, Belgique', s: 'FIRES / NORSE' },
+  ]
   return (
-    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', fontFamily: 'system-ui, sans-serif' }}>
-      <div style={{ height: 36, background: 'rgba(47,209,200,0.08)', borderBottom: '1px solid rgba(47,209,200,0.15)', display: 'flex', alignItems: 'center', padding: '0 12px', gap: 8 }}>
-        <div style={{ fontSize: 10, fontWeight: 900, color: '#6C7CFF', fontFamily: 'monospace' }}>✦ PULSAR</div>
-        <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)' }}>/</div>
-        <div style={{ fontSize: 9, color: '#2FD1C8', fontWeight: 700, fontFamily: 'monospace' }}>Discovery · Axe intestin-cerveau</div>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', gap: 18 }}>
+      <div style={{ opacity: p >= 1 ? 1 : 0, transition: 'opacity 0.8s' }}>
+        <div style={{ fontSize: 9, fontFamily: 'monospace', color: C.disc, letterSpacing: 4, marginBottom: 10 }}>PROCHAINEMENT</div>
+        <div style={{ fontSize: 26, fontWeight: 900, color: C.white, lineHeight: 1.4 }}>
+          PULSAR sera bêta-testé dans<br /><span style={{ color: C.disc }}>plusieurs hôpitaux internationaux</span>
+        </div>
       </div>
-      <div style={{ flex: 1, padding: 12, overflow: 'auto', display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <div style={{ borderRadius: 10, overflow: 'hidden', border: '1px solid rgba(47,209,200,0.2)' }}>
-          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(47,209,200,0.2)' }}>
-            <GutBrainAnimation />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, width: '100%', opacity: p >= 2 ? 1 : 0, transition: 'opacity 0.8s' }}>
+        {hospitals.map((h, i) => (
+          <div key={i} style={{ padding: '10px 12px', background: C.card, borderRadius: 10, border: '1px solid rgba(108,124,255,0.15)', textAlign: 'left', opacity: p >= 3 ? 1 : 0, transform: p >= 3 ? 'translateY(0)' : 'translateY(8px)', transition: `all 0.4s ease ${i * 100}ms` }}>
+            <div style={{ fontSize: 18, marginBottom: 4 }}>{h.f}</div>
+            <div style={{ fontSize: 10, fontWeight: 700, color: C.white }}>{h.n}</div>
+            <div style={{ fontSize: 9, color: C.dim, marginTop: 2 }}>{h.c}</div>
+            <div style={{ fontSize: 8, color: C.vps, marginTop: 4, fontFamily: 'monospace' }}>{h.s}</div>
           </div>
-          <div className="pulsar-illus-wrap" style={{ border: '1px solid rgba(255,107,53,0.25)', marginTop: 8 }}>
-            <img src="/assets/illustrations/PULSAR_INTESTINAL_BARRIER.png" alt="Barrière intestinale — Leaky Gut FIRES" />
+        ))}
+      </div>
+      <div style={{ opacity: p >= 4 ? 1 : 0, transition: 'opacity 0.8s', fontSize: 11, color: C.dim, lineHeight: 1.8, maxWidth: 460 }}>
+        Protocole de bêta-test en cours de finalisation<br />Intégration aux systèmes hospitaliers · Formation des équipes médicales
+      </div>
+      <div style={{ display: 'flex', gap: 24, opacity: p >= 5 ? 1 : 0, transition: 'opacity 0.8s' }}>
+        {[['2026', 'LANCEMENT BETA'], ['6+', 'HÔPITAUX'], ['3', 'CONTINENTS']].map(([n, l]) => (
+          <div key={l} style={{ textAlign: 'center' }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 28, fontWeight: 900, color: C.disc }}>{n}</div>
+            <div style={{ fontFamily: 'monospace', fontSize: 8, color: C.dim, letterSpacing: 2 }}>{l}</div>
           </div>
-        </div>
-        <div style={{ padding: '10px 12px', background: 'rgba(47,209,200,0.06)', borderRadius: 9, border: '1px solid rgba(47,209,200,0.15)' }}>
-          <div style={{ fontSize: 9, fontWeight: 800, color: '#2FD1C8', marginBottom: 5 }}>HYPOTHÈSE DISCOVERY ENGINE L3</div>
-          <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.6)', lineHeight: 1.6 }}>
-            Dysbiose intestinale détectée J-7 corrèle avec l'activation microgliale. Nouvelle piste thérapeutique identifiée dans 3 études NCT actives.
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   )
 }
 
-const UI_MAP: Record<string, () => JSX.Element> = {
-  admission: ScreenAdmission,
-  vps: ScreenVPS,
-  physio: ScreenVisualPhysio,
-  neuron: ScreenNeuron,
-  diagnostic: ScreenDiagnostic,
-  timeline: ScreenTimeline,
-  brain: ScreenBrain,
-  irm: ScreenIRM,
-  cascade: ScreenCascade,
-  traitement: ScreenTraitement,
-  anakinra: ScreenAnakinra,
-  oracle: ScreenOracle,
-  gutbrain: ScreenGutBrain,
-  discovery: ScreenDiscovery,
+// ── MEMORIAL ──────────────────────────────────────────────────
+function SeqMemorial() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [600, 2000, 3500, 5500, 7000].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', textAlign: 'center', gap: 24 }}>
+      <div style={{ width: 1, height: 50, background: `linear-gradient(to bottom, transparent, ${C.gold}, transparent)`, opacity: p >= 1 ? 1 : 0, transition: 'opacity 1s' }} />
+      <div style={{ opacity: p >= 2 ? 1 : 0, transition: 'opacity 1.2s' }}>
+        <div style={{ fontSize: 11, fontFamily: 'monospace', color: C.dim, letterSpacing: 4, marginBottom: 18 }}>À LA MÉMOIRE DE</div>
+        <div style={{ fontSize: 52, fontWeight: 900, color: C.gold, letterSpacing: -1, lineHeight: 1.1 }}>Alejandro R.</div>
+        <div style={{ fontSize: 16, color: C.dim, marginTop: 12, letterSpacing: 6, fontFamily: 'monospace' }}>2019 — 2025</div>
+      </div>
+      <div style={{ opacity: p >= 3 ? 1 : 0, transition: 'opacity 1s', maxWidth: 460 }}>
+        <div style={{ fontSize: 14, color: C.white, lineHeight: 2, fontStyle: 'italic' }}>
+          "Sa vie a donné naissance à PULSAR.<br />PULSAR donnera une chance à ceux qui viendront."
+        </div>
+      </div>
+      <div style={{ width: 1, height: 50, background: `linear-gradient(to bottom, transparent, ${C.gold}, transparent)`, opacity: p >= 1 ? 1 : 0, transition: 'opacity 1s' }} />
+      <div style={{ opacity: p >= 4 ? 1 : 0, transition: 'opacity 1s', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
+        <div style={{ fontSize: 22, fontWeight: 900, color: C.vps, letterSpacing: 6, fontFamily: 'monospace' }}>PULSAR</div>
+        <div style={{ fontSize: 9, color: C.dim, letterSpacing: 3, fontFamily: 'monospace' }}>PEDIATRIC ULTRA-RARE SYNDROME ANALYZER</div>
+      </div>
+      <div style={{ opacity: p >= 5 ? 1 : 0, transition: 'opacity 1s', fontSize: 10, color: C.dim, fontFamily: 'monospace', letterSpacing: 2 }}>
+        pulsar-lovat.vercel.app · Closed Beta · 2026
+      </div>
+    </div>
+  )
 }
 
-// ── MAIN COMPONENT ─────────────────────────────────────────────────
-
-interface DemoPlayerProps {
-  open: boolean
-  onClose: () => void
+function SequenceContent({ id }: { id: string }) {
+  switch (id) {
+    case 'intro':     return <SeqIntro />
+    case 'vps':       return <SeqVPS />
+    case 'discovery': return <SeqDiscovery />
+    case 'cascade':   return <SeqCascade />
+    case 'ddd':       return <SeqDDD />
+    case 'oracle':    return <SeqOracle />
+    case 'alejandro': return <SeqAlejandro />
+    case 'packshot':  return <SeqPackshot />
+    case 'hospitals': return <SeqHospitals />
+    case 'memorial':  return <SeqMemorial />
+    default:          return null
+  }
 }
 
+// ── PLAYER ────────────────────────────────────────────────────
 export default function DemoPlayer({ open, onClose }: DemoPlayerProps) {
-  const [scene, setScene] = useState(0)
-  const [playing, setPlaying] = useState(true)
+  const [current, setCurrent] = useState(0)
+  const [paused, setPaused] = useState(false)
   const [progress, setProgress] = useState(0)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const progressRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const progressRef = useRef<NodeJS.Timeout | null>(null)
 
-  const DURATION = 7000
+  const total = SEQUENCES.length
+  const seq = SEQUENCES[current]
 
-  const goTo = useCallback((n: number) => {
-    setScene(n)
+  const goTo = useCallback((i: number) => { setCurrent(Math.max(0, Math.min(total - 1, i))); setProgress(0) }, [total])
+  const advance = useCallback(() => { setCurrent(c => { if (c >= total - 1) return c; setProgress(0); return c + 1 }) }, [total])
+
+  useEffect(() => {
+    if (!open || paused) return
+    if (timerRef.current) clearTimeout(timerRef.current)
+    timerRef.current = setTimeout(advance, seq.duration)
+    return () => { if (timerRef.current) clearTimeout(timerRef.current) }
+  }, [open, paused, current, seq.duration, advance])
+
+  useEffect(() => {
+    if (!open || paused) return
     setProgress(0)
-    setPlaying(true)
-  }, [])
-
-  const next = useCallback(() => {
-    setScene(s => {
-      const n = s < SCENES.length - 1 ? s + 1 : 0
-      setProgress(0)
-      return n
-    })
-  }, [])
-
-  // Autoplay + progress bar
-  useEffect(() => {
-    if (!open || !playing) { 
-      if (intervalRef.current) clearInterval(intervalRef.current)
-      if (progressRef.current) clearInterval(progressRef.current)
-      return 
-    }
-    if (progressRef.current) clearInterval(progressRef.current)
-    progressRef.current = setInterval(() => {
-      setProgress(p => {
-        if (p >= 100) { next(); return 0 }
-        return p + (100 / (DURATION / 50))
-      })
-    }, 50)
+    const step = 100; const inc = 100 / (seq.duration / step); let p = 0
+    progressRef.current = setInterval(() => { p = Math.min(100, p + inc); setProgress(p); if (p >= 100 && progressRef.current) clearInterval(progressRef.current) }, step)
     return () => { if (progressRef.current) clearInterval(progressRef.current) }
-  }, [open, playing, scene, next])
+  }, [open, paused, current, seq.duration])
 
-  useEffect(() => {
-    if (open) { setScene(0); setProgress(0); setPlaying(true) }
-  }, [open])
-
-  useEffect(() => {
-    const h = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose()
-      if (e.key === 'ArrowRight') { next() }
-      if (e.key === 'ArrowLeft') { setScene(s => Math.max(0, s-1)); setProgress(0) }
-      if (e.key === ' ') { e.preventDefault(); setPlaying(p => !p) }
-    }
-    if (open) window.addEventListener('keydown', h)
-    return () => window.removeEventListener('keydown', h)
-  }, [open, onClose, next])
+  useEffect(() => { if (open) { setCurrent(0); setProgress(0); setPaused(false) } }, [open])
 
   if (!open) return null
 
-  const cur = SCENES[scene]
-  const UIScreen = UI_MAP[cur.ui]
-
   return (
-    <>
-      <div onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 9998, background: 'rgba(0,0,0,0.88)', backdropFilter: 'blur(10px)' }} />
+    <div style={{ position: 'fixed', inset: 0, zIndex: 1000, background: 'rgba(0,0,0,0.92)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={onClose}>
+      <div onClick={e => e.stopPropagation()} style={{ width: '90vw', maxWidth: 840, background: C.bg, borderRadius: 20, overflow: 'hidden', border: `1px solid ${seq.accentColor}25`, boxShadow: `0 0 80px ${seq.accentColor}15, 0 24px 80px rgba(0,0,0,0.6)`, display: 'flex', flexDirection: 'column', height: '86vh', maxHeight: 620 }}>
 
-      <div className="demo-modal" style={{
-        position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)',
-        zIndex: 9999,
-        width: '96%', maxWidth: 860,
-        maxHeight: '90vh',
-        background: '#0A0D1A',
-        border: `1px solid ${cur.color}25`,
-        borderRadius: 18,
-        boxShadow: `0 40px 100px rgba(0,0,0,0.85), 0 0 60px ${cur.color}12`,
-        display: 'flex',
-        overflow: 'hidden',
-        animation: 'demoIn .3s cubic-bezier(.22,1,.36,1)',
-      }}>
-
-        {/* ── LEFT: Narration panel ── */}
-        <div className="demo-narration" style={{
-          width: 280, flexShrink: 0,
-          background: 'rgba(0,0,0,0.4)',
-          borderRight: `1px solid ${cur.color}15`,
-          display: 'flex', flexDirection: 'column',
-          padding: 0,
-        }}>
-          {/* Header */}
-          <div style={{ padding: '18px 20px 0' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <div style={{ width: 8, height: 8, borderRadius: '50%', background: cur.color, boxShadow: `0 0 12px ${cur.color}` }} />
-              <span style={{ fontSize: 9, fontWeight: 800, color: cur.color, fontFamily: 'monospace', letterSpacing: 2 }}>
-                {cur.chapterN} / {String(SCENES.length).padStart(2,'0')}
-              </span>
-            </div>
-            <div style={{ fontSize: 8, fontWeight: 700, color: cur.color, fontFamily: 'monospace', letterSpacing: 3, marginBottom: 8 }}>
-              {cur.chapter.toUpperCase()}
-            </div>
-            <div style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: 1.35, marginBottom: 14 }}>
-              {cur.headline}
-            </div>
-            <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }}>
-              {cur.narration}
-            </div>
+        {/* Top bar */}
+        <div style={{ padding: '10px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: `1px solid ${seq.accentColor}15`, flexShrink: 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <span style={{ fontFamily: 'monospace', fontSize: 11, fontWeight: 800, color: seq.accentColor, letterSpacing: 2 }}>PULSAR</span>
+            <div style={{ width: 1, height: 12, background: 'rgba(255,255,255,0.1)' }} />
+            <span style={{ fontFamily: 'monospace', fontSize: 9, color: C.dim, letterSpacing: 2 }}>ACTE {seq.act} — {ACT_LABELS[seq.act].toUpperCase()}</span>
           </div>
-
-          {/* Chapters list */}
-          <div style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: 3, overflowY: 'auto' }}>
-            {SCENES.map((s, i) => (
-              <button key={i} onClick={() => goTo(i)} style={{
-                display: 'flex', alignItems: 'center', gap: 8,
-                padding: '7px 10px', borderRadius: 8,
-                background: i === scene ? `${s.color}14` : 'transparent',
-                border: `1px solid ${i === scene ? `${s.color}25` : 'transparent'}`,
-                cursor: 'pointer', textAlign: 'left', transition: 'all 0.15s',
-              }}>
-                <div style={{ width: 5, height: 5, borderRadius: '50%', background: i <= scene ? s.color : 'rgba(255,255,255,0.15)', flexShrink: 0 }} />
-                <div style={{ fontSize: 9, fontWeight: i === scene ? 700 : 400, color: i === scene ? s.color : i < scene ? 'rgba(255,255,255,0.4)' : 'rgba(255,255,255,0.25)' }}>
-                  {s.chapter}
-                </div>
-              </button>
-            ))}
-          </div>
-
-          {/* Controls */}
-          <div style={{ padding: '12px 16px', borderTop: `1px solid rgba(255,255,255,0.04)` }}>
-            <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-              <button onClick={() => { setScene(s => Math.max(0,s-1)); setProgress(0) }}
-                style={{ padding: '6px 10px', borderRadius: 7, border: '1px solid rgba(255,255,255,0.08)', background: 'none', color: 'rgba(255,255,255,0.4)', cursor: 'pointer', fontSize: 11 }}>←</button>
-              <button onClick={() => setPlaying(p => !p)}
-                style={{ flex: 1, padding: '6px 10px', borderRadius: 7, border: '1px solid rgba(255,255,255,0.08)', background: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer', fontSize: 11 }}>
-                {playing ? '⏸ Pause' : '▶ Play'}
-              </button>
-              <button onClick={() => { if (scene < SCENES.length-1) { next() } else onClose() }}
-                style={{ padding: '6px 10px', borderRadius: 7, border: 'none', background: cur.color, color: '#fff', cursor: 'pointer', fontSize: 11, fontWeight: 700 }}>
-                {scene < SCENES.length-1 ? '→' : '✓'}
-              </button>
-            </div>
-            <div style={{ fontSize: 8, color: 'rgba(255,255,255,0.15)', textAlign: 'center', marginTop: 8 }}>← → espace · ESC pour fermer</div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <button onClick={() => setPaused(p => !p)} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.dim, fontSize: 14, padding: '2px 8px' }}>{paused ? '▶' : '⏸'}</button>
+            <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', color: C.dim, fontSize: 20, padding: '0 6px', lineHeight: 1 }}>×</button>
           </div>
         </div>
 
-        {/* ── RIGHT: UI Screen ── */}
-        <div className="demo-ui-screen" style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          {/* Progress bar */}
-          <div style={{ height: 3, background: 'rgba(255,255,255,0.04)', flexShrink: 0 }}>
-            <div style={{ height: '100%', width: `${progress}%`, background: `linear-gradient(90deg, ${cur.color}, ${cur.color}80)`, transition: 'width 0.05s linear' }} />
-          </div>
-          {/* Close button */}
-          <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '8px 10px 0', flexShrink: 0 }}>
-            <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.25)', cursor: 'pointer', fontSize: 16, lineHeight: 1, padding: '2px 6px' }}>×</button>
-          </div>
-          {/* Screen */}
-          <div style={{ flex: 1, overflow: 'hidden' }}>
-            <UIScreen />
-          </div>
+        {/* Progress */}
+        <div style={{ height: 2, background: '#0F1828', flexShrink: 0 }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: seq.accentColor, transition: 'width 0.1s linear', boxShadow: `0 0 8px ${seq.accentColor}` }} />
+        </div>
+
+        {/* Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: 4, padding: '7px 0 3px', flexShrink: 0 }}>
+          {SEQUENCES.map((s, i) => (
+            <button key={i} onClick={() => goTo(i)} style={{ width: i === current ? 20 : 6, height: 6, borderRadius: 3, background: i === current ? s.accentColor : i < current ? `${s.accentColor}50` : '#1A2235', border: 'none', cursor: 'pointer', padding: 0, transition: 'all 0.3s' }} />
+          ))}
+        </div>
+
+        {/* Content */}
+        <div key={current} style={{ flex: 1, padding: '10px 20px 14px', overflow: 'hidden', animation: 'demoFade 0.4s ease' }}>
+          <style>{`@keyframes demoFade { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }`}</style>
+          <SequenceContent id={seq.id} />
+        </div>
+
+        {/* Bottom nav */}
+        <div style={{ padding: '8px 16px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexShrink: 0, borderTop: `1px solid ${seq.accentColor}10` }}>
+          <button onClick={() => goTo(current - 1)} disabled={current === 0} style={{ padding: '6px 14px', borderRadius: 8, border: `1px solid ${seq.accentColor}30`, background: 'none', color: current === 0 ? '#2A3040' : seq.accentColor, fontFamily: 'monospace', fontSize: 11, cursor: current === 0 ? 'default' : 'pointer', fontWeight: 700 }}>‹ Précédent</button>
+          <span style={{ fontFamily: 'monospace', fontSize: 9, color: C.dim }}>{current + 1} / {total}</span>
+          {current < total - 1
+            ? <button onClick={() => goTo(current + 1)} style={{ padding: '6px 14px', borderRadius: 8, border: `1px solid ${seq.accentColor}30`, background: `${seq.accentColor}10`, color: seq.accentColor, fontFamily: 'monospace', fontSize: 11, cursor: 'pointer', fontWeight: 700 }}>Suivant ›</button>
+            : <button onClick={onClose} style={{ padding: '6px 14px', borderRadius: 8, border: 'none', background: seq.accentColor, color: '#fff', fontFamily: 'monospace', fontSize: 11, cursor: 'pointer', fontWeight: 800 }}>Fermer ×</button>
+          }
         </div>
       </div>
-
-      <style>{`
-        @keyframes demoIn { from { opacity:0; transform:translate(-50%,-50%) scale(.96) } to { opacity:1; transform:translate(-50%,-50%) scale(1) } }
-        @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.4)} }
-        @keyframes load { 0%{width:20%} 50%{width:85%} 100%{width:20%} }
-        @media (max-width: 640px) {
-          .demo-modal {
-            top: 0 !important; left: 0 !important;
-            transform: none !important;
-            width: 100% !important; max-width: 100% !important;
-            max-height: 100% !important; height: 100% !important;
-            border-radius: 0 !important;
-            animation: demoInMobile .3s cubic-bezier(.22,1,.36,1) !important;
-          }
-          @keyframes demoInMobile { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:none} }
-          .demo-narration { width: 100% !important; }
-          .demo-ui-screen { display: none !important; }
-        }
-      `}</style>
-    </>
+    </div>
   )
 }
