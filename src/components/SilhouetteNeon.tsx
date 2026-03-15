@@ -81,16 +81,15 @@ export default function SilhouetteNeon({
   // L'image contient 2 silhouettes : garçon gauche, fille droite
   // On affiche uniquement si gender='M' (garçon) ou 'F' (fille)
   // Pour PULSAR : on crop/positionne selon le genre
-  const imgStyle = gender === 'M'
-    ? { objectPosition: '20% center' }
-    : { objectPosition: '75% center' };
+  const imgSrc = gender === 'M' ? '/assets/silhouette-boy.jpg' : '/assets/silhouette-girl.jpg';
 
+  // Hotspots centrés sur image dédiée (garçon ou fille, chacun centré à 50%)
   const hotspots = [
-    { id: 'neuro',  top: '12%', left: gender === 'M' ? '28%' : '68%', status: vitals.neuro?.status  ?? 'normal' },
-    { id: 'cardio', top: '36%', left: gender === 'M' ? '35%' : '62%', status: vitals.cardio?.status ?? 'normal' },
-    { id: 'resp',   top: '33%', left: gender === 'M' ? '28%' : '56%', status: vitals.resp?.status   ?? 'normal' },
-    { id: 'inflam', top: '48%', left: gender === 'M' ? '33%' : '63%', status: vitals.inflam?.status ?? 'normal' },
-    { id: 'temp',   top: '60%', left: gender === 'M' ? '32%' : '62%', status: vitals.temp?.status   ?? 'normal' },
+    { id: 'neuro',  top: '12%', left: '50%', status: vitals.neuro?.status  ?? 'normal' },
+    { id: 'cardio', top: '34%', left: '54%', status: vitals.cardio?.status ?? 'normal' },
+    { id: 'resp',   top: '31%', left: '44%', status: vitals.resp?.status   ?? 'normal' },
+    { id: 'inflam', top: '48%', left: '50%', status: vitals.inflam?.status ?? 'normal' },
+    { id: 'temp',   top: '60%', left: '50%', status: vitals.temp?.status   ?? 'normal' },
   ];
 
   return (
@@ -130,12 +129,12 @@ export default function SilhouetteNeon({
         {/* Image silhouette avec hotspots */}
         <div style={{ position: 'relative', width: 220, height: 340, borderRadius: 12, overflow: 'hidden', background: '#0C1424' }}>
           <img
-            src="/assets/silhouette-neon.jpg"
+            src={imgSrc}
             alt="Visual Physiology"
             style={{
               width: '100%', height: '100%', objectFit: 'cover',
+              objectPosition: 'center center',
               mixBlendMode: 'screen',
-              ...imgStyle,
             }}
           />
           {/* Hotspots SVG overlay */}
