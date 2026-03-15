@@ -1,10 +1,9 @@
 'use client'
 import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
-import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { runCAE, runCAELive, type CAEResult, type CascadeAlert, type VulnerabilityProfile } from '@/lib/engines/CascadeAlertEngine'
-import { PatientState } from '@/lib/engines/PatientState'
+import { usePatient } from '@/contexts/PatientContext'
 
 const CAE_COLOR = '#FF6B35'
 
@@ -77,34 +76,21 @@ function CascadeCard({ a, t }: { a: CascadeAlert; t: (fr: string, en: string) =>
 
 export default function CascadePage() {
   const { t } = useLang()
-  const params = useParams()
-  const [result, setResult] = useState<CAEResult | null>(null)
+  const { ps } = usePatient()
+  const [customResult, setCustomResult] = useState<CAEResult | null>(null)
   const [intervention, setIntervention] = useState('')
   const [loading, setLoading] = useState(false)
 
-  useEffect(() => {
-    const stored = localStorage.getItem(`pulsar-patient-${params.id}`)
-    if (stored) {
-      try {
-        const ps = new PatientState(JSON.parse(stored))
-        setResult(runCAE(ps))
-      } catch { /* noop */ }
-    }
-  }, [params.id])
+  const result = customResult ?? (ps ? runCAE(ps) : null)
 
   const runWithIntervention = async () => {
-    const stored = localStorage.getItem(`pulsar-patient-${params.id}`)
-    if (!stored || !intervention.trim()) return
+    if (!ps || !intervention.trim()) return
     setLoading(true)
     try {
-      const ps = new PatientState(JSON.parse(stored))
-      // Use live version — queries OpenFDA in real time
       const liveResult = await runCAELive(ps, intervention.trim())
-      setResult(liveResult)
+      setCustomResult(liveResult)
     } catch {
-      // Fallback to static
-      const ps = new PatientState(JSON.parse(stored))
-      setResult(runCAE(ps, intervention.trim()))
+      setCustomResult(runCAE(ps, intervention.trim()))
     }
     setLoading(false)
   }

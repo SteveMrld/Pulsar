@@ -1,30 +1,18 @@
 'use client'
 import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
-import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { PatientState } from '@/lib/engines/PatientState'
 import { runPipeline } from '@/lib/engines/pipeline'
+import { usePatient } from '@/contexts/PatientContext'
 
 const DDD_COLOR = '#DC2626'
 
 export default function DDDPage() {
   const { t } = useLang()
-  const params = useParams()
-  const [ddd, setDdd] = useState<any>(null)
-  const [vps, setVps] = useState(0)
+  const { ps } = usePatient()
 
-  useEffect(() => {
-    const stored = localStorage.getItem(`pulsar-patient-${params.id}`)
-    if (stored) {
-      try {
-        const ps = new PatientState(JSON.parse(stored))
-        const result = runPipeline(ps)
-        setDdd((result as any).dddResult)
-        setVps(result.vpsResult?.synthesis?.score ?? 0)
-      } catch { /* noop */ }
-    }
-  }, [params.id])
+  const result = ps ? runPipeline(ps) : null
+  const ddd = (result as any)?.dddResult ?? null
+  const vps = result?.vpsResult?.synthesis?.score ?? 0
 
   if (!ddd) return (
     <div style={{ textAlign: 'center', padding: 'var(--p-space-10)', color: 'var(--p-text-dim)' }}>

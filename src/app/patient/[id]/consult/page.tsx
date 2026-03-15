@@ -1,31 +1,20 @@
 'use client'
 import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
-import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import { PatientState } from '@/lib/engines/PatientState'
-import { runPipeline } from '@/lib/engines/pipeline'
+import { useState } from 'react'
 import { generateConsultBrief, type ConsultBrief } from '@/lib/engines/ConsultEngine'
+import { runPipeline } from '@/lib/engines/pipeline'
+import { usePatient } from '@/contexts/PatientContext'
 
 const CONSULT_COLOR = '#3B82F6'
 
 export default function ConsultPage() {
   const { t } = useLang()
-  const params = useParams()
-  const [brief, setBrief] = useState<ConsultBrief | null>(null)
+  const { ps } = usePatient()
   const [lang, setLang] = useState<'fr' | 'en'>('fr')
   const [copied, setCopied] = useState(false)
 
-  useEffect(() => {
-    const stored = localStorage.getItem(`pulsar-patient-${params.id}`)
-    if (stored) {
-      try {
-        const ps = new PatientState(JSON.parse(stored))
-        const result = runPipeline(ps)
-        setBrief(generateConsultBrief(result, lang))
-      } catch { /* noop */ }
-    }
-  }, [params.id, lang])
+  const brief: ConsultBrief | null = ps ? generateConsultBrief(runPipeline(ps), lang) : null
 
   const copyBrief = () => {
     if (!brief) return
