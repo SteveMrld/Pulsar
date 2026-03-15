@@ -14,10 +14,18 @@ export default function DDDPage() {
   const ddd = (result as any)?.dddResult ?? null
   const vps = result?.vpsResult?.synthesis?.score ?? 0
 
-  if (!ddd) return (
+  if (!ps || !result) return (
     <div style={{ textAlign: 'center', padding: 'var(--p-space-10)', color: 'var(--p-text-dim)' }}>
       <Picto name="urgence-chrono" size={40} glow />
       <div style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700 }}>{t('Chargement DDD...', 'Loading DDD...')}</div>
+    </div>
+  )
+
+  // ddd peut être null si runDDD retourne null — afficher état vide plutôt que boucle infinie
+  if (!ddd) return (
+    <div style={{ textAlign: 'center', padding: 'var(--p-space-10)', color: 'var(--p-text-dim)' }}>
+      <Picto name="urgence-chrono" size={40} glow />
+      <div style={{ fontSize: 'var(--p-text-lg)', fontWeight: 700 }}>{t('Aucun retard détecté', 'No delay detected')}</div>
     </div>
   )
 
