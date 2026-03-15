@@ -84,13 +84,21 @@ export default function CascadePage() {
   const result = customResult ?? (ps ? runCAE(ps) : null)
 
   const runWithIntervention = async () => {
-    if (!ps || !intervention.trim()) return
+    if (!ps) return
     setLoading(true)
     try {
-      const liveResult = await runCAELive(ps, intervention.trim())
+      // Timeout 5s — si OpenFDA ne répond pas, fallback statique immédiat
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), 5000)
+      )
+      const liveResult = await Promise.race([
+        runCAELive(ps, intervention.trim() || undefined),
+        timeoutPromise,
+      ])
       setCustomResult(liveResult)
     } catch {
-      setCustomResult(runCAE(ps, intervention.trim()))
+      // Fallback statique garanti
+      setCustomResult(runCAE(ps, intervention.trim() || undefined))
     }
     setLoading(false)
   }
