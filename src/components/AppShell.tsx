@@ -244,7 +244,7 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           </div>
 
           {/* CENTER — masqué sur mobile */}
-          <div className="hdr-center" style={{ display: 'flex', alignItems: 'center', gap: '2px', overflow: 'hidden', flexShrink: 1, minWidth: 0 }}>
+          <div className="hdr-center" style={{ display: 'flex', alignItems: 'center', gap: '2px', flexShrink: 1, minWidth: 0, overflow: 'visible' }}>
             <NavLink href="/dashboard" label="Dashboard" pathname={pathname} />
             <NavLink href="/patients" label={t('File active', 'Patients')} pathname={pathname} />
             <NavLink href="/research" label="Discovery" color="#10B981" pathname={pathname} />
