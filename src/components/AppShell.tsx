@@ -179,10 +179,10 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
           borderBottom: '1px solid rgba(108,124,255,0.06)',
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <Link href="/patients" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, color: '#6C7CFF' }}>
+            <button onClick={() => router.back()} style={{ background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 6, color: '#6C7CFF', padding: 0 }}>
               <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M9 2L4 7l5 5" stroke="#6C7CFF" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/></svg>
-              <span style={{ fontSize: 10, fontFamily: 'var(--p-font-mono)', fontWeight: 700 }}>File active</span>
-            </Link>
+              <span style={{ fontSize: 10, fontFamily: 'var(--p-font-mono)', fontWeight: 700 }}>Retour</span>
+            </button>
             <span style={{ color: 'rgba(255,255,255,0.15)', fontSize: 10 }}>›</span>
             <span style={{ fontSize: 10, color: 'var(--p-text-dim)', fontFamily: 'var(--p-font-mono)' }}>
               {pathname.split('/').pop()?.toUpperCase() || 'PATIENT'}

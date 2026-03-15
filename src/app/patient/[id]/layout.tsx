@@ -1,5 +1,5 @@
 'use client'
-import { useParams, usePathname } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { useState } from 'react'
 import { PatientProvider, usePatient } from '@/contexts/PatientContext'
@@ -52,6 +52,7 @@ function PDFButton({ ps, name }: { ps: PatientState; name: string }) {
    ══════════════════════════════════════════════════════════════ */
 
 function PatientHeader() {
+  const router = useRouter()
   const { info, engineSummary } = usePatient()
   const { vps, vpsColor, vpsLevel, criticalAlerts } = engineSummary
   const { ps } = usePatient()
@@ -66,13 +67,13 @@ function PatientHeader() {
       backdropFilter: 'blur(12px)',
     }}>
       {/* Back */}
-      <Link href="/patients" style={{
+      <button onClick={() => router.back()} style={{
         display: 'flex', alignItems: 'center', padding: '6px',
         borderRadius: 'var(--p-radius-md)', color: 'var(--p-text-dim)',
-        textDecoration: 'none',
+        background: 'none', border: 'none', cursor: 'pointer',
       }}>
         <span style={{ fontSize: '16px' }}>←</span>
-      </Link>
+      </button>
 
       {/* Live dot */}
       <div className={vps >= 50 ? 'dot-critical' : 'dot-alive'} style={{
