@@ -231,16 +231,27 @@ function PréludeNarratif() {
   const ref = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const obs = new IntersectionObserver(([e]) => {
-      if (e.isIntersecting && !started) {
+    if (started) return
+    // Fallback immédiat si IntersectionObserver ne fire pas (modal/panel)
+    const fallback = setTimeout(() => {
+      if (!started) {
         setStarted(true)
         FRAGMENTS.forEach((_, i) => {
-          setTimeout(() => setRevealed(r => [...r, i]), i * 600)
+          setTimeout(() => setRevealed(r => [...r, i]), i * 400)
+        })
+      }
+    }, 200)
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting && !started) {
+        clearTimeout(fallback)
+        setStarted(true)
+        FRAGMENTS.forEach((_, i) => {
+          setTimeout(() => setRevealed(r => [...r, i]), i * 400)
         })
       }
     }, { threshold: 0.05, rootMargin: '0px 0px -50px 0px' })
     if (ref.current) obs.observe(ref.current)
-    return () => obs.disconnect()
+    return () => { obs.disconnect(); clearTimeout(fallback) }
   }, [started])
 
   return (
@@ -345,7 +356,7 @@ function VitalChip({ label, value, alert }: { label: string; value: string; aler
 function ReconstitutionCinematique() {
   const [current, setCurrent] = useState(0)
   const [playing, setPlaying] = useState(false)
-  const [entered, setEntered] = useState(false)
+  const [entered, setEntered] = useState(true)
   const [factVisible, setFactVisible] = useState(0)
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const sectionRef = useRef<HTMLDivElement>(null)
