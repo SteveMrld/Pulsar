@@ -15,6 +15,7 @@ const C = {
 
 const SEQUENCES = [
   { id: 'intro',     act: 1, duration: 8000,  accentColor: C.vps },
+  { id: 'cockpit',   act: 2, duration: 10000, accentColor: C.vps },
   { id: 'vps',       act: 2, duration: 9000,  accentColor: C.vps },
   { id: 'discovery', act: 2, duration: 10000, accentColor: C.disc },
   { id: 'cascade',   act: 2, duration: 9000,  accentColor: C.cae },
@@ -77,6 +78,125 @@ function SeqIntro() {
             <div style={{ fontSize: 8, color: C.dim, letterSpacing: 2, fontFamily: 'monospace' }}>{l}</div>
           </div>
         ))}
+      </div>
+    </div>
+  )
+}
+
+
+// ── COCKPIT ───────────────────────────────────────────────────
+function SeqCockpit() {
+  const [p, setP] = useState(0)
+  useEffect(() => {
+    const ts = [300, 1200, 2500, 4000, 6000, 8000].map((d, i) => setTimeout(() => setP(i + 1), d))
+    return () => ts.forEach(clearTimeout)
+  }, [])
+
+  const engines = [
+    { id: 'VPS', label: 'VPS Engine', score: 99, sub: 'CRITIQUE', color: '#EF4444' },
+    { id: 'TDE', label: 'Triage & Diagnosis', score: 75, sub: 'ESCALADE', color: '#F59E0B' },
+    { id: 'PVE', label: 'Pharmacovigilance', score: 48, sub: 'RISQUE FAIBLE', color: C.vps },
+    { id: 'EWE', label: 'Early Warning', score: 94, sub: 'ALERTE PRÉCOCE', color: '#8B5CF6' },
+    { id: 'TPE', label: 'Treatment Path', score: 32, sub: 'HYPOTH. DISPOS.', color: C.disc },
+    { id: 'NCE', label: 'NeuroCore Engine', score: 76, sub: 'CRITIQUE', color: '#EF4444' },
+    { id: 'DDD', label: 'Delay Detector', score: 80, sub: 'RETARD', color: C.ddd },
+    { id: 'CAE', label: 'Cascade Alert', score: 68, sub: 'HIGH', color: C.cae },
+  ]
+
+  const signals = [
+    { type: 'TRÈS FORT · anomaly', text: 'Profil orage cytokinique — Lucas B.', color: C.oracle },
+    { type: 'FORT · correlation', text: 'Corrélation : Ferritine ↔↔ Fréquence des crises', color: '#F59E0B' },
+    { type: 'FORT · treatment_response', text: 'Résistance L1 systématique dans FIRES', color: C.cae },
+    { type: 'DUAL SIGNAL · NETWORKMAP', text: 'Anakinra (anti-IL-1) — Alejandro R.', color: C.disc },
+  ]
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      <div style={{ marginBottom: 12 }}>
+        <div style={{ fontFamily: 'monospace', fontSize: 9, color: C.vps, letterSpacing: 2, marginBottom: 3 }}>COCKPIT — VUE GÉNÉRALE</div>
+        <div style={{ fontSize: 17, fontWeight: 800, color: C.white }}>12 Moteurs · Vue Unifiée en Temps Réel</div>
+        <div style={{ fontSize: 10, color: C.dim }}>Inès M. · 4 ans · FIRES · Phase aiguë · J+4 · VPS 99 CRITIQUE</div>
+      </div>
+
+      {/* Grille moteurs */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 6, marginBottom: 10 }}>
+        {engines.map((e, i) => (
+          <div key={e.id} style={{
+            padding: '8px 10px', borderRadius: 10, background: C.card,
+            border: `1px solid ${e.color}25`,
+            opacity: p >= 1 ? 1 : 0,
+            transform: p >= 1 ? 'translateY(0)' : 'translateY(8px)',
+            transition: `all 0.3s ease ${i * 80}ms`,
+          }}>
+            <div style={{ fontFamily: 'monospace', fontSize: 7, color: e.color, letterSpacing: 1, marginBottom: 4 }}>{e.id}</div>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 3 }}>
+              <span style={{ fontFamily: 'monospace', fontSize: 22, fontWeight: 900, color: e.color, lineHeight: 1 }}>{e.score}</span>
+            </div>
+            <div style={{ fontSize: 7, color: e.color, fontFamily: 'monospace', marginTop: 2, opacity: 0.8 }}>{e.sub}</div>
+            <div style={{ marginTop: 4, height: 2, background: '#1A2235', borderRadius: 1 }}>
+              <div style={{ width: `${e.score}%`, height: '100%', background: e.color, borderRadius: 1 }} />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Visual Physiology + Discovery */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 2fr', gap: 10, flex: 1 }}>
+
+        {/* Silhouette schématique */}
+        <div style={{ background: C.card, borderRadius: 10, border: `1px solid ${C.vps}15`, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 12, opacity: p >= 2 ? 1 : 0, transition: 'opacity 0.5s' }}>
+          <div style={{ fontFamily: 'monospace', fontSize: 7, color: C.dim, letterSpacing: 2, marginBottom: 8 }}>VISUAL PHYSIOLOGY</div>
+          <div style={{ position: 'relative', width: 60, height: 110 }}>
+            {/* Corps schématique SVG */}
+            <svg viewBox="0 0 60 110" width="60" height="110">
+              {/* Tête */}
+              <circle cx="30" cy="12" r="10" fill="none" stroke="#8B5CF6" strokeWidth="1.5" opacity="0.8" />
+              <circle cx="30" cy="12" r="3" fill="#8B5CF6" opacity="0.6" />
+              {/* Corps */}
+              <rect x="18" y="24" width="24" height="36" rx="4" fill="none" stroke={C.vps} strokeWidth="1.5" opacity="0.6" />
+              {/* Coeur */}
+              <circle cx="27" cy="36" r="4" fill="#EF4444" opacity="0.8" style={{ filter: 'drop-shadow(0 0 4px #EF4444)' }} />
+              {/* Poumons */}
+              <ellipse cx="24" cy="32" rx="4" ry="5" fill="none" stroke={C.vps} strokeWidth="1" opacity="0.5" />
+              <ellipse cx="36" cy="32" rx="4" ry="5" fill="none" stroke={C.vps} strokeWidth="1" opacity="0.5" />
+              {/* Abdo */}
+              <circle cx="30" cy="50" r="5" fill="#F59E0B" opacity="0.6" />
+              {/* Jambes */}
+              <line x1="24" y1="60" x2="20" y2="90" stroke={C.vps} strokeWidth="1.5" opacity="0.5" />
+              <line x1="36" y1="60" x2="40" y2="90" stroke={C.vps} strokeWidth="1.5" opacity="0.5" />
+              {/* Bras */}
+              <line x1="18" y1="28" x2="8" y2="50" stroke={C.vps} strokeWidth="1.5" opacity="0.5" />
+              <line x1="42" y1="28" x2="52" y2="50" stroke={C.vps} strokeWidth="1.5" opacity="0.5" />
+            </svg>
+            {/* Hotspots */}
+            {p >= 3 && [
+              { top: 6, left: 26, c: '#8B5CF6' },
+              { top: 28, left: 22, c: '#EF4444' },
+              { top: 26, left: 32, c: C.vps },
+              { top: 42, left: 26, c: '#F59E0B' },
+            ].map((h, i) => (
+              <div key={i} style={{ position: 'absolute', top: h.top, left: h.left, width: 8, height: 8, borderRadius: '50%', background: h.c, boxShadow: `0 0 6px ${h.c}`, border: `1px solid ${h.c}` }} />
+            ))}
+          </div>
+          <div style={{ fontFamily: 'monospace', fontSize: 8, color: '#EF4444', marginTop: 6, fontWeight: 700 }}>CRITIQUE</div>
+        </div>
+
+        {/* Discovery signals */}
+        <div style={{ display: 'flex', flexDirection: 'column', opacity: p >= 4 ? 1 : 0, transition: 'opacity 0.5s' }}>
+          <div style={{ fontFamily: 'monospace', fontSize: 7, color: C.disc, letterSpacing: 2, marginBottom: 8 }}>DISCOVERY ENGINE — 4 SIGNAUX PATIENT</div>
+          {signals.map((s, i) => (
+            <div key={i} style={{
+              padding: '7px 10px', borderRadius: 8, marginBottom: 5,
+              background: `${s.color}06`, border: `1px solid ${s.color}20`,
+              opacity: p >= 5 ? 1 : 0,
+              transform: p >= 5 ? 'translateX(0)' : 'translateX(8px)',
+              transition: `all 0.3s ease ${i * 120}ms`,
+            }}>
+              <div style={{ fontFamily: 'monospace', fontSize: 7, color: s.color, letterSpacing: 1, marginBottom: 2 }}>{s.type}</div>
+              <div style={{ fontSize: 10, color: C.white }}>{s.text}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   )
@@ -548,6 +668,7 @@ function SeqMemorial() {
 function SequenceContent({ id }: { id: string }) {
   switch (id) {
     case 'intro':     return <SeqIntro />
+    case 'cockpit':   return <SeqCockpit />
     case 'vps':       return <SeqVPS />
     case 'discovery': return <SeqDiscovery />
     case 'cascade':   return <SeqCascade />
