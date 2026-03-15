@@ -1,11 +1,10 @@
 'use client'
 import Picto from '@/components/Picto'
 import { useLang } from '@/contexts/LanguageContext'
-import { useParams } from 'next/navigation'
-import { useEffect, useState, useRef } from 'react'
-import { PatientState } from '@/lib/engines/PatientState'
-import { runPipeline } from '@/lib/engines/pipeline'
+import { useRef } from 'react'
 import { runCAE, type CAEResult } from '@/lib/engines/CascadeAlertEngine'
+import { runPipeline } from '@/lib/engines/pipeline'
+import { usePatient } from '@/contexts/PatientContext'
 
 type PipelineResult = ReturnType<typeof runPipeline>
 
@@ -68,32 +67,17 @@ function RecoRow({ priority, title, body, reference }: { priority: string; title
 
 export default function RapportPage() {
   const { t } = useLang()
-  const params = useParams()
-  const [ps, setPs] = useState<PatientState | null>(null)
-  const [result, setResult] = useState<PipelineResult | null>(null)
-  const [caeResult, setCaeResult] = useState<CAEResult | null>(null)
-  const [generated, setGenerated] = useState(false)
+  const { ps } = usePatient()
+  const reportRef = useRef<HTMLDivElement>(null)
 
   const exportPDF = () => {
     window.print()
   }
-  const reportRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
-    const stored = localStorage.getItem(`pulsar-patient-${params.id}`)
-    if (stored) {
-      try {
-        const patient = new PatientState(JSON.parse(stored))
-        setPs(patient)
-        const pipelineResult = runPipeline(patient)
-        setResult(pipelineResult)
-        setCaeResult(runCAE(patient))
-        setGenerated(true)
-      } catch { /* noop */ }
-    }
-  }, [params.id])
+  const result = ps ? runPipeline(ps) : null
+  const caeResult: CAEResult | null = ps ? runCAE(ps) : null
 
-  if (!generated || !result || !ps) {
+  if (!result || !ps) {
     return (
       <div style={{ textAlign: 'center', padding: 'var(--p-space-10)' }}>
         <Picto name="chart" size={40} glow />

@@ -5,7 +5,7 @@ import { usePatient } from '@/contexts/PatientContext'
 import Picto from '@/components/Picto'
 import { useTrackAction } from '@/hooks/useTrackAction'
 
-/* Synth\u00e8se Clinique \u2014 Staff & Transmission */
+/* Synthèse Clinique \u2014 Staff & Transmission */
 
 export default function SynthesePage() {
   const { t } = useLang()
@@ -35,9 +35,9 @@ export default function SynthesePage() {
       <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}>
         <Picto name="clipboard" size={28} glow glowColor="rgba(46,213,115,0.5)" />
         <div>
-          <h1>Synth\u00e8se Clinique</h1>
+          <h1>Synthèse Clinique</h1>
           <span className="page-subtitle">
-            Staff & Transmission {'\u00b7'} {info.displayName} {'\u00b7'} J+{info.hospDay}
+            Staff & Transmission {'·'} {info.displayName} {'·'} J+{info.hospDay}
           </span>
         </div>
       </div>
@@ -50,10 +50,10 @@ export default function SynthesePage() {
       }}>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '16px', alignItems: 'start' }}>
           <div>
-            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>IDENTIT\u00c9 CLINIQUE</div>
+            <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '9px', color: 'var(--p-text-dim)', letterSpacing: '1px', marginBottom: '8px' }}>IDENTITÉ CLINIQUE</div>
             <div style={{ fontSize: '16px', fontWeight: 800, color: 'var(--p-text)', marginBottom: '4px' }}>{info.displayName}</div>
             <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '11px', color: 'var(--p-text-muted)', lineHeight: 1.6 }}>
-              {info.age} {'\u00b7'} {info.sex === 'female' ? 'F' : 'M'} {'\u00b7'} {info.weight} {'\u00b7'} {info.room}<br />
+              {info.age} {'·'} {info.sex === 'female' ? 'F' : 'M'} {'·'} {info.weight} {'·'} {info.room}<br />
               Diagnostic : <span style={{ color: '#6C7CFF', fontWeight: 700 }}>{info.syndrome}</span><br />
               Phase : <span style={{ color: info.phaseInfo.color, fontWeight: 700 }}>{info.phaseInfo.label}</span> ({info.phaseInfo.dayRange})<br />
               Hospitalisation : J+{info.hospDay}
@@ -119,7 +119,7 @@ export default function SynthesePage() {
             <div key={i} style={{ marginBottom: '8px' }}>
               <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--p-text)' }}>{r.title}</div>
               <div style={{ fontSize: '11px', color: 'var(--p-text-muted)', marginTop: '2px', lineHeight: 1.5 }}>{r.body}</div>
-              {r.reference && <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', marginTop: '3px' }}>R\u00e9f : {r.reference}</div>}
+              {r.reference && <div style={{ fontFamily: 'var(--p-font-mono)', fontSize: '8px', color: 'var(--p-text-dim)', marginTop: '3px' }}>Réf : {r.reference}</div>}
             </div>
           ))}
         </div>
