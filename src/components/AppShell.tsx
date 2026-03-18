@@ -102,12 +102,6 @@ function AppShellInner({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     if (isPublic) { setLoading(false); return }
     // Check tour INSIDE useEffect (sessionStorage only available client-side)
-    const isTourActive = sessionStorage.getItem('pulsar-tour-active') === '1'
-    if (isTourActive) {
-      setUser('Démo')
-      setLoading(false)
-      return
-    }
     if (typeof window !== 'undefined') {
       const inviteMatch = document.cookie.match(/pulsar-invite=([^;]+)/)
       if (inviteMatch) {
