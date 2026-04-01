@@ -38,24 +38,24 @@ const TIMELINE = [
     pulsar: ['VPS 30 — modéré', 'Profil prodromique à monitorer — antécédents myalgies récurrentes critiques', 'Si crises → penser FIRES immédiatement'] },
   { day: -1, date: '02-03/04', place: 'Eaubonne', title: 'Kalinox + Sévoflurane → Effondrement', vps: 75, gcs: 8, crises: 3, cardiacRisk: 15, color: '#EF4444',
     facts: ['Amélioration, T° en baisse', 'Kalinox + Sévoflurane pour prélèvement sanguin', 'Effondrement brutal : désaturation, perte de conscience', 'Premières convulsions', 'Glasgow chute à 8', 'Transfert SAMU → Robert-Debré'],
-    pulsar: ['CASCADE CRITIQUE : Kalinox+Sévoflurane × Prodrome FIRES', '2 dépresseurs SNC sur cerveau en neuroinflammation latente', 'ALTERNATIVE : Emla + Paracétamol'] },
+    pulsar: ['Signal PULSAR : association Kalinox+Sévoflurane sur profil prodromique FIRES', 'Deux dépresseurs du SNC sur terrain de neuroinflammation potentielle', 'Alternative recommandée dans ce profil : Emla + Paracétamol'] },
   { day: 0, date: '03/04', place: 'Robert-Debré', title: 'Admission Réa — Intubation', vps: 85, gcs: 8, crises: 5, cardiacRisk: 20, color: '#EF4444',
     facts: ['Glasgow 8 — intubation', 'Convulsions >20min, susp. méningite', 'Rivotril x3 échec', 'Cefotaxime + Aciclovir', 'Dilantin + Keppra + Midazolam continu'],
-    pulsar: ['VPS 85 CRITIQUE', 'Panel anticorps URGENT', 'IVIG empirique — consensus FIRES (Wickström 2022)', 'DILANTIN → monitoring cardiaque'] },
+    pulsar: ['VPS 85 — état critique', 'Panel anticorps URGENT', 'IVIG empirique — consensus FIRES (Wickström 2022)', 'DILANTIN → monitoring cardiaque'] },
   { day: 1, date: '04/04', place: 'Robert-Debré', title: '6 convulsions — Œdème cérébral', vps: 90, gcs: 6, crises: 6, cardiacRisk: 30, color: '#EF4444',
     facts: ['6 convulsions dans la nuit', 'Œdème cérébral', 'PAM 61 (objectif 65-70 non atteint)', 'CORTICOÏDES débutés (méthylprednisolone)', 'FC 82, SpO2 95%'],
-    pulsar: ['PULSAR aurait déjà lancé IVIG + cortico depuis J0', 'Retard +24h corticoïdes', 'Signal escalade anakinra si persistance L1 — initiation précoce associée à meilleurs résultats (Lai 2020)'] },
+    pulsar: ['PULSAR aurait proposé IVIG + corticoïdes dès J0 selon le consensus FIRES', 'Corticoïdes initiés à J+1 — fenêtre optimale selon les recommandations : J0', 'Signal escalade anakinra si persistance L1 — initiation précoce associée à meilleurs résultats (Lai 2020)'] },
   { day: 2, date: '05/04', place: 'Robert-Debré', title: 'SE continue — Infraclinique', vps: 95, gcs: 5, crises: 8, cardiacRisk: 40, color: '#EF4444',
     facts: ['EEG : convulsions infracliniques', 'IVIG ADMINISTRÉES', 'Kétamine augmentée', 'PAM 67, FC 99, SpO2 94%', 'Nutrition Sondalis Junior (standard)'],
-    pulsar: ['IVIG à J+3 — retard +24h vs 48h recommandées', 'KD recommandé dès J+2 (van Baalen 2023)', 'Signal escalade anakinra — chaque jour de retard associé à séjour plus long en réa (Lai 2020)'] },
+    pulsar: ['IVIG administrées à J+3 — fenêtre optimale selon le consensus : 48h', 'KD recommandé dès J+2 (van Baalen 2023)', 'Signal PULSAR : escalade anakinra — initiation précoce associée à meilleur pronostic (Lai 2020)'] },
   { day: 3, date: '06/04', place: 'Robert-Debré', title: 'Convulsion 1h30 — EEG très pauvre', vps: 98, gcs: 3, crises: 12, cardiacRisk: 55, color: '#EF4444',
     facts: ['Crises continues, EEG non réactif', 'Dr Giles évoque encéphalite auto-immune et PIMS', 'Midazolam 3ml/h, Kétamine 1.6ml/h, Sufentanil 0.2ml/h', 'Débat entre 3 hypothèses : FIRES / EAIS / PIMS neuro'],
-    pulsar: ['PULSAR aurait posé FIRES dès J0 (score 8/13)', '3 hypothèses concurrentes = 5 jours perdus', 'PVE : cardiotoxicité cumulée déjà critique'] },
+    pulsar: ['Score FIRES à J0 : 8/13 — diagnostic hautement probable dès l\'admission', 'Trois hypothèses diagnostiques explorées en parallèle — délai de convergence : 5 jours', 'PVE : cardiotoxicité cumulée déjà critique'] },
   { day: 4, date: '07/04', place: 'Robert-Debré', title: '5 conv. dont 1 de 8 min', vps: 100, gcs: 3, crises: 9, cardiacRisk: 65, color: '#EF4444',
     facts: ['HYPOTHÈSE FIRES POSÉE (90%)', 'DÉBUT RÉGIME CÉTOGÈNE', 'EEG : peu de changement', 'Discussions anakinra commencent', 'Virage stratégique à Robert-Debré'],
-    pulsar: ['FIRES posé à J+5 — retard +120h vs J0 PULSAR', 'KD à J+5 — retard +72h vs J+2 PULSAR', 'Anakinra : encore 5 jours avant administration...'] },
+    pulsar: ['Diagnostic FIRES confirmé à J+5 — score PULSAR à J0 : 8/13', 'Régime cétogène initié à J+5 — fenêtre optimale selon van Baalen : J+2', 'Signal anakinra actif depuis J+1 — administration prévue à J+10'] },
   { day: 14, date: '17/04', place: 'Robert-Debré', title: 'Décès — Arrêt cardiaque', vps: 100, gcs: 3, crises: 0, cardiacRisk: 100, color: '#EF4444',
-    facts: ['Arrêt cardiaque', 'Derniers examens cérébraux : pas de lésion irréversible', 'Anakinra administré J+10 — signes amélioration J+11', 'Anakinra à J+10 — 9 jours après le signal d\'escalade PULSAR à J+1'],
+    facts: ['Arrêt cardiaque', 'Derniers examens cérébraux : pas de lésion irréversible', 'Anakinra administré J+10 — signes amélioration J+11', 'Anakinra administré à J+10 — premiers signes d\'amélioration à J+11'],
     pulsar: ['10+ molécules cardio-actives pendant 15 jours', 'PAM oscillante : 61 → 67 → 114', 'Troponine et écho ne figurent pas dans les documents disponibles', 'PULSAR aurait recommandé monitoring cardiaque dès J+3'] },
 ]
 
@@ -673,7 +673,7 @@ export default function AlejandroCasePage() {
         </div>
         <div style={{ background: 'var(--p-bg-card)', borderRadius: 'var(--p-radius-lg)', border: '1px solid #FF6B3515', padding: 16 }}>
           <div style={{ fontSize: 'var(--p-text-sm)', fontWeight: 800, color: '#EF4444', marginBottom: 10, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Picto name="warning" size={14} glow /> CASCADE CRITIQUE : MEOPA × Prodrome FIRES
+            <Picto name="warning" size={14} glow /> Signal PULSAR : MEOPA × profil prodromique FIRES
           </div>
           {[
             'Infection fébrile → inflammation systémique → neuroinflammation latente',
