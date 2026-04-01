@@ -24,6 +24,8 @@ export const INVITE_CODES: InviteCode[] = [
     welcomeMsg: 'Merci pour votre soutien et votre bienveillance. Nous n\'oublierons jamais votre écoute et votre aide. Merci pour Alejandro.' },
   { code: 'PULSAR-AH-2026',  name: 'Aurélie Hanin',   email: 'aurelie.hanin@icm-institute.org', role: 'medical',  expiresAt: '2026-06-30', active: true, lang: 'fr',
     welcomeMsg: 'Merci pour votre expertise et votre engagement auprès des familles. Votre regard clinique sur PULSAR est précieux. Merci pour Alejandro.' },
+  { code: 'PULSAR-BD-2026',  name: 'Blandine Dozières', email: 'blandine.dozieres@aphp.fr',    role: 'medical',  expiresAt: '2026-06-30', active: true, lang: 'fr',
+    welcomeMsg: 'Merci pour votre expertise et votre engagement auprès des enfants. Votre regard clinique sur PULSAR est précieux. Merci pour Alejandro.' },
   // ── Testeurs génériques (anglais) ──
   { code: 'PULSAR-T2-ALPHA', name: 'Tester 2',        email: '',                      role: 'tester',   expiresAt: '2026-04-04', active: true, lang: 'en',
     welcomeMsg: 'Thank you for your support and kindness. Your feedback on PULSAR means a great deal.' },
