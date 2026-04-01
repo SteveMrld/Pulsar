@@ -17,6 +17,7 @@ export default function LoginPage() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [inviteCode, setInviteCode] = useState('')
+  const [inviteEmail, setInviteEmail] = useState('')
   const [showDemo, setShowDemo] = useState(false)
   const [showCase, setShowCase] = useState(false)
   
@@ -160,6 +161,13 @@ export default function LoginPage() {
         <div style={{ marginTop: 'var(--p-space-4)', paddingTop: 'var(--p-space-4)', borderTop: 'var(--p-border)' }}>
           {/* Invite code */}
           <div style={{ marginBottom: 'var(--p-space-3)' }}>
+            <input
+              type="email"
+              value={inviteEmail}
+              onChange={(e) => setInviteEmail(e.target.value)}
+              placeholder={t('Votre adresse email', 'Your email address')}
+              style={{ ...inputStyle, fontSize: '13px', marginBottom: '8px' }}
+            />
             <div style={{ display: 'flex', gap: '8px' }}>
               <input
                 type="text"
@@ -171,19 +179,23 @@ export default function LoginPage() {
               <button
                 onClick={() => {
                   const invite = validateInvite(inviteCode)
-                  if (invite) {
-                    setInviteCookie(invite.code, invite.name)
-                    router.push('/dashboard')
-                  } else {
+                  if (!invite) {
                     setError(t('Code d\'invitation invalide', 'Invalid invite code'))
+                    return
                   }
+                  if (invite.email && invite.email !== '' && inviteEmail.toLowerCase().trim() !== invite.email.toLowerCase()) {
+                    setError(t('Adresse email non autorisée pour ce code', 'Email address not authorized for this code'))
+                    return
+                  }
+                  setInviteCookie(invite.code, invite.name)
+                  router.push('/dashboard')
                 }}
-                disabled={!inviteCode}
+                disabled={!inviteCode || !inviteEmail}
                 style={{
                   padding: '0 16px', borderRadius: 'var(--p-radius-md)',
-                  background: inviteCode ? '#6C7CFF' : 'var(--p-gray-2)',
+                  background: (inviteCode && inviteEmail) ? '#6C7CFF' : 'var(--p-gray-2)',
                   color: '#fff', border: 'none', fontWeight: 700, fontSize: '13px',
-                  cursor: inviteCode ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap',
+                  cursor: (inviteCode && inviteEmail) ? 'pointer' : 'not-allowed', whiteSpace: 'nowrap',
                 }}
               >
                 {t('Entrer', 'Enter')}
