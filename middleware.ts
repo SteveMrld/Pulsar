@@ -40,19 +40,21 @@ export async function middleware(request: NextRequest) {
 
   const { data: { user } } = await supabase.auth.getUser()
 
+  const inviteCookie = request.cookies.get('pulsar-invite')?.value
+  const hasValidInvite = !!inviteCookie && inviteCookie.startsWith('PULSAR-')
+  const isAuthenticated = user || hasValidInvite
+
   const isPublic = ['/', '/login', '/signup'].includes(path)
   const isAuthPage = ['/login', '/signup'].includes(path)
   const isProtected = path.startsWith('/dashboard') || path.startsWith('/research') || path.startsWith('/patients') || path.startsWith('/patient/') || path.startsWith('/observatory') || path.startsWith('/neurocore') || path.startsWith('/case-matching') || path.startsWith('/cross-pathologie') || path.startsWith('/export') || path.startsWith('/bilan') || path.startsWith('/staff') || path.startsWith('/atlas') || path.startsWith('/admin')
 
-  // Redirect unauthenticated users away from protected routes
-  if (!user && isProtected) {
+  if (!isAuthenticated && isProtected) {
     const url = request.nextUrl.clone()
     url.pathname = '/login'
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from auth pages → dashboard
-  if (user && isAuthPage) {
+  if (isAuthenticated && isAuthPage) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
     return NextResponse.redirect(url)
