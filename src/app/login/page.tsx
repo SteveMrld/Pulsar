@@ -11,7 +11,7 @@ import dynamic from 'next/dynamic'
 const AlejandroCasePage = dynamic(() => import('@/app/usecase/alejandro/page'), { ssr: false })
 
 export default function LoginPage() {
-  const { t } = useLang()
+  const { t, setLang } = useLang()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
@@ -188,6 +188,7 @@ export default function LoginPage() {
                     return
                   }
                   setInviteCookie(invite.code, invite.name)
+                  if (invite.lang) { setLang(invite.lang); localStorage.setItem('pulsar-lang', invite.lang) }
                   router.push('/dashboard')
                 }}
                 disabled={!inviteCode || !inviteEmail}
