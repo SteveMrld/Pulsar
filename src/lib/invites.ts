@@ -24,6 +24,8 @@ export const INVITE_CODES: InviteCode[] = [
     welcomeMsg: 'Merci pour votre soutien et votre bienveillance. Nous n\'oublierons jamais votre écoute et votre aide. Merci pour Alejandro.' },
   { code: 'PULSAR-AH-2026',  name: 'Aurélie Hanin',   email: 'aurelie.hanin@icm-institute.org', role: 'medical',  expiresAt: '2026-06-30', active: true, lang: 'fr',
     welcomeMsg: 'Merci pour votre expertise et votre engagement auprès des familles. Votre regard clinique sur PULSAR est précieux. Merci pour Alejandro.' },
+  { code: 'PULSAR-AVB-2026', name: 'Andreas van Baalen', email: 'van.baalen@pedneuro.uni-kiel.de', role: 'medical', expiresAt: '2026-06-30', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for your expertise and your commitment to children with FIRES. Your clinical insight on PULSAR is invaluable. Thank you for Alejandro.' },
   { code: 'PULSAR-BD-2026',  name: 'Blandine Dozières', email: 'blandine.dozieres@aphp.fr',    role: 'medical',  expiresAt: '2026-06-30', active: true, lang: 'fr',
     welcomeMsg: 'Merci pour votre expertise et votre engagement auprès des enfants. Votre regard clinique sur PULSAR est précieux. Merci pour Alejandro.' },
   // ── Testeurs génériques (anglais) ──
@@ -40,6 +42,8 @@ export const INVITE_CODES: InviteCode[] = [
   { code: 'PULSAR-IV-ALPHA', name: 'Investor',         email: '',                      role: 'investor', expiresAt: '2026-05-01', active: true, lang: 'en',
     welcomeMsg: 'Thank you for taking the time to discover PULSAR. Your feedback is invaluable.' },
   // ── Admin ──
+  { code: 'PULSAR-AVB-2026',  name: 'Andreas van Baalen', email: 'van.baalen@pedneuro.uni-kiel.de', role: 'medical',  expiresAt: '2026-06-30', active: true, lang: 'en',
+    welcomeMsg: 'Thank you for your expertise and your pioneering work on FIRES. Your perspective on PULSAR is invaluable.' },
   { code: 'PULSAR-SM-ADMIN', name: 'Steve Moradel',   email: 'steve.moradel@gmail.com', role: 'advisor', expiresAt: '2030-01-01', active: true, lang: 'fr',
     welcomeMsg: 'Bienvenue chez toi, Steve.' },
 ]
