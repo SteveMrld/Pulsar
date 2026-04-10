@@ -177,7 +177,7 @@ export default function LoginPage() {
                 style={{ ...inputStyle, flex: 1, fontSize: '13px', fontFamily: 'var(--p-font-mono, monospace)', letterSpacing: '0.5px' }}
               />
               <button
-                onClick={() => {
+                onClick={async () => {
                   const invite = validateInvite(inviteCode)
                   if (!invite) {
                     setError(t('Code d\'invitation invalide', 'Invalid invite code'))
