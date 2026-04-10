@@ -187,6 +187,21 @@ export default function LoginPage() {
                     setError(t('Adresse email non autorisée pour ce code', 'Email address not authorized for this code'))
                     return
                   }
+                  // Mot de passe déterministe basé sur le code — toujours le même
+                  const deterministicPwd = btoa(invite.code + ':pulsar:2026').replace(/=/g, '')
+                  const supabase = createClient()
+                  const email = inviteEmail.toLowerCase().trim()
+                  // Essayer de se connecter d'abord
+                  const { error: signInError } = await supabase.auth.signInWithPassword({ email, password: deterministicPwd })
+                  if (signInError) {
+                    // Compte inexistant → créer
+                    await supabase.auth.signUp({
+                      email,
+                      password: deterministicPwd,
+                      options: { emailRedirectTo: undefined, data: { invite_code: invite.code, name: invite.name } }
+                    })
+                    await supabase.auth.signInWithPassword({ email, password: deterministicPwd })
+                  }
                   setInviteCookie(invite.code, invite.name)
                   if (invite.lang) { setLang(invite.lang); localStorage.setItem('pulsar-lang', invite.lang) }
                   router.push('/dashboard')
